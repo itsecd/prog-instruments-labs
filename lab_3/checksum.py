@@ -46,11 +46,15 @@ def read_file_with_encoding(file_path: str) -> str:
     :param file_path: Путь к файлу.
     :return: Кодировка файла.
     """
-    with open(file_path, 'rb') as f:
-        raw_data = f.read()
-        result = chardet.detect(raw_data)
-        encoding = result['encoding']
-    return encoding
+    try:
+        with open(file_path, 'rb') as f:
+            raw_data = f.read()
+            result = chardet.detect(raw_data)
+            encoding = result['encoding']
+        return encoding
+    except Exception as e:
+        print(f"Ошибка при определении кодировки файла {file_path}: {e}")
+        raise
 
 
 def process_csv(file_path: str) -> List[int]:
@@ -61,14 +65,16 @@ def process_csv(file_path: str) -> List[int]:
     :return: Список номеров строк с ошибками.
     """
     invalid_rows: List[int] = []
-    encoding = read_file_with_encoding(file_path)
     try:
+        encoding = read_file_with_encoding(file_path)
         with open(file_path, newline='', encoding=encoding) as csvfile:
             reader = csv.reader(csvfile, delimiter=';')
             next(reader)
             for row_number, row in enumerate(reader):
                 if validate_row(row, row_number):
                     invalid_rows.append(row_number)
+    except FileNotFoundError:
+        print(f"Файл не найден: {file_path}")
     except Exception as e:
         print(f"Ошибка при чтении файла: {e}")
     return invalid_rows
@@ -104,8 +110,16 @@ def serialize_result(variant: int, checksum: str) -> None:
 
 
 if __name__ == "__main__":
-    csv_file_path = 'lab_3/52.csv'
-    invalid_row_numbers = process_csv(csv_file_path)
-    checksum = calculate_checksum(invalid_row_numbers)
-    variant_number = 52
-    serialize_result(variant_number, checksum)
+    try:
+        with open("lab_3/options.json", "r", encoding='utf-8') as options_file:
+            options = json.load(options_file)
+
+        invalid_row_numbers = process_csv(options["csv_file_path"])
+        checksum = calculate_checksum(invalid_row_numbers)
+        variant_number = 52
+        serialize_result(variant_number, checksum)
+
+    except FileNotFoundError:
+        print("Файл options.json не найден.")
+    except Exception as e:
+        print(f"Ошибка: {e}")
