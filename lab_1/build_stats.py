@@ -10,6 +10,7 @@ import subprocess
 from typing import Dict, List, Optional, Union
 
 from pydantic import RootModel, TypeAdapter, ValidationError
+from typing import Any
 from models import frontend, v0, v1
 
 PLANET_INDEXES = range(261)
@@ -34,7 +35,16 @@ RECENT_ATTACKS_FILE = "./docs/data/recent_attacks.json"
 CURRENT_STATUS_FILE = "./docs/data/current_status.json"
 
 
-def git_commits_for(path):
+def git_commits_for(path: str) -> List[str]:
+    """
+    Возвращает список коммитов для указанного пути.
+
+    Args:
+        path (str): Путь к файлу или директории в репозитории Git.
+
+    Returns:
+        List[str]: Список строк, каждая из которых представляет отдельный коммит.
+    """
     return (
         subprocess.check_output(["git", "log", GIT_LOG_FORMAT, path])
         .strip()
@@ -43,13 +53,36 @@ def git_commits_for(path):
     )
 
 
-def git_show(ref, name, repo_client):
+def git_show(ref: str, name: str, repo_client: Any) -> bytes:
+    """
+    Получает содержимое файла в указанном коммите из репозитория Git.
+
+    Args:
+        ref (str): Ссылка на коммит (например, хэш коммита).
+        name (str): Имя файла в дереве коммита.
+        repo_client (Any): Клиент для работы с репозиторием, который поддерживает метод commit.
+
+    Returns:
+        bytes: Содержимое файла в байтах.
+    """
     commit_tree = repo_client.commit(ref).tree
 
     return commit_tree[name].data_stream.read()
 
 
-def fetch_all_records_v0():
+def fetch_all_records_v0() -> List[v0.FullStatus]:
+    """
+    Извлекает и кэширует записи коммитов, относящиеся к файлу HELDIVERS_FILE, возвращая их в формате v0.FullStatus.
+
+    Извлекает коммиты для HELDIVERS_FILE, затем для каждого коммита:
+        - Проверяет наличие данных в кэше и валидирует их.
+        - Если данных в кэше нет, загружает из репозитория.
+        - Обновляет запись, добавляя timestamp и версию.
+        - Кэширует запись для последующего использования.
+
+    Returns:
+        List[v0.FullStatus]: Список записей статуса, отсортированных по timestamp.
+    """
     commits = git_commits_for(HELDIVERS_FILE)[COMMIT_LIMIT]
 
     repo = git.Repo(".", odbt=git.db.GitCmdObjectDB)
@@ -102,7 +135,19 @@ def fetch_all_records_v0():
     return out
 
 
-def fetch_all_records_v1():
+def fetch_all_records_v1() -> List[v1.FullStatus]:
+    """
+    Извлекает и кэширует записи коммитов, относящиеся к файлу V1_FILE, возвращая их в формате v1.FullStatus.
+
+    Извлекает коммиты для V1_FILE, затем для каждого коммита:
+        - Проверяет наличие данных в кэше и валидирует их.
+        - Если данных в кэше нет, загружает из репозитория.
+        - Обновляет запись, добавляя timestamp и версию.
+        - Кэширует запись для последующего использования.
+
+    Returns:
+        List[v1.FullStatus]: Список записей статуса, отсортированных по timestamp.
+    """
     commits = git_commits_for(V1_FILE)[COMMIT_LIMIT]
 
     repo = git.Repo(".", odbt=git.db.GitCmdObjectDB)
@@ -157,10 +202,24 @@ def fetch_all_records_v1():
     return out
 
 
-RECENCY = 6 * 24
+def create_agg_stats() -> None:
+    """
+    Создает агрегированные статистические данные на основе записей, полученных из fetch_all_records_v1().
 
+    Обрабатывает статистику для всех записей, в том числе:
+        - количество игроков,
+        - события на планетах,
+        - активные планеты и их истории,
+        - и наиболее активные планеты за последнее время.
 
-def create_agg_stats():
+    Сохраняет результаты в файлы:
+        - AGGREGATES_FILE: для основной статистики (включая временные метки, игроков и влияние).
+        - RECENT_ATTACKS_FILE: для записи наиболее активных планет.
+        - CURRENT_STATUS_FILE: для сохранения последнего состояния.
+
+    Returns:
+        None
+    """
     records = [v1_to_frontend(rec) for rec in fetch_all_records_v1()]
     players = [0] * len(records)
     timestamps = []
@@ -215,13 +274,41 @@ def create_agg_stats():
         fh.write(records[-1].model_dump_json())
 
 
-def wrap_if_str(val):
+def wrap_if_str(val: Any) -> Union[Dict[str, str], Any]:
+    """
+    Оборачивает строку в словарь с ключом 'en-US'. 
+
+    Если входное значение — строка, возвращает словарь с ключом 'en-US' и значением этой строки.
+    Если входное значение не является строкой, возвращает его без изменений.
+
+    Args:
+        val (Any): Значение для проверки.
+
+    Returns:
+        Union[Dict[str, str], Any]: Словарь с ключом 'en-US' и строковым значением, 
+                                    либо исходное значение, если оно не является строкой.
+    """
     if isinstance(val, str):
         return {"en-US": val}
     return val
 
 
 def v1_to_frontend(v1_rec: v1.FullStatus) -> frontend.CurrentStatus:
+    """
+    Преобразует данные статуса v1.FullStatus в формат frontend.CurrentStatus для интерфейса.
+
+    Извлекает и преобразует данные из v1.FullStatus:
+        - Масштабирует координаты планет.
+        - Конвертирует временные метки в миллисекунды.
+        - Оборачивает строки, требующие многоязычной поддержки, в словари с ключом 'en-US'.
+        - Создает необходимые объекты для планет, событий, кампаний, заданий и сообщений.
+
+    Args:
+        v1_rec (v1.FullStatus): Объект статуса в формате v1.FullStatus для преобразования.
+
+    Returns:
+        frontend.CurrentStatus: Объект статуса для отображения на фронтенде.
+    """
     planets = []
     events = []
 
@@ -312,6 +399,21 @@ def v1_to_frontend(v1_rec: v1.FullStatus) -> frontend.CurrentStatus:
 
 
 def v0_to_frontend(v0_rec: v0.FullStatus) -> frontend.CurrentStatus:
+    """
+    Преобразует данные статуса v0.FullStatus в формат frontend.CurrentStatus для интерфейса.
+
+    Извлекает и преобразует данные из v0.FullStatus:
+        - Конвертирует временные метки в миллисекунды.
+        - Оборачивает строки с именами планет в словари с ключом 'en-US'.
+        - Создает объекты для планет, событий, кампаний и войн с соответствующими полями.
+        - Считает общее количество игроков.
+
+    Args:
+        v0_rec (v0.FullStatus): Объект статуса в формате v0.FullStatus для преобразования.
+
+    Returns:
+        frontend.CurrentStatus: Объект статуса для отображения на фронтенде.
+    """
     events = []
     planets: List[frontend.Planet] = []
     total_players = 0
