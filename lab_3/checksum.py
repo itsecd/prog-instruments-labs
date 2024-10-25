@@ -26,12 +26,16 @@ def validate_row(row, row_number):
             return True
     return False
 
-def process_csv(file_path):
+def read_file_with_encoding(file_path):
     with open(file_path, 'rb') as f:
         raw_data = f.read()
         result = chardet.detect(raw_data)
         encoding = result['encoding']
+    return encoding
+
+def process_csv(file_path):
     invalid_rows = []
+    encoding = read_file_with_encoding(file_path)
     try:
         with open(file_path, newline='', encoding=encoding) as csvfile:
             reader = csv.reader(csvfile, delimiter=';')
