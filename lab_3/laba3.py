@@ -93,3 +93,11 @@ def find_incorrect_data(data: list) -> list:
             indexes.append(index)
         index += 1
     return indexes
+
+
+if __name__ == "__main__":
+    filename = "21.csv"
+    variant = 21
+    data = read_csv(filename)
+    indexes = find_incorrect_data(data)
+    serialize_result(variant, calculate_checksum(indexes))
