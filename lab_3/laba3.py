@@ -16,3 +16,11 @@ PATTERNS = {
     "locale_code": "^([a-z]{2,3})(?:-([a-zA-Z]{2,4}))?(?:-([a-zA-Z0-9-]+))?$",
     "time": "^([0-1][0-9]|2[0-3])\\:[0-5][\\d]\\:[0-5][\\d]\\.[\\d]{6}"
 }
+
+
+def check_data(row: list) -> bool:
+    '''Сheck string for data validity'''
+    for key, value in zip(PATTERNS.keys(), row):
+        if not re.match(PATTERNS[key], value):
+            return False
+    return True
