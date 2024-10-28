@@ -29,7 +29,7 @@ def calculate_checksum(row_numbers: List[int]) -> str:
 def serialize_result(variant: int, checksum: str) -> None:
     """
     Метод для сериализации результатов лабораторной пишите сами.
-    Вам нужно заполнить данными - номером варианта и контрольной суммой - файл, лежащий в папке с лабораторной.
+    Вам нужно заполнить данными - номером варианта и контрольной суммой - файл, лежащий в корне репозитория.
     Файл называется, очевидно, result.json.
 
     ВНИМАНИЕ, ВАЖНО! На json натравлен github action, который проверяет корректность выполнения лабораторной.
@@ -39,8 +39,6 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
     pass
-
-
-if __name__ == "__main__":
-    print(calculate_checksum([1, 2, 3]))
-    print(calculate_checksum([3, 2, 1]))
+    res = {"variant": str(variant), "checksum": checksum}
+    with open("result.json", "w") as file:
+        json.dump(res, file, indent=2)
