@@ -8,6 +8,7 @@
 5. [Unit tests](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_5/README.md)
 6. [Профайлинг и оптимизация производительности](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_6/README.md)
 7. [Асинхронное программирование](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_7/README.md)
+8. [Рефакторинг](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_8/README.md)
 # Ремарки
 * Внимательно прочитайте [дискуссии](https://github.com/itsecd/prog_instruments_labs/discussions) о том, как работает автоматическое распределение на ревью.
 * Сразу корректно называйте свои pr, чтобы они попали на ревью нужному преподавателю.
