@@ -1,11 +1,19 @@
 import json
 import hashlib
-from typing import List
+from typing import Dict, List
 
-"""
-В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
-"""
-
+PATTERNS: Dict[str, str] = {
+    "email": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+    "height": r"^(?:0|1|2)\.\d{2}$",
+    "inn": r"^\d{12}$",
+    "passport": r"^\d{2} \d{2} \d{6}$",
+    "occupation": r"^[a-zA-Zа-яА-ЯёЁ\s-]+$",
+    "latitude": r"^(-?[1-8]?\d(?:\.\d{1,})?|90(?:\.0{1,})?)$",
+    "hex_color": r"^#[0-9a-fA-F]{6}$",
+    "issn": r"^\d{4}-\d{4}$",
+    "uuid": r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
+    "time": r"^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)\.(\d{1,6})$"
+}
 
 def calculate_checksum(row_numbers: List[int]) -> str:
     """
