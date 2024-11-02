@@ -31,12 +31,8 @@ def check_row(row: List[str], row_number: int) -> bool:
     for i, value in enumerate(row):
         field_name = list(patterns.keys())[i]
         if not re.match(patterns[field_name], value):
-            print(f"Ошибка в строке {row_number}: "
-                  f"Ошибка в поле '{field_name}': "
-                  f"значение '{value}' не соответствует паттерну.")
             return True
     return False
-
 
 
 def define_encoding(file_path: str) -> str:
@@ -74,7 +70,6 @@ def process_csv(file_path: str) -> List[int]:
                     invalid_rows.append(row_number)
     except Exception as exc:
         raise Exception(f"Error occured during processing csv file {file_path}: {exc}")
-    print(len(invalid_rows))
     return invalid_rows
 
 
@@ -115,6 +110,7 @@ if __name__ == "__main__":
         checksum = calculate_checksum(invalid_row_numbers)
         variant_number = 54
         serialize_result(variant_number, checksum)
+        print(f"The program completed successfully, number of invalid rows: {len(invalid_row_numbers)}, checksum: {checksum}")
 
-    except OSError as er: 
-        raise OSError(f"Error occured during in main section: {er}")
+    except Exception as exc: 
+        raise Exception(f"Error occured during in main section: {exc}")
