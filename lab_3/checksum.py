@@ -93,7 +93,15 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    try:
+        with open('lab_3/result.json', 'r', encoding='utf-8') as json_file:
+            result_data: Dict[str, Any] = json.load(json_file)
+    except OSError as er: 
+        raise OSError(f"Error occured during serializing the result: {er}")
+
+    result_data['checksum'] = checksum
+    with open('lab_3/result.json', 'w', encoding='utf-8') as json_file:
+        json.dump(result_data, json_file, ensure_ascii=False, indent=4)
 
 
 if __name__ == "__main__":
