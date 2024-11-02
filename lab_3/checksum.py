@@ -38,6 +38,34 @@ def check_row(row: List[str], row_number: int) -> bool:
     return False
 
 
+
+def define_encoding(file_path: str) -> str:
+    """
+    Defines the file encoding.
+
+    :param file_path: Path to the file.
+    :return: File encoding.
+    """
+    try:
+        with open(file_path, 'rb') as file:
+            raw_data = file.read()
+            result = chardet.detect(raw_data)
+            encoding = result['encoding']
+        return encoding
+    except OSError as er: 
+        raise OSError(f"Error occured during defining the file encoding {file_path}: {er}")
+
+
+def process_csv(file_path: str) -> List[int]:
+    """
+    Processes a CSV file and returns line numbers with errors.
+
+    :param file_path: Path to the CSV file.
+    :return: List of line numbers with errors.
+    """
+    
+
+
 def calculate_checksum(row_numbers: List[int]) -> str:
     """
     Calculates checksum for list of string's number
