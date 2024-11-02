@@ -8,16 +8,16 @@ import chardet
 
 
 patterns: Dict[str, str] = {
-    'telephone': r'',
-    'http_status_message': r'',
-    'inn': r'',
-    'identifier': r'',
-    'ip_v4': r'',
-    'latitude': r'',
-    'blood_type': r'',
-    'isbn': r'',
-    'uuid': r'',
-    'date': r''
+    'telephone': r'^"?\+7-\(\d{3}\)-\d{3}-\d{2}-\d{2}"?$',
+    'http_status_message': r'^\d{3}(\s\w+)+$',
+    'inn': r'^"?\d{12}"?$',
+    'identifier': r'^"?\d{2}-\d{2}/\d{2}"?$',
+    'ip_v4': r'^(?:\d{1,3}\.){3}\d{1,3}$',
+    'latitude': r'^-?(?:[1-8]?\d(?:\.\d+)?|90(?:\.0+)?)$',
+    'blood_type': r'^"?(A|B|AB|O)[\+\u2212]"?$',
+    'isbn': r'^(\d{3}-)?\d-\d{5}-\d{3}-\d$',
+    'uuid': r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+    'date': r'^"?(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])"?$'
 }
 
 def check_row(row: List[str], row_number: int) -> bool:
@@ -74,6 +74,7 @@ def process_csv(file_path: str) -> List[int]:
                     invalid_rows.append(row_number)
     except Exception as exc:
         raise Exception(f"Error occured during processing csv file {file_path}: {exc}")
+    print(len(invalid_rows))
     return invalid_rows
 
 
@@ -90,7 +91,7 @@ def calculate_checksum(row_numbers: List[int]) -> str:
 
 def serialize_result(variant: int, checksum: str) -> None:
     """
-    Serializes result 
+    Serializes result in JSON file
 
     :param variant: your variant number
     :param checksum: checksum calculated via calculate_checksum()
@@ -108,8 +109,8 @@ def serialize_result(variant: int, checksum: str) -> None:
 
 if __name__ == "__main__":
     try:
-        with open("lab_3/settings.json", "r", encoding='utf-8') as options_file:
-            options = json.load(options_file)
+        with open("lab_3/settings.json", "r", encoding='utf-8') as settings_file:
+            options = json.load(settings_file)
         invalid_row_numbers = process_csv(options["csv_file_path"])
         checksum = calculate_checksum(invalid_row_numbers)
         variant_number = 54
