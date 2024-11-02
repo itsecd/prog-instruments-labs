@@ -3,6 +3,9 @@ from PyQt5.QtWidgets import (QMainWindow, QComboBox)
 import sys
 from findValue import findValueDataset, findValueXY, findValueWeek, findValueYear
 import matplotlib.pyplot as plt
+import logging
+
+logging.basicConfig(filename='lab4.log', level=logging.DEBUG)
 
 
 class MainWindow(QMainWindow):
@@ -40,12 +43,14 @@ class MainWindow(QMainWindow):
             value = findValueYear(self.path, input_value)
         self.ui.output_line.setText(str(value))
 
+
 def application():
     app = QtWidgets.QApplication([])
 
     application = MainWindow()
     application.show()
     sys.exit(app.exec_())
+
 
 if __name__ == "__main__":
     application()

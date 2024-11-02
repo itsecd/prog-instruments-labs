@@ -1,10 +1,14 @@
 import csv
 import os
+import logging
 from datetime import date
 from datetime import timedelta
 import os.path
 
+logging.basicConfig(filename='lab4.log', level=logging.DEBUG)
+
 """"функции поиска значения в датасетах"""
+
 
 def findValueDataset(path:str, _date:date)->str:
     """возвращает значение по дате из файла dataset"""
@@ -15,7 +19,8 @@ def findValueDataset(path:str, _date:date)->str:
             if row[0] == _date:
                 return row[1]
         return None
-    
+
+
 def findValueXY(path:str, _date:date)->str:
     """возвращает значение по дате из файла X"""
     with open(f"{path}/X.csv", "r", newline='') as X:
@@ -39,6 +44,7 @@ def findValueXY(path:str, _date:date)->str:
                     else:
                         i+=1
 
+
 def findValueWeek(path:str, _date:date)->str:
     """возвращает значение по дате из файлов по неделям"""
     year = date.fromisoformat(_date).year
@@ -59,7 +65,8 @@ def findValueWeek(path:str, _date:date)->str:
                         if row[0] == _date:
                             return row[1]
     return None
-                        
+
+
 def findValueYear(path:str, _date:date)->str:
     """возвращает значение по дате из файла по годам"""
     year = date.fromisoformat(_date).year
