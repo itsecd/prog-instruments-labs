@@ -90,8 +90,10 @@ def calculate_checksum(row_numbers: List[int]) -> str:
 
 def serialize_result(variant: int, checksum: str) -> None:
     """
-    :param variant: номер вашего варианта
-    :param checksum: контрольная сумма, вычисленная через calculate_checksum()
+    Serializes result 
+
+    :param variant: your variant number
+    :param checksum: checksum calculated via calculate_checksum()
     """
     try:
         with open('lab_3/result.json', 'r', encoding='utf-8') as json_file:
@@ -105,5 +107,13 @@ def serialize_result(variant: int, checksum: str) -> None:
 
 
 if __name__ == "__main__":
-    print(calculate_checksum([1, 2, 3]))
-    print(calculate_checksum([3, 2, 1]))
+    try:
+        with open("lab_3/settings.json", "r", encoding='utf-8') as options_file:
+            options = json.load(options_file)
+        invalid_row_numbers = process_csv(options["csv_file_path"])
+        checksum = calculate_checksum(invalid_row_numbers)
+        variant_number = 54
+        serialize_result(variant_number, checksum)
+
+    except OSError as er: 
+        raise OSError(f"Error occured during in main section: {er}")
