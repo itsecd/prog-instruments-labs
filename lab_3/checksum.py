@@ -1,7 +1,10 @@
 import json
 import hashlib
+import os
 from typing import List
 
+
+RESULT_PATH = r"C:\Users\minh\PycharmProjects\prog-instruments-labs\lab_3\result.json"
 """
 В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
 """
@@ -38,7 +41,9 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    result_data = {"variant": str(variant), "checksum": checksum}
+    with open(RESULT_PATH, "w") as json_file:
+        json.dump(result_data, json_file, indent=2)
 
 
 if __name__ == "__main__":
