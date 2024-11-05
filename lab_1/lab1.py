@@ -1,5 +1,4 @@
-############################################# IMPORTING ##########
-# ######################################
+
 import csv
 import datetime
 import os
@@ -20,8 +19,7 @@ from pushbullet import Pushbullet
 
 global v
 v = 0
-############################################# FUNCTIONS #########
-# #######################################
+
 
 
 def assure_path_exists(path:str) -> None:
@@ -35,8 +33,7 @@ def assure_path_exists(path:str) -> None:
         os.makedirs(dir)
 
 
-############################################
-# ######################################
+
 
 
 def tick() -> None:
@@ -50,8 +47,7 @@ def tick() -> None:
     clock.after(200, tick)
 
 
-##########################################
-# #########################################
+
 
 
 def contact() -> None:
@@ -65,8 +61,7 @@ def contact() -> None:
     )
 
 
-##########################################
-# #########################################
+
 
 
 def label_reset() -> None:
@@ -79,8 +74,7 @@ def label_reset() -> None:
     return
 
 
-##########################################
-# ##########################################
+
 def window2close() -> None:
     """
     Closes the window2 Tkinter window and clears the stop_thread event.
@@ -89,8 +83,7 @@ def window2close() -> None:
     stop_thread.clear()
 
 
-#######################################
-# ##########################################
+
 
 
 def RFID_scan() -> None:
@@ -143,8 +136,7 @@ def RFID_scan() -> None:
         return
 
 
-#######################################
-# ############################################
+
 
 
 def save_pass() -> None:
@@ -204,8 +196,7 @@ def save_pass() -> None:
     warn.configure(text="Password changed successfully!!", fg="green")
 
 
-######################################
-# #############################################
+
 
 
 def change_pass() -> None:
@@ -300,8 +291,7 @@ def change_pass() -> None:
     master.mainloop()
 
 
-#######################################
-# ##############################################
+
 
 
 def psw() -> None:
@@ -348,8 +338,7 @@ def psw() -> None:
         mess._show(title="Wrong Password", message="You have entered wrong password")
 
 
-######################################
-# ################################################
+
 
 
 def clear() -> None:
@@ -369,8 +358,7 @@ def clear() -> None:
     )
 
 
-#######################################
-# ################################################
+
 
 
 def saveprofile() -> None:
@@ -482,8 +470,7 @@ def saveprofile() -> None:
             return
 
 
-#######################################
-# ##################################################
+
 
 
 def update_profile() -> None:
@@ -532,8 +519,7 @@ def update_profile() -> None:
         )
 
 
-########################################
-# ################################################
+
 
 
 def sms(phone:str, name:str) -> None:
@@ -552,8 +538,7 @@ def sms(phone:str, name:str) -> None:
         return
 
 
-########################################
-# ################################################
+
 
 
 def registration() -> None:
@@ -833,8 +818,7 @@ def registration() -> None:
     )
     quit.place(x=740, y=180)
 
-    ################################## MENUBAR ######
-    # ###########################
+    
 
     menubar = tk.Menu(window2, relief="ridge")
     filemenu = tk.Menu(menubar, tearoff=0)
@@ -845,8 +829,7 @@ def registration() -> None:
                          menu=filemenu)
     window2.configure(menu=menubar)
 
-    ################### CHECKING PASSWORD ######
-    # #######################
+    
 
     assure_path_exists("images\mfiles/")
     exists1 = os.path.isfile("images\mfiles\duinghr.db")
@@ -871,8 +854,7 @@ def registration() -> None:
     window2.mainloop()
 
 
-###########################################
-# #################################################3
+
 
 
 def make_icard() -> None:
@@ -973,8 +955,7 @@ def make_icard() -> None:
     Image._show("images\icard\ " + name + id + ".png")
 
 
-######################################
-# #####################################################
+
 
 
 def connect_attendance() -> None:
@@ -1148,8 +1129,7 @@ def disconnect_attendance() -> None:
     return
 
 
-######################################## USED STUFFS ######
-# ######################################
+
 
 global key
 key = ""
@@ -1177,8 +1157,7 @@ mont = {
 }
 
 
-######################################## GUI FRONT-END ########
-# ###################################
+
 
 window = tk.Tk()
 window.geometry("1280x720")
@@ -1264,7 +1243,7 @@ lbl3 = tk.Label(
 )
 lbl3.place(x=180, y=110)
 
-##################### MENUBAR #################################
+
 
 menubar = tk.Menu(window, relief="ridge")
 filemenu = tk.Menu(menubar, tearoff=0)
@@ -1275,7 +1254,7 @@ menubar.add_cascade(label="Help", font=("times", 29, " bold "),
                      menu=filemenu)
 window.configure(menu=menubar)
 
-###################### TREEVIEW TABLE ##########################
+
 
 tv = ttk.Treeview(frame1, height=13, columns=("name", "date", "time"))
 tv.column("#0", width=150)
@@ -1288,15 +1267,13 @@ tv.heading("name", text="NAME")
 tv.heading("date", text="DATE")
 tv.heading("time", text="TIME")
 
-###################### SCROLLBAR ######
-# ##########################
+
 
 scroll = ttk.Scrollbar(frame1, orient="vertical", command=tv.yview)
 scroll.grid(row=2, column=4, padx=(0, 100), pady=(150, 0), sticky="ns")
 tv.configure(yscrollcommand=scroll.set)
 
-###################### BUTTONS ##########
-# ########################
+
 
 register_update = tk.Button(
     frame1,
@@ -1345,8 +1322,7 @@ quitWindow = tk.Button(
 )
 quitWindow.place(x=73, y=450)
 
-#################################
-# ##################################3
+
 
 j = 0
 exists = os.path.isfile("Attendance\Attendance_" + date + ".csv")
@@ -1366,8 +1342,7 @@ if exists:
                     )
     csvFile1.close()
 
-##################### END ##########
-# ############################
+
 
 window.configure(menu=menubar)
 window.mainloop()
