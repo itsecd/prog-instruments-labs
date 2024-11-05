@@ -3,24 +3,15 @@ class Yahtzee:
     @staticmethod
     def chance(d1, d2, d3, d4, d5):
         """Calculate chance score, which is the sum of all dice."""
-        total = 0
-        total += d1
-        total += d2
-        total += d3
-        total += d4
-        total += d5
-        return total
+        return d1 + d2 + d3 + d4 + d5
 
     @staticmethod
     def yahtzee(dice):
         """Return Yahtzee score of 50 if all dice have the same number, else 0."""
-        counts = [0]*(len(dice)+1)
+        counts = [0] * (len(dice) + 1)
         for die in dice:
-            counts[die-1] += 1
-        for i in range(len(counts)):
-            if counts[i] == 5:
-                return 50
-        return 0
+            counts[die - 1] += 1
+        return 50 if 5 in counts else 0
     
     @staticmethod
     def ones( d1,  d2,  d3,  d4,  d5):
