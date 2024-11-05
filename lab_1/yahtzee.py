@@ -202,23 +202,19 @@ class Yahtzee:
         two_of_a_kind_value = 0
         has_three_of_a_kind = False
         three_of_a_kind_value = 0
-
         tallies[d1 - 1] += 1
         tallies[d2 - 1] += 1
         tallies[d3 - 1] += 1
         tallies[d4 - 1] += 1
         tallies[d5 - 1] += 1
-
         for i in range(6):
             if tallies[i] == 2:
                 has_two_of_a_kind = True
                 two_of_a_kind_value = i + 1
-
         for i in range(6):
             if tallies[i] == 3:
                 has_three_of_a_kind = True
                 three_of_a_kind_value = i + 1
-
         if has_two_of_a_kind and has_three_of_a_kind:
             return two_of_a_kind_value * 2 + three_of_a_kind_value * 3
         return 0
