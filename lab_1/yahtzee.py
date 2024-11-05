@@ -157,7 +157,7 @@ class Yahtzee:
         return 0
 
     @staticmethod
-    def smallStraight(d1: int, d2: int, d3: int, d4: int, d5: int) -> int:
+    def small_straight(d1: int, d2: int, d3: int, d4: int, d5: int) -> int:
         """Check if dice show small straight (1-2-3-4-5) and return score."""
         tallies = [0] * 6
         tallies[d1 - 1] += 1
@@ -176,7 +176,7 @@ class Yahtzee:
         return 0
 
     @staticmethod
-    def largeStraight(d1: int, d2: int, d3: int, d4: int, d5: int) -> int:
+    def large_straight(d1: int, d2: int, d3: int, d4: int, d5: int) -> int:
         """Check if dice show large straight (2-3-4-5-6) and return score."""
         tallies = [0] * 6
         tallies[d1 - 1] += 1
