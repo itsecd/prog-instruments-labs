@@ -2,6 +2,7 @@ class Yahtzee:
 
     @staticmethod
     def chance(d1, d2, d3, d4, d5):
+        """Calculate chance score, which is the sum of all dice."""
         total = 0
         total += d1
         total += d2
@@ -12,6 +13,7 @@ class Yahtzee:
 
     @staticmethod
     def yahtzee(dice):
+        """Return Yahtzee score of 50 if all dice have the same number, else 0."""
         counts = [0]*(len(dice)+1)
         for die in dice:
             counts[die-1] += 1
@@ -22,6 +24,7 @@ class Yahtzee:
     
     @staticmethod
     def ones( d1,  d2,  d3,  d4,  d5):
+        """Calculate score for ones category."""
         sum = 0
         if (d1 == 1):
             sum += 1
@@ -39,6 +42,7 @@ class Yahtzee:
 
     @staticmethod
     def twos( d1,  d2,  d3,  d4,  d5):
+        """Calculate score for twos category."""
         sum = 0
         if (d1 == 2):
              sum += 2
@@ -54,6 +58,7 @@ class Yahtzee:
     
     @staticmethod
     def threes( d1,  d2,  d3,  d4,  d5):
+        """Calculate score for threes category."""
         s = 0
         if (d1 == 3):
              s += 3
@@ -69,6 +74,7 @@ class Yahtzee:
     
 
     def __init__(self, d1, d2, d3, d4, _5):
+        """Initialize Yahtzee game with five dice values."""
         self.dice = [0]*5
         self.dice[0] = d1
         self.dice[1] = d2
@@ -77,6 +83,7 @@ class Yahtzee:
         self.dice[4] = _5
     
     def fours(self):
+        """Calculate score for fours category."""
         sum = 0
         for at in range(5):
             if (self.dice[at] == 4): 
@@ -85,6 +92,7 @@ class Yahtzee:
     
 
     def fives(self):
+        """Calculate score for fives category."""
         s = 0
         i = 0
         for i in range(len(self.dice)): 
@@ -94,6 +102,7 @@ class Yahtzee:
     
 
     def sixes(self):
+        """Calculate score for sixes category."""
         sum = 0
         for at in range(len(self.dice)): 
             if (self.dice[at] == 6):
@@ -102,6 +111,7 @@ class Yahtzee:
     
     @staticmethod
     def score_pair( d1,  d2,  d3,  d4,  d5):
+        """Calculate score for the highest pair."""
         counts = [0]*6
         counts[d1-1] += 1
         counts[d2-1] += 1
@@ -116,6 +126,7 @@ class Yahtzee:
     
     @staticmethod
     def two_pair( d1,  d2,  d3,  d4,  d5):
+        """Calculate score if there are two pairs."""
         counts = [0]*6
         counts[d1-1] += 1
         counts[d2-1] += 1
@@ -136,6 +147,7 @@ class Yahtzee:
     
     @staticmethod
     def four_of_a_kind( _1,  _2,  d3,  d4,  d5):
+        """Calculate score for four of a kind."""
         tallies = [0]*6
         tallies[_1-1] += 1
         tallies[_2-1] += 1
@@ -150,6 +162,7 @@ class Yahtzee:
 
     @staticmethod
     def three_of_a_kind( d1,  d2,  d3,  d4,  d5):
+        """Calculate score for three of a kind."""
         t = [0]*6
         t[d1-1] += 1
         t[d2-1] += 1
@@ -164,6 +177,7 @@ class Yahtzee:
 
     @staticmethod
     def smallStraight( d1,  d2,  d3,  d4,  d5):
+        """Check if dice show small straight (1-2-3-4-5) and return score."""
         tallies = [0]*6
         tallies[d1-1] += 1
         tallies[d2-1] += 1
@@ -181,6 +195,7 @@ class Yahtzee:
 
     @staticmethod
     def largeStraight( d1,  d2,  d3,  d4,  d5):
+        """Check if dice show large straight (2-3-4-5-6) and return score."""
         tallies = [0]*6
         tallies[d1-1] += 1
         tallies[d2-1] += 1
@@ -198,6 +213,7 @@ class Yahtzee:
 
     @staticmethod
     def fullHouse( d1,  d2,  d3,  d4,  d5):
+        """Calculate score for full house."""
         tallies = []
         _2 = False
         i = 0
