@@ -1,26 +1,30 @@
-############################################# IMPORTING ################################################
-import os
+############################################# IMPORTING ##########
+# ######################################
 import csv
-import cv2
-import time
 import datetime
-import threading
-import tkinter as tk
+import os
 import sqlite3
-import serial
-import qrcode
-
-from tkinter import ttk, messagebox as mess
+import threading
+import time
+import tkinter as tk
+from tkinter import messagebox as mess, ttk
 import tkinter.simpledialog as tsd
-from PIL import Image, ImageFont, ImageDraw
+
+import cv2
+import qrcode
+import serial
+
+from PIL import Image, ImageDraw, ImageFont
 from pushbullet import Pushbullet
+
 
 global v
 v = 0
-############################################# FUNCTIONS ################################################
+############################################# FUNCTIONS #########
+# #######################################
 
 
-def assure_path_exists(path) -> None:
+def assure_path_exists(path:str) -> None:
     """
     Ensures that the directory for the given file path exists.
     If it does not exist, creates the directory.
@@ -31,7 +35,8 @@ def assure_path_exists(path) -> None:
         os.makedirs(dir)
 
 
-##################################################################################
+############################################
+# ######################################
 
 
 def tick() -> None:
@@ -45,7 +50,8 @@ def tick() -> None:
     clock.after(200, tick)
 
 
-###################################################################################
+##########################################
+# #########################################
 
 
 def contact() -> None:
@@ -59,7 +65,8 @@ def contact() -> None:
     )
 
 
-###################################################################################
+##########################################
+# #########################################
 
 
 def label_reset() -> None:
@@ -72,7 +79,8 @@ def label_reset() -> None:
     return
 
 
-####################################################################################
+##########################################
+# ##########################################
 def window2close() -> None:
     """
     Closes the window2 Tkinter window and clears the stop_thread event.
@@ -81,7 +89,8 @@ def window2close() -> None:
     stop_thread.clear()
 
 
-#################################################################################
+#######################################
+# ##########################################
 
 
 def RFID_scan() -> None:
@@ -134,7 +143,8 @@ def RFID_scan() -> None:
         return
 
 
-###################################################################################
+#######################################
+# ############################################
 
 
 def save_pass() -> None:
@@ -194,7 +204,8 @@ def save_pass() -> None:
     warn.configure(text="Password changed successfully!!", fg="green")
 
 
-###################################################################################
+######################################
+# #############################################
 
 
 def change_pass() -> None:
@@ -289,7 +300,8 @@ def change_pass() -> None:
     master.mainloop()
 
 
-#####################################################################################
+#######################################
+# ##############################################
 
 
 def psw() -> None:
@@ -336,7 +348,8 @@ def psw() -> None:
         mess._show(title="Wrong Password", message="You have entered wrong password")
 
 
-######################################################################################
+######################################
+# ################################################
 
 
 def clear() -> None:
@@ -356,7 +369,8 @@ def clear() -> None:
     )
 
 
-#######################################################################################
+#######################################
+# ################################################
 
 
 def saveprofile() -> None:
@@ -468,7 +482,8 @@ def saveprofile() -> None:
             return
 
 
-#########################################################################################
+#######################################
+# ##################################################
 
 
 def update_profile() -> None:
@@ -517,10 +532,11 @@ def update_profile() -> None:
         )
 
 
-########################################################################################
+########################################
+# ################################################
 
 
-def sms(phone, name) -> None:
+def sms(phone:str, name:str) -> None:
     """
     Sends an SMS notification to the specified phone number using the Pushbullet API.
     The message includes the name and timestamp of attendance.
@@ -536,7 +552,8 @@ def sms(phone, name) -> None:
         return
 
 
-########################################################################################
+########################################
+# ################################################
 
 
 def registration() -> None:
@@ -816,7 +833,8 @@ def registration() -> None:
     )
     quit.place(x=740, y=180)
 
-    ################################## MENUBAR #################################
+    ################################## MENUBAR ######
+    # ###########################
 
     menubar = tk.Menu(window2, relief="ridge")
     filemenu = tk.Menu(menubar, tearoff=0)
@@ -827,7 +845,8 @@ def registration() -> None:
                          menu=filemenu)
     window2.configure(menu=menubar)
 
-    ################### CHECKING PASSWORD #############################
+    ################### CHECKING PASSWORD ######
+    # #######################
 
     assure_path_exists("images\mfiles/")
     exists1 = os.path.isfile("images\mfiles\duinghr.db")
@@ -852,7 +871,8 @@ def registration() -> None:
     window2.mainloop()
 
 
-############################################################################################3
+###########################################
+# #################################################3
 
 
 def make_icard() -> None:
@@ -953,7 +973,8 @@ def make_icard() -> None:
     Image._show("images\icard\ " + name + id + ".png")
 
 
-###########################################################################################
+######################################
+# #####################################################
 
 
 def connect_attendance() -> None:
@@ -1127,7 +1148,8 @@ def disconnect_attendance() -> None:
     return
 
 
-######################################## USED STUFFS ############################################
+######################################## USED STUFFS ######
+# ######################################
 
 global key
 key = ""
@@ -1155,7 +1177,8 @@ mont = {
 }
 
 
-######################################## GUI FRONT-END ###########################################
+######################################## GUI FRONT-END ########
+# ###################################
 
 window = tk.Tk()
 window.geometry("1280x720")
@@ -1265,13 +1288,15 @@ tv.heading("name", text="NAME")
 tv.heading("date", text="DATE")
 tv.heading("time", text="TIME")
 
-###################### SCROLLBAR ################################
+###################### SCROLLBAR ######
+# ##########################
 
 scroll = ttk.Scrollbar(frame1, orient="vertical", command=tv.yview)
 scroll.grid(row=2, column=4, padx=(0, 100), pady=(150, 0), sticky="ns")
 tv.configure(yscrollcommand=scroll.set)
 
-###################### BUTTONS ##################################
+###################### BUTTONS ##########
+# ########################
 
 register_update = tk.Button(
     frame1,
@@ -1320,7 +1345,8 @@ quitWindow = tk.Button(
 )
 quitWindow.place(x=73, y=450)
 
-###################################################################3
+#################################
+# ##################################3
 
 j = 0
 exists = os.path.isfile("Attendance\Attendance_" + date + ".csv")
@@ -1340,7 +1366,8 @@ if exists:
                     )
     csvFile1.close()
 
-##################### END ######################################
+##################### END ##########
+# ############################
 
 window.configure(menu=menubar)
 window.mainloop()
