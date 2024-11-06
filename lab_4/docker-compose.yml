@@ -1,0 +1,48 @@
+services:
+
+  db:
+    image: postgres:16
+    container_name: db_to_do_lst
+    env_file:
+      - .env_non_dev
+    volumes:
+      - to_do_lst_db_vol:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: redis_to_do_lst
+
+  app:
+    build:
+      context: .
+    env_file:
+      - .env_non_dev
+    container_name: app_to_do_lst
+    command: sh -c "alembic upgrade head & cd src && gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000"
+    ports:
+      - 9999:8000
+    depends_on:
+      - redis
+      - db
+
+  celery:
+    build:
+      context: .
+    env_file:
+      - .env_non_dev
+    container_name: celery_to_do_lst
+    command: celery --app=src.tasks.emails:celery worker -l INFO
+    depends_on:
+      - redis
+
+  flower:
+    container_name: flower_to_do_lst
+    image: mher/flower:0.9.7
+    command: ['flower', '--broker=redis://redis:6379', '--port=5555']
+    ports:
+      - 5557:5555
+    depends_on:
+      - redis
+
+volumes:
+  to_do_lst_db_vol:
