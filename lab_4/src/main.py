@@ -1,5 +1,6 @@
 import uvicorn
 import uuid
+import logging
 
 from fastapi import Depends, FastAPI
 from fastapi_users import FastAPIUsers
@@ -10,13 +11,19 @@ from auth.schemas import UserRead, UserCreate
 from auth.user_manager import get_user_manager, UserManager
 from auth.auth_backend import redis
 
+from core.router import router as core_router
+
+
+logging.basicConfig(
+    level = logging.DEBUG, 
+    format = '%(asctime)s\t%(name)s\t%(levelname)s\t%(funcName)s: %(lineno)d\t%(user_id)s\t%(message)s',
+    datefmt = '%Y-%m-%d %H:%M:%S'
+    )
+
 fastapi_users = FastAPIUsers[User, uuid.UUID](
     get_user_manager,
     [auth_backend],
 )
-
-from core.router import router as core_router
-
 
 app = FastAPI(title="YourToDoList")
 
@@ -56,6 +63,11 @@ app.include_router(
 app.include_router(core_router)
 
 if __name__ == "__main__":
+
+    logger = logging.getLogger(__name__)
+
+    logging.info(msg="Launching the ToDoList app")
+
     uvicorn.run(
         __name__ + ":app",
         host='127.0.0.1',

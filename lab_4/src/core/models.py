@@ -19,6 +19,6 @@ class Item(Base):
     name: Mapped[str] = mapped_column(String)
     comment: Mapped[str] = mapped_column(String, default=None, nullable=True)
     priority: Mapped[int] = mapped_column(Integer, default=0, nullable=True)
-    do_till: Mapped[DATE | TIMESTAMP] = mapped_column(TIMESTAMP(timezone=True), default=None, nullable=True)
+    do_till: Mapped[TIMESTAMP] = mapped_column(TIMESTAMP(timezone=True), default=None, nullable=True)
     is_done: Mapped[bool] = mapped_column(Boolean, default=False)
     user = relationship("User", back_populates="to_do_items")
