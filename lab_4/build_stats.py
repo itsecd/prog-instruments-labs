@@ -29,8 +29,8 @@ def git_commits_for(path):
     return subprocess.check_output(['git', 'log', "--format=%H", path]).strip().decode().splitlines()
 
 def git_show(ref, name, repo_client):
+    logger.debug(f"Showing git ref: {ref} for {name}")
     commit_tree = repo_client.commit(ref).tree
-
     return commit_tree[name].data_stream.read()
 
 def fetch_all_records_v0():
