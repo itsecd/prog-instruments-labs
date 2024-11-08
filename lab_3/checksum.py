@@ -19,6 +19,49 @@ def detect_encoding(file_path: str) -> str:
     return encoding
 
 
+def is_valid_line(line: str) -> bool:
+    """
+    Проверяет валидность строки на основе регулярных выражений для каждого поля.
+
+    :param line: Строка, представляющая запись из CSV.
+    :return: True, если строка валидна, иначе False.
+    """
+    fields = line.split(';')
+    
+    if len(fields) != 10:
+        return False
+
+    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    height_pattern = r'^\d+(\.\d+)?$'
+    snils_pattern = r'^\d{11}$'
+    passport_pattern = r'^\d{2} \d{2} \d{6}$'
+    occupation_pattern = r'^[А-Яа-яA-Za-z\s]+$'
+    longitude_pattern = r'^-?\d+(\.\d+)?$'
+    hex_color_pattern = r'^#[0-9a-fA-F]{6}$'
+    issn_pattern = r'^\d{4}-\d{4}$'
+    locale_code_pattern = r'^[a-z]{2}-[a-z]{2}$'
+    time_pattern = r'^\d{2}:\d{2}:\d{2}\.\d{6}$'
+
+    patterns = [
+        email_pattern,
+        height_pattern,
+        snils_pattern,
+        passport_pattern,
+        occupation_pattern,
+        longitude_pattern,
+        hex_color_pattern,
+        issn_pattern,
+        locale_code_pattern,
+        time_pattern
+    ]
+
+    for field, pattern in zip(fields, patterns):
+        if not re.match(pattern, field.strip('"')):
+            return False
+
+    return True
+
+
 def calculate_checksum(row_numbers: List[int]) -> str:
     """
     Вычисляет md5 хеш от списка целочисленных значений.
