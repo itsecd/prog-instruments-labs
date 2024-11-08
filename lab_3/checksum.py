@@ -3,6 +3,7 @@ import hashlib
 from typing import List
 import re
 import chardet
+import argparse
 
 
 def detect_encoding(file_path: str) -> str:
@@ -101,3 +102,21 @@ def serialize_result(variant: int, checksum: str) -> None:
     }
     with open('result.json', 'w') as json_file:
         json.dump(result, json_file, indent=4)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+    description='Программа для вычисления контрольной суммы')
+    parser.add_argument('--input_file',
+                        type=str,
+                        help='Путь к CSV файлу',
+                        default="lab_3/35.csv")
+    parser.add_argument('--var',
+                        type=int,
+                        help='Номер варианта',
+                        default=35)
+    args = parser.parse_args()
+
+    invalid_lines = process_file(args.input_file)
+    checksum = calculate_checksum(invalid_lines)
+    serialize_result(args.var, checksum)
