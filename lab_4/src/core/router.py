@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -27,11 +29,13 @@ async def add_item_to_list(item: ItemCreate,
     session.add(item_db)
     await session.commit()
 
-    return {
-        "status": "ok",
-        "detail": "item added",
+    extra = {
+        "event": "ADD_ITEM",
+        "user_email": str(user.email),
         "data": ItemRead(**item.model_dump(), id=item_db.id, is_done=False)
     }
+
+    logging.info(msg="Item added", extra=extra) 
 
 
 @router.get("/get_items")
@@ -40,6 +44,12 @@ async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_len
                     session: AsyncSession = Depends(get_async_session)):
     
     if sort_by[0] not in (None, "priority", "do_till"):
+        extra = {
+            "event": "GET_ITEMS",
+            "user_email": str(user.email),
+            "data": "Wrong field to sort by"
+            }
+        logging.info(msg="Invalid sorting field", extra=extra) 
         raise HTTPException(status_code=422, detail=
                             {
                             "status": "error",
@@ -50,6 +60,12 @@ async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_len
     try:
         sort_by[1] = int(sort_by[1])
     except:
+        extra = {
+            "event": "GET_ITEMS",
+            "user_email": str(user.email),
+            "data": "Second argument must be integer"
+            }
+        logging.info(msg="Сannot be converted to an integer", extra=extra) 
         raise HTTPException(status_code=422, detail=
                             {
                             "status": "error",
@@ -66,12 +82,13 @@ async def get_items(sort_by: list[str] = Query(default=["do_till", "1"], max_len
 
     if sort_by[1] != 0:
         res.sort(key=lambda x: getattr(x, sort_by[0]), reverse=True if sort_by[1] > 0 else False)
-
-    return {
-        "status": "ok",
-        "detail": "got items",
+    
+    extra = {
+        "event": "GET_ITEMS",
+        "user_email": str(user.email),
         "data": res
-    }
+        }
+    logging.info(msg="Item are got", extra=extra)  
 
 
 @router.post("/marks_as_done")
@@ -86,11 +103,12 @@ async def mark(item_id: UUID,
     item_db.is_done = True
     await session.commit()
 
-    return {
-        "status": "ok",
-        "detail": "item is done",
+    extra = {
+        "event": "MARK",
+        "user_email": str(user.email),
         "data": ItemRead(**item_db.__dict__)
-    }
+        }
+    logging.info(msg="Item is done", extra=extra)   
 
 
 @router.patch("/update_item")
@@ -108,11 +126,12 @@ async def update_item(item_id: UUID,
             setattr(item_db, field, val)
     await session.commit()
 
-    return {
-        "status": "ok",
-        "detail": "item updated",
+    extra = {
+        "event": "UPDATE_ITEM",
+        "user_email": str(user.email),
         "data": ItemRead(**item_db.__dict__)
-    }
+        }
+    logging.info(msg="Item update", extra=extra)   
 
 
 @router.delete("/delete_item")
@@ -126,8 +145,9 @@ async def delete_item(item_id,
     await session.delete(item_db)
     await session.commit()
 
-    return {
-        "status": "ok",
-        "detail": "item deleted",
+    extra = {
+        "event": "DELETE_ITEM",
+        "user_email": str(user.email),
         "data": None
-    }
+        }
+    logging.info(msg="Item deleted", extra=extra)    
