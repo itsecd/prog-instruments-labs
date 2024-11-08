@@ -122,18 +122,15 @@ def fetch_all_records_v1():
 RECENCY = 6 * 24 
 
 def create_agg_stats():
+    logger.info("Creating aggregate statistics")
     records = [v1_to_frontend(rec) for rec in fetch_all_records_v1()]
     players = [0]*len(records)
-    timestamps = []
-    time_correction = []
-    impact = []
-    active = set([campaign.planet.index for campaign in records[len(records)-1].active])
+    timestamps, impact, active_planet_hist = [], [], []
+    active = set([campaign.planet.index for campaign in records[-1].active])
     active_sum = {p:0 for p in active}
-    active_planet_hist = []
 
-
-    recent_start = len(records) - (RECENCY)
-    for (step, record) in enumerate(records):
+    recent_start = len(records) - RECENCY
+    for step, record in enumerate(records):
         active_step = {}
         for status in record.planets:
             players[step] += status.statistics.player_count
@@ -141,9 +138,6 @@ def create_agg_stats():
                 active_step[status.index] = {'players': status.statistics.player_count, 'liberation': status.liberation}
                 if step > recent_start:
                     active_sum[status.index] += status.statistics.player_count
-        for event in record.events:
-            planet = record.planets[event.planet.index]
-            active_step[event.planet.index] = {'players': planet.statistics.player_count, 'liberation': event.liberation}
         active_planet_hist.append(active_step)
 
     most_active = sorted(active_sum.items(), key=lambda x: x[1], reverse=True)
