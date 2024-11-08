@@ -77,10 +77,9 @@ def fetch_all_records_v0():
     return out
 
 def fetch_all_records_v1():
+    logger.info("Fetching all records for version v1")
     commits = git_commits_for("801_full_v1.json")[:1440]
-
     repo = git.Repo('.', odbt=git.db.GitCmdObjectDB)
-
     out: List[v1.FullStatus] = []
 
     for ref in commits:
@@ -91,33 +90,31 @@ def fetch_all_records_v1():
                 try:
                     record = v1.FullStatus.model_validate_json(fh.read())
                 except ValidationError as exc:
-                    print(f"Bad cached data {exc}")
+                    logger.error(f"Bad cached data {exc}")
                     continue
                 if record.version == CACHE_VERSION:
                     out.append(record)
                     continue
+
         try:
             record = v1.FullStatus.model_validate_json(git_show(ref, '801_full_v1.json', repo))
         except ValidationError as exc:
-            if ref.startswith('a514ea'):
-                continue
             res = json.loads(git_show(ref, '801_full_v1.json', repo))
             if 'error' in res.keys() or 'errors' in res.keys():
                 continue
-            print(f"Bad committed data {exc.errors()[0]}")
+            logger.error(f"Bad committed data {exc.errors()[0]}")
+
         timestamp = repo.commit(ref).committed_datetime.astimezone(datetime.timezone.utc)
         record.snapshot_at = timestamp
         record.version = CACHE_VERSION
-        
         out.append(record)
-            
+
         try:
-            os.makedirs(os.path.dirname(cache_path))
+            os.makedirs(os.path.dirname(cache_path), exist_ok=True)
         except FileExistsError:
             pass
         with open(cache_path, 'w') as fh:
             fh.write(record.model_dump_json())
-
 
     out.sort(key=lambda row: row.snapshot_at)
     return out
