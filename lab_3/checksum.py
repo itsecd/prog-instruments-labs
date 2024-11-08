@@ -62,6 +62,23 @@ def is_valid_line(line: str) -> bool:
     return True
 
 
+def process_file(input_file: str) -> list[int]:
+    """
+    Обрабатывает файл и собирает номера невалидных строк.
+
+    :param input_file: Путь к входному CSV файлу.
+    :return: Список номеров невалидных строк.
+    """
+    invalid_lines = []
+    encoding = detect_encoding(input_file)
+    with open(input_file, 'r', encoding=encoding) as file:
+        for line_number, line in enumerate(file, start=1):
+            if not is_valid_line(line.strip()):
+                invalid_lines.append(line_number)
+
+    return invalid_lines
+
+
 def calculate_checksum(row_numbers: List[int]) -> str:
     """
     Вычисляет md5 хеш от списка целочисленных значений.
