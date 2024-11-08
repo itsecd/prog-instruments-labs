@@ -16,7 +16,7 @@ from core.router import router as core_router
 
 logging.basicConfig(
     level = logging.DEBUG, 
-    format = '%(asctime)s\t%(event)s\t%(name)s\t%(levelname)s\t%(funcName)s: %(lineno)d\t%(user_id)s\t%(message)s',
+    format = '%(asctime)s\t%(event)s\t%(name)s\t%(levelname)s\t%(funcName)s: %(lineno)d\t%(user_email)s\t%(message)s',
     datefmt = '%Y-%m-%d %H:%M:%S'
     )
 
@@ -42,7 +42,7 @@ async def logout(user = Depends(current_user), manager: UserManager = Depends(ge
 
     extra ={
         "event": "LOGOUT",
-        "user_id": str(user.id)
+        "user_email": str(user.email)
     }
     logging.info(msg="Success. Logout is complete", extra=extra)
 
@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
     extra={
         "event": "APP_LAUNCH",
-        "user_id": None
+        "user_email": None
     }
     logging.info(msg="Launching the ToDoList app", extra=extra)
 
