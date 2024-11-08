@@ -1,10 +1,22 @@
 import json
 import hashlib
 from typing import List
+import re
+import chardet
 
-"""
-В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
-"""
+
+def detect_encoding(file_path: str) -> str:
+    """
+    Определяет кодировку файла.
+
+    :param file_path: Путь к файлу.
+    :return: Кодировка файла.
+    """
+    with open(file_path, 'rb') as file:
+        raw_data = file.read(10000)  # Читаем первые 10000 байт
+        result = chardet.detect(raw_data)
+        encoding = result['encoding']
+    return encoding
 
 
 def calculate_checksum(row_numbers: List[int]) -> str:
@@ -29,8 +41,3 @@ def serialize_result(variant: int, checksum: str) -> None:
     }
     with open('result.json', 'w') as json_file:
         json.dump(result, json_file, indent=4)
-
-
-if __name__ == "__main__":
-    print(calculate_checksum([1, 2, 3]))
-    print(calculate_checksum([3, 2, 1]))
