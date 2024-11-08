@@ -1,25 +1,31 @@
 #!/usr/bin/env python3
 
 import dataclasses
-from typing import Dict, List, Optional, Union
 import git
 import json
-import collections
-import datetime
-import subprocess
 import os
-
+import subprocess
+import datetime
+import logging
+from typing import List
 from pydantic import RootModel, TypeAdapter, ValidationError
 from models import frontend, v0, v1
 
-PLANET_INDEXES = range(261)
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(), logging.FileHandler("script.log")]
+)
+logger = logging.getLogger(__name__)
 
 CACHE_DIR = '_cache'
-# Bump this with any changes to `fetch_all_records`
 CACHE_VERSION = 2
-
+RECENCY = 6 * 24
+PLANET_INDEXES = range(261)
 
 def git_commits_for(path):
+    logger.debug(f"Retrieving git commits for {path}")
     return subprocess.check_output(['git', 'log', "--format=%H", path]).strip().decode().splitlines()
 
 def git_show(ref, name, repo_client):
