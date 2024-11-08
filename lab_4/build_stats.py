@@ -34,10 +34,9 @@ def git_show(ref, name, repo_client):
     return commit_tree[name].data_stream.read()
 
 def fetch_all_records_v0():
+    logger.info("Fetching all records for version v0")
     commits = git_commits_for("helldivers.json")[:1440]
-
     repo = git.Repo('.', odbt=git.db.GitCmdObjectDB)
-
     out: List[v0.FullStatus] = []
 
     for ref in commits:
@@ -48,31 +47,31 @@ def fetch_all_records_v0():
                 try:
                     record = TypeAdapter(v0.FullStatus).validate_json(fh.read())
                 except ValidationError as exc:
-                    print(f"Bad cached data {exc}")
+                    logger.error(f"Bad cached data {exc}")
                     continue
                 if record.version == CACHE_VERSION:
                     out.append(record)
                     continue
+
         try:
             record = TypeAdapter(v0.FullStatus).validate_json(git_show(ref, 'helldivers.json', repo))
         except ValidationError as exc:
             res = json.loads(git_show(ref, 'helldivers.json', repo))
             if 'error' in res.keys() or 'errors' in res.keys():
                 continue
-            print(f"Bad committed data {exc.errors()[0]}")
+            logger.error(f"Bad committed data {exc.errors()[0]}")
+        
         timestamp = repo.commit(ref).committed_datetime.astimezone(datetime.timezone.utc)
         record.snapshot_at = timestamp
         record.version = CACHE_VERSION
-        
         out.append(record)
-            
+
         try:
-            os.makedirs(os.path.dirname(cache_path))
+            os.makedirs(os.path.dirname(cache_path), exist_ok=True)
         except FileExistsError:
             pass
         with open(cache_path, 'w') as fh:
             fh.write(RootModel[v0.FullStatus](record).model_dump_json())
-
 
     out.sort(key=lambda row: row.snapshot_at)
     return out
