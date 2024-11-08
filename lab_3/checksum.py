@@ -9,7 +9,7 @@ from typing import List
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s',
-                    filename='file.log',
+                    filename='lab_3/file.log',
                     filemode='a'
                     )
 
@@ -28,7 +28,7 @@ def detect_encoding(file_path: str) -> str:
             encoding = result['encoding']
         return encoding
     except Exception as e:
-        logging.error(f"Ошибка при определении кодировки файла: {e}")
+        logging.error(f"Error in determining the encoding of the file: {e}")
 
 
 def is_valid_line(line: str) -> bool:
@@ -41,65 +41,59 @@ def is_valid_line(line: str) -> bool:
     fields = line.split(';')
     
     if len(fields) != 10:
-        logging.warning(f"Неверное количество полей: {len(fields)}. Ожидалось 10.")
+        logging.warning(f"Incorrect number of fields: {len(fields)}.")
         return False
 
-    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    height_pattern = r'^\d+(\.\d+)?$'
-    snils_pattern = r'^\d{11}$'
-    passport_pattern = r'^\d{2} \d{2} \d{6}$'
-    occupation_pattern = r'^[А-Яа-яA-Za-z\s]+$'
-    longitude_pattern = r'^-?\d+(\.\d+)?$'
-    hex_color_pattern = r'^#[0-9a-fA-F]{6}$'
-    issn_pattern = r'^\d{4}-\d{4}$'
-    locale_code_pattern = r'^[a-z]{2}-[a-z]{2}$'
-    time_pattern = r'^\d{2}:\d{2}:\d{2}\.\d{6}$'
-
     patterns = [
-        email_pattern,
-        height_pattern,
-        snils_pattern,
-        passport_pattern,
-        occupation_pattern,
-        longitude_pattern,
-        hex_color_pattern,
-        issn_pattern,
-        locale_code_pattern,
-        time_pattern
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',  # Email
+        r'^[0-2]\.\d{2}$',  # Высота
+        r'^\d{11}$',  # СНИЛС
+        r'^\d{2} \d{2} \d{6}$',  # Паспорт
+        r'[a-zA-Zа-яА-ЯёЁ -]+',  # Профессия
+        r'^\-?(180|1[0-7][0-9]|\d{1,2})\.\d+$',  # Долгота
+        r'^#[A-Fa-f0-9]{6}$',  # Цветовой код
+        r'^\d{4}\-\d{4}$',  # ISSN
+        r'^[a-zA-Z]+(-[a-zA-Z]+)*$',  # Языковой код
+        r'^\d{2}:\d{2}:\d{2}\.\d{6}$'  # Время
     ]
 
     for field, pattern in zip(fields, patterns):
         if not re.match(pattern, field.strip('"')):
-            logging.warning(f"Поле '{field}' не соответствует шаблону '{pattern}'.")
+            logging.warning(f"Field '{field.strip()}' does not match the template '{pattern}'. Line: {line.strip()}")
             return False
 
     return True
 
 
-def process_file(input_file: str) -> list[int]:
+def process_file(input_file: str) -> tuple[int, list[int]]:
     """
     Обрабатывает файл и собирает номера невалидных строк.
 
     :param input_file: Путь к входному CSV файлу.
-    :return: Список номеров невалидных строк.
+    :return: Кортеж, содержащий количество невалидных строк и список их номеров.
     """
     try:
         invalid_lines = []
+        invalid_count = 0  
         encoding = detect_encoding(input_file)
         with open(input_file, 'r', encoding=encoding) as file:
-            for line_number, line in enumerate(file, start=1):
+            next(file)
+            for line_number, line in enumerate(file, start=2):
                 if not is_valid_line(line.strip()):
-                    logging.warning(f"Невалидная строка на линии {line_number}: {line.strip()}")
+                    logging.warning(f"Invalid line {line_number}: {line.strip()}")
                     invalid_lines.append(line_number)
+                    invalid_count += 1  
 
-        return invalid_lines
+        return invalid_count, invalid_lines
     except Exception as e:
-        logging.error(f"Ошибка при обработке файла: {e}")
+        logging.error(f"Error processing the file: {e}")
+        return 0, []
 
 
 def calculate_checksum(row_numbers: List[int]) -> str:
     """
     Вычисляет md5 хеш от списка целочисленных значений.
+
     :param row_numbers: список целочисленных номеров строк csv-файла, на которых были найдены ошибки валидации
     :return: md5 хеш для проверки через github action
     """
@@ -110,6 +104,7 @@ def calculate_checksum(row_numbers: List[int]) -> str:
 def serialize_result(variant: int, checksum: str) -> None:
     """
     Метод для сериализации результатов лабораторной.
+
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
@@ -123,7 +118,7 @@ def serialize_result(variant: int, checksum: str) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-    description='Программа для вычисления контрольной суммы')
+        description='Программа для вычисления контрольной суммы')
     parser.add_argument('--input_file',
                         type=str,
                         help='Путь к CSV файлу',
@@ -133,7 +128,13 @@ if __name__ == "__main__":
                         help='Номер варианта',
                         default=35)
     args = parser.parse_args()
+    
+    invalid_count, invalid_lines = process_file(args.input_file)
+    
+    if invalid_count > 0:
+        logging.info(f"Processed {invalid_count} invalid lines: {invalid_lines}.")
+    else:
+        logging.info("All lines is valid.")
 
-    invalid_lines = process_file(args.input_file)
     checksum = calculate_checksum(invalid_lines)
     serialize_result(args.var, checksum)
