@@ -16,7 +16,7 @@ from core.router import router as core_router
 
 logging.basicConfig(
     level = logging.DEBUG, 
-    format = '%(asctime)s\t%(event)s\t%(name)s\t%(levelname)s\t%(funcName)s: %(lineno)d\t%(user_email)s\t%(message)s',
+    format = '%(asctime)s\t%(event)s\t%(name)s\t%(levelname)s\t%(funcName)s: %(lineno)d\t%(user_email)s\t%(message)s\t%(data)s',
     datefmt = '%Y-%m-%d %H:%M:%S'
     )
 
@@ -42,11 +42,10 @@ async def logout(user = Depends(current_user), manager: UserManager = Depends(ge
 
     extra ={
         "event": "LOGOUT",
-        "user_email": str(user.email)
+        "user_email": str(user.email),
+        "data": None
     }
-    logging.info(msg="Success. Logout is complete", extra=extra)
-
-    return {"detail": "Successfully logged out"}
+    logging.info(msg="Success. Logout is complete", extra=extra) 
 
 app.include_router(
     fastapi_users.get_auth_router(backend=auth_backend),
@@ -74,7 +73,8 @@ if __name__ == "__main__":
 
     extra={
         "event": "APP_LAUNCH",
-        "user_email": None
+        "user_email": None,
+        "data": None
     }
     logging.info(msg="Launching the ToDoList app", extra=extra)
 

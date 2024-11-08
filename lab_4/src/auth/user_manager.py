@@ -1,5 +1,6 @@
 import uuid
 import json
+import logging
 
 from typing import Optional
 
@@ -29,13 +30,13 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         key = f"fastapi_users_token:{response_body['access_token']}"
         await self._update(user, {"redis_token_key": key})
 
-        print(f"user {user.id} has logined")
-
-        return {
-        "status": "ok",
-        "detail": "logged in",
-        "data": UserRead.model_validate(user, from_attributes=True)
+        extra = {
+            "event": "USER_LOGIN",
+            "user_email": str(user.email),
+            "data": UserRead.model_validate(user, from_attributes=True)
         }
+
+        logging.info(msg="Logged in successfully", extra=extra)
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
 
@@ -46,13 +47,13 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
                                                             content=content)
         send_email_report_dashboard.delay(email)
 
-        print(f"User {user.id} has registered.")
-
-        return {
-        "status": "ok",
-        "detail": "you have been registred",
-        "data": UserRead.model_validate(user, from_attributes=True)
+        extra = {
+            "event": "USER_REGISTER",
+            "user_email": str(user.email),
+            "data": UserRead.model_validate(user, from_attributes=True)
         }
+
+        logging.info(msg="Successfully registered", extra=extra)
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
@@ -64,13 +65,13 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
                                                             content=content)
         send_email_report_dashboard.delay(email)
 
-        print(f"User {user.id} has forgot their password. Reset token: {token}")
-
-        return {
-        "status": "ok",
-        "detail": "requested password reset",
-        "data": token
+        extra = {
+            "event": "USER_REQUESTED_PASSWORD_RESET",
+            "user_email": str(user.email),
+            "data": token 
         }
+        
+        logging.info(msg="User requested a password reset", extra=extra)
 
     async def on_after_reset_password(self, user: User, request: Request | None = None) -> None:
         content: str = f"<div>Dear {user.username}, your password has been reseted</div>"
@@ -79,13 +80,13 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
                                                             content=content)
         send_email_report_dashboard.delay(email)
 
-        print(f"User {user.id}has reseted password")
-
-        return {
-        "status": "ok",
-        "detail": "password reseted",
-        "data": None
+        extra = {
+            "event": "USER_PASSWORD_RESET",
+            "user_email": str(user.email),
+            "data": None
         }
+        
+        logging.info(msg="Reset user's password", extra=extra)
 
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
@@ -97,13 +98,13 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
                                                             content=content)
         send_email_report_dashboard.delay(email)
 
-        print(f"Verification requested for user {user.id}. Verification token: {token}")
-
-        return {
-        "status": "ok",
-        "detail": "requested verification",
-        "data": token
+        extra = {
+            "event": "USER_REQUEST_VERIFY",
+            "user_email": str(user.email),
+            "data": token
         }
+        
+        logging.info(msg="Requested verification email for user", extra=extra)
     
     async def on_after_verify(self, user: User, request: Request | None = None) -> None:
         content: str = f"<div>Dear {user.username}, your email has been verified"
@@ -112,13 +113,13 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
                                                             content=content)
         send_email_report_dashboard.delay(email)
 
-        print(f"User {user.id} has been verified")
-
-        return {
-        "status": "ok",
-        "detail": "email verified",
-        "data": None
+        extra = {
+            "event": "USER_VERIFY",
+            "user_email": str(user.email),
+            "data": None
         }
+        
+        logging.info(msg="User has been verified", extra=extra)
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
