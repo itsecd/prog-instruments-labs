@@ -16,7 +16,7 @@ from core.router import router as core_router
 
 logging.basicConfig(
     level = logging.DEBUG, 
-    format = '%(asctime)s\t%(name)s\t%(levelname)s\t%(funcName)s: %(lineno)d\t%(user_id)s\t%(message)s',
+    format = '%(asctime)s\t%(event)s\t%(name)s\t%(levelname)s\t%(funcName)s: %(lineno)d\t%(user_id)s\t%(message)s',
     datefmt = '%Y-%m-%d %H:%M:%S'
     )
 
@@ -39,6 +39,12 @@ app.include_router(
 async def logout(user = Depends(current_user), manager: UserManager = Depends(get_user_manager)):
     await redis.delete(user.redis_token_key)
     await manager._update(user, {"redis_token_key": None})
+
+    extra ={
+        "event": "LOGOUT",
+        "user_id": str(user.id)
+    }
+    logging.info(msg="Success. Logout is complete", extra=extra)
 
     return {"detail": "Successfully logged out"}
 
@@ -66,7 +72,11 @@ if __name__ == "__main__":
 
     logger = logging.getLogger(__name__)
 
-    logging.info(msg="Launching the ToDoList app")
+    extra={
+        "event": "APP_LAUNCH",
+        "user_id": None
+    }
+    logging.info(msg="Launching the ToDoList app", extra=extra)
 
     uvicorn.run(
         __name__ + ":app",
