@@ -78,7 +78,7 @@ def process_file(input_file: str) -> tuple[int, list[int]]:
         encoding = detect_encoding(input_file)
         with open(input_file, 'r', encoding=encoding) as file:
             next(file)
-            for line_number, line in enumerate(file, start=2):
+            for line_number, line in enumerate(file, start=0):
                 if not is_valid_line(line.strip()):
                     logging.warning(f"Invalid line {line_number}: {line.strip()}")
                     invalid_lines.append(line_number)
