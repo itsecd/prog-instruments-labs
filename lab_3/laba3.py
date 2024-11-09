@@ -20,7 +20,7 @@ def check_data(row: list) -> bool:
     Args:
         row (list): Строка таблицы для проверки
     Returns:
-        bool: Результат прохождения непрохождения проверки
+        bool: Результат прохождения/непрохождения проверки
     '''
     for key, value in zip(PATTERNS.keys(), row):
         if not re.match(PATTERNS[key], value):
