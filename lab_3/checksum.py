@@ -53,4 +53,5 @@ if __name__ == "__main__":
     invalid_rows = get_indexes_invalid_rows(PATTERNS, PATH_TO_CSV)
     sum = calculate_checksum(invalid_rows)
     print(sum)
+    print(len(sum))
     serialize_result(VARIANT, sum)
