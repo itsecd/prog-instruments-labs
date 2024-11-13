@@ -2,14 +2,6 @@ import json
 import hashlib
 from typing import List
 
-from cfg import PATTERNS, PATH_TO_CSV, VARIANT
-from utils import transform_csv_to_list, get_indexes_invalid_rows, is_valid_row
-
-"""
-В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
-"""
-
-
 def calculate_checksum(row_numbers: List[int]) -> str:
     """
     Вычисляет md5 хеш от списка целочисленных значений.
@@ -45,13 +37,3 @@ def serialize_result(variant: int, checksum: str) -> None:
     with open('lab_3/result.json', 'w') as file:
         json.dump(result, file, indent=2) 
     pass
-
-
-if __name__ == "__main__":
-    list = []
-    list = transform_csv_to_list(PATH_TO_CSV)
-    invalid_rows = get_indexes_invalid_rows(PATTERNS, PATH_TO_CSV)
-    sum = calculate_checksum(invalid_rows)
-    print(sum)
-    print(len(sum))
-    serialize_result(VARIANT, sum)

@@ -1,8 +1,8 @@
 PATH_TO_CSV = "lab_3/48.csv"
 VARIANT = 48
 
-PATTERNS = {
-    "telephone": "^\\+7-\\(\\d{3}\\)-\\d{3}-\\d{2}-\\d{2}$",
+REGEX_PATTERNS = {
+    "telephone": "^\\W\\d{1}\\W\\W\\d{3}\\W\\W\\d{3}\\W\\d{2}\\W\\d{2}$",
     "height": "^[0-2]\\.\\d{2}$",
     "inn": "^\\d{12}$",
     "identifier": "^\\d{2}\\-\\d{2}/\\d{2}$",
