@@ -1,21 +1,22 @@
+import re
 import json
 import hashlib
+import csv
 from typing import List
 
 CSV_FILE_PATH = "lab_3/1.csv"
 RESULT_PATH = "lab_3/result.json"
 REGULAR_PATTERN = {
-    "email": r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+    "email": r"^\w+(\.\w+)*@\w+(\.\w+)+$",
     "http_status_message": r"^\d{3} [A-Za-z ]+$",
     "snils": r"^\d{11}$",
     "passport": r"^\d{2}\s\d{2}\s\d{6}$",
     "ip_v4": r"^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]?[0-9])$",
     "longitude": r"^\-?(180|1[0-7][0-9]|\d{1,2})\.\d+$",
-    "hex_color": r"^#[A-Fa-f0-9]{6}$", 
-    "isbn": r"^(\d{3}-)?\d{1}-\d{5}-\d{3}-\d{1}$", 
+    "hex_color": r"^#[A-Fa-f0-9]{6}$",
+    "isbn": r"^(\d{3}-)?\d{1}-\d{5}-\d{3}-\d{1}$",
     "locale_code": r"^[a-zA-Z]+(-[a-zA-Z]+)*$",
-    "time": r"^\d{2}:\d{2}:\d{2}\.\d{6}$" 
-              
+    "time": r"^([01]\d|2[0-3]):[0-5]\d:[0-5]\d.\d+$"
 }
 
 """
@@ -62,7 +63,54 @@ def serialize_result(variant: int, checksum: str) -> None:
         file.write(json.dumps(result, indent=4))
 
 
+def load_csv_data(file_path: str) -> list:
+    """
+    Загружает и считывает CSV-файл в кодировке UTF-16 с разделителем в виде точки с запятой.
+    :param file_path (str): Путь к CSV-файлу для чтения.
+    
+    :return: list: Список строк, где каждая строка представлена в виде списка значений.
+    """
+    with open(file_path, 'r', encoding='utf-16') as file:
+        reader = csv.reader(file, delimiter=';')
+        next(reader) 
+        rows = [row for row in reader]
+    return rows
+
+
+def is_row_valid(row: list, pattern_dict: dict) -> bool:
+    """
+    Проверяет, соответствует ли строка данных ожидаемым шаблонам для каждого поля.
+    
+    :param row (list): Список значений полей в строке.
+    :param pattern_dict (dict): Словарь скомпилированных шаблонов регулярных выражений для каждого поля.
+        
+    :return: bool: True, если все значения в строке соответствуют ожидаемым шаблонам, в противном случае - False.
+    """
+    for pattern, value in zip(pattern_dict.values(), row):
+        if not re.match(pattern, value):
+            return False
+    return True
+
+
+def find_invalid_row_indices(rows: list, pattern_dict: dict) -> list:
+    """
+    Определяет индексы строк в наборе данных, которые не соответствуют требуемым шаблонам.
+    
+    :param rows (list): Список строк, где каждая строка представляет собой список значений.
+    :param pattern_dict (dict): Словарь скомпилированных шаблонов регулярных выражений для проверки.
+        
+    :return: list: Список индексов для строк, которые являются недопустимыми на основе проверки шаблона.
+    """
+    invalid_indices = []
+    for index, row in enumerate(rows):
+        if not is_row_valid(row, pattern_dict):
+            invalid_indices.append(index)
+    return invalid_indices
+
+
 if __name__ == "__main__":
-    print(calculate_checksum([1, 2, 3]))
-    print(calculate_checksum([3, 2, 1]))
-    serialize_result(1, 52145678798)
+    rows = load_csv_data(CSV_FILE_PATH)
+    invalid_indeces = find_invalid_row_indices(rows, REGULAR_PATTERN)
+    checksum = calculate_checksum(invalid_indeces)
+    serialize_result(1, checksum)
+ 
