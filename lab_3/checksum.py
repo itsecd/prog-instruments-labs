@@ -2,6 +2,22 @@ import json
 import hashlib
 from typing import List
 
+CSV_FILE_PATH = "lab_3/1.csv"
+RESULT_PATH = "lab_3/result.json"
+REGULAR_PATTERN = {
+    "email": r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+    "http_status_message": r"^\d{3} [A-Za-z ]+$",
+    "snils": r"^\d{11}$",
+    "passport": r"^\d{2}\s\d{2}\s\d{6}$",
+    "ip_v4": r"^((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[0-9]?[0-9])$",
+    "longitude": r"^\-?(180|1[0-7][0-9]|\d{1,2})\.\d+$",
+    "hex_color": r"^#[A-Fa-f0-9]{6}$", 
+    "isbn": r"^(\d{3}-)?\d{1}-\d{5}-\d{3}-\d{1}$", 
+    "locale_code": r"^[a-zA-Z]+(-[a-zA-Z]+)*$",
+    "time": r"^\d{2}:\d{2}:\d{2}\.\d{6}$" 
+              
+}
+
 """
 В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
 """
