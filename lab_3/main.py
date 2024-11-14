@@ -18,12 +18,19 @@ PATTERNS = {
     "time" : r"^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)\.(\d{1,6})$"
 }
 
-def check_row():
-    pass
+
+def check_row(row : pd.Series) -> bool:
+    for name_column, value in zip(PATTERNS.keys(), row):
+        pattern = PATTERNS[name_column]
+        if not re.search(pattern, str(value)):
+            return False
+    return True
+
 
 def open_csv(path : str) -> pd.DataFrame:
     data = pd.read_csv(path, encoding="utf-16", sep=";")
     return data
+
 
 def get_invalid_index(path : str) -> list:
     data = open_csv(path)
@@ -33,5 +40,9 @@ def get_invalid_index(path : str) -> list:
             invalid_index_list.append(index)
     return invalid_index_list
 
+
 if __name__ == "__main__":
-    pass
+    list_index = get_invalid_index(
+        os.path.join("lab_3", "59.csv")
+    )
+    check.calculate_checksum(list_index)
