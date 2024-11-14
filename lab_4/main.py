@@ -10,6 +10,7 @@ setup_logger()
 
 class MainWindow(QMainWindow):
     def __init__(self):
+        """Initializes Main Window"""
         try:
             super(MainWindow, self).__init__()
             self.ui = Ui_MainWindow()
@@ -18,53 +19,58 @@ class MainWindow(QMainWindow):
             path = " "
             file_type = 0
         except Exception as exc:
-            logger.error(f'UI setup error: {exc}')
-        
+            logger.error(f"UI setup error: {exc}")
+
     def init_UI(self):
-        self.setWindowTitle('Программа')
-        self.ui.input_line.setPlaceholderText('2023-09-28')
-        self.ui.output_line.setPlaceholderText('96.5')
+        """Initializes UI"""
+        self.setWindowTitle("Программа")
+        self.ui.input_line.setPlaceholderText("2023-09-28")
+        self.ui.output_line.setPlaceholderText("96.5")
         self.ui.pushButton.clicked.connect(self.returnValue)
         path = self.ui.pushButtonPath.clicked.connect(self.setPath)
 
-    """метод для указывания пути к датасетам"""
     def setPath(self):
+        """Sets a folder"""
         try:
-            self.path = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')
-            logger.debug('Folder has been selected.')
+            self.path = QtWidgets.QFileDialog.getExistingDirectory(
+                self, "Select Folder"
+            )
+            logger.debug("Folder has been selected.")
         except Exception as exc:
-            logger.error(f'Folder selection error: {exc}')
+            logger.error(f"Folder selection error: {exc}")
 
-    """метод поиска значения"""
     def returnValue(self):
+        """Returns value from files"""
         try:
-            logger.debug('Searching for value...')
+            logger.debug("Searching for value...")
             input_value = self.ui.input_line.text()
             index = str(self.ui.comboBox.currentText())
-            if (index == "dataset"):
+            if index == "dataset":
                 value = findValueDataset(self.path, input_value)
-            elif (index == "X и Y"):
+            elif index == "X и Y":
                 value = findValueXY(self.path, input_value)
-            elif (index == "разбивка по неделям"):
+            elif index == "разбивка по неделям":
                 value = findValueWeek(self.path, input_value)
-            elif (index == "разбивка по годам"):
+            elif index == "разбивка по годам":
                 value = findValueYear(self.path, input_value)
             self.ui.output_line.setText(str(value))
         except Exception as exc:
-            logger.error(f'Returning of value error: {exc}')
+            logger.error(f"Returning of value error: {exc}")
 
 
 def application():
+    """Runs application"""
     try:
         app = QtWidgets.QApplication([])
         application = MainWindow()
         application.show()
-        logger.debug('Programm is running...')
+        logger.debug("Programm is running...")
         sys.exit(app.exec_())
-        logger.debug('Programm is closed.')
+        logger.debug("Programm is closed.")
     except Exception as exc:
-            logger.error(f'Running application error: {exc}')
+        logger.error(f"Running application error: {exc}")
 
 
 if __name__ == "__main__":
     application()
+ 
