@@ -1,4 +1,5 @@
 import json
+import os
 import hashlib
 from typing import List
 
@@ -38,7 +39,9 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    result_data = {"variant": str(variant), "checksum": checksum}
+    with open(os.path.join("lab_3", "result.json"), encoding="utf-16", mode="w") as result:
+        json.dump(result_data, result, indent=2)
 
 
 if __name__ == "__main__":
