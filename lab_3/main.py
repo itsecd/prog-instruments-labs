@@ -9,7 +9,7 @@ PATTERNS = {
     "height" : r"^[1-2]\.\d{2}$", ###
     "snils" : r"^\d{11}$", ###
     "passport" : r"^(\d{2}\s){2}\d{6}$", ###
-    "occupation" : r"^[а-яА-Яa-zA-ZёЁ\\s-]+$", ###
+    "occupation" : r"^[а-яА-Яa-zA-Z\s-]+$", ###
     "longitude" : r"^-?(180|1[0-7]\d|\d{1,2})(\.\d+)?$", ###
     "hex_color" : r"^#([a-f0-9]{6}|[a-f0-9]{3})$", ###
     "issn" : r"^\d{4}-\d{4}$", ###
