@@ -1,4 +1,3 @@
-import json
 import re
 import os
 
@@ -15,7 +14,7 @@ PATTERNS = {
     "hex_color" : r"#\d{6}",
     "issn" : r"\d{4}-\d{4}",
     "locale_code" : r"^[a-z]{1,3}(-[a-z]+)?(-[a-z]{2})?$",
-    "time" : r"^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)\.(\d{1,6})$"
+    "time" : r"^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)\.(\d{1,6})$",
 }
 
 
