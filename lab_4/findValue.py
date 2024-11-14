@@ -59,8 +59,8 @@ def findValueWeek(path: str, _date: date) -> str:
         for j in range(0, 8):
             first = min_date + timedelta(days=i)
             last = max_date - timedelta(days=j)
-            path_file = f"{path}/{str(first)[0:4]}{str(first)[5:7]}{str(first)[8:10]}_
-            {str(last)[0:4]}{str(last)[5:7]}{str(last)[8:10]}.csv"
+            path_file = f"{path}/{str(first)[0:4]}{str(first)[5:7]}{str(first)[8:10]}_" + \
+                f"{str(last)[0:4]}{str(last)[5:7]}{str(last)[8:10]}.csv"
             if os.path.exists(path_file) == True:
                 with open(path_file, "r") as file:
                     reader = csv.reader(file, delimiter=",")
@@ -84,8 +84,8 @@ def findValueYear(path: str, _date: date) -> str:
         for j in range(0, 365):
             first = min_date + timedelta(days=i)
             last = max_date - timedelta(days=j)
-            path_file = f"{path}/{str(first)[0:4]}{str(first)[5:7]}{str(first)[8:10]}_
-            {str(last)[0:4]}{str(last)[5:7]}{str(last)[8:10]}.csv"
+            path_file = f"{path}/{str(first)[0:4]}{str(first)[5:7]}{str(first)[8:10]}_" + \
+                f"{str(last)[0:4]}{str(last)[5:7]}{str(last)[8:10]}.csv"
             if os.path.exists(path_file) == True:
                 with open(path_file, "r") as file:
                     reader = csv.reader(file, delimiter=",")
