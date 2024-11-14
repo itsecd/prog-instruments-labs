@@ -11,8 +11,8 @@ PATTERNS = {
     "passport" : r"^\d{2}\s\d{2}\s\d{6}$",
     "occupation" : r"^[а-яА-Яa-zA-Z\s-]*$",
     "longitude" : r"^-?(180|1[0-7]\d|\d{1,2})(\.\d+)?$",
-    "hex_color" : r"#\d{6}",
-    "issn" : r"\d{4}-\d{4}",
+    "hex_color" : r"^#\d{6}$",
+    "issn" : r"^\d{4}-\d{4}$",
     "locale_code" : r"^[a-z]{1,3}(-[a-z]+)?(-[a-z]{2})?$",
     "time" : r"^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)\.(\d{1,6})$",
 }
@@ -44,5 +44,6 @@ if __name__ == "__main__":
     list_index = get_invalid_index(
         os.path.join("lab_3", "59.csv")
     )
+    print(len(list_index))
     result = check.calculate_checksum(list_index)
     check.serialize_result(59, result)
