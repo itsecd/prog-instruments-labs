@@ -1,13 +1,11 @@
 import csv
-import os
-import logging
+import os.path
 from datetime import date
 from datetime import timedelta
-import os.path
+from loguru import logger
+from logger_setup import setup_logger
 
-logging.basicConfig(filename='lab4.log', level=logging.DEBUG)
-
-""""функции поиска значения в датасетах"""
+setup_logger()
 
 
 def findValueDataset(path:str, _date:date)->str:
@@ -17,7 +15,9 @@ def findValueDataset(path:str, _date:date)->str:
         next(reader)
         for row in reader:
             if row[0] == _date:
+                logger.info('Value found.')
                 return row[1]
+        logger.info('Value not found.')
         return None
 
 
@@ -33,6 +33,7 @@ def findValueXY(path:str, _date:date)->str:
                 break;
             number+=1
         if flag == False:
+            logger.info('Value not found.')
             return None
         else:
             with open(f"{path}/Y.csv", "r", newline='') as Y:
@@ -40,6 +41,7 @@ def findValueXY(path:str, _date:date)->str:
                 i = 0
                 for row in readerY:
                     if i == number:
+                        logger.info('Value found.')
                         return row[0]
                     else:
                         i+=1
@@ -63,7 +65,9 @@ def findValueWeek(path:str, _date:date)->str:
                     reader = csv.reader(file, delimiter=",")
                     for row in reader:
                         if row[0] == _date:
+                            logger.info('Value found.')
                             return row[1]
+    logger.info('Value not found.')
     return None
 
 
@@ -85,5 +89,7 @@ def findValueYear(path:str, _date:date)->str:
                     reader = csv.reader(file, delimiter=",")
                     for row in reader:
                         if row[0] == _date:
-                            return row[1]  
+                            logger.info('Value found.')
+                            return row[1]
+    logger.info('Value not found.')
     return None 
