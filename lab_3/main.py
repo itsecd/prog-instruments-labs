@@ -45,4 +45,5 @@ if __name__ == "__main__":
     list_index = get_invalid_index(
         os.path.join("lab_3", "59.csv")
     )
-    check.calculate_checksum(list_index)
+    result = check.calculate_checksum(list_index)
+    check.serialize_result(59, result)
