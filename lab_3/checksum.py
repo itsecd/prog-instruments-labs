@@ -5,7 +5,7 @@ import re
 import chardet
 from typing import Dict, List, Any, Union
 
-# Паттерны для проверки данных
+
 PATTERNS: Dict[str, str] = {
     "email": r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
     "height": r"^(?:0|1|2)\.\d{2}$",
@@ -19,33 +19,26 @@ PATTERNS: Dict[str, str] = {
     "time": r"^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)\.(\d{1,6})$"
 }
 
-def calculate_checksum(row_numbers: List[int]) -> str:
-    """Вычисляет контрольную сумму для списка номеров строк.
 
-    Args:
-        row_numbers (List[int]): Список номеров строк.
-
-    Returns:
-        str: Контрольная сумма в формате MD5.
+def check_patterns(row: List[str], row_number: int) -> bool:
     """
-    row_numbers.sort()
-    return hashlib.md5(json.dumps(row_numbers).encode('utf-8')).hexdigest()
+    Проверяет строку на соответствие заданным паттернам.
 
-def check_patterns(data: Dict[str, Any]) -> List[str]:
-    """Проверяет данные на соответствие паттернам.
-
-    Args:
-        data (Dict[str, Any]): Данные для проверки.
-
-    Returns:
-        List[str]: Список ошибок, если есть несоответствия.
+    :param row: Список значений строки.
+    :param row_number: Номер строки в CSV-файле.
+    :return: True, если найдена ошибка, иначе False.
     """
-    errors = []
-    for key, value in data.items():
-        pattern = PATTERNS.get(key)
-        if pattern and not re.match(pattern, str(value)):
-            errors.append(f"Ошибка в поле '{key}': значение '{value}' не соответствует паттерну.")
-    return errors
+    for key, value in enumerate(row):
+        field_name = list(PATTERNS.keys())[key]
+        if not re.match(PATTERNS[field_name], value):
+            print(
+                f"Ошибка в строке {row_number}: "
+                f"Ошибка в поле '{field_name}': "
+                f"значение '{value}' не соответствует паттерну."
+            )
+            return True
+    return False
+
 
 def detect_encoding(file_path: str) -> str:
     """Определяет кодировку файла.
@@ -63,6 +56,7 @@ def detect_encoding(file_path: str) -> str:
     except Exception as e:
         raise RuntimeError(f"Ошибка при определении кодировки файла: {e}")
 
+
 def process_csv(file_path: str) -> List[Dict[str, Union[Dict[str, Any], List[str]]]]:
     """Обрабатывает CSV файл и находит строки с ошибками.
 
@@ -77,26 +71,45 @@ def process_csv(file_path: str) -> List[Dict[str, Union[Dict[str, Any], List[str
     try:
         with open(file_path, mode='r', encoding=encoding) as csvfile:
             reader = csv.DictReader(csvfile)
-            for row in reader:
-                errors = check_patterns(row)
+            for row_number, row in enumerate(reader, start=1): 
+                errors = check_patterns(list(row.values()), row_number)
                 if errors:
                     error_rows.append({"row": row, "errors": errors})
     except Exception as e:
         raise RuntimeError(f"Ошибка при обработке CSV файла: {e}")
     return error_rows
 
-def serialize_to_json(data: List[Dict[str, Any]], json_file: str) -> None:
-    """Сериализует данные в JSON файл.
+
+def calculate_checksum(row_numbers: List[int]) -> str:
+    """Вычисляет контрольную сумму для списка номеров строк.
 
     Args:
-        data (List[Dict[str, Any]]): Данные для сериализации.
-        json_file (str): Путь к выходному JSON файлу.
+        row_numbers (List[int]): Список номеров строк.
+
+    Returns:
+        str: Контрольная сумма в формате MD5.
+    """
+    row_numbers.sort()
+    return hashlib.md5(json.dumps(row_numbers).encode('utf-8')).hexdigest()
+
+
+def serialize_to_json(variant: int, checksum: str) -> None:
+    """
+    Сериализует результат в JSON-файл.
+
+    :param variant: Номер варианта.
+    :param checksum: Контрольная сумма.
     """
     try:
-        with open(json_file, mode='w', encoding='utf-8') as jsonfile:
-            json.dump(data, jsonfile, ensure_ascii=False, indent=4)
-    except Exception as e:
-        raise RuntimeError(f"Ошибка при записи в JSON файл: {e}")
+        with open('lab_3/result.json', 'r', encoding='utf-8') as json_file:
+            result_data: Dict[str, Any] = json.load(json_file)
+    except FileNotFoundError:
+        result_data = {"variant": variant, "checksum": checksum}
+
+    result_data['checksum'] = checksum
+    with open('lab_3/result.json', 'w', encoding='utf-8') as json_file:
+        json.dump(result_data, json_file, ensure_ascii=False, indent=4)
+
 
 if __name__ == "__main__":
     try:
@@ -104,8 +117,8 @@ if __name__ == "__main__":
             options = json.load(options_file)
 
         error_data = process_csv(options["csv_file_path"])
-        json_file = 'result.json'
-        serialize_to_json(error_data, json_file)
-        print(f"Обработка завершена. Результаты сохранены в '{json_file}'.")
+        checksum = calculate_checksum(error_data)
+        variant_number = 52
+        serialize_to_json(variant_number, error_data)
     except Exception as e:
         print(f"Произошла ошибка: {e}")
