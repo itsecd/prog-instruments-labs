@@ -34,7 +34,7 @@ def git_show(ref, name, repo_client):
     return commit_tree[name].data_stream.read()
 
 def fetch_all_records_v0():
-    logger.info("Fetching all records for version v0")
+    logger.info("Fetching all records for version %s", "v0")
     commits = git_commits_for("helldivers.json")[:1440]
     repo = git.Repo('.', odbt=git.db.GitCmdObjectDB)
     out: List[v0.FullStatus] = []
@@ -47,7 +47,7 @@ def fetch_all_records_v0():
                 try:
                     record = TypeAdapter(v0.FullStatus).validate_json(fh.read())
                 except ValidationError as exc:
-                    logger.error(f"Bad cached data {exc}")
+                    logger.error("Bad cached data %s", exc)
                     continue
                 if record.version == CACHE_VERSION:
                     out.append(record)
@@ -59,7 +59,7 @@ def fetch_all_records_v0():
             res = json.loads(git_show(ref, 'helldivers.json', repo))
             if 'error' in res.keys() or 'errors' in res.keys():
                 continue
-            logger.error(f"Bad committed data {exc.errors()[0]}")
+            logger.error("Bad committed data %s", exc.errors()[0])
         
         timestamp = repo.commit(ref).committed_datetime.astimezone(datetime.timezone.utc)
         record.snapshot_at = timestamp
@@ -77,7 +77,7 @@ def fetch_all_records_v0():
     return out
 
 def fetch_all_records_v1():
-    logger.info("Fetching all records for version v1")
+    logger.info("Fetching all records for version %s", "v1")
     commits = git_commits_for("801_full_v1.json")[:1440]
     repo = git.Repo('.', odbt=git.db.GitCmdObjectDB)
     out: List[v1.FullStatus] = []
@@ -90,7 +90,7 @@ def fetch_all_records_v1():
                 try:
                     record = v1.FullStatus.model_validate_json(fh.read())
                 except ValidationError as exc:
-                    logger.error(f"Bad cached data {exc}")
+                    logger.error("Bad cached data %s", exc)
                     continue
                 if record.version == CACHE_VERSION:
                     out.append(record)
@@ -102,7 +102,7 @@ def fetch_all_records_v1():
             res = json.loads(git_show(ref, '801_full_v1.json', repo))
             if 'error' in res.keys() or 'errors' in res.keys():
                 continue
-            logger.error(f"Bad committed data {exc.errors()[0]}")
+            logger.error("Bad committed data %s", exc.errors()[0])
 
         timestamp = repo.commit(ref).committed_datetime.astimezone(datetime.timezone.utc)
         record.snapshot_at = timestamp
@@ -130,6 +130,7 @@ def create_agg_stats():
     active_sum = {p:0 for p in active}
 
     recent_start = len(records) - RECENCY
+    logger.debug("Recent start index: %d", recent_start)
     for step, record in enumerate(records):
         active_step = {}
         for status in record.planets:
@@ -139,12 +140,15 @@ def create_agg_stats():
                 if step > recent_start:
                     active_sum[status.index] += status.statistics.player_count
         active_planet_hist.append(active_step)
+        logger.debug("Processed step %d, active_step: %s", step, active_step)
 
     most_active = sorted(active_sum.items(), key=lambda x: x[1], reverse=True)
+    logger.info("Most active planets calculated: %s", most_active)
 
     for step in records:
         timestamps.append(step.snapshot_at)
         impact.append(step.war.impact_multiplier)
+        logger.debug("Added timestamp: %s, impact: %s", step.snapshot_at, step.war.impact_multiplier)
 
     with open('./docs/data/aggregates.json', 'w') as fh:
         json.dump([{'timestamp':v1, 'players': v2, 'impact': v3, 'attacks': v4} for v1, v2, v3, v4 in zip(timestamps, players, impact, active_planet_hist)], fh)
