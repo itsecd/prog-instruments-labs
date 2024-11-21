@@ -1,0 +1,53 @@
+2024-11-21 22:03:17,501 - INFO - Successfully reading the settings
+2024-11-21 22:03:17,501 - INFO - Settings loaded from lab_4/settings.json
+2024-11-21 22:03:17,501 - INFO - Decryption mode begins.
+2024-11-21 22:03:17,533 - INFO - The private key is read from the file lab_4/private_key.pem
+2024-11-21 22:03:17,533 - INFO - Private key loaded for decryption.
+2024-11-21 22:03:17,533 - INFO - The symmetric key is read from the file lab_4/symmetric_key.txt
+2024-11-21 22:03:17,533 - INFO - The text encrypted has been decrypted.
+2024-11-21 22:03:17,533 - INFO - Symmetric key decrypted for decryption.
+2024-11-21 22:03:17,533 - INFO -  File lab_4/encrypted_file.txt readed
+2024-11-21 22:03:17,533 - INFO - Cipher text loaded for decryption.
+2024-11-21 22:03:17,565 - INFO - Cipher text decrypted using 3DES.
+2024-11-21 22:03:17,574 - INFO - The text is written to a file lab_4/decrypted_file.txt
+2024-11-21 22:03:17,574 - INFO - Decrypted text written to file.
+2024-11-21 22:03:30,925 - INFO - Successfully reading the settings
+2024-11-21 22:03:30,926 - INFO - Settings loaded from lab_4/settings.json
+2024-11-21 22:03:30,926 - INFO - The key generation mode starts
+2024-11-21 22:03:32,765 - INFO - User requested key length: 128
+2024-11-21 22:03:32,765 - INFO - 3DES symmetric key generated.
+2024-11-21 22:03:32,785 - INFO - Asymmetric encryption keys have been generated.
+2024-11-21 22:03:32,785 - INFO - RSA keys generated.
+2024-11-21 22:03:32,786 - INFO - The text is encrypted.
+2024-11-21 22:03:32,786 - INFO - Symmetric key encrypted with RSA.
+2024-11-21 22:03:32,786 - INFO - The public key successfully lab_4/public_key.pem
+2024-11-21 22:03:32,786 - INFO - The private key successfully lab_4/private_key.pem
+2024-11-21 22:03:32,786 - INFO - Asymmetric keys written to file.
+2024-11-21 22:03:32,786 - INFO - The symmetric key is written in the file lab_4/symmetric_key.txt
+2024-11-21 22:03:32,786 - INFO - Encrypted symmetric key written to file.
+2024-11-21 22:03:38,362 - INFO - Successfully reading the settings
+2024-11-21 22:03:38,362 - INFO - Settings loaded from lab_4/settings.json
+2024-11-21 22:03:38,362 - INFO - Encryption mode begins.
+2024-11-21 22:03:38,393 - INFO - The private key is read from the file lab_4/private_key.pem
+2024-11-21 22:03:38,393 - INFO - Private key loaded.
+2024-11-21 22:03:38,393 - INFO - The symmetric key is read from the file lab_4/symmetric_key.txt
+2024-11-21 22:03:38,393 - INFO - The text encrypted has been decrypted.
+2024-11-21 22:03:38,393 - INFO - Symmetric key decrypted.
+2024-11-21 22:03:38,393 - INFO -  File lab_4/initial_file.txt readed
+2024-11-21 22:03:38,393 - INFO - Text loaded for encryption.
+2024-11-21 22:03:38,393 - INFO - Text encrypted using 3DES.
+2024-11-21 22:03:38,393 - INFO - The text is written to a file lab_4/encrypted_file.txt
+2024-11-21 22:03:38,393 - INFO - Encrypted text written to file.
+2024-11-21 22:03:41,324 - INFO - Successfully reading the settings
+2024-11-21 22:03:41,324 - INFO - Settings loaded from lab_4/settings.json
+2024-11-21 22:03:41,338 - INFO - Decryption mode begins.
+2024-11-21 22:03:41,356 - INFO - The private key is read from the file lab_4/private_key.pem
+2024-11-21 22:03:41,356 - INFO - Private key loaded for decryption.
+2024-11-21 22:03:41,356 - INFO - The symmetric key is read from the file lab_4/symmetric_key.txt
+2024-11-21 22:03:41,371 - INFO - The text encrypted has been decrypted.
+2024-11-21 22:03:41,371 - INFO - Symmetric key decrypted for decryption.
+2024-11-21 22:03:41,371 - INFO -  File lab_4/encrypted_file.txt readed
+2024-11-21 22:03:41,371 - INFO - Cipher text loaded for decryption.
+2024-11-21 22:03:41,372 - INFO - Cipher text decrypted using 3DES.
+2024-11-21 22:03:41,372 - INFO - The text is written to a file lab_4/decrypted_file.txt
+2024-11-21 22:03:41,372 - INFO - Decrypted text written to file.
