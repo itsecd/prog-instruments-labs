@@ -16,9 +16,9 @@ def findValueDataset(path: str, _date: date) -> str:
             next(reader)
             for row in reader:
                 if row[0] == _date:
-                    logger.info("Value found.")
+                    logger.info(f"Value in main dataset by path {path} found.")
                     return row[1]
-            logger.info("Value not found.")
+            logger.info("Value in main dataset not found.")
             return None
     except Exception as exc:
         logger.error(f'Could not open file: {path}')
@@ -37,7 +37,7 @@ def findValueXY(path: str, _date: date) -> str:
                     break
                 number += 1
             if flag == False:
-                logger.info("Value not found.")
+                logger.info("Value in X & Y dataset not found.")
                 return None
             else:
                 with open(f"{path}/Y.csv", "r", newline="") as Y:
@@ -45,7 +45,7 @@ def findValueXY(path: str, _date: date) -> str:
                     i = 0
                     for row in readerY:
                         if i == number:
-                            logger.info("Value found.")
+                            logger.info(f"Value in X & Y dataset by path {path} found.")
                             return row[0]
                         else:
                             i += 1
@@ -73,9 +73,9 @@ def findValueWeek(path: str, _date: date) -> str:
                         reader = csv.reader(file, delimiter=",")
                         for row in reader:
                             if row[0] == _date:
-                                logger.info("Value found.")
+                                logger.info(f"Value in weekly dataset by path {path} found.")
                                 return row[1]
-        logger.info("Value not found.")
+        logger.info("Value in weekly dataset not found.")
         return None
     except Exception as exc:
         logger.error(f'Could not open file: {path}')
@@ -101,9 +101,9 @@ def findValueYear(path: str, _date: date) -> str:
                         reader = csv.reader(file, delimiter=",")
                         for row in reader:
                             if row[0] == _date:
-                                logger.info("Value found.")
+                                logger.info(f"Value in yearly dataset by path {path} found.")
                                 return row[1]
-        logger.info("Value not found.")
+        logger.info("Value in yearly dataset not found.")
         return None
     except Exception as exc:
         logger.error(f'Could not open file: {path}')

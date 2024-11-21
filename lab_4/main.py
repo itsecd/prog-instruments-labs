@@ -53,6 +53,8 @@ class MainWindow(QMainWindow):
                 value = findValueWeek(self.path, input_value)
             elif index == "разбивка по годам":
                 value = findValueYear(self.path, input_value)
+            else:
+                logger.info(f"Value was not found in any dataset.")
             self.ui.output_line.setText(str(value))
         except Exception as exc:
             logger.error(f"Returning of value error: {exc}")
