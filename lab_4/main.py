@@ -1,55 +1,101 @@
-from read_and_write_file import read_json, write_card, load_statistics, write_statistics
-from find_card import processing_card, luna_algorithm, graphing_and_save
-import time
-import multiprocessing as mp
-import logging
 import argparse
+import logging
+import json
 
-SETTINGS_FILE = 'settings.json'
-logger = logging.getLogger()
-logger.setLevel('INFO')
+from TripleDES_symmetric import TripleDES
+from RSA_asymmetric import RSA
+from read_and_write_file import (
+    load_settings, write_symmetric_key, load_symmetric_key,
+    write_asymmetric_key, load_private_key, write_file, load_text
+)
 
 
-if __name__ == '__main__':
+SETTING_FILE = "lab_4/settings.json"
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("lab_4/app.log"),
+        logging.StreamHandler()
+    ]
+)
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-set', '--settings', default = SETTINGS_FILE, type=str,
-                        help='Allows you to use your own json file with paths"(Enter the path to the file)')
+    parser.add_argument(
+        "-set", "--settings", default=SETTING_FILE, type=str,
+        help="Allows you to use your own json file with paths"
+             "(Enter the path to the file)"
+    )
+
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('-crd', '--card_find', type=int,
-                       help='Searches for the card number using a hash, you need to specify the number of processes')
-    group.add_argument('-sta', '--statistics',
-                       help='It turns out statistics by selecting the card number on a different number of processes')
-    group.add_argument('-lun', '--luhn_algorithm',
-                       help='Checks the validity of the card number using the Luna algorithm')
-    group.add_argument('-vis', '--visualize_statistics',
-                       help='Creates a histogram based on available statistics')
+    group.add_argument(
+        "-gen", "--generation", action="store_true",
+        help="Запускает режим генерации ключей"
+    )
+    group.add_argument(
+        "-enc", "--encryption", action="store_true",
+        help='Запускает режим шифрования'
+    )
+    group.add_argument(
+        "-dec", "--decryption", action="store_true",
+        help="Запускает режим дешифрования"
+    )
+
     args = parser.parse_args()
-    settings = read_json(args.settings)
+    settings = load_settings(args.settings)
+    logging.info("Settings loaded from %s", args.settings)
+
+    triple_des = TripleDES(settings["symmetric_key"])
+    rsa = RSA(settings["private_key"], settings["public_key"])
+
     if settings:
-        match args.card_find or args.statistics or args.luhn_algorithm or args.visualize_statistics:
-            case args.card_find:
-                logging.info("Searches for the card number using a hash")
-                card_number = processing_card(settings['hash'], settings['bin'], settings['last_number'], args.card_find)
-                if card_number:
-                    logging.info(f"The card number was found successfully: {card_number}")
-                    write_card(str(card_number), settings['card_number'])
-                else:
-                    logging.info("Couldn't find the card number")
-            case args.statistics:
-                logging.info("Statistics run.")
-                for i in range(1, int(mp.cpu_count() * 1.5)):
-                    t1 = time.time()
-                    processing_card(settings['hash'], settings['bin'], settings['last_number'], i)
-                    t2 = time.time()
-                    write_statistics(i, t2 - t1, settings['csv_statistics'])
-                logging.info("Statistics have been calculated successfully.")
-            case args.luhn_algorithm:
-                logging.info("Luna algorithm.")
-                data = read_json(settings['card_number'])
-                if luna_algorithm(str(data['card_number'])):
-                    logging.info("The card number is valid")
-                else:
-                    logging.info("The card number is not valid")
-            case args.visualize_statistics:
-                graphing_and_save(load_statistics(settings['csv_statistics']), settings['png_statistics'])
-                logging.info("The histogram has been created successfully.")
+        match True:
+            case args.generation:
+                logging.info("The key generation mode starts")
+                length = triple_des.ask_user_length_key()
+                logging.info("User requested key length: %d", length)
+                sym_key = triple_des.generate_3des_key(length)
+                logging.info("3DES symmetric key generated.")
+                private_key, public_key = rsa.generate_rsa_key()
+                logging.info("RSA keys generated.")
+                cipher_sym_key = rsa.encrypt_rsa(public_key, sym_key)
+                logging.info("Symmetric key encrypted with RSA.")
+                write_asymmetric_key(
+                    private_key, public_key, settings["private_key"],
+                    settings["public_key"]
+                )
+                logging.info("Asymmetric keys written to file.")
+                write_symmetric_key(cipher_sym_key, settings["symmetric_key"])
+                logging.info("Encrypted symmetric key written to file.")
+
+            case args.encryption:
+                logging.info("Encryption mode begins.")
+                private_key = load_private_key(settings["private_key"])
+                logging.info("Private key loaded.")
+                cipher_key = load_symmetric_key(settings["symmetric_key"])
+                symmetric_key = rsa.decrypt_rsa(private_key, cipher_key)
+                logging.info("Symmetric key decrypted.")
+                text = load_text(settings["initial_file"])
+                logging.info("Text loaded for encryption.")
+                cipher_text = triple_des.encrypt_3des(symmetric_key, text)
+                logging.info("Text encrypted using 3DES.")
+                write_file(settings["encrypted_file"], cipher_text)
+                logging.info("Encrypted text written to file.")
+
+            case args.decryption:
+                logging.info("Decryption mode begins.")
+                private_key = load_private_key(settings["private_key"])
+                logging.info("Private key loaded for decryption.")
+                cipher_key = load_symmetric_key(settings["symmetric_key"])
+                symmetric_key = rsa.decrypt_rsa(private_key, cipher_key)
+                logging.info("Symmetric key decrypted for decryption.")
+                cipher_text = load_text(settings["encrypted_file"])
+                logging.info("Cipher text loaded for decryption.")
+                text = triple_des.decrypt_3des(symmetric_key, cipher_text)
+                logging.info("Cipher text decrypted using 3DES.")
+                write_file(settings["decrypted_file"], text)
+                logging.info("Decrypted text written to file.")
