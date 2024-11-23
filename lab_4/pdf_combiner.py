@@ -4,27 +4,37 @@ from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import QThread, QObject, Qt
 
 from PyPDF2 import PdfMerger
-
 import sys
 import os
 import typing
 import time
+import logging
 
 import help_defenition as hd
+
+# Configure logging
+logging.basicConfig(
+    filename='pdf_merger.log',  # Log file
+    level=logging.DEBUG,  # Log level
+    format='%(asctime)s - %(levelname)s - %(message)s'  # Log format
+)
 
 
 class MergePDF(QThread):
     def __init__(self, parent: typing.Optional[QObject], to_merge: tuple) -> None:
         super().__init__(parent)
 
+        logging.info("Initializing the application window.")
         self.list_file = to_merge[0]
         self.path_to_save = to_merge[1][0]
         self.path_to_get_origin = to_merge[1][1]
 
     def run(self):
+        logging.info("Starting the PDF merge process.")
         merger = PdfMerger()
         for file in self.list_file:
             if str(file)[-4:].find("pdf") != -1:
+                logging.debug(f"Merging file: {file}")
                 merger.append(f"{self.path_to_get_origin}/{file}")
         merger.write(f"{self.path_to_save}/result_merger.pdf")
         self.parent().label_file_merged.setText(
@@ -36,6 +46,7 @@ class Window(QMainWindow):
     def __init__(self):
         super(Window, self).__init__()
 
+        logging.info("Initializing the application window.")
         self.path_to_get_origin = "Не выбрано"
         self.path_to_save = ""
         self.file_was_checked = False
@@ -143,6 +154,7 @@ class Window(QMainWindow):
         self.button_set_new_path_origin.clicked.connect(self.set_path_origin)
 
     def check_file(self) -> None:
+        logging.info("Checking files in the origin directory.")
         if not self.path_to_get_origin == "Не выбрано":
             self.list_file = os.listdir(self.path_to_get_origin)
             if len(self.list_file) != 0 and hd.search_pdf_in_list(self.list_file) == True:
@@ -152,6 +164,7 @@ class Window(QMainWindow):
                     for elem in self.list_file:
                         if str(elem)[-4:].find("pdf") != -1:
                             self.label_list_file.addItem(f"{i}) {str(elem)}")
+                            logging.debug(f"Found PDF file: {elem}")
                             i += 1
                 self.file_was_checked = True
                 self.button_start_merge.setStyleSheet(
@@ -160,11 +173,13 @@ class Window(QMainWindow):
                     f"background-image: url(image/Сбросить_1.png); {self.border_style}")
             else:
                 self.label_list_file.addItem("Папка с файлами пустая(")
+                logging.warning("No PDF files found in the selected directory.")
             self.label_list_file.setGeometry(100, 200, 450, 250)
         else:
-            pass
+            logging.error("Origin path is not selected.")
 
     def clear_and_repeat(self) -> None:
+        logging.info("Clearing previous selections.")
         if not self.path_to_get_origin == "Не выбрано":
             self.list_file.clear()
             self.button_start_merge.setStyleSheet(
@@ -178,9 +193,10 @@ class Window(QMainWindow):
                 "\n\t     *здесь появиться список файлов*")
             self.file_was_checked = False
         else:
-            pass
+            logging.error("Cannot clear as origin path is not selected.")
 
     def set_new_path_to_save(self) -> None:
+        logging.info("Setting a new path for saving files.")
         self.path_to_save = ""
         while self.path_to_save == "":
             self.path_to_save = QtWidgets.QFileDialog.getExistingDirectory(
@@ -193,6 +209,7 @@ class Window(QMainWindow):
         self.label_path_to_save.adjustSize()
 
     def start_merge(self) -> None:
+        logging.info("Starting the merge process.")
         if not self.path_to_get_origin == "Не выбрано":
             if self.file_was_checked:
                 to_merge = (
@@ -204,8 +221,10 @@ class Window(QMainWindow):
                 )
                 self.merge_file = MergePDF(self, to_merge)
                 self.merge_file.start()
+            else:
+                logging.error("No files were checked for merging.")
         else:
-            pass
+            logging.error("Origin path is not selected.")
 
     def set_path_origin(self) -> None:
         if self.file_was_checked == True:
@@ -217,6 +236,7 @@ class Window(QMainWindow):
         self.label_path_origin.setText(
             "Папка для сохранения: " + self.path_to_get_origin)
         self.label_path_origin.adjustSize()
+        logging.info(f"Set new origin path: {self.path_to_get_origin}")
 
 
 def application():
@@ -226,6 +246,7 @@ def application():
     window.setStyleSheet(
         "#MainWindow{border-image:url(image/background.png)}")
     window.show()
+    logging.info("Application started.")
     sys.exit(app.exec_())
 
 
