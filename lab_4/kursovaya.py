@@ -1,14 +1,24 @@
 import sys
 import os
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QLabel, QLineEdit,
-                             QPushButton, QComboBox, QWidget, QFileDialog)
+                             QPushButton, QComboBox, QWidget, QFileDialog,
+                             QMessageBox)
 
 from PyQt5 import QtGui
 from PIL import Image, ImageDraw, ImageFont
 import pandas as pd
 from docx import Document
 from docx.shared import Pt
+import logging
 
+
+logging.basicConfig(filename='coordinates.log', level=logging.INFO,
+                    format='%(asctime)s:%(levelname)s:%(message)s')
+
+warning_logging = logging.getLogger('warnings')
+handler = logging.FileHandler('war.log')
+handler.setLevel(logging.WARNING)
+warning_logging.addHandler(handler)
 
 class Window(QMainWindow):
     def __init__(self):
@@ -104,6 +114,7 @@ class Window(QMainWindow):
         self.btn7.clicked.connect(self.users_diploms)
         self.btn7.show()
 
+
     def load_png_file(self):
         """
         Метод для загрузки PNG файла через диалог выбора файла.
@@ -161,6 +172,7 @@ class Window(QMainWindow):
         self.text24.move(100, 260)
         self.text24.adjustSize()
         self.text24.show()
+
 
     def users_diploms(self):
         """
@@ -334,6 +346,7 @@ class Window(QMainWindow):
         self.btn3.clicked.connect(self.creating_diplomas_for_users)
         self.btn3.show()
 
+
     def list_fonts(self):
         """
         Метод для получения списка доступных шрифтов на системе.
@@ -388,6 +401,7 @@ class Window(QMainWindow):
 
         return lines
 
+
     def creating_diplomas_for_users(self):
         """
         Метод создает дипломы для пользователей на основе введенных данных и
@@ -420,6 +434,14 @@ class Window(QMainWindow):
         folder = self.save_folder
         image_path = self.png_file
         data = pd.read_excel(self.excel_file)
+
+        if not x:
+            logging.error("The user did not enter the X coordinates.")
+            print("Вы не ввели координаты X или Y.")
+            return
+
+        logging.info(f"The user entered the X coordinates = {x}")
+        print(f"Сохранены координаты: X = {x}")
 
         font_path = os.path.join("C:\\Windows\\Fonts", font_name)
         try:
@@ -515,6 +537,19 @@ class Window(QMainWindow):
         self.text6.move(100, 430)
         self.text6.adjustSize()
         self.text6.show()
+
+    def save_coordinates(self):
+        """Метод для сохранения введенных координат и логирования."""
+        x = self.input_x.text()
+        y = self.input_y.text()
+
+        if not x or not y:
+            warning_logging.warning("Пользователь не ввел координаты X или Y.")
+            print("Вы не ввели координаты X или Y.")
+            return
+
+        logging.info(f"Пользователь ввел координаты: X = {x}, Y = {y}")
+        print(f"Сохранены координаты: X = {x}, Y = {y}")
 
     def selecting_documents_for_the_city(self):
         """
