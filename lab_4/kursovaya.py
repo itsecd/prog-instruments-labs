@@ -538,18 +538,6 @@ class Window(QMainWindow):
         self.text6.adjustSize()
         self.text6.show()
 
-    def save_coordinates(self):
-        """Метод для сохранения введенных координат и логирования."""
-        x = self.input_x.text()
-        y = self.input_y.text()
-
-        if not x or not y:
-            warning_logging.warning("Пользователь не ввел координаты X или Y.")
-            print("Вы не ввели координаты X или Y.")
-            return
-
-        logging.info(f"Пользователь ввел координаты: X = {x}, Y = {y}")
-        print(f"Сохранены координаты: X = {x}, Y = {y}")
 
     def selecting_documents_for_the_city(self):
         """
