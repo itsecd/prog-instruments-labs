@@ -30,7 +30,7 @@ jobs:
         
     - name: Set env path
       run: |
-        export PYTHONPATH=.;$PYTHONPATH;lab_5/
+        export PYTHONPATH=.:$PYTHONPATH:lab_5/
         
     - name: Install dependencies
       run: |
