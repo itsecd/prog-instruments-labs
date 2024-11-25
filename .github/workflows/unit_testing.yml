@@ -31,7 +31,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        if [ -f lab_5/requirements.txt ]; then pip install -r lab_5/requirements.txt; fi
         pip install pytest
         pip install coverage
              
