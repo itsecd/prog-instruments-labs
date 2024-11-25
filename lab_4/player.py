@@ -78,11 +78,13 @@ class mediaplayer:
         
     def jump(self, time):
         try:
-            self.player.seek(time)
-            logging.info("Jumped to time: %.2f seconds", time) 
+            if self.player.source:
+                self.player.seek(time)
+                logging.info("Jumped to time: %.2f seconds", time)
+            else:
+                logging.warning("Cannot jump. No media source loaded.") 
         except Exception as e:
-            print ('[+] Jump is Not Possible')
-            return
+            logging.error("Jump is not possible: %s", e)
            
     def now(self):
         storeobj=self.player.time
@@ -112,8 +114,7 @@ class mediaplayer:
             self.player.volume=volume
             logging.info("Volume set to: %.2f", volume)
         except Exception as e:
-            pass
-        return
+            logging.error("Failed to set volume: %s", e)
     
     def time_thread(self):
         threading.Thread(target=self.update_time_).start()
@@ -123,9 +124,8 @@ class mediaplayer:
             now=self.now_()
             try:
                 self.songtime.set(now)
-            
             except Exception as e:
-                print (e)
+                logging.error("Error updating time: %s", e)
     
     def duration(self):
         try:
@@ -135,10 +135,14 @@ class mediaplayer:
             return '0'
         
     def duration_(self):
-        time=self.duration()+10.0
-        k=datetime.timedelta(seconds=time)
-        k=k.__str__()
-        return k
+        try:    
+            time=self.duration()+10.0
+            k=datetime.timedelta(seconds=time)
+            k=k.__str__()
+            return k
+        except Exception as e:
+                logging.error("Error calculating duration: %s", e)
+                return "0"
     
     def reset_player(self):
         self.player.pause()
@@ -150,23 +154,18 @@ class mediaplayer:
             try:
                 self.reset_player()
                 logging.info("Attempting to play song from path: %s", self.path.get())
-                try:
-                    src=media.load(self.path.get())
-                    self.player.queue(src)
-                    self.play()
-                    
-                    self.songduration.set(self.duration_())   # Updating duration Time
-                    logging.info("Song started playing. Duration: %s", self.songduration.get())
-                except Exception as e:
-                    print ("[+] Something wrong when playing song", e)
-                    return 
+                
+                src=media.load(self.path.get())
+                self.player.queue(src)
+                self.play()
+                
+                self.songduration.set(self.duration_())   # Updating duration Time
+                logging.info("Song started playing. Duration: %s", self.songduration.get())
+
             except Exception as e:
-                print (' [+] Please Check Your File Path', self.path.get())
-                print (' [+] Error: Problem On Playing \n ', e)
-                return 
+                logging.error("Error occurred while trying to play song from %s: %s", self.path.get(), e)        
         else:
-            print (' [+] Please Check Your File Path', self.path.get())
-        return
+            logging.warning("No file path provided for song playback.")
 
     def fast_forward(self):
         time = self.player.time + jump_distance
@@ -177,14 +176,19 @@ class mediaplayer:
             else:
                 self.player.seek(self.duration())
                 logging.info("Fast-forwarded to the end of the song.")
-        except AttributeError:
-            pass
+        except Exception as e:
+            logging.error("Fast forward failed: %s", e)
 
     def rewind(self):
         time = self.player.time - jump_distance
         try:
-            self.player.seek(time)
+            if time > 0:
+                self.player.seek(time)
+                logging.info("Rewinded to %.2f seconds", time)
+            else:
+                self.player.seek(0)
+                logging.info("Rewinded to the start of the song.")
         except Exception as e:
-            self.player.seek(0)
-            
+            logging.error("Rewind failed: %s", e)
+
  
