@@ -58,12 +58,15 @@ class WindowWithRequest(QDialog):
         """
         The method of WindowWithRequest class, which checks the correctness of the entered name
         """
+        logger.info("Was used a function for CHECKING CORRECTNESS of the entered name")
         for i in self.file_name.text():
             if i in ["<", ">", "«", ":", "#", "%", "&", "{", "}", "\\", "*", "$", "!", "'", "/", "|"]:
                 PopupWindow(
                     "Incorrect file name", "Invalid characters are present", "The set name is 'default'")
+                logger.info("CHECKING CORRECTNESS - was caught an incorrect name for creating file")
                 self.set_text('default')
                 return False
+        logger.info("CHECKING CORRECTNESS was sucessfully completed")
         return True
 
     def get_text(self) -> str:
@@ -187,7 +190,7 @@ class Interface(QMainWindow):
         button for the dataset; creates annotations for the default dataset and the combined one, 
         the annotation for the random dataset is created by another button
         """
-        logger.info("Was used a function for creating annotation")
+        logger.info("Was used a function CREATING ANNOTATION")
         try:
             window = WindowWithRequest("Creating the csv file")
             if window.checking_correctness() == True:
@@ -199,9 +202,9 @@ class Interface(QMainWindow):
                 if self.status == "ordered dataset":
                     sources.lab_2_materials.united_dataset.input_data(
                         self.folderpath, f"{window.get_text()}.csv")
-            logger.info("The function was sucessfully completed")
+            logger.info("CREATING ANNOTATION was sucessfully completed")
         except AttributeError:
-            logger.warning("There is something wrong")
+            logger.warning("CREATING ANNOTATION - the required attribute was not found")
             self.button_create_annotation.click()
             
 
@@ -211,7 +214,7 @@ class Interface(QMainWindow):
         the default dataset; when executed, it allows you to navigate through the elements 
         of the dataset in case of interaction with buttons like "next" and "previous"
         """
-        logger.info("Was used a function for choosing folder")
+        logger.info("Was used a function CHOOSING FOLDER")
         try:
             self.status = "two folders"
             self.previous1.setEnabled(True)
@@ -231,7 +234,7 @@ class Interface(QMainWindow):
             if not image_path.endswith(".jpg"):
                 PopupWindow("Problem", "This action cannot be performed now",
                             "Please, choose another folder")
-                logger.warning("Incorrect file")
+                logger.warning("CHOOSING FOLDER - incorrect file in folder")
                 self.previous1.setEnabled(False)
                 self.previous2.setEnabled(False)
                 self.next1.setEnabled(False)
@@ -244,11 +247,11 @@ class Interface(QMainWindow):
             self.window_image.setPixmap(self.image)
             self.window_image.setAlignment(Qt.AlignCenter)
             self.file_path.setText(image_path)
-            logger.info("The function was sucessfully completed")
+            logger.info("CHOOSING FOLDER was sucessfully completed")
         except FileNotFoundError:
             PopupWindow("Problem", "This action cannot be performed now",
                         "Please, choose another folder")
-            logger.warning("Incorrect file")
+            logger.warning("CHOOSING FOLDER - file was not found")
             self.previous1.setEnabled(False)
             self.previous2.setEnabled(False)
             self.next1.setEnabled(False)
@@ -263,7 +266,7 @@ class Interface(QMainWindow):
         except NotADirectoryError:
             PopupWindow("Problem", "This action cannot be performed now",
                         "Please, choose another folder")
-            logger.warning("Incorrect file")
+            logger.warning("CHOOSING FOLDER - chosen element is not a directory")
             self.previous1.setEnabled(False)
             self.previous2.setEnabled(False)
             self.next1.setEnabled(False)
@@ -283,7 +286,7 @@ class Interface(QMainWindow):
         (which will differ only in name, they will not be distributed in folders);
         you cannot navigate through this dataset (there was no such requirement in the terms of reference)
         """
-        logger.info("Was used a function for copying dataset")
+        logger.info("Was used a function COPY DATASET")
         try:
             self.status = "ordered dataset"
             self.previous1.setEnabled(False)
@@ -312,11 +315,11 @@ class Interface(QMainWindow):
             self.window_image.setAlignment(Qt.AlignCenter)
             self.file_path.setText(os.path.abspath(
                 f"{self.folderpath1}/{window.get_text()}"))
-            logger.info("The function was sucessfully completed")
+            logger.info("COPY DATASET was sucessfully completed")
         except FileNotFoundError:
             PopupWindow("Problem", "This action cannot be performed now",
                         "Please, choose another folder")
-            logger.warning("Incorrect file")
+            logger.warning("COPY DATASET - incorrect file in folder")
             self.image = QPixmap("sources/images/occasion.png")
             self.image = self.image.scaled(
                 1280, 720, QtCore.Qt.KeepAspectRatio)
@@ -325,7 +328,7 @@ class Interface(QMainWindow):
         except NotADirectoryError:
             PopupWindow("Problem", "This action cannot be performed now",
                         "Please, choose another folder")
-            logger.warning("Incorrect file")
+            logger.warning("COPY DATASET - chosen element is not a directory")
             self.image = QPixmap("sources/images/occasion.png")
             self.image = self.image.scaled(
                 1280, 720, QtCore.Qt.KeepAspectRatio)
@@ -339,7 +342,7 @@ class Interface(QMainWindow):
         which will not differ even in name; you cannot navigate through this dataset 
         (there was no such requirement in the terms of reference)
         """
-        logger.info("Was used a function for mixing dataset")
+        logger.info("Was used a function MIXED DATASET")
         try:
             self.status = "mixed dataset"
             self.previous1.setEnabled(False)
@@ -370,11 +373,11 @@ class Interface(QMainWindow):
             self.window_image.setAlignment(Qt.AlignCenter)
             self.file_path.setText(os.path.abspath(
                 f"{self.folderpath1}/{window.get_text()}"))
-            logger.info("The function was sucessfully completed")
+            logger.info("MIXED DATASET was sucessfully completed")
         except FileNotFoundError:
             PopupWindow("Problem", "This action cannot be performed now",
                         "Please, choose another a folder")
-            logger.warning("Incorrect file")
+            logger.warning("MIXED DATASET - incorrect file in folder")
             self.image = QPixmap("sources/images/occasion.png")
             self.image = self.image.scaled(
                 1280, 720, QtCore.Qt.KeepAspectRatio)
@@ -383,7 +386,7 @@ class Interface(QMainWindow):
         except NotADirectoryError:
             PopupWindow("Problem", "This action cannot be performed now",
                         "Please, choose another folder")
-            logger.warning("Incorrect file")
+            logger.warning("MIXED DATASET - chosen element is not a directory")
             self.previous1.setEnabled(False)
             self.previous2.setEnabled(False)
             self.next1.setEnabled(False)
@@ -398,7 +401,7 @@ class Interface(QMainWindow):
         except PermissionError:
             PopupWindow("Problem", "You chose inappropriate folder",
                         "Please, choose another folder")
-            logger.warning("Incorrect file")
+            logger.warning("MIXED DATASET - was chosen inappropriate folder")
             self.image = QPixmap("sources/images/occasion.png")
             self.image = self.image.scaled(
                 1280, 720, QtCore.Qt.KeepAspectRatio)
@@ -419,7 +422,7 @@ class Interface(QMainWindow):
                 if not image_path.endswith(".jpg"):
                     PopupWindow("Problem", "This action cannot be performed now",
                                 "Please, choose another folder")
-                    logger.warning("Incorrect file")
+                    logger.warning("NEXT - incorrect file extension")
                     self.previous1.setEnabled(False)
                     self.previous2.setEnabled(False)
                     self.next1.setEnabled(False)
@@ -436,11 +439,11 @@ class Interface(QMainWindow):
                 self.iterator1.counter -= 1
                 PopupWindow(
                     "Problem", "This action cannot be performed now", "There is no next element")
-                logger.warning("There is no element behind")
+                logger.warning("NEXT - there is no element behind")
             except AttributeError:
                 PopupWindow(
                     "Problem", "This action cannot be performed now", "There is no next element")
-                logger.warning("There is no element behind")
+                logger.warning("NEXT - there is no element behind")
         if self.button_change_end.text() == "Cycle":
             try:
                 image_path = next(self.iterator1)
@@ -448,7 +451,7 @@ class Interface(QMainWindow):
                 if not image_path.endswith(".jpg"):
                     PopupWindow("Problem", "This action cannot be performed now",
                                 "Please, choose another folder")
-                    logger.warning("Incorrect file")
+                    logger.warning("NEXT - incorrect file extension")
                     self.previous1.setEnabled(False)
                     self.previous2.setEnabled(False)
                     self.next1.setEnabled(False)
@@ -462,7 +465,7 @@ class Interface(QMainWindow):
                 self.window_image.setAlignment(Qt.AlignCenter)
                 self.file_path.setText(image_path)
             except StopIteration:
-                logger.info("Was made a cycle")
+                logger.info("NEXT - was made a cycle")
                 self.iterator1.counter -= self.iterator1.limit
                 image_path = next(self.iterator1)
                 self.image = QPixmap(image_path)
@@ -485,7 +488,7 @@ class Interface(QMainWindow):
                 if not image_path.endswith(".jpg"):
                     PopupWindow("Problem", "This action cannot be performed now",
                                 "Please, choose another folder")
-                    logger.warning("Incorrect file")
+                    logger.warning("NEXT - incorrect file extension")
                     self.previous1.setEnabled(False)
                     self.previous2.setEnabled(False)
                     self.next1.setEnabled(False)
@@ -502,11 +505,11 @@ class Interface(QMainWindow):
                 self.iterator2.counter -= 1
                 PopupWindow(
                     "Problem", "This action cannot be performed now", "There is no next element")
-                logger.warning("There is no element behind")
+                logger.warning("NEXT - there is no element behind")
             except AttributeError:
                 PopupWindow(
                     "Problem", "This action cannot be performed now", "There is no next element")
-                logger.warning("There is no element behind")
+                logger.warning("NEXT - there is no element behind")
         if self.button_change_end.text() == "Cycle":
             try:
                 image_path = next(self.iterator2)
@@ -514,7 +517,7 @@ class Interface(QMainWindow):
                 if not image_path.endswith(".jpg"):
                     PopupWindow("Problem", "This action cannot be performed now",
                                 "Please, choose another folder")
-                    logger.warning("Incorrect file")
+                    logger.warning("NEXT - incorrect file extension")
                     self.previous1.setEnabled(False)
                     self.previous2.setEnabled(False)
                     self.next1.setEnabled(False)
@@ -528,7 +531,7 @@ class Interface(QMainWindow):
                 self.window_image.setAlignment(Qt.AlignCenter)
                 self.file_path.setText(image_path)
             except StopIteration:
-                logger.info("Was made a cycle")
+                logger.info("NEXT - was made a cycle")
                 self.iterator2.counter -= self.iterator2.limit
                 image_path = next(self.iterator2)
                 self.image = QPixmap(image_path)
@@ -551,7 +554,7 @@ class Interface(QMainWindow):
                 if not image_path.endswith(".jpg"):
                     PopupWindow("Problem", "This action cannot be performed now",
                                 "Please, choose another folder")
-                    logger.info("Incorrect file")
+                    logger.info("PREVIOUS - incorrect file extension")
                     self.previous1.setEnabled(False)
                     self.previous2.setEnabled(False)
                     self.next1.setEnabled(False)
@@ -568,11 +571,11 @@ class Interface(QMainWindow):
                 self.iterator1.counter += 1
                 PopupWindow(
                     "Problem", "This action cannot be performed now", "There is no element behind")
-                logger.warning("There is no element behind")
+                logger.warning("PREVIOUS - there is no element behind")
             except AttributeError:
                 PopupWindow(
                     "Problem", "This action cannot be performed now", "There is no element behind")
-                logger.warning("There is no element behind")
+                logger.warning("PREVIOUS - there is no element behind")
         if self.button_change_end.text() == "Cycle":
             try:
                 image_path = self.iterator1.previous()
@@ -580,7 +583,7 @@ class Interface(QMainWindow):
                 if not image_path.endswith(".jpg"):
                     PopupWindow("Problem", "This action cannot be performed now",
                                 "Please, choose another folder")
-                    logger.info("Incorrect file")
+                    logger.info("PREVIOUS - incorrect file extension")
                     self.previous1.setEnabled(False)
                     self.previous2.setEnabled(False)
                     self.next1.setEnabled(False)
@@ -594,7 +597,7 @@ class Interface(QMainWindow):
                 self.window_image.setAlignment(Qt.AlignCenter)
                 self.file_path.setText(image_path)
             except StopIteration:
-                logger.info("Was made a cycle")
+                logger.info("PREVIOUS - was made a cycle")
                 self.iterator1.counter = self.iterator1.limit
                 image_path = self.iterator1.previous()
                 self.image = QPixmap(image_path)
@@ -617,7 +620,7 @@ class Interface(QMainWindow):
                 if not image_path.endswith(".jpg"):
                     PopupWindow("Problem", "This action cannot be performed now",
                                 "Please, choose another folder")
-                    logger.warning("Incorrect file")
+                    logger.warning("PREVIOUS - incorrect file extension")
                     self.previous1.setEnabled(False)
                     self.previous2.setEnabled(False)
                     self.next1.setEnabled(False)
@@ -634,11 +637,11 @@ class Interface(QMainWindow):
                 self.iterator2.counter += 1
                 PopupWindow(
                     "Problem", "This action cannot be performed now", "There is no element behind")
-                logger.warning("There is no element behind")
+                logger.warning("PREVIOUS - there is no element behind")
             except AttributeError:
                 PopupWindow(
                     "Problem", "This action cannot be performed now", "There is no element behind")
-                logger.warning("There is no element behind")
+                logger.warning("PREVIOUS - there is no element behind")
         if self.button_change_end.text() == "Cycle":
             try:
                 image_path = self.iterator2.previous()
@@ -646,7 +649,7 @@ class Interface(QMainWindow):
                 if not image_path.endswith(".jpg"):
                     PopupWindow("Problem", "This action cannot be performed now",
                                 "Please, choose another folder")
-                    logger.warning("Incorrect file")
+                    logger.warning("PREVIOUS - incorrect file extension")
                     self.previous1.setEnabled(False)
                     self.previous2.setEnabled(False)
                     self.next1.setEnabled(False)
@@ -660,7 +663,7 @@ class Interface(QMainWindow):
                 self.window_image.setAlignment(Qt.AlignCenter)
                 self.file_path.setText(image_path)
             except StopIteration:
-                logger.info("Was made a cycle")
+                logger.info("PREVIOUS - was made a cycle")
                 self.iterator2.counter = self.iterator2.limit
                 image_path = self.iterator2.previous()
                 self.image = QPixmap(image_path)
