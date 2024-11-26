@@ -1,20 +1,18 @@
-import os
+import logging
 import random
-import sys
+
 from collections import Counter
 
 import numpy as np
+
 from numpy.fft import ifft, fft
 
-from Fourier import Fourier
+import Aegis_osc
 
-# Теперь импортируем модуль для работы с osc
-module_path = os.path.abspath("cpp/build/Debug")
-sys.path.append(module_path)
-try:
-    import Aegis_osc
-except ImportError as e:
-    raise "Не удалось импортировать модуль для работы с осциллограммами!"
+from fourier import Fourier
+
+
+logger = logging.getLogger(__name__)
 
 
 class DataOsc:
@@ -26,63 +24,76 @@ class DataOsc:
     def create_datasets_with_osc(list_osc: list
                                  , csv_categories: list
                                  , augment: bool = False) -> (list[list], list[str]):
-        """"""
-        data_oscs = []
-        categories = []
-        # цикл для заполнения списков значениями осциллограмм и категорий
-        for ind, file_name in enumerate(list_osc):
-            osc_file = Aegis_osc.File_osc(file_name)
-            num_osc = osc_file.m_sdoHdr.NumOSC
-            categories.extend([csv_categories[ind] for _ in range(num_osc)])
-            list_osc_data = osc_file.getDotsOSC(0, num_osc)
-            data_oscs.extend([list_osc_data[i] for i in range(num_osc)])
+        """
+        Возвращает списки с осциллограммами и спектрами. Занимается аугментацией данных
+        """
+        try:
+            logger.info("Starting create datasets with osc")
 
-        # цикл для подсчёта кол-ва данных, относящихся к одной категории
-        counts = Counter(categories)
-        delete_el: list[list] = []
-        add_el: list[list] = []
-        for name in counts:
-            part_of_all = counts[name] / len(categories)
-            # если данных одной категории слишком много,
-            # то запоминаем какой класс нужно уменьшить
-            if part_of_all >= 0.4:
-                delete_el.append([name, len(categories) * 0.2])
-                continue
+            data_oscs = []
+            categories = []
+            # цикл для заполнения списков значениями осциллограмм и категорий
+            logger.info("Start get info from files .osc")
+            for ind, file_name in enumerate(list_osc):
+                osc_file = Aegis_osc.File_osc(file_name)
+                num_osc = osc_file.m_sdoHdr.NumOSC
+                categories.extend([csv_categories[ind] for _ in range(num_osc)])
+                list_osc_data = osc_file.getDotsOSC(0, num_osc)
+                data_oscs.extend([list_osc_data[i] for i in range(num_osc)])
+            logger.info("end get info from files .osc")
 
-            if augment and part_of_all < 0.2:
-                add_el.append([name, len(categories) * 0.2])
+            # цикл для подсчёта кол-ва данных, относящихся к одной категории
+            counts = Counter(categories)
+            delete_el: list[list] = []
+            add_el: list[list] = []
+            for name in counts:
+                part_of_all = counts[name] / len(categories)
+                # если данных одной категории слишком много,
+                # то запоминаем какой класс нужно уменьшить
+                if part_of_all >= 0.4:
+                    delete_el.append([name, len(categories) * 0.2])
+                    continue
 
-        # Увеличиваем выборку путём аугментации, если необходимо
-        if len(add_el) != 0:
-            length_cat = len(categories)
-            for a in add_el:
-                count_add = a[1] - counts[a[0]]
-                for i in range(length_cat):
-                    if count_add > 1 and categories[i] == a[0]:
-                        new_osc = DataOsc.augmentation_on_time_cycle(data_oscs[i])
-                        data_oscs.append(new_osc)
-                        categories.append(a[0])
-                        count_add -= 1
-                    elif count_add <= 0:
-                        break
+                if augment and part_of_all < 0.2:
+                    add_el.append([name, len(categories) * 0.2])
 
-        # уменьшаем выборку, если это необходимо
-        if len(delete_el) != 0:
-            for d in delete_el:
-                for i in range(len(categories) - 1, -1, -1):
-                    if d[1] <= counts[d[0]] and categories[i] == d[0]:
-                        categories.pop(i)
-                        data_oscs.pop(i)
-                        counts[d[0]] -= 1
-                    elif d[1] > counts[d[0]]:
-                        break
+            # Увеличиваем выборку путём аугментации, если необходимо
+            if len(add_el) != 0:
+                logger.info("Start augmentation data")
+                length_cat = len(categories)
+                for a in add_el:
+                    count_add = a[1] - counts[a[0]]
+                    for i in range(length_cat):
+                        if count_add > 1 and categories[i] == a[0]:
+                            new_osc = DataOsc.augmentation_on_time_cycle(data_oscs[i])
+                            data_oscs.append(new_osc)
+                            categories.append(a[0])
+                            count_add -= 1
+                        elif count_add <= 0:
+                            break
+                logger.info("End augmentation")
 
-        counts = Counter(categories)
+            # уменьшаем выборку, если это необходимо
+            if len(delete_el) != 0:
+                for d in delete_el:
+                    for i in range(len(categories) - 1, -1, -1):
+                        if d[1] <= counts[d[0]] and categories[i] == d[0]:
+                            categories.pop(i)
+                            data_oscs.pop(i)
+                            counts[d[0]] -= 1
+                        elif d[1] > counts[d[0]]:
+                            break
 
-        return data_oscs, categories
+            logger.info("End create datasets with osc")
+            return data_oscs, categories
+        except Exception as e:
+            logger.error(f"Error create dataset from .osc files: {e}")
 
     @staticmethod
     def augmentation_on_time_cycle(list_osc: list) -> list:
+        """
+        Совершает аугментацию циклическим сдвигом по времени
+        """
         augm_list = []
         for osc in list_osc:
             augm_list.append(np.roll(osc, random.randint(5, 50)))
@@ -113,6 +124,8 @@ class DataOsc:
         метод, добавляющий в конец сигнала значения, построенные на мат.статистике
         последних 30% значений оциллограммы, чтобы максимально
         не отличаться по внешнему виду от изначального сигнала
+
+        Используется fft метод библиотеки numpy
         """
         if len(signal) >= target_len:
             return signal[:target_len]
@@ -145,6 +158,9 @@ class DataOsc:
         метод, добавляющий в конец сигнала значения, построенные на мат.статистике
         последних 30% значений оциллограммы, чтобы максимально
         не отличаться по внешнему виду от изначального сигнала
+
+        Используется преобразование Фурье, реализованное по алгоритму из
+        книги В.П.Дьяконов "Справочник по алг. и прогр. на яз. бейсик для ПЭВМ"
         """
         if len(signal) >= target_len:
             return signal[:target_len]
