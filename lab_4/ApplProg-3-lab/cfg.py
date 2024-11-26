@@ -1,0 +1,1 @@
+PATH_TO_FILE = "lab_4/logs.log"

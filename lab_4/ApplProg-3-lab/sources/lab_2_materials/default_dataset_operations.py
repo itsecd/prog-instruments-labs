@@ -1,7 +1,6 @@
 import os
 import csv
 
-
 def input_data(path_to_the_dataset: str, file_name: str) -> None:
     """
     This function add file paths from folder into the created csv-file
