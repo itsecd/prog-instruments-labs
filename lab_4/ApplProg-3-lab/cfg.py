@@ -1,1 +1,1 @@
-PATH_TO_FILE = "lab_4/logs.log"
+PATH_TO_FILE = "lab_4/logs.txt"
