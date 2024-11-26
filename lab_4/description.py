@@ -34,7 +34,7 @@ def about(dir: str) -> list:
 
 
 def make_description(name: str, name_dir: str, type_of_file: str) -> None:
-    with open(name+".csv", mode="w+", encoding='utf-16') as textFile:
+    with open(f"{name_dir[:name_dir.rfind('/')]}/{name}+.csv", mode="w+", encoding='utf-16') as textFile:
         file_writer = csv.writer(textFile, delimiter = ",")
         file_writer.writerow(["абсолютный путь к файлу", "относительный путь", "метка класса"])
         descriptions_about = about(name_dir)
