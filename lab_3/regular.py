@@ -9,7 +9,7 @@ def match_check(string: str, regular: str) -> bool:
     проверяет строку регулярным выражением при помощи re.match
 
     :param string: строка, которую необходимо проверить
-    :param string: регулярное выражение для этой строки
+    :param regular: регулярное выражение для этой строки
     :return: True - если значение валидное, False - иначе
     """
     result = re.match(regular, string)
@@ -27,24 +27,18 @@ def check_csv(file_name: str) -> list[int]:
     :return: целочисленный список с кол-вом невалидных значений в каждой строке
     """
     try:
-        err_list = []
-        with open(file_name,"r", encoding="utf-16") as read_file:
-            csv_file = csv.reader(read_file, delimiter=";")
-            first = True
-            names = []
-            index_err = 0
-            for row in csv_file:
-                if first:
-                    names = row
-                    first = False
-                    continue
-                index_names = 0
-                for val in row:
-                    if not match_check(str(val),str(consts.REGULAR_DICT[names[index_names]])):
-                        err_list.append(index_err)
-                        break
-                    index_names += 1
-                index_err += 1
-        return err_list
+        with open(file_name, "r", encoding="utf-16") as read_file:
+            csv_reader = csv.reader(read_file, delimiter=";")
+            headers = next(csv_reader)  # Считываем первую строку как заголовки
+
+            invalid_rows = [
+                idx for idx, row in enumerate(csv_reader)
+                if any(
+                    not match_check(str(value), str(consts.REGULAR_DICT.get(header, "")))
+                    for value, header in zip(row, headers)
+                )
+            ]
+        return invalid_rows
     except Exception as e:
-        print(e)
+        print(f"Ошибка при обработке файла: {e}")
+        return []

@@ -1,5 +1,6 @@
 import json
 import hashlib
+
 from typing import List
 
 import consts
