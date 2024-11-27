@@ -129,3 +129,119 @@ def test_get_notes(manager):
     assert len(notes) == 2
     assert notes[0] == "Note 1"
     assert notes[1] == "Note 2"
+
+
+def test_add_task_with_tags(manager):
+    """Проверяет добавление задачи с несколькими тегами."""
+    assert manager.add_task("Task 1", tags=["work", "urgent"]) == True
+    tasks = manager.get_tasks()
+    assert len(tasks) == 1
+    assert tasks[0]["task"] == "Task 1"
+    assert set(tasks[0]["tags"]) == {"work", "urgent"}
+
+
+def test_get_tasks_by_multiple_tags(manager):
+    """Проверяет фильтрацию задач по нескольким тегам."""
+    manager.add_task("Task 1", tags=["work", "urgent"])
+    manager.add_task("Task 2", tags=["personal"])
+    manager.add_task("Task 3", tags=["work"])
+
+    tasks = manager.get_tasks_by_tag("work")
+    assert len(tasks) == 2  # Task 1 and Task 3
+    assert all(task["task"] in ["Task 1", "Task 3"] for task in tasks)
+
+
+def test_remove_task_with_notes(manager):
+    """Проверяет, что задача с заметками может быть удалена корректно."""
+    manager.add_task("Task 1")
+    manager.add_note("Note for Task 1")
+    manager.remove_task("Task 1")
+    assert len(manager.get_tasks()) == 0
+    assert len(manager.get_notes()) == 1
+
+
+def test_large_number_of_tasks(manager):
+    """Проверяет производительность при добавлении большого количества задач."""
+    for i in range(1000):
+        manager.add_task(f"Task {i}")
+    assert len(manager.get_tasks()) == 1000
+
+
+def test_unique_tags(manager):
+    """Проверяет, что теги задач уникальны."""
+    manager.add_task("Task 1", tags=["work"])
+    manager.add_task("Task 2", tags=["work"])
+    tasks = manager.get_tasks_by_tag("work")
+    assert len(tasks) == 2
+
+
+def test_note_with_special_characters(manager):
+    """Проверяет, что заметки могут содержать специальные символы."""
+    assert manager.add_note("Note with special characters: !@#$%^&*()") == True
+    assert len(manager.get_notes()) == 1
+    assert manager.get_notes()[0] == "Note with special characters: !@#$%^&*()"
+
+
+def test_task_and_note_same_name(manager):
+    """Проверяет, что задачи и заметки могут иметь одинаковые названия."""
+    manager.add_task("Same Name")
+    assert manager.add_note("Same Name") == True
+    assert len(manager.get_notes()) == 1
+    assert len(manager.get_tasks()) == 1
+
+
+@pytest.mark.parametrize("task_name, expected_tags", [
+    ("Task 1", ["work", "urgent"]),
+    ("Task 2", ["personal"]),
+    ("Task 3", ["work", "home"]),
+])
+def test_add_task_with_tags(manager, task_name, expected_tags):
+    """Проверяет добавление задач с различными тегами."""
+    assert manager.add_task(task_name, tags=expected_tags) == True
+    tasks = manager.get_tasks()
+    assert len(tasks) == 1
+    assert tasks[0]["task"] == task_name
+    assert set(tasks[0]["tags"]) == set(expected_tags)
+
+
+@pytest.mark.parametrize("task_name, note_name", [
+    ("Task A", "Note A"),
+    ("Task B", "Note B"),
+    ("Task C", "Note C"),
+])
+def test_task_and_note_same_name(manager, task_name, note_name):
+    """Проверяет, что задачи и заметки могут иметь одинаковые названия."""
+    manager.add_task(task_name)
+    assert manager.add_note(note_name) == True
+    assert len(manager.get_notes()) == 1
+    assert len(manager.get_tasks()) == 1
+    assert manager.get_notes()[0] == note_name
+    assert manager.get_tasks()[0]["task"] == task_name
+
+
+@pytest.mark.parametrize("task_name, expected_completed", [
+    ("Task 1", True),
+    ("Task 2", False),
+])
+def test_complete_and_incomplete_task(manager, task_name, expected_completed):
+    """Проверяет, что задача может быть отмечена как выполненная и невыполненная."""
+    manager.add_task(task_name)
+    if expected_completed:
+        manager.complete_task(task_name)
+    else:
+        manager.complete_task(task_name)
+        manager.incomplete_task(task_name)
+
+    assert manager.get_tasks()[0]["completed"] == expected_completed
+
+
+@pytest.mark.parametrize("note_content", [
+    "Note with special characters: !@#$%^&*()",
+    "Another note with spaces and symbols: %^&*()",
+    "Short note",
+])
+def test_add_notes_with_various_content(manager, note_content):
+    """Проверяет добавление заметок с различным содержимым."""
+    assert manager.add_note(note_content) == True
+    assert len(manager.get_notes()) == 1
+    assert manager.get_notes()[0] == note_content
