@@ -2,7 +2,17 @@ from tkinter import *
 from tkinter import ttk, filedialog
 
 
-# This will be received everytime something new have been typed in, "a" is only a placeholder
+from logging_config import get_info_logger, get_error_logger, get_debug_logger, get_warning_logger
+
+
+info_logger = get_info_logger()
+error_logger = get_error_logger()
+warning_logger = get_warning_logger()
+
+
+i = ""
+
+
 def update_i(_):
     global i
     i = textarea.get("1.0", "end-1c")
@@ -17,10 +27,12 @@ def initialize_data():
     word_listbox.delete(0, END)
     if tp == 'Word Not in Dictionary.':
         word_listbox.insert(END, tp)
+        warning_logger.warning(f"Word not found in dictionary: {
+                               i}") 
     else:
         for i in range(0, len(tp)):
             word_listbox.insert(END, tp[i])
-
+        
 
 # Open the dictionary file and read it
 def open_dict():
@@ -32,16 +44,19 @@ def open_dict():
         dict_open = open(file, "r")
         raw = dict_open.read()
         dict_open.close()
+        info_logger.info(f"Opened dictionary file: {file}")
         if y is False:
             dict_list = raw.split(DEFAULT_SEPERATOR)
             ind = int_dict(dict_list)
         else:
             new_seperator()
     except FileNotFoundError:
-        print("Not Found, try getting the dictionary")
+       
+        error_logger.error("File dictionary not found.")
         return
     except NameError:
-        print("NameError")
+        error_logger.error(f"Name of dictionary false: {
+                           str(e)}")  
         return
     finally:
         return dict_list
@@ -54,6 +69,7 @@ def new_seperator():
     dict_list = raw.split(new_seperator_entry.get())
     seperator_label.config(text=f'Seperator: "{new_seperator_entry.get()}"')
     ind = int_dict(dict_list)
+    info_logger.info(f"Changed separator to: {new_seperator_entry.get()}")
     initialize_data()
 
 
@@ -63,6 +79,8 @@ def default_seperator():
     dict_list = raw.split(DEFAULT_SEPERATOR)
     ind = int_dict(dict_list)
     seperator_label.config(text=f'Seperator: "{DEFAULT_SEPERATOR}"')
+    info_logger.info(f"Reset separator to default {
+                     DEFAULT_SEPERATOR}") 
 
 
 # Count the amount of characters and their duplicates appearing
@@ -101,12 +119,14 @@ def int_dict(dic):
             dictn[Int] = tat
         elif Int not in dictn:
             dictn[Int] = [dic[i]]
+    info_logger.info(f"Created new dictionary.")
     return dictn
 
 
 # Check the dictionary name to make sure it is correct
 def check_constant(_):
-    file_label.config(text="File: " + f"{dict_open}".split("'")[1].split("/")[-1])
+    file_label.config(
+        text="File: " + f"{dict_open}".split("'")[1].split("/")[-1])
 
 
 # let the prograsm stay on top of other apps
@@ -117,104 +137,116 @@ def on_top():
         root.update()
         on_top_button.config(relief=SUNKEN)
         top = True
+        info_logger.info("Window set to stay on top.")
     else:
         root.attributes('-topmost', False)
         root.update()
         on_top_button.config(relief=RAISED)
         top = False
+        info_logger.info("Window removed from topmost.")
 
 
 if __name__ == '__main__':
-    # Initialization
-    x = y = top = False
-    DEFAULT_SEPERATOR = '\n'
-    dictn = open_dict()
-    ind = int_dict(dictn)
+    info_logger.info("App start.")
+    try:
+        # Initialization
+        x = y = top = False
+        DEFAULT_SEPERATOR = '\n'
+        dictn = open_dict()
+        ind = int_dict(dictn)
+        info_logger.info("The dictionary loaded successfully.")
 
-    # main Window
-    root = Tk()
-    root.title('Deciphr')
-    root.resizable(width=False, height=False)
+        # main Window
+        root = Tk()
+        root.title('Deciphr')
+        root.resizable(width=False, height=False)
 
-    # Set up 2 tabs for the window
-    notebook = ttk.Notebook(root)
+        # Set up 2 tabs for the window
+        notebook = ttk.Notebook(root)
 
-    tab1 = Frame(notebook)
-    tab2 = Frame(notebook)
+        tab1 = Frame(notebook)
+        tab2 = Frame(notebook)
 
-    notebook.add(tab1, text="Finder")
-    notebook.add(tab2, text="File")
+        notebook.add(tab1, text="Finder")
+        notebook.add(tab2, text="File")
 
-    # Tab 1 Widgets
-    textarea = Text(tab1,
-                    font=("Arial", 15),
-                    height=1,
-                    width=20)
+        # Tab 1 Widgets
+        textarea = Text(tab1,
+                        font=("Arial", 15),
+                        height=1,
+                        width=20)
 
-    word_listbox = Listbox(tab1,
-                           font=("Arial", 15))
+        word_listbox = Listbox(tab1,
+                               font=("Arial", 15))
 
-    # Tab 2 widgets
-    openbutton = Button(tab2,
-                        text="Open new Dictionary",
-                        font=("Arial", 8),
-                        command=open_dict)
+        # Tab 2 widgets
+        openbutton = Button(tab2,
+                            text="Open new Dictionary",
+                            font=("Arial", 8),
+                            command=open_dict)
 
-    file_label = Label(tab2,
-                       text="",
-                       font=("Arial", 8))
+        file_label = Label(tab2,
+                           text="",
+                           font=("Arial", 8))
 
-    seperator_label = Label(tab2,
-                            text=f'Seperator: "{DEFAULT_SEPERATOR}"')
+        seperator_label = Label(tab2,
+                                text=f'Seperator: "{DEFAULT_SEPERATOR}"')
 
-    new_seperator_entry = Entry(tab2,
-                                font=("Arial", 8))
+        new_seperator_entry = Entry(tab2,
+                                    font=("Arial", 8))
 
-    seperator_frame = Frame(tab2)
+        seperator_frame = Frame(tab2)
 
-    new_seperator_button = Button(seperator_frame,
-                                  text="Set as Seperator",
-                                  font=("Arial", 8),
-                                  command=new_seperator)
-
-    default_seperator_button = Button(seperator_frame,
-                                      text="Default Seperator",
+        new_seperator_button = Button(seperator_frame,
+                                      text="Set as Seperator",
                                       font=("Arial", 8),
-                                      command=default_seperator)
+                                      command=new_seperator)
 
-    credit_label = Label(tab2,
-                         text="""Creator: Baguette\nCredit:\n- CS50 Staff\n""",
-                         font=("Arial", 8, "italic"))
+        default_seperator_button = Button(seperator_frame,
+                                          text="Default Seperator",
+                                          font=("Arial", 8),
+                                          command=default_seperator)
 
-    on_top_button = Button(tab2,
-                           text="Stay on top",
-                           font=("Arial", 8),
-                           command=on_top)
+        credit_label = Label(tab2,
+                             text="""Creator: Baguette\nCredit:\n- CS50 Staff\n""",
+                             font=("Arial", 8, "italic"))
 
-    # detect any new text
-    textarea.bind("<KeyRelease>", update_i)
+        on_top_button = Button(tab2,
+                               text="Stay on top",
+                               font=("Arial", 8),
+                               command=on_top)
 
-    # detect any mouse clicks
-    root.bind("<Button-1>", check_constant)
+        # detect any new text
+        textarea.bind("<KeyRelease>", update_i)
 
-    # pack the widgets
-    # tab 1
-    textarea.pack()
-    word_listbox.pack()
+        # detect any mouse clicks
+        root.bind("<Button-1>", check_constant)
 
-    # tab2
-    openbutton.pack()
-    file_label.pack()
-    seperator_label.pack()
-    new_seperator_entry.pack()
-    seperator_frame.pack()
-    new_seperator_button.pack(side=LEFT)
-    default_seperator_button.pack(side=RIGHT)
+        # pack the widgets
+        # tab 1
+        textarea.pack()
+        word_listbox.pack()
 
-    # Add a space for aesthetic reasons
-    Label(tab2).pack()
-    credit_label.pack()
-    on_top_button.pack()
-    notebook.pack(expand=True, fill="both")
-    file_label.config(text="File: " + f"{dict_open}".split("'")[1].split("/")[-1])
+        # tab2
+        openbutton.pack()
+        file_label.pack()
+        seperator_label.pack()
+        new_seperator_entry.pack()
+        seperator_frame.pack()
+        new_seperator_button.pack(side=LEFT)
+        default_seperator_button.pack(side=RIGHT)
+
+        # Add a space for aesthetic reasons
+        Label(tab2).pack()
+        credit_label.pack()
+        on_top_button.pack()
+        notebook.pack(expand=True, fill="both")
+        if dict_open:
+            file_label.config(
+                text="File: " + f"{dict_open}".split("'")[1].split("/")[-1])
+            info_logger.info(f"The dictionary file uploaded: {dict_open}")
+
+    except Exception as e:
+        error_logger.error(f"An error occurred: {e}")
     root.mainloop()
+    info_logger.info(f"App close")

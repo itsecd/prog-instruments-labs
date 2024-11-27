@@ -35,9 +35,5 @@ def get_error_logger() -> logging.Logger:
     return get_logger("error_logger", logging.ERROR)
 
 
-def get_debug_logger() -> logging.Logger:
-    return get_logger("debug_logger", logging.DEBUG)
-
-
 def get_warning_logger() -> logging.Logger:
     return get_logger("warning_logger", logging.WARNING)
