@@ -9,9 +9,6 @@ from cryptography.hazmat.primitives.serialization import (
     load_pem_private_key,
 )
 
-from constants import PATHS
-
-
 logging.basicConfig(level=logging.INFO)
 
 
@@ -149,7 +146,7 @@ class ReadWriteParseFunctions:
         :return: Namespace object with parsed arguments.
         """
         try:
-            paths = ReadWriteParseFunctions.json_reader(PATHS)
+            paths = ReadWriteParseFunctions.json_reader('paths.json')
             parser = argparse.ArgumentParser()
             group = parser.add_argument_group()
             group.add_argument(
