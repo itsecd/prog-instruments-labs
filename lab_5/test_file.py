@@ -1,4 +1,5 @@
 import pytest
+import os
 
 from unittest.mock import patch, MagicMock
 from cryptography.hazmat.primitives.asymmetric import rsa
@@ -8,6 +9,35 @@ from asymmetric import AsymmetricCryptography
 from symmetric import SymmetricCryptography
 from functions import ReadWriteParseFunctions
 from constants import PATHS
+
+
+@pytest.fixture
+def asym_keys():
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    public_key = private_key.public_key()
+    return private_key, public_key
+
+
+def test_serialize_asym_keys(rsa_keys):
+    private_key, public_key = rsa_keys
+    ReadWriteParseFunctions.serialize_private_key(path='private.pem', private_key=private_key)
+    ReadWriteParseFunctions.serialize_public_key(path='public.pem', public_key=public_key)
+    written_private_key = ReadWriteParseFunctions.deserialize_private_key(path='private.pem')
+    written_public_key = ReadWriteParseFunctions.deserialize_public_key(path='public.pem')
+    assert written_private_key == private_key
+    assert written_public_key == public_key
+
+
+@pytest.fixture
+def sym_key():
+    key = os.urandom(size=32)
+    return key
+
+
+def test_serialize_sym_key(sym_key):
+    ReadWriteParseFunctions.write_bytes(path='sym_key.txt', data=sym_key)
+    written_sym_key = ReadWriteParseFunctions.read_bytes(path='sym_key.txt')
+    assert written_sym_key == sym_key
 
 
 @pytest.fixture
