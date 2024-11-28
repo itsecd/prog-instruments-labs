@@ -1,18 +1,24 @@
-import asyncio
-import os
-
-from aiogram import Bot, Dispatcher
-from aiogram.client.session.aiohttp import AiohttpSession
 import logging
-from dotenv import load_dotenv
-import handlers
 
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(message)s",
     filename="py_log.log",
     filemode="w",
+    encoding='utf-8'
+
 )
+
+import asyncio
+import os
+
+from aiogram import Bot, Dispatcher
+from aiogram.client.session.aiohttp import AiohttpSession
+
+from dotenv import load_dotenv
+import handlers
+
+
 
 
 def register_routers(dp):
@@ -38,5 +44,6 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    logging.info("Старт процесса")
+    logging.debug("Старт процесса")
     asyncio.run(main())
+    logging.debug("Конец процесса")

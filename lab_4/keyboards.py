@@ -1,3 +1,5 @@
+import logging
+
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 def user_keyboard() -> ReplyKeyboardMarkup:

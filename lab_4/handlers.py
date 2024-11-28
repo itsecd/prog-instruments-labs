@@ -6,6 +6,7 @@ from aiogram.methods.send_message import SendMessage
 import keyboards
 import consts
 import lab_state
+import logging
 
 router = Router()
 
@@ -13,8 +14,10 @@ router = Router()
 @router.message(Command(commands=["start"]))
 async def start(msg: types.Message):
     if msg.from_user.id in consts.COUNCIL_MEMPERS_IDS:
+        logging.info(f"Пользователь {msg.from_user.id} с повышенными правами доступа начал чат с ботом")
         keyboard = keyboards.admin_keyboard()
     else:
+        logging.info(f"Пользователь {msg.from_user.id} начал чат с ботом")
         keyboard = keyboards.user_keyboard()
     await msg.answer(
         "Привет!\nЯ бот клуба Robotic и у меня можно узнать, открыта ли наша лаборатория.",
@@ -28,9 +31,11 @@ async def open_lab(msg: types.Message):
         # answer = await lab_state.LabState.change_status(True)
         current_state = lab_state.LabState.get_state()
         if current_state:
+            logging.info(f"Попытка открыть открытую лабораторию пользователем {msg.from_user.id}")
             await msg.answer("Лаборатория уже открыта!")
         else:
             answer = lab_state.LabState.set_state(True)
+            logging.info(f"Лаборатория переведена в состояние {answer} пользователем {msg.from_user.id}")
             answer = (
                 "Лаборатория переведена в состояние открыто."
                 if answer
@@ -38,6 +43,7 @@ async def open_lab(msg: types.Message):
             )
             await msg.answer(answer)
     else:
+        logging.info(f"Пользователь без прав {msg.from_user.id} попытался открыть лабораторию.")
         await msg.answer("У вас нет прав доступа.")
 
 
@@ -47,9 +53,11 @@ async def close_lab(msg: types.Message):
         # answer = await lab_state.LabState.change_status(True)
         current_state = lab_state.LabState.get_state()
         if not current_state:
+            logging.info(f"Попытка закрыть закрытую лабораторию пользователем {msg.from_user.id}")
             await msg.answer("Лаборатория уже закрыта!")
         else:
             answer = lab_state.LabState.set_state(False)
+            logging.info(f"Лаборатория переведена в состояние {answer} пользователем {msg.from_user.id}")
             answer = (
                 "Лаборатория переведена в состояние открыто."
                 if answer
@@ -57,11 +65,13 @@ async def close_lab(msg: types.Message):
             )
             await msg.answer(answer)
     else:
+        logging.info(f"Пользователь без прав {msg.from_user.id} попытался закрыть лабораторию.")
         await msg.answer("У вас нет прав доступа.")
 
 @router.message(F.text == "Лаба открыта?")
 async def get_lab_state(msg: types.Message):
     answer = lab_state.LabState.get_state()
+    logging.info(f"Запрос состояния лаборатории от пользователя {msg.from_user.id}")
     answer = (
                 "Лаборатория открыта."
                 if answer
