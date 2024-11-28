@@ -93,11 +93,12 @@ class FilesHelper:
         """
         try:
             with open(name, 'r') as file:
-                return json.load(file)
+                data = json.load(file)
         except FileNotFoundError:
             print(f"The file was not found.")
         except Exception as e:
             print(f"An error occurred while reading json the file: {str(e)}.")
+        return data
 
     @staticmethod
     def write_json(name: str, data: dict) -> Dict[str, str]:
@@ -115,6 +116,7 @@ class FilesHelper:
             print(f"The file was not found.")
         except Exception as e:
             print(f"An error occurred while writing json the file: {str(e)}.")
+            raise
 
     @staticmethod
     def write_public_key(name: str, public_key: rsa.RSAPublicKey) -> None:

@@ -6,7 +6,7 @@ from cryptography.hazmat.primitives import hashes
 from typing import Tuple
 
 from symmetric import Symmetric
-from files import FilesHelper
+from lab_5.files import FilesHelper
 
 
 class Asymmetric:

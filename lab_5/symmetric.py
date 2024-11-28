@@ -3,7 +3,7 @@ import os
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from files import FilesHelper
+from lab_5.files import FilesHelper
 
 
 class Symmetric:
