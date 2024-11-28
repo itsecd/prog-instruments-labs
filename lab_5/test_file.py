@@ -8,7 +8,6 @@ from hybrid import HybridCryptography
 from asymmetric import AsymmetricCryptography
 from symmetric import SymmetricCryptography
 from functions import ReadWriteParseFunctions
-from constants import PATHS
 
 
 @pytest.fixture
@@ -18,8 +17,8 @@ def asym_keys():
     return private_key, public_key
 
 
-def test_serialize_asym_keys(rsa_keys):
-    private_key, public_key = rsa_keys
+def test_serialize_asym_keys(asym_keys):
+    private_key, public_key = asym_keys
     ReadWriteParseFunctions.serialize_private_key(path='private.pem', private_key=private_key)
     ReadWriteParseFunctions.serialize_public_key(path='public.pem', public_key=public_key)
     written_private_key = ReadWriteParseFunctions.deserialize_private_key(path='private.pem')

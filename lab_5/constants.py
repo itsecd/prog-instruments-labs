@@ -1,1 +1,0 @@
-PATHS = "paths.json"
