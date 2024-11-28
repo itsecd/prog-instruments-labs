@@ -1,11 +1,29 @@
+import re
+import os
+import pandas as pd
 import json
 import hashlib
 from typing import List
 
-"""
-В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
-"""
+from file_path import PATH_TO_JSON_FILE, PATH_TO_CSV_FILE, VARIANT
 
+
+PATTERN_MAP = {
+    "email": r'',
+    "height": r'"\d\.\d{2}"',
+    "inn": r'"\d{12}"',
+    "passport": r'"\d{2} \d{2} \d{6}"',
+    "occupation": r'".*?"',
+    "latitude": r'"-?\d{1,2}\.\d{6}"',
+    "hex_color": r'',
+    "issn": r'\d{4}-\d{4}',
+    "uuid": r'',
+    "time": r''
+}
+
+"""
+Этот модуль содержит вспомогательные функции для проверки корректности данных и подготовки результата.
+"""
 
 def calculate_checksum(row_numbers: List[int]) -> str:
     """
@@ -42,5 +60,4 @@ def serialize_result(variant: int, checksum: str) -> None:
 
 
 if __name__ == "__main__":
-    print(calculate_checksum([1, 2, 3]))
-    print(calculate_checksum([3, 2, 1]))
+    
