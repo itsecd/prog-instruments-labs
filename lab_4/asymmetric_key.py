@@ -1,8 +1,18 @@
+import logging
+
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 
 from serialization_deserialitation_and_text import deserialize_private
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+    ]
+)
 
 
 class AsymmetricKey:
@@ -31,9 +41,10 @@ class AsymmetricKey:
             )
             private_key = keys
             public_key = keys.public_key()
+            logging.info("Функция generate_keys в AsymmetricKey сгенерировала приватный(private_key) и публичный(public_key)ключи.")
             return private_key, public_key
         except Exception as e:
-            print(f"Произошла ошибка generate_keys: {e}")
+            logging.error(f"Произошла ошибка в generate_keys: {e}")
             raise
 
     def encrypt_text(self, text: bytes, public_key: rsa.RSAPublicKey) -> bytes:
@@ -49,9 +60,10 @@ class AsymmetricKey:
                                                 padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),
                                                              algorithm=hashes.SHA256(),
                                                              label=None))
+            logging.info("Функция encrypt_text в AsymmetricKey зашифровала текст.")
             return encrypted_text
         except Exception as e:
-            print(f"Произошла ошибка encrypt_text: {e}")
+            logging.error(f"Произошла ошибка в generate_keys: {e}")
             raise
 
     def decrypt_text(self, path_to_private_key: str, encrypted_text: bytes) -> bytes:
@@ -68,7 +80,8 @@ class AsymmetricKey:
             decrypted_text = private_key.decrypt(encrypted_text,
                                                  padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()),
                                                               algorithm=hashes.SHA256(), label=None))
+            logging.info("Функция encrypt_text в AsymmetricKey расшифровала текст.")
             return decrypted_text
         except Exception as e:
-            print(f"Произошла ошибка decrypt_text: {e}")
+            logging.error(f"Произошла ошибка в generate_keys: {e}")
             raise

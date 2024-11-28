@@ -1,8 +1,18 @@
 import os
+import logging
 
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, modes
 from cryptography.hazmat.decrepit.ciphers import algorithms
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+    ]
+)
+
 
 class SymmetricKey:
     """
@@ -23,10 +33,11 @@ class SymmetricKey:
         """
         try:
             symmetric_key = bytes(os.urandom(int(number_of_bites / 8)))
+            logging.info("Функция generate_key в symmetric_key.py сгенерировала ключи.")
             return symmetric_key
         except Exception as e:
-            print(f"Произошла ошибка в функции generate_key: {e}")
-        raise
+            logging.error(f"Произошла ошибка в generate_keys: {e}")
+            raise
 
     def encrypt_symmetric(self, text: bytes, symmetric_key: bytes, number_of_bites: int) -> bytes:
         """
@@ -45,9 +56,10 @@ class SymmetricKey:
             encryptor = cipher.encryptor()
             encrypted_text = encryptor.update(padded_text) + encryptor.finalize()
             encrypted_text = iv + encrypted_text
+            logging.info("Функция encrypt_symmetric в symmetric_key.py зашифровала текст.")
             return encrypted_text
         except Exception as e:
-            print(f"Произошла ошибка в функции encrypt_symmetric: {e}")
+            logging.error(f"Произошла ошибка в generate_keys: {e}")
             raise
 
     def decrypt_symmetric(self, encrypted_text: bytes, symmetric_key: bytes, number_of_bites: int) -> str:
@@ -67,7 +79,8 @@ class SymmetricKey:
             decrypted_text = decryptor.update(encrypted_text) + decryptor.finalize()
             unpadder = padding.PKCS7(number_of_bites).unpadder()
             unpadded_decrypted_text = unpadder.update(decrypted_text) + unpadder.finalize()
+            logging.info("Функция encrypt_symmetric в symmetric_key.py расшифровала текст.")
             return unpadded_decrypted_text.decode('UTF-8')
         except Exception as e:
-            print(f"Произошла ошибка в функции decrypt_symmetric: {e}")
+            logging.error(f"Произошла ошибка в generate_keys: {e}")
             raise

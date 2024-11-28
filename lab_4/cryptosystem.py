@@ -1,8 +1,17 @@
+import logging
+
 from asymmetric_key import AsymmetricKey
 from symmetric_key import SymmetricKey
 from serialization_deserialitation_and_text import read_text, save_text, save_text_str, deserialize_symmetric_key, \
     serialize_symmetric_key, serialize_asymmetric_keys
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+    ]
+)
 
 class Cryptosystem:
     """
@@ -12,7 +21,6 @@ class Cryptosystem:
         generate_keys:
         encrypt:
         decrypt:
-
     """
 
     def __init__(self, number_of_bits: int):
@@ -27,6 +35,7 @@ class Cryptosystem:
         self.symmetric = SymmetricKey()
         self.asymmetric = AsymmetricKey()
         self.number_of_bits = number_of_bits
+        logging.info("Криптосистема в cryptosystem.py успешно создана.")
 
     def generate_keys(self, path_to_symmetric_key: str, path_to_public_key: str, path_to_private_key: str) -> None:
         """
@@ -41,6 +50,7 @@ class Cryptosystem:
         serialize_asymmetric_keys(path_to_private_key, path_to_public_key, keys[0], keys[1])
         symmetric_key_encrypted = self.asymmetric.encrypt_text(symmetric_key, keys[1])
         serialize_symmetric_key(path_to_symmetric_key, symmetric_key_encrypted)
+        logging.info("Метод generate_keys в Сryptosystem успешно создал ключи")
 
     def encrypt(self, path_to_text_for_encryption: str, path_to_symmetric_key: str, path_to_private_key: str,
                 path_to_save_encrypted_text: str) -> None:
@@ -58,6 +68,7 @@ class Cryptosystem:
         text = read_text(path_to_text_for_encryption)
         encrypted_text = self.symmetric.encrypt_symmetric(text, decrypted_symmetric_key, self.number_of_bits)
         save_text(path_to_save_encrypted_text, encrypted_text)
+        logging.info("Метод encrypt в Сryptosystem успешно зашифровал текст")
 
     def decrypt(self, path_to_encrypted_text: str, path_to_symmetric_key: str, path_to_private_key: str,
                 path_to_save_decrypted_text: str) -> None:
@@ -75,3 +86,4 @@ class Cryptosystem:
         encrypted_text = read_text(path_to_encrypted_text)
         decrypted_text = self.symmetric.decrypt_symmetric(encrypted_text, decrypted_symmetric_key, self.number_of_bits)
         save_text_str(path_to_save_decrypted_text, decrypted_text)
+        logging.info("Метод decrypt в Сryptosystem успешно расшифровал текст")
