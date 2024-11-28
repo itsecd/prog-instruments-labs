@@ -46,7 +46,7 @@ class SymmetricCryptography:
             iv = os.urandom(16)
             cipher = Cipher(algorithms.Camellia(key), modes.CBC(iv))
             encryptor = cipher.encryptor()
-            padder = padding.PKCS7(256).padder()
+            padder = padding.PKCS7(128).padder()
             padded_text = padder.update(data) + padder.finalize()
             c_text = iv + encryptor.update(padded_text) + encryptor.finalize()
             return c_text

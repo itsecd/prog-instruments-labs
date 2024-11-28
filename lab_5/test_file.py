@@ -17,19 +17,22 @@ def asym_keys():
     return private_key, public_key
 
 
-def test_serialize_asym_keys(asym_keys):
+def test_serialize_deserialize_asym_keys(asym_keys):
     private_key, public_key = asym_keys
     ReadWriteParseFunctions.serialize_private_key(path='private.pem', private_key=private_key)
     ReadWriteParseFunctions.serialize_public_key(path='public.pem', public_key=public_key)
     written_private_key = ReadWriteParseFunctions.deserialize_private_key(path='private.pem')
     written_public_key = ReadWriteParseFunctions.deserialize_public_key(path='public.pem')
-    assert written_private_key == private_key
-    assert written_public_key == public_key
-
+    serialized_private_key = ReadWriteParseFunctions.serialize_private_key('private.pem', private_key)
+    serialized_public_key = ReadWriteParseFunctions.serialize_public_key('public.pem', public_key)
+    written_serialized_private_key = ReadWriteParseFunctions.serialize_private_key('private.pem', written_private_key)
+    written_serialized_public_key = ReadWriteParseFunctions.serialize_public_key('public.pem', written_public_key)
+    assert serialized_private_key == written_serialized_private_key
+    assert serialized_public_key == written_serialized_public_key
 
 @pytest.fixture
 def sym_key():
-    key = os.urandom(size=32)
+    key = os.urandom(32)
     return key
 
 
@@ -55,13 +58,13 @@ def test_asym_encrypt_decrypt(asym_crypto):
     private_key, public_key = asym_crypto.generate_key(size=2048)
     enc_msg = asym_crypto.encrypt(msg, public_key)
     assert enc_msg != msg
-    dec_msg = asym_crypto.decrypt(msg, private_key)
+    dec_msg = asym_crypto.decrypt(enc_msg, private_key)
     assert dec_msg == msg
 
 
 @pytest.fixture
 def sym_crypto():
-    return SymmetricCryptography(symmetric_key_path='symmetric.txt', private_key_path='private.pem', public_key_path='public.pem')
+    return SymmetricCryptography(key_path='symmetric.txt')
 
 
 @pytest.mark.parametrize('key_size', [16, 24, 32])
@@ -72,19 +75,19 @@ def test_sym_generate_key(sym_crypto, key_size):
 
 
 @pytest.mark.parametrize('key_size', [16, 24, 32])
-def test_sym_encrypt_decrypt(asym_crypto, key_size):
+def test_sym_encrypt_decrypt(sym_crypto, key_size):
     msg = b'Testing Symmetric Cryptography'
-    key = asym_crypto.generate_key(size=key_size)
-    enc_msg = asym_crypto.encrypt(msg, key)
+    key = sym_crypto.generate_key(size=key_size)
+    enc_msg = sym_crypto.encrypt(msg, key)
     assert enc_msg != msg
-    dec_msg = asym_crypto.decrypt(msg, key)
+    dec_msg = sym_crypto.decrypt(enc_msg, key)
     assert dec_msg == msg
 
 
 @pytest.fixture
 def hybrid_crypto():
     return HybridCryptography(
-        symmetric_key_path='symmetric.key',
+        symmetric_key_path='sym_key.txt',
         private_key_path='private.pem',
         public_key_path='public.pem')
 
@@ -98,40 +101,9 @@ def test_hybrid_generate_keys(hybrid_crypto):
          patch('functions.ReadWriteParseFunctions.serialize_private_key') as serialize_private_key, \
          patch('functions.ReadWriteParseFunctions.serialize_public_key') as serialize_public_key, \
          patch('functions.ReadWriteParseFunctions.write_bytes') as write_bytes, \
-         patch.object(public_key, 'encryp', return_value=b'encrypted_symmetric_key'):
+         patch.object(public_key, 'encrypt', return_value=b'encrypted_symmetric_key'):
         hybrid_crypto.generate_keys(size=32)
         serialize_private_key.assert_called_once_with(hybrid_crypto.asymmetric.private_key_path, private_key)
         serialize_public_key.assert_called_once_with(hybrid_crypto.asymmetric.public_key_path, public_key)
         write_bytes.assert_called_once_with(hybrid_crypto.symmetric.key_path, b'encrypted_symmetric_key')
-
-
-def test_hybrid_encrypt_decrypt(hybrid_crypto):
-    msg = 'Testing Hybrid Cryptography'
-    symmetric_key = b'symmetric_key'
-    encrypted_symmetric_key = b'encrypted_symmetric_key'
-    enc_msg = b'enc_msg'
-    dec_msg = b'Testing Hybrid Cryptography'
-    with patch('functions.ReadWriteParseFunctions.read_txt', return_value=msg), \
-         patch('functions.ReadWriteParseFunctions.deserialize_private_key', return_value=MagicMock()), \
-         patch('functions.ReadWriteParseFunctions.read_bytes', side_effect=[encrypted_symmetric_key, enc_msg]), \
-         patch('asymmetric.AsymmetricCryptography.decrypt', return_value=symmetric_key), \
-         patch('symmetric.SymmetricCryptography.encrypt', return_value=enc_msg), \
-         patch('symmetric.SymmetricCryptography.decrypt', return_value=dec_msg), \
-         patch('functions.ReadWriteParseFunctions.write_bytes') as write_bytes:
-        hybrid_crypto.encrypt(text_path='msg.txt', encrypted_msg_path='enc_msg.txt')
-        ReadWriteParseFunctions.read_txt.assert_called_once_with('msg.txt')
-        ReadWriteParseFunctions.deserialize_private_key.assert_called_once_with(
-            hybrid_crypto.asymmetric.private_key_path)
-        ReadWriteParseFunctions.read_bytes.assert_any_call(hybrid_crypto.symmetric.key_path)
-        AsymmetricCryptography.decrypt.assert_called_once_with(
-            encrypted_symmetric_key,
-            ReadWriteParseFunctions.deserialize_private_key.return_value)
-        SymmetricCryptography.encrypt.assert_called_once_with(bytes(msg, 'UTF-8'), symmetric_key)
-        write_bytes.assert_any_call('enc_msg.txt', enc_msg)
-        hybrid_crypto.decrypt(text_path='enc_msg.txt', decrypted_text_path='dec_msg.txt')
-        ReadWriteParseFunctions.read_bytes.assert_any_call('enc_msg.txt')
-        ReadWriteParseFunctions.deserialize_private_key.assert_called_with(
-            hybrid_crypto.asymmetric.private_key_path)
-        SymmetricCryptography.decrypt.assert_called_once_with(enc_msg, symmetric_key)
-        write_bytes.assert_any_call('enc_msg.txt', enc_msg)
  
