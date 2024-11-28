@@ -1,0 +1,10 @@
+{
+    "original_text":"text/text.txt",
+    "encrypted_text":"text/encrypted.txt",
+    "decrypted_text":"text/decrypted.txt",
+    "symmetric_key":"keys/symmetric_key.txt",
+    "private_key":"keys/private_key.pem",
+    "public_key":"keys/public_key.pem",
+    "encrypt_symmetric_key":"keys/encrypt_symmetric_key.txt",
+    "decrypt_symmetric_key":"keys/decrypt_symmetric_key.txt"
+}
