@@ -1,3 +1,3 @@
 COUNCIL_MEMPERS_IDS = (
-     # empty tuple for lab
+     859743151,
 )
