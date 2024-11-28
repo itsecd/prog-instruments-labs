@@ -1,31 +1,29 @@
 import re
-import os
-import pandas as pd
 import json
 import hashlib
+import csv
 from typing import List
 
-from file_path import PATH_TO_JSON_FILE, PATH_TO_CSV_FILE, VARIANT
-
-
+CSV_INPUT_PATH = "lab_3/7.csv"
+OUTPUT_FILE_PATH = "lab_3/result.json"
 PATTERN_MAP = {
-    "email": r'',
+    "email": r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',
     "height": r'"\d\.\d{2}"',
     "inn": r'"\d{12}"',
     "passport": r'"\d{2} \d{2} \d{6}"',
     "occupation": r'".*?"',
     "latitude": r'"-?\d{1,2}\.\d{6}"',
-    "hex_color": r'',
+    "hex_color": r'"#[a-fA-F0-9]{6}"',
     "issn": r'\d{4}-\d{4}',
-    "uuid": r'',
-    "time": r''
+    "uuid": r'[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}',
+    "time": r'\d{2}:\d{2}:\d{2}\.\d{6}'
 }
 
 """
 Этот модуль содержит вспомогательные функции для проверки корректности данных и подготовки результата.
 """
 
-def calculate_checksum(row_numbers: List[int]) -> str:
+def calculate_checksum(indices: List[int]) -> str:
     """
     Вычисляет md5 хеш от списка целочисленных значений.
 
@@ -35,16 +33,15 @@ def calculate_checksum(row_numbers: List[int]) -> str:
 
     Надеюсь, я расписал это максимально подробно.
     Хотя что-то мне подсказывает, что обязательно найдется человек, у которого с этим возникнут проблемы.
-    Которому я отвечу, что все написано в докстринге ¯\_(ツ)_/¯
+    Которому я отвечу, что все написано в докстринге 
 
     :param row_numbers: список целочисленных номеров строк csv-файла, на которых были найдены ошибки валидации
     :return: md5 хеш для проверки через github action
     """
-    row_numbers.sort()
-    return hashlib.md5(json.dumps(row_numbers).encode('utf-8')).hexdigest()
+    indices.sort()
+    return hashlib.md5(json.dumps(indices).encode('utf-8')).hexdigest()
 
-
-def serialize_result(variant: int, checksum: str) -> None:
+def serialize_result(variant_number: int, checksum: str) -> None:
     """
     Метод для сериализации результатов лабораторной пишите сами.
     Вам нужно заполнить данными - номером варианта и контрольной суммой - файл, лежащий в папке с лабораторной.
@@ -56,8 +53,52 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    with open(OUTPUT_FILE_PATH, 'w', encoding='utf-8') as file:
+        result_data = {
+            "variant": variant_number,
+            "checksum": checksum
+        }
+        file.write(json.dumps(result_data, indent=4))
 
+def read_csv(file_path: str) -> list:
+    """
+    Загружает содержимое CSV-файла с разделителем `;` и кодировкой UTF-16.
+
+    :param file_path: путь к CSV-файлу.
+    :return: список строк данных, представленных в виде списков значений.
+    """
+    with open(file_path, 'r', encoding='utf-16') as file:
+        reader = csv.reader(file, delimiter=';')
+        next(reader)
+        return [row for row in reader]
+
+def validate_row(row: list, patterns: dict) -> bool:
+    """
+    Проверяет, соответствует ли строка заданным регулярным выражениям для каждого поля.
+
+    :param row: список значений в строке.
+    :param patterns: словарь регулярных выражений для проверки.
+    :return: True, если все поля проходят проверку, иначе False.
+    """
+    return all(re.match(pattern, value) for pattern, value in zip(patterns.values(), row))
+
+def find_invalid_indices(data: list, patterns: dict) -> list:
+    """
+    Находит индексы строк, которые не прошли валидацию по заданным шаблонам.
+
+    :param data: список строк, каждая из которых представлена списком значений.
+    :param patterns: словарь регулярных выражений для проверки строк.
+    :return: список индексов некорректных строк.
+    """
+    return [i for i, row in enumerate(data) if not validate_row(row, patterns)]
 
 if __name__ == "__main__":
-    
+    csv_data = read_csv(CSV_INPUT_PATH)
+    error_indices = find_invalid_indices(csv_data, PATTERN_MAP)
+    result_checksum = calculate_checksum(error_indices)
+    serialize_result(7, result_checksum)
+
+
+
+
+
