@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import ttk, filedialog
 
 
-from logging_config import get_info_logger, get_error_logger, get_debug_logger, get_warning_logger
+from logging_config import get_info_logger, get_error_logger, get_warning_logger
 
 
 info_logger = get_info_logger()
@@ -90,26 +90,31 @@ def word_vect(word):
     dupe_count = [0 for _ in range(26)]
     wrd = word.lower()
     word_list = list(wrd)
+    
     for temp in range(0, len(word_list)):
         if word_list[temp] in alphabet_list:
             index = alphabet_list.index(word_list[temp])
             dupe_count[index] += 1
+            
+    #info_logger.info(f"word_vect completed with result: {dupe_count}")
     return dupe_count
 
-
-# convert it into integer
+# Convert it into integer
 def vect_int(vect):
     counter = num = 0
     for i in range(0, len(vect)):
         clt = (vect[i] * (2 ** counter))
         num += clt
         counter += 4
+        
+    #info_logger.info(f"vect_int completed with result: {num}")
     return num
 
-
-# make the dictionary
+# Make the dictionary
 def int_dict(dic):
+    info_logger.info("Start creating new dictionary.")
     dictn = {}
+    
     for i in range(0, len(dic)):
         v = word_vect(dic[i])
         Int = vect_int(v)
@@ -117,9 +122,15 @@ def int_dict(dic):
             tat = dictn.get(Int)
             tat.append(dic[i])
             dictn[Int] = tat
-        elif Int not in dictn:
+        else:
             dictn[Int] = [dic[i]]
-    info_logger.info(f"Created new dictionary.")
+
+    if dictn:
+        info_logger.info(f"The word_vect function end.")
+        info_logger.info(f"The vect_int  function end.")
+    else:
+        warning_logger.warning(f"The word_vect and vect_int functions not end. Dictionary empty") 
+    info_logger.info(f"Finished creating new dictionary.")
     return dictn
 
 
