@@ -41,7 +41,7 @@ class Asymmetric:
         Args:
                 file_name: path to the file to record the public key
         """
-        FilesHelper.write_public_key(file_name, rsa.RSAPublicKey(self.public_key))
+        FilesHelper.write_public_key(file_name, self.public_key)
 
     def serialization_private_key(self, file_name: str) -> None:
         """
@@ -50,7 +50,7 @@ class Asymmetric:
         Args:
                 file_name: path to the file to record the private key
         """
-        FilesHelper.write_public_key(file_name, rsa.RSAPrivateKey(self.private_key))
+        FilesHelper.write_public_key(file_name, self.private_key)
 
     def deserialization_public_key(self, file_name: str) -> rsa.RSAPublicKey:
         """

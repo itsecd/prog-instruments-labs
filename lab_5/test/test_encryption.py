@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives.asymmetric import rsa   
 
 from files import FilesHelper
 from symmetric import Symmetric
@@ -34,6 +34,11 @@ def asymmetric_keys():
 @pytest.fixture
 def symmetric_cipher():
     return Symmetric()
+
+
+@pytest.fixture
+def asymmetric_cipher():
+    return Asymmetric() 
 
 
 @pytest.mark.parametrize("path", ["setings.json", "some.json"])
@@ -124,3 +129,26 @@ def test_decrypted_text(symmetric_cipher, text):
     os.remove(key_file)
     os.remove(encrypted_file)
     os.remove(decrypted_file)
+
+
+def test_key_generation(asymmetric_cipher):
+    private_key, public_key = asymmetric_cipher.generation_asymmetric_keys()
+    assert isinstance(private_key, rsa.RSAPrivateKey)
+    assert isinstance(public_key, rsa.RSAPublicKey)
+
+
+def test_asymmetric_key_serialization():
+    asymmetric = Asymmetric()
+    asymmetric.generation_asymmetric_keys()
+
+    public_key_file = "public.pem"
+    private_key_file = "private.pem"
+
+    asymmetric.serialization_public_key(public_key_file)
+    asymmetric.serialization_private_key(private_key_file)
+ 
+    assert os.path.exists(public_key_file)
+    assert os.path.exists(private_key_file)
+
+    os.remove("public.pem")
+    os.remove("private.pem")
