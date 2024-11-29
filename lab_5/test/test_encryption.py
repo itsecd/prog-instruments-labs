@@ -3,9 +3,9 @@ import os
 
 from cryptography.hazmat.primitives.asymmetric import rsa   
 
-from files import FilesHelper
-from symmetric import Symmetric
-from asymmetric import Asymmetric
+from lab_5.files import FilesHelper
+from lab_5.symmetric import Symmetric
+from lab_5.asymmetric import Asymmetric
 
 
 def create_file(data: bytes, extention: str=".txt") -> str:
@@ -80,7 +80,7 @@ def test_key_serialization(symmetric_cipher):
     b"Some super-secret message",
     b"",
     b"1005036312"*10,
-    b"Some importnt message with different symbols `~!@#$%^&*()_-=+[]{}\|;:'\",./<>?"
+    b"Some importnt message with different symbols `~!@#$%^&*()_-=+[]{}|;:'\",./<>?"
     ])
 def test_encrypted_text(symmetric_cipher, text):
     key_size = 16
@@ -103,7 +103,7 @@ def test_encrypted_text(symmetric_cipher, text):
     b"Some super-secret message",
     b"",
     b"1005036312"*10,
-    b"Some importnt message with different symbols `~!@#$%^&*()_-=+[]{}\|;:'\",./<>?"
+    b"Some importnt message with different symbols `~!@#$%^&*()_-=+[]{}|;:'\",./<>?"
     ])
 def test_decrypted_text(symmetric_cipher, text):
     key_size = 16

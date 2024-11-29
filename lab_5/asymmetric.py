@@ -5,8 +5,8 @@ from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
 from typing import Tuple
 
-from symmetric import Symmetric
-from files import FilesHelper
+from lab_5.symmetric import Symmetric
+from lab_5.files import FilesHelper
 
 
 class Asymmetric:

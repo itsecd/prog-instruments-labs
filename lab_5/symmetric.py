@@ -1,9 +1,11 @@
 import os
 
 from cryptography.hazmat.primitives import padding
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives.ciphers import Cipher, modes
+from cryptography.hazmat.primitives.ciphers.algorithms import SEED 
 
-from files import FilesHelper
+
+from lab_5.files import FilesHelper
 
 
 class Symmetric:
@@ -67,7 +69,7 @@ class Symmetric:
 
         iv = os.urandom(16)
         symmetric_key = self.deserialization_symmetric_key(key)
-        cipher = Cipher(algorithms.SEED(symmetric_key), modes.CBC(iv))
+        cipher = Cipher(SEED(symmetric_key), modes.CBC(iv))
         encryptor = cipher.encryptor()
         c_text = encryptor.update(padded_text) + encryptor.finalize()
         c_text = iv + c_text
@@ -91,7 +93,7 @@ class Symmetric:
 
         iv = en_text[:16]
         key = self.deserialization_symmetric_key(key)
-        cipher = Cipher(algorithms.SEED(key), modes.CBC(iv))
+        cipher = Cipher(SEED(key), modes.CBC(iv))
 
         en_text = en_text[16:]
 
