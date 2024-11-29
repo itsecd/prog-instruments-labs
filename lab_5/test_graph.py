@@ -1,7 +1,7 @@
 import pytest
 import os
 
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from fiona.features import vertex_count
 
@@ -112,3 +112,17 @@ def test_dijkstra(create_graph, task_for_dijkstra):
     assert path == task_for_dijkstra[3]
 
 
+def test_save(create_graph):
+    save_file = "graph.json"
+
+    with patch("save_and_load_graph.save_graph_to_json") as mock_save:
+        save_and_load_graph.save_graph_to_json(create_graph, save_file)
+
+        mock_save.assert_called_once_with(create_graph, save_file)
+
+def test_load(create_graph, tmpdir):
+    save_file = tmpdir.join("graph.json")
+    save_and_load_graph.save_graph_to_json(create_graph, save_file)
+    load_graph = save_and_load_graph.load_graph_from_json(save_file)
+    assert load_graph.vertices() == create_graph.vertices()
+    assert sorted(load_graph.edges()) == sorted(create_graph.edges())

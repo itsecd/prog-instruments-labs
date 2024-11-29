@@ -189,22 +189,4 @@ class Graph:
 
         return distances, path
 
-if __name__ == "__main__":
-    _graph =Graph()
 
-    _graph.add_vertex("A")
-    _graph.add_vertex("B")
-    _graph.add_vertex("C")
-    _graph.add_vertex("D")
-
-    _graph.add_edge("A", "B", 2.0)
-    _graph.add_edge("B", "C", 17.0)
-    _graph.add_edge("A", "C", 15.7805)
-    _graph.add_edge("D", "C", 7.0)
-
-    result_of_walking = _graph.breadth_search("D")
-    print(result_of_walking)
-
-    distance, path = _graph.dijkstra("D", "B")
-    print(distance)
-    print(path)
