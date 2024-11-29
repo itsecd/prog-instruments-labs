@@ -16,9 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 class DataOsc:
-    def __init__(self, file_name: str):
-        if len(file_name) == 0:
-            return
+    def __init__(self):
+        pass
 
     @staticmethod
     def create_datasets_with_osc(list_osc: list
@@ -50,7 +49,7 @@ class DataOsc:
                 part_of_all = counts[name] / len(categories)
                 # если данных одной категории слишком много,
                 # то запоминаем какой класс нужно уменьшить
-                if part_of_all >= 0.4:
+                if part_of_all > 1/len(counts):
                     delete_el.append([name, len(categories) * 0.2])
                     continue
 
