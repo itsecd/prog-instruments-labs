@@ -1,9 +1,6 @@
 import pytest
-import os
 
 from unittest.mock import patch
-
-from fiona.features import vertex_count
 
 import graph
 import save_and_load_graph
