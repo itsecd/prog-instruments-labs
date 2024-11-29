@@ -16,18 +16,52 @@ def create_csv_file(tmp_path):
     return _create_csv_file
 
 
-def test_my_csv_initialization(create_csv_file):
+@pytest.mark.parametrize(
+    "csv_content, delimiter, names, expected_names, expected_data",
+    [
+        (
+            "Name;Age;City\nAlice;30;New York\nBob;25;Los Angeles",
+            ";",
+            True,
+            ["Name", "Age", "City"],
+            [["Alice", "30", "New York"], ["Bob", "25", "Los Angeles"]],
+        ),
+        (
+            "Name,Age,City\nAlice,30,New York\nBob,25,Los Angeles",
+            ",",
+            True,
+            ["Name", "Age", "City"],
+            [["Alice", "30", "New York"], ["Bob", "25", "Los Angeles"]],
+        ),
+        (
+            "Alice;30;New York\nBob;25;Los Angeles",
+            ";",
+            False,
+            [],
+            [["Alice", "30", "New York"], ["Bob", "25", "Los Angeles"]],
+        ),
+        (
+            "ID|Product|Price\n101|Laptop|1200\n102|Phone|800",
+            "|",
+            True,
+            ["ID", "Product", "Price"],
+            [["101", "Laptop", "1200"], ["102", "Phone", "800"]],
+        ),
+    ],
+)
+def test_my_csv_initialization(create_csv_file, csv_content, delimiter, names, expected_names, expected_data):
     """
-    Тестирование инициализации класса MyCsv.
+    Параметризованный тест инициализации класса MyCsv с различными входными данными.
     """
-    csv_content = "Name;Age;City\nAlice;30;New York\nBob;25;Los Angeles"
     csv_path = create_csv_file(csv_content)
 
-    my_csv = MyCsv(csv_path, names=True, delimiter=";")
+    # Создание объекта MyCsv
+    my_csv = MyCsv(csv_path, names=names, delimiter=delimiter)
 
+    # Проверка правильности свойств
     assert my_csv.csv_path == csv_path
-    assert my_csv.names == ["Name", "Age", "City"]
-    assert my_csv.data == [["Alice", "30", "New York"], ["Bob", "25", "Los Angeles"]]
+    assert my_csv.names == expected_names
+    assert my_csv.data == expected_data
 
 
 def test_get_values_from_col(create_csv_file):
