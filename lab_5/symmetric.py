@@ -3,7 +3,7 @@ import os
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from lab_5.files import FilesHelper
+from files import FilesHelper
 
 
 class Symmetric:
@@ -14,14 +14,16 @@ class Symmetric:
         """Constructor"""
         self.key = None
 
-    def generation_symmetric_key(self) -> bytes:
+    def generation_symmetric_key(self, key_size: int) -> bytes:
         """
         Key generation of a symmetric encryption algorithm
 
         Return:
                 bytes: key
         """
-        self.key = os.urandom(16)
+        if key_size != 16:
+            raise ValueError("SEED algorithm requires a 128-bit (16-bytes) key.")
+        self.key = os.urandom(key_size)
         return self.key
 
     def serialization_symmetric_key(self, file_name: str) -> None:
