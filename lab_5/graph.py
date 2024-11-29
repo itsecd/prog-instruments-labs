@@ -5,6 +5,8 @@ import openrouteservice
 from collections import deque
 from queue import PriorityQueue
 
+from shapely import distance
+
 import save_and_load_graph as sl
 
 
@@ -131,7 +133,7 @@ class Graph:
         v_queue.append(vertex_start)
         walked[vertex_start]["color"] = "grey"
         walked[vertex_start]["distance"] = 0
-        result_of_walking.append(self.Edge(vertex_start, 0))
+        result_of_walking.append((vertex_start, 0))
 
         while v_queue:
             u = v_queue.popleft()
@@ -141,7 +143,7 @@ class Graph:
                     walked[vert]["color"] = "grey"
                     walked[vert]["prev"] = u
                     walked[vert]["distance"] = walked[u]["distance"] + 1
-                    result_of_walking.append(self.Edge(vert, walked[vert]["distance"]))
+                    result_of_walking.append((vert, walked[vert]["distance"]))
                     v_queue.append(vert)
             walked[u]["color"] = "black"
 
@@ -186,3 +188,23 @@ class Graph:
         path.reverse()
 
         return distances, path
+
+if __name__ == "__main__":
+    _graph =Graph()
+
+    _graph.add_vertex("A")
+    _graph.add_vertex("B")
+    _graph.add_vertex("C")
+    _graph.add_vertex("D")
+
+    _graph.add_edge("A", "B", 2.0)
+    _graph.add_edge("B", "C", 17.0)
+    _graph.add_edge("A", "C", 15.7805)
+    _graph.add_edge("D", "C", 7.0)
+
+    result_of_walking = _graph.breadth_search("D")
+    print(result_of_walking)
+
+    distance, path = _graph.dijkstra("D", "B")
+    print(distance)
+    print(path)

@@ -11,7 +11,7 @@ def save_graph_to_json(graph: object, filename: str):
     """
     graph_data = {
         "vertices": graph.vertices(),
-        "edges": [(edge[0], edge[1], edge[2]) for edge in graph.edges()]
+        "edges": graph.edges()
     }
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(graph_data, f, ensure_ascii=False, indent=4)
