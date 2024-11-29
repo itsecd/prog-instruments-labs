@@ -17,12 +17,13 @@ class MyCsv:
         """
         if len(delimiter) > 1:
             logger.error(f"delimiter must consist of 1 character")
-            raise "delimiter must consist of 1 character"
+            raise ValueError("delimiter must consist of 1 character")
         self.csv_path = csv_path
         with open(csv_path, "r", encoding="utf-16") as csv_reader:
             logger.info(f"Successfully open file '%s'", csv_reader)
             reader = csv.reader(csv_reader, delimiter=delimiter)
             self.data = []
+            self.names = []
             for row in reader:
                 if names:
                     self.names = row
