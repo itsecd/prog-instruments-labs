@@ -197,7 +197,7 @@ class MainMenu(QWidget):
             return
 
     def __open_osc(self, name_osc: str):
-        logger.info(f"Opening OSC file: {name_osc}")
+        logger.info(f"Opening OSC file: %s", name_osc)
         try:
             self.osc_file = Aegis_osc.File_osc(name_osc)
             self.num_osc = self.osc_file.m_sdoHdr.NumOSC
@@ -210,7 +210,7 @@ class MainMenu(QWidget):
             logger.info("OSC file loaded successfully")
             self._update_osc_ui()
         except Exception as e:
-            logger.error(f"Ошибка при открытии файла OSC: {e}")
+            logger.error(f"Ошибка при открытии файла OSC: %s", e)
 
     def _update_osc_ui(self):
         logger.info("Updating UI for OSC data")
@@ -273,7 +273,7 @@ class MainMenu(QWidget):
             self.now_plot.plot(self.osc_datas[self.osc_now])
             self.check_next_prev_osc()
         except Exception as e:
-            logger.error(f"Failed to navigate to next oscillogram: {e}")
+            logger.error(f"Failed to navigate to next oscillogram: %s", e)
 
     def open_prev_osc(self) -> None:
         logger.info("Navigating to previous oscillogram")
@@ -286,7 +286,7 @@ class MainMenu(QWidget):
             self.now_plot.plot(self.osc_datas[self.osc_now])
             self.check_next_prev_osc()
         except Exception as e:
-            logger.error("Failed to navigate to previous oscillogram: {e}")
+            logger.error(f"Failed to navigate to previous oscillogram: %s", e)
 
 
 class My_app(QMainWindow):

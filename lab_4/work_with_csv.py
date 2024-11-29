@@ -20,7 +20,7 @@ class MyCsv:
             raise "delimiter must consist of 1 character"
         self.csv_path = csv_path
         with open(csv_path, "r", encoding="utf-16") as csv_reader:
-            logger.info(f"Successfully open file '{csv_reader}'")
+            logger.info(f"Successfully open file '%s'", csv_reader)
             reader = csv.reader(csv_reader, delimiter=delimiter)
             self.data = []
             for row in reader:
@@ -30,7 +30,7 @@ class MyCsv:
                     continue
                 if len(row) != 0:
                     self.data.append(row)
-            logger.info(f"End work with file '{csv_reader}'")
+            logger.info(f"End work with file '%s'", csv_reader)
 
     def get_values_from_col(self, col_number: int) -> list[Any]:
         """

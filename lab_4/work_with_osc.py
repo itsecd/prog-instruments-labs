@@ -87,7 +87,7 @@ class DataOsc:
             logger.info("End create datasets with osc")
             return data_oscs, categories
         except Exception as e:
-            logger.error(f"Error create dataset from .osc files: {e}")
+            logger.error(f"Error create dataset from .osc files: %s", e)
 
     @staticmethod
     def augmentation_on_time_cycle(list_osc: list) -> list:
