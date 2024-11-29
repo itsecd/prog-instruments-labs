@@ -100,8 +100,9 @@ def test_breadth_search(create_graph, task_for_walk):
     result_of_walking = create_graph.breadth_search(task_for_walk[0])
     assert result_of_walking == task_for_walk[1]
 
+
 @pytest.mark.parametrize('task_for_dijkstra', [
-    ["D", "A", {'A': 22.7805, 'B': 24.0, 'C': 7.0, 'D': 0} , ['D', 'C', 'A']] ,
+    ["D", "A", {'A': 22.7805, 'B': 24.0, 'C': 7.0, 'D': 0}, ['D', 'C', 'A']],
     ["A", "C", {'A': 0, 'B': 2.0, 'C': 15.7805, 'D': 22.7805}, ['A', 'C']],
     ["C", "B", {'A': 15.7805, 'B': 17.0, 'C': 0, 'D': 7.0}, ['C', 'B']],
     ["D", "B", {'A': 22.7805, 'B': 24.0, 'C': 7.0, 'D': 0}, ['D', 'C', 'B']],
@@ -119,6 +120,7 @@ def test_save(create_graph):
         save_and_load_graph.save_graph_to_json(create_graph, save_file)
 
         mock_save.assert_called_once_with(create_graph, save_file)
+
 
 def test_load(create_graph, tmpdir):
     save_file = tmpdir.join("graph.json")
