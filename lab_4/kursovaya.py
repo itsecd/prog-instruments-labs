@@ -343,8 +343,26 @@ class Window(QMainWindow):
         self.btn3 = QPushButton("Сгенерировать", self)
         self.btn3.setFixedWidth(200)
         self.btn3.move(100, 375)
-        self.btn3.clicked.connect(self.creating_diplomas_for_users)
+        self.btn3.clicked.connect(self.checking_for_input)
         self.btn3.show()
+        self.error_label = QLabel("", self)
+        self.error_label.move(100, 415)
+        self.error_label.setStyleSheet("color: red;")
+        self.error_label.hide()
+
+
+    def checking_for_input(self):
+        x = self.num1_input.text().strip()
+        kid = self.num2_input.text().strip()
+        place = self.num3_input.text().strip()
+        teacher = self.num4_input.text().strip()
+        school = self.num5_input.text().strip()
+        if not x or not kid or not place or not place or not teacher or not school:
+            self.error_label.setText("Вы не заполнили все поля!")
+            self.error_label.show()
+        else:
+            self.error_label.hide()
+            self.creating_diplomas_for_users()
 
 
     def list_fonts(self):
@@ -411,11 +429,11 @@ class Window(QMainWindow):
         None: Метод не возвращает значения, результат сохраняется в виде файлов
         изображений.
         """
-        x = self.num1_input.text()
-        kid = self.num2_input.text()
-        place = self.num3_input.text()
-        teacher = self.num4_input.text()
-        school = self.num5_input.text()
+        x = self.num1_input.text().strip()
+        kid = self.num2_input.text().strip()
+        place = self.num3_input.text().strip()
+        teacher = self.num4_input.text().strip()
+        school = self.num5_input.text().strip()
         font_name = self.font_combo.currentText()
         font_name2 = self.font_combo2.currentText()
         font_name3 = self.font_combo3.currentText()
@@ -438,6 +456,7 @@ class Window(QMainWindow):
         if not x:
             logging.error("The user did not enter the X coordinates.")
             print("Вы не ввели координаты X или Y.")
+            self.users_diploms()
             return
 
         logging.info(f"The user entered the X coordinates = {x}")
