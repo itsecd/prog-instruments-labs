@@ -453,20 +453,17 @@ class Window(QMainWindow):
             folder = self.save_folder
             logging.info(f"The folder is selected: {self.folder}.")
         except Exception:
-            self.error_label.setText(f"Error loading folder.")
-            self.error_label.show()
+            logging.info(f"The folder is not selected: {self.folder}.")
         try:
             image_path = self.png_file
             logging.info(f"The image is selected: {self.image_path}.")
         except Exception:
-            self.error_label.setText(f"Error loading image.")
-            self.error_label.show()
+            logging.info(f"The image is not selected: {self.image_path}.")
         try:
             data = pd.read_excel(self.excel_file)
             logging.info(f"The data was successfully loaded from the Excel file: {self.excel_file}.")
         except Exception as e:
-            self.error_label.setText(f"Error loading data from Excel: {str(e)}.")
-            self.error_label.show()
+            logging.info(f"The data not was successfully loaded from the Excel file: {self.excel_file}.")
 
         logging.info(f"Save to folder: {folder}, image path: {image_path}, Excel file: {data}.")
 
@@ -562,6 +559,7 @@ class Window(QMainWindow):
 
             image.save(full_path)
 
+        logging.info(f"Certificates have been created.")
         self.text6 = QLabel("Грамоты созданы", self)
         self.text6.move(100, 430)
         self.text6.adjustSize()
@@ -648,8 +646,17 @@ class Window(QMainWindow):
         None: Метод не возвращает значения, результат сохраняется в виде файлов
         Word.
         """
-        data = pd.read_excel(self.excel_file)
-        folder = self.save_folder
+        try:
+            folder = self.save_folder
+            logging.info(f"The folder is selected: {self.folder}.")
+        except Exception:
+            logging.info(f"The folder is not selected: {self.folder}.")
+        try:
+            data = pd.read_excel(self.excel_file)
+            logging.info(f"The data was successfully loaded from the Excel file: {self.excel_file}.")
+        except Exception as e:
+            logging.info(f"The data not was successfully loaded from the Excel file: {self.excel_file}.")
+
 
         for index, row in data.iterrows():
             author_name = row['Фамилия, имя автора конкурсной работы'].replace(
@@ -701,6 +708,7 @@ class Window(QMainWindow):
 
             doc.save(full_path)
 
+        logging.info(f"Certificates have been created.")
         self.text6 = QLabel("Грамоты созданы", self)
         self.text6.move(100, 430)
         self.text6.adjustSize()
