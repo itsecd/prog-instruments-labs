@@ -445,10 +445,12 @@ class Window(QMainWindow):
         place = float(place)
         teacher = float(teacher)
         school = float(school)
+        logging.info(f"The user entered for x: {x}, for child: {kid}, for place: {place}, for teacher: {teacher}, for school: {school}.")
 
         folder = self.save_folder
         image_path = self.png_file
         data = pd.read_excel(self.excel_file)
+        logging.info(f"Save to folder: {folder}, image path: {image_path}, Excel file: {data}.")
 
         font_path = os.path.join("C:\\Windows\\Fonts", font_name)
         try:
@@ -477,6 +479,8 @@ class Window(QMainWindow):
         except IOError:
             print(f"Не удалось загрузить шрифт: {font_path4}")
             return
+
+        logging.info(f"the user has selected fonts: {font_path}, {font_path2}, {font_path3}, {font_path4}.")
 
         for index, row in data.iterrows():
             image = Image.open(image_path)
