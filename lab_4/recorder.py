@@ -88,4 +88,4 @@ class Recorder:
             wav_file.setframerate(sample_rate)
             wav_file.writeframes((samples * 32767).astype(np.int16).tobytes())
 
-        logger.info(f"Файл сохранён: {file_name}")
+        logger.success(f"Файл сохранён: {file_name}")
