@@ -14,6 +14,8 @@ import logging
 
 logging.basicConfig(filename='info.log', level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
+logging.basicConfig(filename='error.log', level=logging.ERROR,
+                    format='%(asctime)s:%(levelname)s:%(message)s')
 
 class Window(QMainWindow):
     def __init__(self):
@@ -447,9 +449,25 @@ class Window(QMainWindow):
         school = float(school)
         logging.info(f"The user entered for x: {x}, for child: {kid}, for place: {place}, for teacher: {teacher}, for school: {school}.")
 
-        folder = self.save_folder
-        image_path = self.png_file
-        data = pd.read_excel(self.excel_file)
+        try:
+            folder = self.save_folder
+            logging.info(f"The folder is selected: {self.folder}.")
+        except Exception:
+            self.error_label.setText(f"Error loading folder.")
+            self.error_label.show()
+        try:
+            image_path = self.png_file
+            logging.info(f"The image is selected: {self.image_path}.")
+        except Exception:
+            self.error_label.setText(f"Error loading image.")
+            self.error_label.show()
+        try:
+            data = pd.read_excel(self.excel_file)
+            logging.info(f"The data was successfully loaded from the Excel file: {self.excel_file}.")
+        except Exception as e:
+            self.error_label.setText(f"Error loading data from Excel: {str(e)}.")
+            self.error_label.show()
+
         logging.info(f"Save to folder: {folder}, image path: {image_path}, Excel file: {data}.")
 
         font_path = os.path.join("C:\\Windows\\Fonts", font_name)
