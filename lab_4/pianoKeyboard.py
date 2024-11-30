@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QHBoxLayout
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter, QColor, QMouseEvent
+from loguru import logger
 import pygame.mixer
 
 # Путь к папке со звуками
@@ -48,8 +49,10 @@ class PianoKeyboard(QWidget):
             file_path = SOUND_PATH + note + ".wav"
             try:
                 self.sound_map[note] = pygame.mixer.Sound(file_path)
-            except pygame.error as e:
-                print(f"Не удалось загрузить звук {note}: {e}")
+            except pygame.error:
+                logger.error(f"Не удалось загрузить звук {note}")
+            except FileNotFoundError:
+                logger.error(f"Звуковой файл {note}.wav не был найден")
 
 
     def play_sound(self, note):
@@ -61,7 +64,7 @@ class PianoKeyboard(QWidget):
                 sound.play()
                 self.recorder.add_note_event(note)
             except Exception as e:
-                print(f"Ошибка при воспроизведении звука для {note}: {e}")
+                logger.error(f"Ошибка при воспроизведении звука для {note}: {e}")
 
     def mousePressEvent(self, event: QMouseEvent):
         """Обработка нажатий клавиш."""
@@ -128,5 +131,4 @@ class PianoKeyboard(QWidget):
             painter.setBrush(color)
             painter.setPen(Qt.black)
             painter.drawRect(x, 0, black_key_width, black_key_height)
-
 

@@ -3,6 +3,7 @@ import wave
 import time
 import pygame
 import numpy as np
+from loguru import logger
 from datetime import datetime
 
 SOUND_PATH = "sounds/"
@@ -22,22 +23,20 @@ class Recorder:
         """Переключение состояния записи."""
         if not self.recording:
             self.start_recording()
-            print("Запись начата.")
         else:
             self.stop_recording()
-            print("Запись завершена.")
 
     def start_recording(self):
         """Начинаем запись."""
         self.recording = True
         self.notes = []
         self.start_time = time.time()
-        print("Запись началась.")
+        logger.info("Запись началась.")
 
     def stop_recording(self):
         """Останавливаем запись."""
         self.recording = False
-        print("Запись завершена.")
+        logger.info("Запись завершена.")
         self.save_to_wav()
 
     def add_note_event(self, note):
@@ -46,7 +45,7 @@ class Recorder:
             current_time = time.time()
             timestamp = current_time - self.start_time
             self.notes.append((note, timestamp))
-            print(f"Нота {note} добавлена в {timestamp:.2f} секунд.")
+            logger.debug(f"Нота {note} добавлена в {timestamp:.2f} секунд.")
 
     def save_to_wav(self):
         """Сохраняем записанную мелодию в WAV."""
@@ -89,4 +88,4 @@ class Recorder:
             wav_file.setframerate(sample_rate)
             wav_file.writeframes((samples * 32767).astype(np.int16).tobytes())
 
-        print(f"Файл сохранён: {file_name}")
+        logger.info(f"Файл сохранён: {file_name}")
