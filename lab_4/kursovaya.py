@@ -12,13 +12,8 @@ from docx.shared import Pt
 import logging
 
 
-logging.basicConfig(filename='coordinates.log', level=logging.INFO,
+logging.basicConfig(filename='info.log', level=logging.INFO,
                     format='%(asctime)s:%(levelname)s:%(message)s')
-
-warning_logging = logging.getLogger('warnings')
-handler = logging.FileHandler('war.log')
-handler.setLevel(logging.WARNING)
-warning_logging.addHandler(handler)
 
 class Window(QMainWindow):
     def __init__(self):
@@ -360,6 +355,8 @@ class Window(QMainWindow):
         if not x or not kid or not place or not place or not teacher or not school:
             self.error_label.setText("Вы не заполнили все поля!")
             self.error_label.show()
+            self.error_label.adjustSize()
+            logging.info(f"The user has not filled in all the fields.")
         else:
             self.error_label.hide()
             self.creating_diplomas_for_users()
@@ -452,15 +449,6 @@ class Window(QMainWindow):
         folder = self.save_folder
         image_path = self.png_file
         data = pd.read_excel(self.excel_file)
-
-        if not x:
-            logging.error("The user did not enter the X coordinates.")
-            print("Вы не ввели координаты X или Y.")
-            self.users_diploms()
-            return
-
-        logging.info(f"The user entered the X coordinates = {x}")
-        print(f"Сохранены координаты: X = {x}")
 
         font_path = os.path.join("C:\\Windows\\Fonts", font_name)
         try:
