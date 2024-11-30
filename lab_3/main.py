@@ -9,6 +9,10 @@ from checksum import calculate_checksum, serialize_result
 
 
 def read_data(data_path: str):
+    """
+    Функция на вход принимает путь по которому лежит csv файл
+    Возвращает считанные из него данные
+    """
     data = []
     try:
         with open(data_path, "r", encoding="utf-16 le") as file:
@@ -21,15 +25,25 @@ def read_data(data_path: str):
     except Exception as e:
         print("Ошибка чтения csv файл, ", e)
     
+
 def read_regular(path: str) -> list:
+        """
+        Функция на вход принимает путь по которому лежит json файл
+        Возвращает считанные из него данные
+        """
         try:
             with open(path, "r", encoding="UTF-8") as file:
                 return loads(file.read())
         except Exception as e:
             print("Ошибка чтения json файл, ", e)
 
-def chek_data(data_path: str, regular_path: str) -> List[int]:
 
+def chek_data(data_path: str, regular_path: str) -> List[int]:
+    """
+    Функция на вход принимает путь на файлы с датасетом и регулярными выражениями
+    Проверяет соотвествие данных из датасета на соответсвие шаблону, заданному регулрными выражениями
+    Возвращает строчки не удовлетворяющие требованиям
+    """
     data = read_data(data_path)
     regular = read_regular(regular_path)
     invalid = []

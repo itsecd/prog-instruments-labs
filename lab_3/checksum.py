@@ -19,13 +19,16 @@ def calculate_checksum(row_numbers: List[int]) -> str:
 
 
 def serialize_result(variant: int, checksum: str) -> None:
+    """
+    Функция выполняет сериализацию варианта и итоговой суммы(хеш от списка не подошедших строк)
+    """
     res = {
         "variant": str(variant), 
         "checksum": checksum
     }
     print (res)
 
-    with open("prog-instruments-labs/lab_3/result.json", mode="w", encoding="utf-8") as f:
+    with open("lab_3/result.json", mode="w", encoding="utf-8") as f:
         json.dump(res, f)
     pass
 
