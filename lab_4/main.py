@@ -3,6 +3,8 @@ import logging
 import mpmath
 import file_readers
 
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename='main.log', level=logging.INFO)
 
 def frequency_bit_test(sequence: str) -> float:
     """
@@ -14,6 +16,7 @@ def frequency_bit_test(sequence: str) -> float:
     Returns:
         float: P value
     """
+    logger.info(f"Getting possibility in frequency bit test. Sequence: {sequence}")
     N = len(sequence)
     sum_bits = sum(1 if i == '1' else -1 for i in sequence)
     P = sum_bits / math.sqrt(N)
@@ -31,6 +34,7 @@ def identical_bit_test(sequence: str) -> float:
     Returns:
         float: P value
     """
+    logger.info(f"Getting possibility in identical bit test. Sequence: {sequence}")
     N = len(sequence)
     sum_bits = sum(int(i) for i in sequence)
     sig = sum_bits/N
@@ -51,6 +55,7 @@ def longest_subsequence(sequence: str, consts_PI: list) -> float:
     Returns:
         float: P value
     """
+    logger.info(f"Getting possibility in longest_subsequence. Sequence: {sequence}, consts_PI: {consts_PI}")
     block_length = 8
     v = {1: 0, 2: 0, 3:0, 4: 0}
     hi_2 = 0
@@ -87,6 +92,7 @@ def run_test_and_write(sequence: str, output_file: str, consts_PI: list):
         output_file(str): output file name
         consts_PI(list): constants for the test
     """
+    logger.info(f"Writing the results for test sequence: {sequence}, into file {output_file}")
     freq_result = frequency_bit_test(sequence)
     ident_result = identical_bit_test(sequence)
     longest_result = longest_subsequence(sequence, consts_PI)
@@ -96,6 +102,7 @@ def run_test_and_write(sequence: str, output_file: str, consts_PI: list):
 
 
 if __name__ == "__main__":
+    logger.info("App is running")
     settings = file_readers.read_json_file("settings.json")
     sequences = file_readers.read_json_file("generated.json")
     consts_PI = settings["consts_PI"]
@@ -105,3 +112,4 @@ if __name__ == "__main__":
     output_file_java = settings["java_output"]
     run_test_and_write(input_c, output_file_c, consts_PI)
     run_test_and_write(input_java, output_file_java, consts_PI)
+    logger.info("App has finished")
