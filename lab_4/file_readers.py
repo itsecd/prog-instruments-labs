@@ -11,7 +11,7 @@ def read_json_file(input_file: str):
     logger.info(f"Reading json file: {input_file}")
     try:
         with open(input_file, "r", encoding="utf-8") as f:
-            return json.load(f)
+            return json.load(f) 
     except Exception as exc:
         logger.error(f"Failed to read json file: {exc}")
     
