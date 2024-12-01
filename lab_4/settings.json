@@ -1,0 +1,5 @@
+{
+    "c_output": "c_results.txt",
+    "java_output": "java_results.txt",
+    "consts_PI": [0.2148, 0.3672, 0.2305, 0.1875]
+}
