@@ -4,7 +4,7 @@ import mpmath
 import file_readers
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='logs/main.log', level=logging.INFO)
+logging.basicConfig(filename='logs/main.log', format='%(asctime)s [%(levelname)s] [%(funcName)s] %(message)s', level=logging.INFO)
 
 def frequency_bit_test(sequence: str) -> float:
     """
@@ -103,7 +103,7 @@ def run_test_and_write(sequence: str, output_file: str, consts_PI: list):
 
 if __name__ == "__main__":
     logger.info("App is running")
-    settings = file_readers.read_json_file('settings.json')
+    settings = file_readers.read_json_file('lab_4/settings.json')
     consts_PI = settings["consts_PI"]
     input_c = settings["cpp"]
     input_java = settings["java"]
