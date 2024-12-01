@@ -1,0 +1,10 @@
+{
+    "text": "text.txt",
+    "text_after_encryption_rsa": "text_after_encryption_rsa.txt",
+    "text_after_decryption_rsa": "text_after_decryption_rsa.txt",
+    "rsa_public_key": "rsa_public_key.txt",
+    "rsa_private_key": "rsa_private_key.txt",
+    "CAST5_key": "CAST5_key.txt",
+    "text_after_encryption_cast5": "text_after_encryption_cast5.txt",
+    "text_after_decryption_cast5": "text_after_decryption_cast5.txt"
+}
