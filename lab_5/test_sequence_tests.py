@@ -57,7 +57,7 @@ def test_longest_sequence_in_block_test(mock_write, mock_read):
 
 @pytest.mark.parametrize("seq_key, expected_value", [
     ("java", "Частотный побитовый тест java : 0.3767591178115821\n"),
-    ("cpp", "Частотный побитовый тест cpp : 0.859683795198666\n")
+    ("cpp", "Частотный побитовый тест cpp : 0.8596837951986662\n")
 ])
 @patch('test.read_json')
 @patch('test.write_files')
