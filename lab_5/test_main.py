@@ -48,3 +48,23 @@ class TestCustomQPushButton(unittest.TestCase):
         button2.click()
         self.assertFalse(button1.isEnabled())
         self.assertTrue(button2.isEnabled())
+
+    def test_button_click_changes_label_text(self):
+        """Проверка изменения текста в метке при клике на кнопку."""
+        label = ClickableLabel("Initial Text")
+        button = CustomQPushButton("Change Text", self.parent_widget)
+
+
+        def on_button_click():
+            label.setText("Changed Text")
+
+
+        button.clicked.connect(on_button_click)
+        self.assertEqual(label.text(), "Initial Text")
+        button.click()
+        self.assertEqual(label.text(), "Changed Text")
+
+    def test_button_is_enabled_by_default(self):
+        """Проверка, что кнопка по умолчанию доступна для клика."""
+        button = CustomQPushButton("Test", self.parent_widget)
+        self.assertTrue(button.isEnabled())
