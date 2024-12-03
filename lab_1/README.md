@@ -1,32 +1,19 @@
-# Технологии и методы программирования
+# Python Space Invaders Game with Pygame or pygame-ce
 
-## Лабораторная 1 "Стандарты кодирования"
-В рамках данной лабораторной работы требуется продемонстрировать способность приводить код на python к стандартам кодирования (PEP8 или любому иному набору стандартов, например, описанному в лекции).
+🚀🕹️🐍 Explore the world of game development with this Python Space Invaders Game built using the Pygame library. 💻🎨🎧 This GitHub repository contains the complete source code for the game, featuring graphics, input handling, and audio. Play it on Windows, macOS, or Linux. 🎮🔍📖 If you're an aspiring game developer, this well-structured, readable code is a fantastic resource to learn pygame game programming.
 
-## Задание на лабораторную работу
-1. Создать отдельную ветку в своем [форке](https://docs.github.com/en/get-started/quickstart/fork-a-repo) данного репозитория.
-2. Взять произвольный существующий код на python (свой старый, другого студента, найденный в интернете);
-3. Привести код в соответствие с [PEP8](https://peps.python.org/pep-0008/) или иным набором стандартов, например, описанным в лекциях (по крайней мере часть модулей, если их много);
-4. Рекомендуетмся закоммитить изменения в несколько коммитов. Каждый коммит должен соответствовать применению отдельного правила (PEP8 или иного набора стандартов);
-5. Открыть [пул-риквест](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) в иcходный репозиторий и ждать ревью.
+For an in-depth tutorial on creating your own Space Invaders game using pygame, watch the accompanying <a href="https://youtu.be/PFMoo_dvhyw">Video Tutorial on YouTube</a>. 🎬👨‍💻 The tutorial walks you through each code line, explaining its logic and demonstrating its impact on the game. Learn how to set up the game window, create classes for game elements, implement collision detection, and add sound effects. By the end of the tutorial, you'll have a fully functional Space Invaders game ready for play and customization. ☕ Grab a coffee and join us on an exciting journey into the world of pygame game development! 🌌
 
-## Условия сдачи
-* Осмысленное название коммитов обязательно (лучше на русском, если на английском не вывозите),
-* Один коммит = один исправленный аспект, например *правила именования переменных*, *правила именования функций*, *пробелы вокруг операторов* и т.д.
-* Размер исходного кода - не менее __300__ строк,
-* Исходный код и вносимые правки не должны повторяться среди студентов одной группы,
-* Должно быть применено минимум **5** различных правил оформления кода,
-* В описании пул-риквеста есть ссылка на исходный источник редактируемого кода.
-
-## Ремарки:
-Работать с git вы можете так, как вам удобно:
-* через интерфейс [командной строки](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git),
-* через [плагин](https://www.jetbrains.com/help/pycharm/set-up-a-git-repository.html#fetch) в IDE,
-* через десктопный клиент, типа [такого](https://desktop.github.com/).
-
-Если вы столкнулись с непреодолимыми трудностями в ходе выполнения лабораторной работы, вы можете задать вопрос в:
-* в виде [ишью](https://github.com/itsecd/prog_instruments_labs/issues/new/choose) в этом репозитории,
-* в разделе [Q&A](https://github.com/itsecd/prog_instruments_labs/discussions/categories/q-a) дискуссий в этом репозитории,
-* телеграм-чате предмета,
-* телеграм-чате вашего курса,
-* канале в дискорде.
+# Video Tutorial
+<p align="center">
+  <img src="preview.jpg" alt="" width="960">
+</p>
+<p align="center">
+🎥 <a href="https://youtu.be/PFMoo_dvhyw">Video Tutorial on YouTube</a>
+</p>
+<br>
+<br>
+<p align="center">
+| 📺 <a href="https://www.youtube.com/channel/UC3ivOTE5EgpmF2DHLBmWIWg">My YouTube Channel</a>
+| 🌍 <a href="http://www.educ8s.tv">My Website</a> | <br>
+</p>
