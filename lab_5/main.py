@@ -59,7 +59,7 @@ class CustomQPushButton(QPushButton):
             self.show()
 
 
-    def key_Press_Event(self, e_1: QKeyEvent) -> None:
+    def keyPressEvent(self, e_1: QKeyEvent) -> None:
         match e_1.key():
             case Qt.Key_1:
                 if self.alone_sign.text() == "0":
