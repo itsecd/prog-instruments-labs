@@ -10,3 +10,4 @@ class Player:
     def move(self, dx, dy):
         self.rect.x += dx
         self.rect.y += dy
+        self.rect.clamp_ip(pygame.Rect(0, 0, WIDTH, HEIGHT))

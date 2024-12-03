@@ -1,7 +1,8 @@
 import pygame
 
-from game import Player
-from config import WIDTH, HEIGHT, BLACK, WHITE
+from player import Player
+from enemy import Enemy
+from config import WIDTH, HEIGHT, BLACK, WHITE, RED, ENEMY_COUNT
 
 pygame.init()
 
@@ -12,6 +13,7 @@ def main():
     clock = pygame.time.Clock()
 
     player = Player()
+    enemy_list = [Enemy() for enemy in range(ENEMY_COUNT)]
 
     cycle_run = True
     while cycle_run:
@@ -32,8 +34,15 @@ def main():
 
         player.move(move_x, move_y)
 
+        for enemy in enemy_list:
+            if player.rect.colliderect(enemy.rect):
+                enemy_list.remove(enemy)
+
         screen.fill(WHITE)
         pygame.draw.rect(screen, BLACK, player.rect)
+
+        for enemy in enemy_list:
+            pygame.draw.rect(screen, RED, enemy.rect)
 
         pygame.display.flip()
         clock.tick(60)
