@@ -68,11 +68,12 @@ def test_now_(media_player_instance):
         assert result == "0:02:03" 
 
 
+@pytest.mark.timeout(2)  # Таймаут 2 секунды
 def test_update_time_(media_player_instance):
     with patch.object(media_player_instance.songtime, "set") as mock_set:
         with patch.object(media_player_instance, "now_", return_value="0:01:23"):
             media_player_instance.update_time_()
-            mock_set.assert_called_with("0:01:23")  
+            mock_set.assert_called_with("0:01:23")
 
 
 @pytest.mark.parametrize("time,current_time,expected_time", [

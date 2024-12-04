@@ -56,7 +56,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',  
     handlers=[
         logging.StreamHandler(),  
-        logging.FileHandler("lab_4/mediaplayer.log", mode='a', encoding='utf-8')  
+        logging.FileHandler("lab_5/mediaplayer.log", mode='a', encoding='utf-8')  
     ]
 )
 
