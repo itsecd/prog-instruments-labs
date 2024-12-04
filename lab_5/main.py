@@ -10,20 +10,24 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+from constants import FOLDER_OPEN_PATH, BACKGROUND_PATH, BACKGROUND2_PATH, LEFT_PATH, RIGHT_PATH, REPLAY_PATH, PAUSE_PATH, MUSIC_PATH
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(480, 620)
         MainWindow.setAutoFillBackground(False)
-        MainWindow.setStyleSheet("background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:0, y2:0, stop:0 rgba(81, 0, 135, 255), stop:0.427447 rgba(41, 61, 132, 235), stop:1 rgba(155, 79, 165, 255));")
+        MainWindow.setStyleSheet(
+            "background-color: qlineargradient(spread:pad, x1:1, y1:1, x2:0, y2:0, stop:0 rgba(81, 0, 135, 255), stop:0.427447 rgba(41, 61, 132, 235), stop:1 rgba(155, 79, 165, 255));")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.ope_folder = QtWidgets.QPushButton(self.centralwidget)
         self.ope_folder.setGeometry(QtCore.QRect(225, 0, 31, 31))
         self.ope_folder.setText("")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("Folder_open_alt_font_awesome.svg.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon.addPixmap(QtGui.QPixmap(
+            FOLDER_OPEN_PATH), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.ope_folder.setIcon(icon)
         self.ope_folder.setIconSize(QtCore.QSize(30, 30))
         self.ope_folder.setObjectName("ope_folder")
@@ -31,7 +35,8 @@ class Ui_MainWindow(object):
         self.pause.setGeometry(QtCore.QRect(225, 390, 30, 30))
         self.pause.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("Pause_-_The_Noun_Project.svg.png"), QtGui.QIcon.Selected, QtGui.QIcon.On)
+        icon1.addPixmap(QtGui.QPixmap(
+            PAUSE_PATH), QtGui.QIcon.Selected, QtGui.QIcon.On)
         self.pause.setIcon(icon1)
         self.pause.setIconSize(QtCore.QSize(36, 36))
         self.pause.setObjectName("pause")
@@ -39,8 +44,10 @@ class Ui_MainWindow(object):
         self.left.setGeometry(QtCore.QRect(130, 390, 30, 30))
         self.left.setText("")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("Iconoir_arrow-left-circled.svg — копия.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
-        icon2.addPixmap(QtGui.QPixmap("Pause_-_The_Noun_Project.svg.png"), QtGui.QIcon.Selected, QtGui.QIcon.On)
+        icon2.addPixmap(QtGui.QPixmap(
+            LEFT_PATH), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon2.addPixmap(QtGui.QPixmap(
+            PAUSE_PATH), QtGui.QIcon.Selected, QtGui.QIcon.On)
         self.left.setIcon(icon2)
         self.left.setIconSize(QtCore.QSize(36, 36))
         self.left.setObjectName("left")
@@ -48,8 +55,10 @@ class Ui_MainWindow(object):
         self.right.setGeometry(QtCore.QRect(320, 390, 30, 30))
         self.right.setText("")
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("Iconoir_arrow-left-circled.svg.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
-        icon3.addPixmap(QtGui.QPixmap("Pause_-_The_Noun_Project.svg.png"), QtGui.QIcon.Selected, QtGui.QIcon.On)
+        icon3.addPixmap(QtGui.QPixmap(
+            RIGHT_PATH), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon3.addPixmap(QtGui.QPixmap(
+            PAUSE_PATH), QtGui.QIcon.Selected, QtGui.QIcon.On)
         self.right.setIcon(icon3)
         self.right.setIconSize(QtCore.QSize(36, 36))
         self.right.setObjectName("right")
@@ -65,17 +74,19 @@ class Ui_MainWindow(object):
         self.loop.setGeometry(QtCore.QRect(225, 460, 30, 30))
         self.loop.setText("")
         icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap("povtor_gdyrn6c8sc5s.ico"), QtGui.QIcon.Normal, QtGui.QIcon.On)
-        icon4.addPixmap(QtGui.QPixmap("Pause_-_The_Noun_Project.svg.png"), QtGui.QIcon.Selected, QtGui.QIcon.On)
+        icon4.addPixmap(QtGui.QPixmap(REPLAY_PATH),
+                        QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon4.addPixmap(QtGui.QPixmap(
+            PAUSE_PATH), QtGui.QIcon.Selected, QtGui.QIcon.On)
         self.loop.setIcon(icon4)
         self.loop.setIconSize(QtCore.QSize(36, 36))
         self.loop.setObjectName("loop")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(160, 220, 161, 81))
         self.label.setStyleSheet("font: 48pt \"MS Shell Dlg 2\";\n"
-"\n"
-"\n"
-"")
+                                 "\n"
+                                 "\n"
+                                 "")
         self.label.setText("")
         self.label.setObjectName("label")
         MainWindow.setCentralWidget(self.centralwidget)
