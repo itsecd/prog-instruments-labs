@@ -1,5 +1,7 @@
 import pytest
 from db import Database
+import unittest
+from unittest.mock import MagicMock
 
 
 @pytest.fixture
@@ -55,3 +57,32 @@ def test_clearAll():
 def test_dataNull():
     data = Database("AnotherDB.db")
     assert data.data_is_null() is True
+
+
+# Сложный тест 1: параметризованное тестирование с pytest
+@pytest.mark.parametrize("name, expected", [
+    ("John", True),
+    ("Jane", True),
+    ("Alice", False),
+])
+def test_find_data(name, expected):
+    db = Database(":memory:")
+    db.insert("John Doe", "30", "2023-12-01", "john@gmail.com", "Male", "1234567890", "123 Main St")
+    db.insert("Jane Doe", "25", "2022-06-15", "jane@gmail.com", "Female", "0987654321", "456 Elm St")
+    assert db.find_data(name) == expected
+
+
+# Сложный тест 2: использование мока
+class TestDatabaseWithMock(unittest.TestCase):
+    def setUp(self):
+        self.db = Database(":memory:")
+        # Эмулируем метод fetch
+        self.db.fetch = MagicMock(return_value=[
+            (1, "Mocked User", "35", "2020-01-01", "mocked@example.com", "Non-binary", "5555555555", "Mocked Address")
+        ])
+
+    def test_mocked_fetch(self):
+        # Проверяем эмуляцию метода fetch
+        rows = self.db.fetch()
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0][1], "Mocked User")
