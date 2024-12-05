@@ -1,11 +1,13 @@
 import sys
-from main import Ui_MainWindow
+import os
+
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5.QtCore import QUrl, QTimer, QTime
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
-import os
+
+from main import Ui_MainWindow
 
 
 class Window(QtWidgets.QMainWindow, Ui_MainWindow):
