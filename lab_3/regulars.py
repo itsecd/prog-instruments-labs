@@ -1,6 +1,6 @@
 JSON_PATH = "result.json"
 CSV_FILE_PATH = "8.csv"
-REGULAR_PATTERNS = {
+REGULAR = {
     "regular1": r"^\+7-\(\d{3}\)-\d{3}-\d{2}-\d{2}$",
     "regular2": r"^[0-2]\.\d{2}$",
     "regular3": r"^\d{12}$", 
