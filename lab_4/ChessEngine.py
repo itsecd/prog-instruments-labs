@@ -1,3 +1,13 @@
+import logging
+
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[
+                        logging.StreamHandler(), 
+                        logging.FileHandler("game_log.txt", mode='w') 
+                    ])
+
 
 class GameState: 
         
@@ -21,6 +31,7 @@ class GameState:
                 self.staleMate = False
 
         def makeMove(self, move):
+                logging.info(f"Making move: {move.getChessNotation()}")
                 self.board[move.startRow][move.startCol] = "--"
                 self.board[move.endRow][move.endCol] = move.pieceMoved
                 self.moveLog.append(move)
@@ -32,11 +43,13 @@ class GameState:
 
                 if move.isPawnPromotion:
                         self.board[move.endRow][move.endCol] = move.pieceMoved[0] + "Q"
+                        logging.info(f"Pawn promoted at {move.getChessNotation()}")
 
 
         def undoMove(self):
                 if len(self.moveLog) != 0:
                         move = self.moveLog.pop()
+                        logging.info(f"Undoing move: {move.getChessNotation()}")
                         self.board[move.startRow][move.startCol] = move.pieceMoved
                         self.board[move.endRow][move.endCol] = move.pieceCaptured
                         self.whiteToMove = not self.whiteToMove
@@ -49,18 +62,22 @@ class GameState:
         """
         def getValidMoves(self):
                 moves = self.getAllPossibleMoves()
+                logging.debug(f"Checking {len(moves)} valid moves")
                 for i in range(len(moves)-1, -1, -1):
                         self.makeMove(moves[i])
                         self.whiteToMove = not self.whiteToMove
                         if self.inCheck():
+                                logging.info(f"Move {moves[i].getChessNotation()} puts the king in check. Removing it.")
                                 moves.remove(moves[i])
                         self.whiteToMove = not self.whiteToMove
                         self.undoMove()
                 if len(moves) == 0:
                         if self.inCheck():
                                 self.checkMate = True
+                                logging.info("Checkmate!")
                         else:
                                 self.staleMate = True
+                                logging.info("Stalemate!")
                 else:
                         self.checkMate = False
                         self.staleMate = False
@@ -79,6 +96,7 @@ class GameState:
                 self.whiteToMove  = not self.whiteToMove
                 for move in oppMoves:
                         if move.endRow == r and move.endCol == c:
+                                logging.info(f"Square {r}, {c} is under attack!")
                                 return True
                 return False
 
@@ -96,10 +114,12 @@ class GameState:
                                 if(turn == 'w' and self.whiteToMove) or (turn == 'b' and not self.whiteToMove):
                                         piece = self.board[r][c][1]
                                         self.moveFunctions[piece](r,c, moves)
+                logging.debug(f"Generated {len(moves)} possible moves")
                 return moves
 
 
         def getPawnMoves(self, r, c, moves):
+                logging.debug(f"Getting moves for pawn at {r}, {c}")
                 if self.whiteToMove:
                         if self.board[r-1][c] == "--":
                                 moves.append(Move((r, c),(r-1, c), self.board))
@@ -125,6 +145,7 @@ class GameState:
                                         moves.append(Move((r, c),(r+1, c+1), self.board))
 
         def getRookMoves(self, r, c, moves):
+                logging.debug(f"Getting moves for rook at {r}, {c}")
                 directions = ((-1, 0), (0, -1), (1, 0), (0, 1))
                 enemyColor = "b" if self.whiteToMove else "w"
                 for d in directions:
@@ -144,6 +165,7 @@ class GameState:
                                         break
 
         def getKnightMoves(self, r,c,moves):
+                logging.debug(f"Getting moves for knight at {r}, {c}")
                 knightMoves = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2), (2, -1), (2,1))
                 allyColor = "w" if self.whiteToMove else "b"
                 for m in knightMoves:
@@ -155,6 +177,7 @@ class GameState:
                                         moves.append(Move((r,c), (endRow, endCol), self.board))
 
         def getBishopMoves(self, r,c,moves):
+                logging.debug(f"Getting moves for bishop at {r}, {c}")
                 directions = ((-1, -1), (-1, 1), (1, -1), (1, 1))
                 enemyColor = "b" if self.whiteToMove else "w"
                 for d in directions:
@@ -174,10 +197,12 @@ class GameState:
                                         break
 
         def getQueenMoves(self, r,c,moves):
+                logging.debug(f"Getting moves for queen at {r}, {c}")
                 self.getRookMoves(r, c, moves)
                 self.getBishopMoves(r, c, moves)
 
         def getKingMoves(self, r,c,moves):
+                logging.debug(f"Getting moves for king at {r}, {c}")
                 kingMoves = ((-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1,1) )
                 allyColor = "w" if self.whiteToMove else "b"
                 for i in range(8):
