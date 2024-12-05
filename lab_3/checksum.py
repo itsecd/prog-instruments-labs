@@ -1,6 +1,9 @@
 import json
 import hashlib
 from typing import List
+from main import main
+
+VARIANT_NUMBER = 34
 
 """
 В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
@@ -38,9 +41,15 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    result = {
+        "variant": variant,
+        "checksum": checksum
+    }
+    with open('result.json', 'w', encoding='utf-8') as f:
+        json.dump(result, f, ensure_ascii=False, indent=4)
 
 
-if __name__ == "__main__":
-    print(calculate_checksum([1, 2, 3]))
-    print(calculate_checksum([3, 2, 1]))
+
+invalid_row_numbers = main(VARIANT_NUMBER)
+checksum = calculate_checksum(invalid_row_numbers)
+serialize_result(VARIANT_NUMBER, checksum)
