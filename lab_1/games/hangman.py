@@ -3,7 +3,13 @@ import random
 
 class Hangman:
     def __init__(self):
-        self.words = ["python", "программирование", "виселица", "игра", "разработка"]
+        self.words = [
+            "python", 
+            "программирование", 
+            "виселица", 
+            "игра", 
+            "разработка"
+        ]
         self.word = random.choice(self.words)  # Загадать случайное слово
         self.word_completion = "_" * len(self.word)  # Скрытое слово
         self.guessed = False  # Угадано ли слово
