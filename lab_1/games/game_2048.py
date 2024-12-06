@@ -50,14 +50,10 @@ class Game2048:
         """Перемещение плиток в заданном направлении."""
         board = self.board
         if direction in ("w", "s"):
-            board = [
-                list(row) for row in zip(*board)
-            ]  # Транспонируем для вертикального движения
+            board = [list(row) for row in zip(*board)]  # Транспонируем для вертикального движения
 
         if direction in ("s", "d"):
-            board = [
-                row[::-1] for row in board
-            ]  # Реверсируем строки для движения вниз и вправо
+            board = [row[::-1] for row in board]  # Реверсируем строки для движения вниз и вправо
 
         new_board = []
         for row in board:
@@ -82,10 +78,8 @@ class Game2048:
                 return False
         for i in range(4):
             for j in range(3):
-                if (
-                    self.board[i][j] == self.board[i][j + 1]
-                    or self.board[j][i] == self.board[j + 1][i]
-                ):
+                if (self.board[i][j] == self.board[i][j + 1] or
+                        self.board[j][i] == self.board[j + 1][i]):
                     return False
         print("Игра окончена! Попробуйте еще раз.")
         return True
