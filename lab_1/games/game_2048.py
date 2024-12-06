@@ -4,23 +4,23 @@ import os
 
 class Game2048:
     def __init__(self):
-        self.board = self.initGame()
+        self.board = self.init_game()
 
-    def initGame(self):
+    def init_game(self):
         """Инициализация игровой доски."""
         board = [[0] * 4 for _ in range(4)]
-        self.addNewTile(board)
-        self.addNewTile(board)
+        self.add_new_tile(board)
+        self.add_new_tile(board)
         return board
 
-    def addNewTile(self, board):
+    def add_new_tile(self, board):
         """Добавление новой плитки (2 или 4) на доску."""
         x, y = random.randint(0, 3), random.randint(0, 3)
         while board[x][y] != 0:
             x, y = random.randint(0, 3), random.randint(0, 3)
         board[x][y] = random.choice([2, 4])
 
-    def printBoard(self):
+    def print_board(self):
         """Вывод игровой доски на экран."""
         os.system("cls" if os.name == "nt" else "clear")
         for row in self.board:
@@ -72,7 +72,7 @@ class Game2048:
 
         return newBoard
 
-    def isGameOver(self):
+    def is_game_over(self):
         """Проверка, закончилась ли игра."""
         for row in self.board:
             if 2048 in row:
@@ -93,7 +93,7 @@ class Game2048:
     def play(self):
         """Основная функция игры 2048."""
         while True:
-            self.printBoard()
+            self.print_board()
             moveInput = input(
                 "Введите направление (w/a/s/d для вверх/влево/вниз/вправо, q для выхода): "
             ).lower()
@@ -102,8 +102,8 @@ class Game2048:
                 newBoard = self.move(moveInput)
                 if newBoard != self.board:
                     self.board = newBoard
-                    self.addNewTile(self.board)
-                if self.isGameOver():
+                    self.add_new_tile(self.board)
+                if self.is_game_over():
                     break
             elif moveInput == "q":
                 print("Вы вышли из игры.")
