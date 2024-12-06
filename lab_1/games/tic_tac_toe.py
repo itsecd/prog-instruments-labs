@@ -1,9 +1,9 @@
 class TicTacToe:
     def __init__(self):
         self.board = [" " for _ in range(9)]  # Инициализация пустого поля
-        self.currentPlayer = "X"  # Начальный игрок
+        self.current_player = "X"  # Начальный игрок
 
-    def printBoard(self):
+    def print_board(self):
         """Отображение текущего состояния игрового поля."""
         print(f"{self.board[0]} | {self.board[1]} | {self.board[2]}")
         print("--+---+--")
@@ -11,9 +11,9 @@ class TicTacToe:
         print("--+---+--")
         print(f"{self.board[6]} | {self.board[7]} | {self.board[8]}")
 
-    def checkWinner(self):
+    def check_winner(self):
         """Проверка на наличие победителя."""
-        winningCombinations = [
+        winning_combinations = [
             (0, 1, 2),
             (3, 4, 5),
             (6, 7, 8),  # Горизонтали
@@ -23,7 +23,7 @@ class TicTacToe:
             (0, 4, 8),
             (2, 4, 6),  # Диагонали
         ]
-        for combo in winningCombinations:
+        for combo in winning_combinations:
             if (
                 self.board[combo[0]]
                 == self.board[combo[1]]
@@ -36,25 +36,23 @@ class TicTacToe:
     def play(self):
         """Основной игровой процесс."""
         for turn in range(9):
-            self.printBoard()
-            move = (
-                int(input(f"Игрок {self.currentPlayer}, выберите позицию (1-9): ")) - 1
-            )
+            self.print_board()
+            move = int(input(f"Игрок {self.current_player}, выберите позицию (1-9): ")) - 1
 
             if move < 0 or move > 8 or self.board[move] != " ":
                 print("Некорректный ввод или позиция уже занята. Попробуйте снова.")
                 continue
 
-            self.board[move] = self.currentPlayer
-            winner = self.checkWinner()
+            self.board[move] = self.current_player
+            winner = self.check_winner()
             if winner:
-                self.printBoard()
+                self.print_board()
                 print(f"Поздравляем! Игрок {winner} выиграл!")
                 return
 
-            self.currentPlayer = "O" if self.currentPlayer == "X" else "X"
+            self.current_player = "O" if self.current_player == "X" else "X"
 
-        self.printBoard()
+        self.print_board()
         print("Игра закончилась вничью!")
 
 
