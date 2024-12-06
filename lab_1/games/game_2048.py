@@ -1,6 +1,7 @@
 import random
 import os
 
+
 class Game2048:
     def __init__(self):
         self.board = self.initGame()
@@ -21,7 +22,7 @@ class Game2048:
 
     def printBoard(self):
         """Вывод игровой доски на экран."""
-        os.system('cls' if os.name == 'nt' else 'clear')
+        os.system("cls" if os.name == "nt" else "clear")
         for row in self.board:
             print("\t".join(str(num) if num != 0 else "." for num in row))
             print()
@@ -48,21 +49,25 @@ class Game2048:
     def move(self, direction):
         """Перемещение плиток в заданном направлении."""
         board = self.board
-        if direction in ('w', 's'):
-            board = [list(row) for row in zip(*board)]  # Транспонируем для вертикального движения
+        if direction in ("w", "s"):
+            board = [
+                list(row) for row in zip(*board)
+            ]  # Транспонируем для вертикального движения
 
-        if direction in ('s', 'd'):
-            board = [row[::-1] for row in board]  # Реверсируем строки для движения вниз и вправо
+        if direction in ("s", "d"):
+            board = [
+                row[::-1] for row in board
+            ]  # Реверсируем строки для движения вниз и вправо
 
         newBoard = []
         for row in board:
             newRow = self.slideAndMerge(row)
             newBoard.append(newRow)
 
-        if direction in ('s', 'd'):
+        if direction in ("s", "d"):
             newBoard = [row[::-1] for row in newBoard]  # Реверсируем обратно
 
-        if direction in ('w', 's'):
+        if direction in ("w", "s"):
             newBoard = [list(row) for row in zip(*newBoard)]  # Транспонируем обратно
 
         return newBoard
@@ -77,7 +82,10 @@ class Game2048:
                 return False
         for i in range(4):
             for j in range(3):
-                if self.board[i][j] == self.board[i][j + 1] or self.board[j][i] == self.board[j + 1][i]:
+                if (
+                    self.board[i][j] == self.board[i][j + 1]
+                    or self.board[j][i] == self.board[j + 1][i]
+                ):
                     return False
         print("Игра окончена! Попробуйте еще раз.")
         return True
@@ -86,20 +94,23 @@ class Game2048:
         """Основная функция игры 2048."""
         while True:
             self.printBoard()
-            moveInput = input("Введите направление (w/a/s/d для вверх/влево/вниз/вправо, q для выхода): ").lower()
+            moveInput = input(
+                "Введите направление (w/a/s/d для вверх/влево/вниз/вправо, q для выхода): "
+            ).lower()
 
-            if moveInput in ('w', 'a', 's', 'd'):
+            if moveInput in ("w", "a", "s", "d"):
                 newBoard = self.move(moveInput)
                 if newBoard != self.board:
                     self.board = newBoard
                     self.addNewTile(self.board)
                 if self.isGameOver():
                     break
-            elif moveInput == 'q':
+            elif moveInput == "q":
                 print("Вы вышли из игры.")
                 break
             else:
                 print("Неверный ввод! Пожалуйста, используйте w/a/s/d или q.")
+
 
 def game_2048():
     game = Game2048()

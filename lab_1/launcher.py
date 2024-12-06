@@ -1,5 +1,6 @@
 import importlib
 
+
 class GameLauncher:
 
     def display_games(self):
@@ -42,13 +43,16 @@ class GameLauncher:
         """Основной игровой процесс."""
         while True:
             self.display_games()
-            selected_game = input("Введите название игры, в которую хотите поиграть (или 'выход' для завершения): ")
+            selected_game = input(
+                "Введите название игры, в которую хотите поиграть (или 'выход' для завершения): "
+            )
 
-            if selected_game.lower() == 'выход':
+            if selected_game.lower() == "выход":
                 print("Спасибо за игру! До свидания!")
                 break
 
             self.launch_game(selected_game)
+
 
 if __name__ == "__main__":
     game_launcher = GameLauncher()

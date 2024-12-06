@@ -1,5 +1,6 @@
 import random
 
+
 class Hangman:
     def __init__(self):
         self.words = ["python", "программирование", "виселица", "игра", "разработка"]
@@ -67,7 +68,7 @@ class Hangman:
                |
                |
                |
-            """
+            """,
         ]
         return stages[self.tries]
 
@@ -93,7 +94,12 @@ class Hangman:
 
             if guess in self.word:
                 print("Хорошо! Буква есть в слове.")
-                self.wordCompletion = "".join([letter if letter in self.guessedLetters else "_" for letter in self.word])
+                self.wordCompletion = "".join(
+                    [
+                        letter if letter in self.guessedLetters else "_"
+                        for letter in self.word
+                    ]
+                )
             else:
                 print("Увы, такой буквы нет в слове.")
                 self.tries -= 1
@@ -109,6 +115,7 @@ class Hangman:
             print("Поздравляем! Вы угадали слово:", self.word)
         else:
             print("Вы проиграли. Загаданное слово было:", self.word)
+
 
 def hangman():
     game = Hangman()
