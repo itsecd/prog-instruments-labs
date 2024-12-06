@@ -2,11 +2,13 @@ import pytest
 import pygame
 from objects import Road, Player, Nitro, Obstacle, HEIGHT
 
+
 @pytest.fixture(scope="module", autouse=True)
 def init_pygame():
     pygame.init()
     yield
     pygame.quit()
+
 
 def test_road_initialization():
     road = Road()
@@ -33,7 +35,7 @@ def test_nitro_initialization():
     "left, right, expected_x",
     [
         (True, False, 95),
-        (False, True, 100),
+        (False, True, 105),
         (False, False, 100),
     ]
 )
@@ -127,4 +129,3 @@ def test_road_update_and_player_position(initial_y, speed, expected_y):
 
     assert road.y1 == initial_y + speed
     assert road.y2 == -HEIGHT + speed
-
