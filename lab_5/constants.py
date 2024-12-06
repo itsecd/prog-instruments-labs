@@ -1,0 +1,8 @@
+FOLDER_OPEN_PATH = 'lab_5\img\Folder_open_alt_font_awesome.svg.png'
+BACKGROUND_PATH = 'lab_5\img\fon.jpg'
+BACKGROUND2_PATH = 'lab_5\img\grad.jpg'
+LEFT_PATH = 'lab_5\img\Iconoir_arrow-left-circled.svg — копия.png'
+RIGHT_PATH = 'lab_5\img\Iconoir_arrow-left-circled.svg.png'
+MUSIC_PATH = 'lab_5\img\music.jpg'
+PAUSE_PATH = 'lab_5\img\Pause_-_The_Noun_Project.svg.png'
+REPLAY_PATH = 'lab_5\img\povtor_gdyrn6c8sc5s.ico'
