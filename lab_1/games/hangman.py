@@ -5,12 +5,12 @@ class Hangman:
     def __init__(self):
         self.words = ["python", "программирование", "виселица", "игра", "разработка"]
         self.word = random.choice(self.words)  # Загадать случайное слово
-        self.wordCompletion = "_" * len(self.word)  # Скрытое слово
+        self.word_completion = "_" * len(self.word)  # Скрытое слово
         self.guessed = False  # Угадано ли слово
-        self.guessedLetters = []  # Угаданные буквы
+        self.guessed_letters = []  # Угаданные буквы
         self.tries = 6  # Количество попыток
 
-    def displayHangman(self):
+    def display_hangman(self):
         """Отображение состояния виселицы в зависимости от оставшихся попыток."""
         stages = [
             """
@@ -75,8 +75,8 @@ class Hangman:
     def play(self):
         """Основной игровой процесс."""
         print("Давайте играть в Виселицу!")
-        print(self.displayHangman())
-        print(self.wordCompletion)
+        print(self.display_hangman())
+        print(self.word_completion)
         print("\n")
 
         while not self.guessed and self.tries > 0:
@@ -86,17 +86,17 @@ class Hangman:
                 print("Пожалуйста, введите одну букву.")
                 continue
 
-            if guess in self.guessedLetters:
+            if guess in self.guessed_letters:
                 print("Вы уже угадывали эту букву. Попробуйте другую.")
                 continue
 
-            self.guessedLetters.append(guess)
+            self.guessed_letters.append(guess)
 
             if guess in self.word:
                 print("Хорошо! Буква есть в слове.")
-                self.wordCompletion = "".join(
+                self.word_completion = "".join(
                     [
-                        letter if letter in self.guessedLetters else "_"
+                        letter if letter in self.guessed_letters else "_"
                         for letter in self.word
                     ]
                 )
@@ -104,11 +104,11 @@ class Hangman:
                 print("Увы, такой буквы нет в слове.")
                 self.tries -= 1
 
-            print(self.displayHangman())
-            print(self.wordCompletion)
+            print(self.display_hangman())
+            print(self.word_completion)
             print("\n")
 
-            if "_" not in self.wordCompletion:
+            if "_" not in self.word_completion:
                 self.guessed = True
 
         if self.guessed:
