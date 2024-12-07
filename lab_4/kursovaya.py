@@ -471,28 +471,28 @@ class Window(QMainWindow):
         try:
             font = ImageFont.truetype(font_path, size=int(size1))
         except IOError:
-            print(f"Не удалось загрузить шрифт: {font_path}")
+            logging.error(f"The font could not be loaded: {font_path}")
             return
 
         font_path2 = os.path.join("C:\\Windows\\Fonts", font_name2)
         try:
             font2 = ImageFont.truetype(font_path2, size=int(size2))
         except IOError:
-            print(f"Не удалось загрузить шрифт: {font_path2}")
+            logging.error(f"The font could not be loaded: {font_path2}")
             return
 
         font_path3 = os.path.join("C:\\Windows\\Fonts", font_name3)
         try:
             font3 = ImageFont.truetype(font_path3, size=int(size3))
         except IOError:
-            print(f"Не удалось загрузить шрифт: {font_path3}")
+            logging.error(f"The font could not be loaded: {font_path3}")
             return
 
         font_path4 = os.path.join("C:\\Windows\\Fonts", font_name4)
         try:
             font4 = ImageFont.truetype(font_path4, size=int(size4))
         except IOError:
-            print(f"Не удалось загрузить шрифт: {font_path4}")
+            logging.error(f"The font could not be loaded: {font_path4}")
             return
 
         logging.info(f"the user has selected fonts: {font_path}, {font_path2}, {font_path3}, {font_path4}.")
