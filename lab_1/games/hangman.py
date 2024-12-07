@@ -4,10 +4,10 @@ import random
 class Hangman:
     def __init__(self):
         self.words = [
-            "python", 
-            "программирование", 
-            "виселица", 
-            "игра", 
+            "python",
+            "программирование",
+            "виселица",
+            "игра",
             "разработка"
         ]
         self.word = random.choice(self.words)  # Загадать случайное слово
