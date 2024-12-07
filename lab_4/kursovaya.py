@@ -358,7 +358,7 @@ class Window(QMainWindow):
             self.error_label.setText("Вы не заполнили все поля!")
             self.error_label.show()
             self.error_label.adjustSize()
-            logging.info(f"The user has not filled in all the fields.")
+            logging.info("The user has not filled in all the fields.")
         else:
             self.error_label.hide()
             self.creating_diplomas_for_users()
@@ -451,19 +451,19 @@ class Window(QMainWindow):
 
         try:
             folder = self.save_folder
-            logging.info(f"The folder is selected: {self.folder}.")
+            logging.info(f"The folder is selected: {folder}.")
         except Exception:
-            logging.info(f"The folder is not selected: {self.folder}.")
+            logging.info(f"The folder is not selected: {folder}.")
         try:
             image_path = self.png_file
-            logging.info(f"The image is selected: {self.image_path}.")
+            logging.info(f"The image is selected: {image_path}.")
         except Exception:
-            logging.info(f"The image is not selected: {self.image_path}.")
+            logging.info(f"The image is not selected: {image_path}.")
         try:
             data = pd.read_excel(self.excel_file)
-            logging.info(f"The data was successfully loaded from the Excel file: {self.excel_file}.")
+            logging.info(f"The data was successfully loaded from the Excel file: {data}.")
         except Exception as e:
-            logging.info(f"The data not was successfully loaded from the Excel file: {self.excel_file}.")
+            logging.info(f"The data not was successfully loaded from the Excel file: {data}.")
 
         logging.info(f"Save to folder: {folder}, image path: {image_path}, Excel file: {data}.")
 
@@ -559,7 +559,7 @@ class Window(QMainWindow):
 
             image.save(full_path)
 
-        logging.info(f"Certificates have been created.")
+        logging.info("Certificates have been created.")
         self.text6 = QLabel("Грамоты созданы", self)
         self.text6.move(100, 430)
         self.text6.adjustSize()
@@ -708,7 +708,7 @@ class Window(QMainWindow):
 
             doc.save(full_path)
 
-        logging.info(f"Certificates have been created.")
+        logging.info("Certificates have been created.")
         self.text6 = QLabel("Грамоты созданы", self)
         self.text6.move(100, 430)
         self.text6.adjustSize()
