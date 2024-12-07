@@ -1,0 +1,12 @@
+2024-12-07 19:10:36,749 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 128 - Неверная буква: p. Осталось попыток: 5
+2024-12-07 19:10:44,944 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 128 - Неверная буква: ы. Осталось попыток: 4
+2024-12-07 19:10:48,426 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 128 - Неверная буква: б. Осталось попыток: 3
+2024-12-07 19:10:50,525 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 128 - Неверная буква: р. Осталось попыток: 2
+2024-12-07 19:10:51,443 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 128 - Неверная буква: к. Осталось попыток: 1
+2024-12-07 19:10:54,821 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 128 - Неверная буква: ф. Осталось попыток: 0
+2024-12-07 19:15:36,630 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 128 - Неверная буква: ф. Осталось попыток: 5
+2024-12-07 19:15:41,954 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 128 - Неверная буква: б. Осталось попыток: 4
+2024-12-07 19:15:43,508 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 128 - Неверная буква: д. Осталось попыток: 3
+2024-12-07 19:15:44,348 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 128 - Неверная буква: к. Осталось попыток: 2
+2024-12-07 19:15:55,583 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 128 - Неверная буква: я. Осталось попыток: 1
+2024-12-07 19:18:39,191 - INFO - games.hangman - MainProcess - 8554 - MainThread - 131807737467008 - play - 128 - Неверная буква: й. Осталось попыток: 5

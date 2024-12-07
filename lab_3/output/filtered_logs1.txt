@@ -1,0 +1,19 @@
+2024-12-07 19:09:20,598 - INFO - root - MainProcess - 7988 - MainThread - 129003767201920 - run - 71 - Запуск игрового лаунчера.
+2024-12-07 19:09:20,598 - INFO - root - MainProcess - 7988 - MainThread - 129003767201920 - display_games - 36 - Отображение доступных игр.
+2024-12-07 19:09:27,219 - INFO - root - MainProcess - 7988 - MainThread - 129003767201920 - launch_game - 48 - Попытка запустить игру: угада
+2024-12-07 19:09:27,219 - WARNING - root - MainProcess - 7988 - MainThread - 129003767201920 - launch_game - 66 - Попытка запустить несуществующую игру.
+2024-12-07 19:09:27,219 - INFO - root - MainProcess - 7988 - MainThread - 129003767201920 - display_games - 36 - Отображение доступных игр.
+2024-12-07 19:09:31,868 - INFO - root - MainProcess - 7988 - MainThread - 129003767201920 - launch_game - 48 - Попытка запустить игру: Угадай число
+2024-12-07 19:09:31,873 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - __init__ - 14 - Игра 'Угадай число' начата. Загаданное число: 18
+2024-12-07 19:09:33,513 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 100
+2024-12-07 19:09:33,513 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 65 - Игрок сделал слишком большую попытку: 100
+2024-12-07 19:09:34,727 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 2
+2024-12-07 19:09:35,277 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 3
+2024-12-07 19:09:35,982 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 7
+2024-12-07 19:09:36,328 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 4
+2024-12-07 19:09:36,750 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 6
+2024-12-07 19:09:37,264 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 3
+2024-12-07 19:09:37,999 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 8
+2024-12-07 19:09:38,767 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 3
+2024-12-07 19:09:39,166 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 5
+2024-12-07 19:09:39,551 - INFO - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - check_guess - 47 - Игрок сделал попытку: 7

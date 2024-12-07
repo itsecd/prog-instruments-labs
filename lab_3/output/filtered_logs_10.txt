@@ -1,0 +1,62 @@
+2024-12-07 19:09:58,609 - WARNING - games.guess_the_number - MainProcess - 7988 - MainThread - 129003767201920 - play - 34 - Пользователь ввел некорректное значение: ds
+2024-12-07 19:10:34,493 - WARNING - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 106 - Пользователь ввел недопустимый ввод: python
+2024-12-07 19:10:35,938 - WARNING - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 106 - Пользователь ввел недопустимый ввод: py
+2024-12-07 19:10:36,749 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 115 - Пользователь угадал букву: p
+2024-12-07 19:10:40,373 - WARNING - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 106 - Пользователь ввел недопустимый ввод: абрис
+2024-12-07 19:10:41,048 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 115 - Пользователь угадал букву: а
+2024-12-07 19:10:43,119 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 115 - Пользователь угадал букву: и
+2024-12-07 19:10:44,944 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 115 - Пользователь угадал букву: ы
+2024-12-07 19:10:45,866 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 115 - Пользователь угадал букву: в
+2024-12-07 19:10:48,425 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 115 - Пользователь угадал букву: б
+2024-12-07 19:10:50,524 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 115 - Пользователь угадал букву: р
+2024-12-07 19:10:51,443 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 115 - Пользователь угадал букву: к
+2024-12-07 19:10:52,114 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 111 - Пользователь уже угадывал букву: а
+2024-12-07 19:10:54,821 - INFO - games.hangman - MainProcess - 7988 - MainThread - 129003767201920 - play - 115 - Пользователь угадал букву: ф
+2024-12-07 19:11:33,803 - WARNING - root - MainProcess - 8071 - MainThread - 130403791986816 - play - 153 - Пользователь ввел неверное направление: в
+2024-12-07 19:11:34,137 - WARNING - root - MainProcess - 8071 - MainThread - 130403791986816 - play - 153 - Пользователь ввел неверное направление: ф
+2024-12-07 19:11:34,868 - WARNING - root - MainProcess - 8071 - MainThread - 130403791986816 - play - 153 - Пользователь ввел неверное направление: в
+2024-12-07 19:11:40,346 - WARNING - root - MainProcess - 8071 - MainThread - 130403791986816 - play - 153 - Пользователь ввел неверное направление: ad
+2024-12-07 19:11:40,619 - WARNING - root - MainProcess - 8071 - MainThread - 130403791986816 - play - 153 - Пользователь ввел неверное направление: 
+2024-12-07 19:11:44,391 - WARNING - root - MainProcess - 8071 - MainThread - 130403791986816 - play - 153 - Пользователь ввел неверное направление: sw
+2024-12-07 19:11:54,604 - WARNING - root - MainProcess - 8071 - MainThread - 130403791986816 - play - 153 - Пользователь ввел неверное направление: aw
+2024-12-07 19:11:55,148 - WARNING - root - MainProcess - 8071 - MainThread - 130403791986816 - play - 153 - Пользователь ввел неверное направление: 
+2024-12-07 19:12:02,900 - INFO - root - MainProcess - 8071 - MainThread - 130403791986816 - run - 79 - Пользователь завершил игру.
+2024-12-07 19:12:35,611 - WARNING - games.guess_the_number - MainProcess - 8223 - MainThread - 137006969516160 - play - 34 - Пользователь ввел некорректное значение: 
+2024-12-07 19:13:06,084 - INFO - root - MainProcess - 8223 - MainThread - 137006969516160 - run - 79 - Пользователь завершил игру.
+2024-12-07 19:15:35,895 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: а
+2024-12-07 19:15:36,630 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: ф
+2024-12-07 19:15:37,288 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 111 - Пользователь уже угадывал букву: а
+2024-12-07 19:15:39,323 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: р
+2024-12-07 19:15:40,413 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: в
+2024-12-07 19:15:41,954 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: б
+2024-12-07 19:15:43,508 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: д
+2024-12-07 19:15:44,348 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: к
+2024-12-07 19:15:44,973 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: п
+2024-12-07 19:15:49,373 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: е
+2024-12-07 19:15:52,876 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: и
+2024-12-07 19:15:55,583 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: я
+2024-12-07 19:15:56,644 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 111 - Пользователь уже угадывал букву: ф
+2024-12-07 19:16:02,174 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 111 - Пользователь уже угадывал букву: в
+2024-12-07 19:16:03,417 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 111 - Пользователь уже угадывал букву: а
+2024-12-07 19:16:05,717 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 111 - Пользователь уже угадывал букву: п
+2024-12-07 19:16:06,893 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: м
+2024-12-07 19:16:08,135 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 111 - Пользователь уже угадывал букву: и
+2024-12-07 19:16:10,578 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: о
+2024-12-07 19:16:12,797 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: г
+2024-12-07 19:16:15,616 - INFO - games.hangman - MainProcess - 8273 - MainThread - 135358453698688 - play - 115 - Пользователь угадал букву: н
+2024-12-07 19:16:50,122 - INFO - root - MainProcess - 8273 - MainThread - 135358453698688 - run - 79 - Пользователь завершил игру.
+2024-12-07 19:18:21,897 - WARNING - root - MainProcess - 8554 - MainThread - 131807737467008 - play - 153 - Пользователь ввел неверное направление: dd
+2024-12-07 19:18:39,190 - INFO - games.hangman - MainProcess - 8554 - MainThread - 131807737467008 - play - 115 - Пользователь угадал букву: й
+2024-12-07 19:18:40,611 - INFO - games.hangman - MainProcess - 8554 - MainThread - 131807737467008 - play - 115 - Пользователь угадал букву: и
+2024-12-07 19:18:41,757 - INFO - games.hangman - MainProcess - 8554 - MainThread - 131807737467008 - play - 115 - Пользователь угадал букву: г
+2024-12-07 19:18:42,268 - INFO - games.hangman - MainProcess - 8554 - MainThread - 131807737467008 - play - 115 - Пользователь угадал букву: р
+2024-12-07 19:18:42,726 - INFO - games.hangman - MainProcess - 8554 - MainThread - 131807737467008 - play - 115 - Пользователь угадал букву: а
+2024-12-07 19:19:26,890 - INFO - root - MainProcess - 8554 - MainThread - 131807737467008 - run - 79 - Пользователь завершил игру.
+2024-12-07 19:20:49,832 - INFO - games.hangman - MainProcess - 8759 - MainThread - 138143923245184 - play - 115 - Пользователь угадал букву: т
+2024-12-07 19:20:51,375 - INFO - games.hangman - MainProcess - 8759 - MainThread - 138143923245184 - play - 115 - Пользователь угадал букву: р
+2024-12-07 19:20:52,463 - INFO - games.hangman - MainProcess - 8759 - MainThread - 138143923245184 - play - 115 - Пользователь угадал букву: а
+2024-12-07 19:20:53,356 - INFO - games.hangman - MainProcess - 8759 - MainThread - 138143923245184 - play - 115 - Пользователь угадал букву: з
+2024-12-07 19:20:54,858 - INFO - games.hangman - MainProcess - 8759 - MainThread - 138143923245184 - play - 115 - Пользователь угадал букву: б
+2024-12-07 19:20:55,738 - INFO - games.hangman - MainProcess - 8759 - MainThread - 138143923245184 - play - 115 - Пользователь угадал букву: о
+2024-12-07 19:20:57,054 - INFO - games.hangman - MainProcess - 8759 - MainThread - 138143923245184 - play - 115 - Пользователь угадал букву: к
+2024-12-07 19:22:23,288 - INFO - root - MainProcess - 8759 - MainThread - 138143923245184 - run - 79 - Пользователь завершил игру.
