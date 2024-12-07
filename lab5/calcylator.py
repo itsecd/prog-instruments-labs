@@ -68,5 +68,6 @@ def main():
     else:
         print("Неверный выбор.")
 
+
 if __name__ == "__main__":
     main()
