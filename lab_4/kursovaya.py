@@ -453,17 +453,17 @@ class Window(QMainWindow):
             folder = self.save_folder
             logging.info(f"The folder is selected: {folder}.")
         except Exception:
-            logging.info(f"The folder is not selected: {folder}.")
+            logging.error(f"The folder is not selected: {folder}.")
         try:
             image_path = self.png_file
             logging.info(f"The image is selected: {image_path}.")
         except Exception:
-            logging.info(f"The image is not selected: {image_path}.")
+            logging.error(f"The image is not selected: {image_path}.")
         try:
             data = pd.read_excel(self.excel_file)
             logging.info(f"The data was successfully loaded from the Excel file: {data}.")
-        except Exception as e:
-            logging.info(f"The data not was successfully loaded from the Excel file: {data}.")
+        except Exception:
+            logging.error(f"The data not was successfully loaded from the Excel file: {data}.")
 
         logging.info(f"Save to folder: {folder}, image path: {image_path}, Excel file: {data}.")
 
