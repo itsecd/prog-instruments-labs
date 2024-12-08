@@ -1,0 +1,17 @@
+TIMEJUMP = 0.4
+time_spawn = time()
+effect_time = time()
+time_score_sound = time()
+timer = pygame.time.Clock()
+end_time = time() - 3
+best_score_time = time()
+JUMPING = False
+FALLING = False
+DAMAGE = False
+HEALING = False
+BESTSCOREBEATEN = False
+LOST = True
+HIGHSCORES = True
+SONICSTATE = 0
+SONICSTANDINGSTATE = 0
+DUCKSTATE = 0
