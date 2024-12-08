@@ -63,3 +63,13 @@ def test_timesheet_invalid_date_logging():
     ts = Timesheet()
     with pytest.raises(TypeError):
         ts.log_time("John", "invalid-date", 8)
+
+def test_timesheet_log_time_with_mock():
+    ts = Timesheet()
+    ts.log_time = Mock()
+    ts.log_time("John", datetime.date(2024, 12, 6), 8)
+    ts.log_time("Alice", datetime.date(2024, 12, 6), 10)
+    ts.log_time.assert_any_call("John", datetime.date(2024, 12, 6), 8)
+    ts.log_time.assert_any_call("Alice", datetime.date(2024, 12, 6), 10)
+    assert ts.log_time.call_count == 2
+
