@@ -1,0 +1,5 @@
+ALIEN_IMAGE = "lab_5/images/alien11.png"
+SHIP_IMAGE = "lab_5/images/ship119x96.png"
+STAR_IMAGE = "lab_5/images/starsmall.png"
+HIGH_SCORE = "lab_5/high_score.txt"
+TEST_HIGH_SCORE = "lab_5/test_high_score.txt"
