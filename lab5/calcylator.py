@@ -24,7 +24,6 @@ class Calculator:
         return math.sqrt(a)
 
 
-# Пример использования
 def main():
     calc = Calculator()
 
