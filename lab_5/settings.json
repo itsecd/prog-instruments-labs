@@ -1,10 +1,10 @@
 {
-    "initial_file":"C:/Users/Quyntrd/Desktop/tmp/prog-instruments-labs/lab_5/texts/original_text.txt",
-    "encrypted_file":"C:/Users/Quyntrd/Desktop/tmp/prog-instruments-labs/lab_5/texts/encrypted_text.txt",
-    "decrypted_file":"C:/Users/Quyntrd/Desktop/tmp/prog-instruments-labs/lab_5/texts/decrypted_text.txt",
-    "symmetric_key":"C:/Users/Quyntrd/Desktop/tmp/prog-instruments-labs/lab_5/texts/sym_key.txt",
-    "public_key":"C:/Users/Quyntrd/Desktop/tmp/prog-instruments-labs/lab_5/texts/pub_key.pem",
-    "private_key":"C:/Users/Quyntrd/Desktop/tmp/prog-instruments-labs/lab_5/texts/priv_key.pem",
-    "enc_sym_key":"C:/Users/Quyntrd/Desktop/tmp/prog-instruments-labs/lab_5/texts/encrypted_key.txt",
-    "dec_sym_key":"C:/Users/Quyntrd/Desktop/tmp/prog-instruments-labs/lab_5/texts/decrypted_key.txt"
+    "initial_file":"texts/original_text.txt",
+    "encrypted_file":"texts/encrypted_text.txt",
+    "decrypted_file":"texts/decrypted_text.txt",
+    "symmetric_key":"texts/sym_key.txt",
+    "public_key":"texts/pub_key.pem",
+    "private_key":"texts/priv_key.pem",
+    "enc_sym_key":"texts/encrypted_key.txt",
+    "dec_sym_key":"texts/decrypted_key.txt"
 }
