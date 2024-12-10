@@ -54,3 +54,9 @@ def test_square_root(calculator, num, expected):
 def test_square_root_negative(calculator):
     with pytest.raises(ValueError, match="Cannot take the square root of a negative number."):
         calculator.square_root(-1)
+
+
+def test_square(calculator):
+    assert calculator.square(3) == 9
+    assert calculator.square(-3) == 9
+    assert calculator.square(0) == 0
