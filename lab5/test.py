@@ -29,3 +29,23 @@ def test_divide(calculator):
     assert calculator.divide(-6, 2) == -3
     with pytest.raises(ValueError, match="Cannot divide by zero."):
         calculator.divide(5, 0)
+
+@pytest.mark.parametrize("a, b, expected", [
+    (1, 1, 2),
+    (0, 0, 0),
+    (-1, -1, -2),
+    (100, 200, 300)
+])
+def test_parametrized_add(calculator, a, b, expected):
+    assert calculator.add(a, b) == expected
+
+
+@pytest.mark.parametrize("num, expected", [
+    (4, 2),
+    (0, 0),
+    (1, 1),
+    (9, 3),
+    (100, 10),
+])
+def test_square_root(calculator, num, expected):
+    assert calculator.square_root(num) == expected
