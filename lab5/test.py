@@ -49,3 +49,8 @@ def test_parametrized_add(calculator, a, b, expected):
 ])
 def test_square_root(calculator, num, expected):
     assert calculator.square_root(num) == expected
+
+
+def test_square_root_negative(calculator):
+    with pytest.raises(ValueError, match="Cannot take the square root of a negative number."):
+        calculator.square_root(-1)
