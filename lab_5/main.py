@@ -3,6 +3,7 @@ import os
 import random
 pygame.init()
 
+os.environ["SDL_VIDEODRIVER"] = "dummy"  
 # Global Constants
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 1100
@@ -109,7 +110,7 @@ class Cloud:
         self.image = CLOUD
         self.width = self.image.get_width()
 
-    def update(self):
+    def update(self, game_speed=20):
         self.x -= game_speed
         if self.x < -self.width:
             self.x = SCREEN_WIDTH + random.randint(2500, 3000)
@@ -263,5 +264,5 @@ def menu(death_count):
             if event.type == pygame.KEYDOWN:
                 main()
 
-
-menu(death_count=0)
+if __name__ == "__main__":
+    menu(death_count=0)
