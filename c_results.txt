@@ -1,3 +1,0 @@
-Frequency Bit Test: 0.4795001221869535
-Identical Bit Test: 0.68966674556926
-Longest Subsequence Test: 0.718013202470707
