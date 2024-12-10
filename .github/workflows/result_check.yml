@@ -1,0 +1,46 @@
+name: Result check for lab 3
+
+on:
+  pull_request_target:
+    types: [assigned, opened, synchronize, reopened]
+    branches:
+      - 'main'
+    paths:
+      - 'lab_3/**'
+permissions:
+  contents: write
+  
+jobs:
+  check-result:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: ActionsTools/read-json-action@main
+        name: acquiring your results
+        id: your_results
+        with:
+         file_path: "lab_3/result.json"       
+      - name: displaying your results
+        run: |
+          echo "your variant: ${{steps.your_results.outputs.variant}}"
+          echo "your checksum: ${{steps.your_results.outputs.checksum}}" 
+      - name: checking your results 
+        run: |
+          array=${{ secrets.CHECKSUMS }}
+          sum=${{steps.your_results.outputs.checksum}}
+          vnt=${{steps.your_results.outputs.variant}}
+          cnt=0
+          for item in ${array[*]}
+          do
+          cnt=$((cnt+1))
+          if [[ $item == $sum ]]; then
+              if [[ $cnt == $vnt ]]; then
+                echo "Congratulations, your results are correct"
+                exit 0
+              fi
+          fi
+          done
+          echo "Your results are not correct. Correct checksum for your variant is ${array[$vnt-1]}"
+          exit 1
