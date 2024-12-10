@@ -28,17 +28,21 @@ jobs:
         python-version: "3.10"
         cache: 'pip'
         
-    - name: Install dependencies
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libpulse-mainloop-glib0 libqt5multimedia5 libqt5multimedia5-plugins libqt5multimediagsttools qt5-default xvfb
+        
+    - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        pip install pytest
-        pip install coverage
+        pip install pytest coverage
              
     - name: Run tests
       run: |
-       coverage run -m pytest
+        xvfb-run -s "-screen 0 1024x768x24" coverage run -m pytest
 
     - name: Calculate code coverage
       run: |
-       coverage report
+        coverage report
