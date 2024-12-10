@@ -1,7 +1,13 @@
+import logging
 from enum import Enum
 import numpy as np
 import cv2
 
+
+logging.basicConfig(filename='fusing_methods.log',
+                    level=logging.DEBUG, 
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 class RuleType(Enum):
     """
@@ -14,8 +20,6 @@ class RuleType(Enum):
     min = 5
     weight = 6
     power_transformation = 7
-    # and so on
-
 
 class FusingBase:
     """
@@ -23,8 +27,8 @@ class FusingBase:
     """
     @staticmethod
     def calculate_intensity(images: list, errors: list):
+        logger.debug("Calculating intensity in FusingBase")
         pass
-
 
 class AverageFusing(FusingBase):
     """
@@ -32,65 +36,53 @@ class AverageFusing(FusingBase):
     """
     @staticmethod
     def calculate_intensity(images: list, errors: list):
-        return np.mean(images, axis=0)
-
+        logger.info("Calculating average intensity")
+        result = np.mean(images, axis=0)
+        logger.debug("Average intensity calculated")
+        return result
 
 class MaxFusing(FusingBase):
     @staticmethod
     def calculate_intensity(images: list, errors: list):
-        return np.max(images, axis=0)
+        logger.info("Calculating max intensity")
+        result = np.max(images, axis=0)
+        logger.debug("Max intensity calculated")
+        return result
 
 class MinFusing(FusingBase):
     @staticmethod
     def calculate_intensity(images: list, errors: list):
-        return np.min(images, axis=0)
-
+        logger.info("Calculating min intensity")
+        result = np.min(images, axis=0)
+        logger.debug("Min intensity calculated")
+        return result
 
 class WeightFusing(FusingBase):
     @staticmethod
     def calculate_intensity(images: list, errors: list):
+        logger.info("Calculating weighted intensity")
         tmp = images[0]
         for i in range(len(images)-1):
             weight_coeff = np.sum(images[i+1])/(np.sum(tmp) + np.sum(images[i+1]))
-            tmp = weight_coeff*tmp + (1-weight_coeff)*images[i+1]
+            tmp = weight_coeff * tmp + (1 - weight_coeff) * images[i+1]
+            logger.debug(f"Weight coefficient for image {i+1}: {weight_coeff}")
         result = tmp
+        logger.debug("Weighted intensity calculated")
         return result
-
 
 class PowerTransformationFusing(FusingBase):
     @staticmethod
     def calculate_intensity(images: list, errors: list):
-        # tmp_pixels = []
-        # pixels = []
-        # image_depth = 256
-        # result = []
-        # reshape = 0
-        # for lvl in range(images[0].shape[0]):
-        #     for element in range(images[0].shape[1]):
-        #         for count_of_img in range(len(images)):
-        #             tmp_pixels.append(images[count_of_img][lvl][element])
-        #         pixels.append(tmp_pixels.copy())
-        #         tmp_pixels.clear()
-        # for i in range(len(pixels)):
-        #     tmp = pixels[i][0]
-        #     for j in range(len(pixels[i])):
-        #         power = 1 - pixels[i][j]/image_depth
-        #         tmp = np.power(tmp, power)
-        #     result.append(tmp)
-        # for i in range(500, 550):
-        #     if len(result) % i == 0:
-        #         reshape = i
-        # result = np.array(result).reshape((reshape, reshape))
-        # threshold = 2
-        # _, thresholded_image = cv2.threshold(result, threshold, 255, cv2.THRESH_BINARY)
+        logger.info("Calculating intensity using power transformation")
         tmp = images[0]
         image_depth = 8
         for i in range(len(images) - 1):
-            power = 1 + images[i+1]/np.power(2, image_depth)
+            power = 1 + images[i+1] / np.power(2, image_depth)
             tmp = np.power(tmp, power)
-        result = tmp
-        return np.where(result == float('inf'), 255, 0)
-
+            logger.debug(f"Power transformation for image {i+1}: {power}")
+        result = np.where(tmp == float('inf'), 255, 0)
+        logger.debug("Power transformation intensity calculated")
+        return result
 
 class VarianceFusing(FusingBase):
     """
@@ -101,6 +93,7 @@ class VarianceFusing(FusingBase):
     """
     @staticmethod
     def calculate_intensity(images: list, errors: list):
+        logger.info("Calculating intensity using variance method")
         upper = 0
         lower = 0
         avg = np.array([])
@@ -129,6 +122,8 @@ class VarianceFusing(FusingBase):
                 upper = 0
                 lower = 0
         if len(avg):
+            logger.debug("Returning mean of average intensities")
             return np.mean(avg)
         else:
+            logger.debug("Returning computed intensities based on variance")
             return [val1 / val2 for val1, val2 in zip(tmp_pixels, tmp_errors)]
