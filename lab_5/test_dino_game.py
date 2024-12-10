@@ -75,4 +75,26 @@ def test_large_cactus_position():
     assert cactus.rect.y == 300  
     assert cactus.rect.x == SCREEN_WIDTH  
 
+@pytest.mark.parametrize("userInput, expected_state", [
+    ({pygame.K_UP: True}, (False, False, True)),  # Прыжок
+    ({pygame.K_UP: False, pygame.K_DOWN: False}, (False, True, False)),  # Бег
+])
+def test_dinosaur_update(userInput, expected_state, dino):
+    """Тест обновления состояния динозавра."""
+    with patch('pygame.key.get_pressed', return_value=userInput):
+        dino.update(userInput)
+    assert (dino.dino_duck, dino.dino_run, dino.dino_jump) == expected_state
+
+@pytest.mark.parametrize("initial_x, expected_x", [
+    (SCREEN_WIDTH + 100, SCREEN_WIDTH + 80),  # Движение облака
+])
+def test_cloud_update_position(initial_x, expected_x):
+    """Проверка перемещения облака."""
+    cloud = Cloud()
+    cloud.x = initial_x
+    cloud.update()
+    if cloud.x <= 0:
+        assert cloud.x > SCREEN_WIDTH  # Проверяем обнуление позиции
+    else:
+        assert cloud.x == expected_x
  
