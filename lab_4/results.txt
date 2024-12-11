@@ -1,0 +1,9 @@
+cpp:
+frequency_bit_test: 0.21592493894014042
+consecutive_bits_test: 0.04442892906489565
+longest_once_sequence_test: 0.4206210836052229
+
+java:
+frequency_bit_test: 0.5958830905651779
+consecutive_bits_test: 0.7045052566807751
+longest_once_sequence_test: 0.24545135632020007
