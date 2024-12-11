@@ -1,0 +1,44 @@
+2024-12-12 03:00:35,001 - roflan_loger - INFO - load {'cpp': '01111000011101111000010000101101100100100011001110101000100111100000101010111011101000111010100011101010000000011101110111011111', 'java': '11010111010101010111100100101011111000100100110010111100011100100010110010001111100000000111000111000000010001110010100110011100'}
+2024-12-12 03:00:35,001 - roflan_loger - INFO - load {'cpp': '01111000011101111000010000101101100100100011001110101000100111100000101010111011101000111010100011101010000000011101110111011111', 'java': '11010111010101010111100100101011111000100100110010111100011100100010110010001111100000000111000111000000010001110010100110011100'}
+2024-12-12 03:00:35,001 - roflan_loger - INFO - frequency_bit_test completed
+2024-12-12 03:00:35,003 - roflan_loger - INFO - frequency_bit_test completed
+2024-12-12 03:02:30,803 - roflan_loger - INFO - load {'cpp': '01111000011101111000010000101101100100100011001110101000100111100000101010111011101000111010100011101010000000011101110111011111', 'java': '11010111010101010111100100101011111000100100110010111100011100100010110010001111100000000111000111000000010001110010100110011100'}
+2024-12-12 03:02:30,804 - roflan_loger - INFO - load {'cpp': '01111000011101111000010000101101100100100011001110101000100111100000101010111011101000111010100011101010000000011101110111011111', 'java': '11010111010101010111100100101011111000100100110010111100011100100010110010001111100000000111000111000000010001110010100110011100'}
+2024-12-12 03:02:30,804 - roflan_loger - INFO - frequency_bit_test completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - identical_consecutive_bits completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,804 - roflan_loger - INFO - longest_sequence_of_ones_test completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - frequency_bit_test completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - identical_consecutive_bits completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence completed
+2024-12-12 03:02:30,806 - roflan_loger - INFO - longest_sequence_of_ones_test completed
