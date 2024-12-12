@@ -99,3 +99,66 @@ def test_asym_public_key_serialization(asymmetric):
     assert new_private_key.private_numbers() == private_key.private_numbers()
     os.remove("public_key.pem")
     os.remove("private_key.pem")
+
+
+@pytest.mark.parametrize("original_text", [
+    "The terror, which would not end for another twenty-eight years - "
+    "if it ever did end - began, so far as I know or can tell, "
+    "with a boat made from a sheet of newspaper floating down a gutter "
+    "swollen with rain."
+])
+def test_decrypted_text(symmetric, original_text):
+    key = symmetric.generate_key(192)
+    path_text = "test_text.txt"
+    path_key = "test_key.key"
+    path_en_text = "test_encrypted.txt"
+    path_dec_text = "test_decrypted.txt"
+
+    with open(path_text, "w") as f:
+        f.write(original_text)
+
+    FilesFunct.serial_sym_key(path_key, key)
+    symmetric.encrypt_text(path_text, path_en_text, path_key)
+    symmetric.decrypt_text(path_en_text, path_dec_text, path_key)
+
+    with open(path_dec_text, "r") as f:
+        decrypted_text = f.read()
+
+    assert decrypted_text == original_text
+
+    os.remove(path_text)
+    os.remove(path_key)
+    os.remove(path_en_text)
+    os.remove(path_dec_text)
+
+
+def test_decrypted_key(symmetric, asymmetric):
+    public_key, private_key = asymmetric.generate_keys()
+    key = symmetric.generate_key(192)
+    path_key = "test_key.key"
+    path_en_sim_key = "test_encrypted.key"
+
+    path_dec_sim_key = "test_decrypted.key"
+    public_key_file = "public_key.pem"
+    private_key_file = "private_key.pem"
+
+    FilesFunct.serialization_rsa_public_key(public_key, public_key_file)
+    FilesFunct.serialization_rsa_private_key(private_key, private_key_file)
+
+    FilesFunct.serial_sym_key(path_key, key)
+
+    asymmetric.encrypt_symmetric_key(
+        path_key, public_key_file, path_en_sim_key)
+    asymmetric.decrypt_symmetric_key(
+        path_en_sim_key, private_key_file, path_dec_sim_key)
+
+    with open(path_dec_sim_key, "rb") as f:
+        decrypted_key = f.read()
+
+    assert decrypted_key == key
+
+    os.remove(path_en_sim_key)
+    os.remove(path_key)
+    os.remove(path_dec_sim_key)
+    os.remove(public_key_file)
+    os.remove(private_key_file)
