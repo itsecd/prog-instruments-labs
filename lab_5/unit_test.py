@@ -3,6 +3,8 @@ import numpy as np
 from unittest.mock import patch
 from analysis import generate_false_detection_cvz, proximity_function, false_detection
 from processing import threshold_processing, psnr, rotation
+from PIL import Image
+
 
 @pytest.fixture
 def sample_cvz():
@@ -18,7 +20,6 @@ def sample_image():
 
 @pytest.fixture
 def sample_image_pil():
-    from PIL import Image
     return Image.fromarray(np.random.randint(0, 255, size=(512, 512), dtype=np.uint8))
 
 
@@ -34,8 +35,6 @@ def test_generate_false_detection_cvz():
     (np.array([1, 2, 3]), np.array([4, 5, 6]), 0.0),
     (np.array([0, 0, 0]), np.array([0, 0, 0]), 0.0),
 ])
-
-
 def test_proximity_function(cvz1, cvz2, expected):
     result = proximity_function(cvz1, cvz2)
     assert not np.isnan(result)
@@ -54,8 +53,6 @@ def test_false_detection(sample_cvz_list, sample_cvz):
     (-0.1, 0),
     (1.0, 1),
 ])
-
-
 def test_threshold_processing(input_value, expected_result):
     assert threshold_processing(input_value) == expected_result
 
@@ -73,6 +70,7 @@ def test_generate_false_detection_cvz_large(count):
     assert len(result) == count
     assert all(isinstance(cvz, np.ndarray) for cvz in result)
     assert all(cvz.shape == (65536,) for cvz in result)
+
 
 @patch("analysis.logging.info")
 def test_logging_in_generate_false_detection(mock_logging):
