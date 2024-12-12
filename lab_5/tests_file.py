@@ -5,8 +5,8 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from unittest.mock import patch
 
 from files_funct import FilesFunct
-from algoritms.tripldes import SymmetricKey
-from algoritms.rsa import AsymmetricKey
+from tripldes import SymmetricKey
+from rsa import AsymmetricKey
 
 
 @pytest.fixture
