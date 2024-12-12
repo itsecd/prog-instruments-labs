@@ -41,3 +41,8 @@ def test_find_book_with_parametrization(library_setup, title, expected_count):
 def test_find_book_by_author_with_parametrization(library_setup, author, expected_count):
     results = library_setup.find_book(author=author)
     assert len(results) == expected_count
+
+def test_remove_book(library_setup):
+    library_setup.remove_book("Гарри Поттер и философский камень")
+    results = library_setup.find_book(title="Гарри Поттер")
+    assert len(results) == 0
