@@ -21,9 +21,15 @@ def proximity_function(first_cvz: np.ndarray, second_cvz: np.ndarray) -> float:
     Calculates the proximity measure between two CVZs.
     """
     logging.debug("Calculating proximity function.")
-    result = sum(first_cvz * second_cvz) / (
-        ((sum(first_cvz ** 2)) ** (1 / 2)) *
-        ((sum(second_cvz ** 2)) ** (1 / 2)))
+    norm1 = np.linalg.norm(first_cvz)
+    norm2 = np.linalg.norm(second_cvz)
+    
+    if norm1 == 0 or norm2 == 0:  # Проверяем, если один из векторов нулевой
+        logging.debug("One or both vectors are zero. Returning 0.0.")
+        return 0.0
+
+    # Вычисляем скалярное произведение и нормализуем
+    result = np.dot(first_cvz, second_cvz) / (norm1 * norm2)
     logging.debug(f"Proximity calculated: {result}")
     return result
 
