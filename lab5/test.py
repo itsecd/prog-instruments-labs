@@ -6,6 +6,8 @@ def library_setup():
     library = Library()
     library.add_book(Book("Гарри Поттер и философский камень", "Джоан Роулинг", 1997, "Фэнтези"))
     library.add_book(Book("Война и мир", "Лев Толстой", 1869, "Роман"))
+    library.add_book(Book("Мастер и Маргарита", "Михаил Булгаков", 1928, "Роман"))
+
     return library
 
 def test_find_book_by_title(library_setup):
@@ -46,3 +48,9 @@ def test_remove_book(library_setup):
     library_setup.remove_book("Гарри Поттер и философский камень")
     results = library_setup.find_book(title="Гарри Поттер")
     assert len(results) == 0
+
+def test_sort_books(library_setup):
+    sorted_books = library_setup.sort_books('year')
+    assert sorted_books[0].year == 1869
+    assert sorted_books[1].year == 1928
+    assert sorted_books[2].year == 1997
