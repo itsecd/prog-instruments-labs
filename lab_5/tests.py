@@ -9,6 +9,16 @@ from income_expense_service import Account, BudgetService, Transaction
     ("Account3", 300, 300, "expense", 0)
 ])
 def test_add_transaction_to_different_accounts(account_name, initial_balance, transaction_amount, transaction_type, expected_balance):
+    """
+    Тест для проверки добавления транзакции в различные аккаунты.
+    
+    Параметры:
+    - account_name: str — имя аккаунта.
+    - initial_balance: float — начальный баланс аккаунта.
+    - transaction_amount: float — сумма транзакции.
+    - transaction_type: str — тип транзакции (доход/расход).
+    - expected_balance: float — ожидаемый баланс после транзакции.
+    """
     budget = BudgetService()
     account = Account(account_name, initial_balance)
     budget.add_account(account)
@@ -20,6 +30,9 @@ def test_add_transaction_to_different_accounts(account_name, initial_balance, tr
 
 
 def test_add_account():
+    """
+    Тест для проверки добавления нового аккаунта.
+    """
     budget = BudgetService()
     account = Account("Test Account", 500)
     budget.add_account(account)
@@ -28,6 +41,9 @@ def test_add_account():
     assert budget.accounts["Test Account"].balance == 500
 
 def test_add_transaction():
+    """
+    Тест для проверки добавления транзакции на существующий аккаунт.
+    """
     budget = BudgetService()
     account = Account("Main", 1000)
     budget.add_account(account)
@@ -39,6 +55,9 @@ def test_add_transaction():
     assert len(budget.transactions) == 1
 
 def test_insufficient_funds():
+    """
+    Тест для проверки случая недостаточных средств при добавлении транзакции.
+    """
     budget = BudgetService()
     account = Account("Main", 100)
     budget.add_account(account)
@@ -48,6 +67,9 @@ def test_insufficient_funds():
         budget.add_transaction(transaction, "Main")
 
 def test_edit_transaction():
+    """
+    Тест для проверки редактирования существующей транзакции.
+    """
     budget = BudgetService()
     account = Account("Main", 1000)
     budget.add_account(account)
@@ -62,6 +84,9 @@ def test_edit_transaction():
     assert budget.transactions[0][0].description == "Phone Bill"
 
 def test_get_monthly_report():
+    """
+    Тест для генерации ежемесячного отчета о доходах и расходах.
+    """
     budget = BudgetService()
     account = Account("Main", 1000)
     budget.add_account(account)
@@ -74,6 +99,9 @@ def test_get_monthly_report():
     assert "Total Expenses: 200.00" in report
 
 def test_get_transactions_by_type():
+    """
+    Тест для получения транзакций по типу (доход/расход).
+    """
     budget = BudgetService()
     account = Account("Main", 1000)
     budget.add_account(account)
@@ -86,6 +114,9 @@ def test_get_transactions_by_type():
     assert income_transactions[0].description == "Salary"
 
 def test_get_transactions_by_date_range():
+    """
+    Тест для получения транзакций по диапазону дат.
+    """
     budget = BudgetService()
     account = Account("Main", 1000)
     budget.add_account(account)
@@ -99,6 +130,9 @@ def test_get_transactions_by_date_range():
     assert all(t.date.month == 12 for t in date_range_transactions)
 
 def test_add_account_mock():
+    """
+    Тест с использованием mock-объекта для проверки вызова метода добавления аккаунта.
+    """
     budget = BudgetService()
     budget.add_account = MagicMock()
 
@@ -107,4 +141,4 @@ def test_add_account_mock():
 
     # Проверяем, что метод add_account был вызван с правильным аргументом
     budget.add_account.assert_called_once_with(account)
-
+     
