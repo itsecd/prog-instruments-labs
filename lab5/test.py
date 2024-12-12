@@ -32,3 +32,12 @@ def test_find_book_by_genre(library_setup):
 def test_find_book_with_parametrization(library_setup, title, expected_count):
     results = library_setup.find_book(title=title)
     assert len(results) == expected_count
+
+@pytest.mark.parametrize("author, expected_count", [
+    ("Джоан Роулинг", 1),
+    ("Лев Толстой", 1),
+    ("Неизвестный автор", 0),
+])
+def test_find_book_by_author_with_parametrization(library_setup, author, expected_count):
+    results = library_setup.find_book(author=author)
+    assert len(results) == expected_count
