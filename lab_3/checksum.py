@@ -3,7 +3,7 @@ import hashlib
 from typing import List
 from main import main
 
-VARIANT_NUMBER = 34
+VARIANT_NUMBER = 3
 
 """
 В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
