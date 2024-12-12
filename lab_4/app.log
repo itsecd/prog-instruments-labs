@@ -1,0 +1,18 @@
+2024-12-12 19:15:36 - __main__ - INFO - Database file user_db.json not found, creating a new one.
+2024-12-12 19:15:36 - __main__ - INFO - Application started.
+2024-12-12 19:15:37 - __main__ - INFO - Successfully fetched data for user ID 1 from network.
+2024-12-12 19:15:37 - __main__ - INFO - Database saved to user_db.json
+2024-12-12 19:15:37 - __main__ - INFO - User User1 with ID 1 added to the database.
+2024-12-12 19:15:38 - __main__ - INFO - Successfully fetched data for user ID 2 from network.
+2024-12-12 19:15:38 - __main__ - INFO - Database saved to user_db.json
+2024-12-12 19:15:38 - __main__ - INFO - User User2 with ID 2 added to the database.
+2024-12-12 19:15:38 - __main__ - INFO - User 1 found in database.
+2024-12-12 19:15:38 - __main__ - INFO - User data retrieved: User(id=1, name=User1, email=user1@gmail.com)
+2024-12-12 19:15:38 - __main__ - INFO - User found: User(id=1, name=User1, email=user1@gmail.com)
+2024-12-12 19:15:38 - __main__ - INFO - Database saved to user_db.json
+2024-12-12 19:15:38 - __main__ - INFO - User with ID 2 deleted from the database.
+2024-12-12 19:15:38 - __main__ - INFO - User with ID 2 deleted.
+2024-12-12 19:15:38 - __main__ - WARNING - User with ID 9999 not found in database.
+2024-12-12 19:15:38 - __main__ - WARNING - No user data found for user ID 9999.
+2024-12-12 19:15:38 - __main__ - WARNING - User with ID 9999 not found.
+2024-12-12 19:15:38 - __main__ - INFO - Application finished.
