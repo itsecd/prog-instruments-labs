@@ -24,6 +24,7 @@ def sample_image_pil():
 
 
 def test_generate_false_detection_cvz():
+    
     count = 5
     result = generate_false_detection_cvz(count)
     assert len(result) == count
