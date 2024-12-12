@@ -23,3 +23,12 @@ def test_find_book_by_genre(library_setup):
     results = library_setup.find_book(genre="Фэнтези")
     assert len(results) == 1
     assert results[0].genre == "Фэнтези"
+
+@pytest.mark.parametrize("title, expected_count", [
+    ("Гарри Поттер", 1),
+    ("Война", 1),
+    ("Незнакомая книга", 0),
+])
+def test_find_book_with_parametrization(library_setup, title, expected_count):
+    results = library_setup.find_book(title=title)
+    assert len(results) == expected_count
