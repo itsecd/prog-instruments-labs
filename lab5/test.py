@@ -18,3 +18,8 @@ def test_find_book_by_author(library_setup):
     results = library_setup.find_book(author="Толстой")
     assert len(results) == 1
     assert results[0].author == "Лев Толстой"
+
+def test_find_book_by_genre(library_setup):
+    results = library_setup.find_book(genre="Фэнтези")
+    assert len(results) == 1
+    assert results[0].genre == "Фэнтези"
