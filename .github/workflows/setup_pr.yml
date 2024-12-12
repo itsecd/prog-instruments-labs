@@ -16,7 +16,7 @@ jobs:
           TITLE: ${{ github.event.pull_request.title }}
        run: |
         SUB='Лаб.'
-        for VAR in 1 2 3 4 5 6 7
+        for VAR in 1 2 3 4 5 6 7 8
         do
             if (echo $TITLE | grep -iqF "$SUB$VAR" )|| (echo $TITLE | grep -iqF "$SUB $VAR"); then
                 echo "LABEL=Lab $VAR" >> "$GITHUB_ENV"
