@@ -2,11 +2,6 @@ import json
 import hashlib
 from typing import List
 
-"""
-В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
-"""
-
-
 def calculate_checksum(row_numbers: List[int]) -> str:
     """
     Вычисляет md5 хеш от списка целочисленных значений.
@@ -38,9 +33,7 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
+    result = {'variant': str(variant), 'checksum': checksum}
+    with open('lab_3/result.json', 'w') as file:
+        json.dump(result, file, indent=2) 
     pass
-
-
-if __name__ == "__main__":
-    print(calculate_checksum([1, 2, 3]))
-    print(calculate_checksum([3, 2, 1]))
