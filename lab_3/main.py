@@ -14,7 +14,7 @@ PATTERNS = {
     "hex_color": r"^#[0-9a-fA-F]{6}$",
     "issn": r"^\d{4}-\d{4}$",
     "locale_code": r"^[a-z]{2}(-[a-z]{2}?)?$",
-    'time': r"^\d{2}:\d{2}:\d{2}\.\d{6}$",
+    "time":  r"^[0-2]\d:[0-5]\d:[0-5]\d\.\d{6}$",
 }
 
 def is_valid(row: dict) -> bool:
