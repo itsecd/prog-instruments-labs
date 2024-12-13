@@ -3,7 +3,7 @@ import warnings
 from unittest.mock import Mock, patch
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QKeyEvent, QMouseEvent, QPointingDevice
-from main import CustomQPushButton, ClickableLabel
+from lab_5.main import CustomQPushButton, ClickableLabel
 from PySide6.QtWidgets import QApplication, QWidget
 
 @pytest.fixture(scope="session")
