@@ -17,7 +17,7 @@ class TestSymmetric:
     def test_encrypt_decrypt_text(self):
         sym = Symmetric()
         sym.generate_key()
-        original_text = b"Test symmetric encryption"
+        original_text = b"Test-symmetric-encryption"
         encrypted = sym.encrypt_text(original_text)
         decrypted = sym.decrypt_text(encrypted)
         assert decrypted == original_text.decode('utf-8')
@@ -69,7 +69,7 @@ class TestFileReaders:
 # Advanced testing: parametrization and mocks
 class TestIntegration:
 
-    @pytest.mark.parametrize("text", [b"Hello World", b"Another Test Text"])
+    @pytest.mark.parametrize("text", [b"Hello-World", b"Another-Test-Text"])
     def test_encrypt_decrypt_integration(self, text):
         sym = Symmetric()
         sym.generate_key()

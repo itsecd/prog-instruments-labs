@@ -1,4 +1,5 @@
 import os
+import re
 
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -52,5 +53,6 @@ class Symmetric:
         cipher = Cipher(algorithms.IDEA(self.key), modes.CBC(iv))
         decrypt = cipher.decryptor()
         unpacker_text = decrypt.update(cipher_text) + decrypt.finalize()
-        decrypt_text = unpacker_text.decode('UTF-8')
+        decrypt_string = unpacker_text.decode('UTF-8')
+        decrypt_text = re.sub(r'[\x00-\x1F\x7F]', '', decrypt_string)
         return decrypt_text
