@@ -1,6 +1,5 @@
 import asyncio
 import aiofiles
-import os
 
 from collections import Counter
 
@@ -14,16 +13,14 @@ async def read_file(file_name):
 
 async def analyze_file(file_name, content):
     """Анализирует содержимое файла."""
-    # Подсчёт строк, слов и символов
+
     num_lines = content.count('\n') + 1
     num_words = len(content.split())
     num_chars = len(content)
-    
-    # Подсчёт частоты слов
+
     words = content.split()
     word_freq = Counter(words)
-    
-    # Поиск самых длинных строк
+
     lines = content.splitlines()
     longest_lines = sorted(lines, key=len, reverse=True)[:3]
     
@@ -61,30 +58,25 @@ async def main():
     # Создаём несколько текстовых файлов для примера
     file_names = ['file_1.txt', 'file_2.txt', 'file_3.txt']
     file_contents = [
-        "Hello, this is the first file.\nIt has two lines.",
-        "This is the second file.\nIt has three lines.\nHere's the third line.",
-        "File number three is here.\nIt has four lines.\nLine three.\nLine four.",
+        "Hello, this is the first file.\nIt has two lines.\nAnd some repeated words like file and file.",
+        "This is the second file.\nIt has three lines.\nHere's the third line.\nFile content is fun!",
+        "File number three is here.\nIt has four lines.\nLine three.\nLine four.\nRepetition is key. Key is repetition.",
     ]
     
-    # Создание файлов (можно пропустить, если файлы уже существуют)
     for file_name, content in zip(file_names, file_contents):
         with open(file_name, 'w', encoding='utf-8') as f:
             f.write(content)
-    
-    # Чтение файлов асинхронно
+
     read_tasks = [read_file(file_name) for file_name in file_names]
     file_data = await asyncio.gather(*read_tasks)
-    
-    # Анализ содержимого файлов
+
     analyze_tasks = [analyze_file(file_name, content) for file_name, content in file_data]
     analysis_results = await asyncio.gather(*analyze_tasks)
+
+    save_tasks = [save_analysis(result["file_name"], result) for result in analysis_results]
+    await asyncio.gather(*save_tasks)
     
-    print("\nРезультаты анализа:")
-    for file_name, num_lines, num_words, num_chars in analysis_results:
-        print(f"{file_name}:")
-        print(f"  Строк: {num_lines}")
-        print(f"  Слов: {num_words}")
-        print(f"  Символов: {num_chars}")
+    print("\nАнализ завершён! Результаты сохранены.")
 
 
 asyncio.run(main())
