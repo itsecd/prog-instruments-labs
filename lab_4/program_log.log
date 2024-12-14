@@ -1,0 +1,94 @@
+2024-12-15 00:19:32,902 - INFO - Program started.
+2024-12-15 00:19:34,899 - INFO - Parameters initialized: a=-4, sigma2=6, gamma=0.9, n=17, M=1800
+2024-12-15 00:19:34,900 - DEBUG - Generated sample: [ 0.83609127 -4.41051853 -4.52452535 -5.50935947 -4.60831841 -1.22024587
+ -2.2327067  -2.17331495 -2.39347937 -5.92336854 -1.19338381 -7.6302282
+ -2.75761401 -3.23233035 -3.58787933 -2.91245607 -6.50904159]
+2024-12-15 00:19:34,900 - INFO - Confidence interval for mean (known variance): (-4.50558156328019, -2.551204230541464)
+2024-12-15 00:19:34,900 - DEBUG - t_gamma value: 1.6448536269514722, mean_sample: -3.5283928969108267, error: 0.9771886663693629
+2024-12-15 00:19:34,901 - DEBUG - Built-in confidence interval (known variance): (-4.50558156328019, -2.551204230541464)
+2024-12-15 00:19:34,901 - INFO - Confidence interval for mean (unknown variance): (-4.439047585217472, -2.617738208604181)
+2024-12-15 00:19:34,901 - DEBUG - t_critical value: 1.74588367627624, std_sample: 2.150616057285446, error: 0.9106546883066454
+2024-12-15 00:19:34,901 - DEBUG - Built-in confidence interval (unknown variance): (-4.439047585217472, -2.617738208604181)
+2024-12-15 00:19:34,901 - INFO - Confidence interval for variance: (2.8141827765430167, 9.294861237028872)
+2024-12-15 00:19:34,901 - DEBUG - chi2_lower: 7.9616455723785515, chi2_upper: 26.29622760486423, variance bounds: (2.8141827765430167, 9.294861237028872)
+2024-12-15 00:19:34,902 - DEBUG - Built-in confidence interval for variance: (2.8141827765430167, 9.294861237028872)
+2024-12-15 00:19:34,902 - DEBUG - Processing gamma level: 0.80
+2024-12-15 00:19:34,902 - DEBUG - Processing gamma level: 0.80
+2024-12-15 00:19:34,903 - DEBUG - Processing gamma level: 0.81
+2024-12-15 00:19:34,903 - DEBUG - Processing gamma level: 0.81
+2024-12-15 00:19:34,903 - DEBUG - Processing gamma level: 0.82
+2024-12-15 00:19:34,904 - DEBUG - Processing gamma level: 0.82
+2024-12-15 00:19:34,904 - DEBUG - Processing gamma level: 0.82
+2024-12-15 00:19:34,904 - DEBUG - Processing gamma level: 0.83
+2024-12-15 00:19:34,905 - DEBUG - Processing gamma level: 0.83
+2024-12-15 00:19:34,905 - DEBUG - Processing gamma level: 0.83
+2024-12-15 00:19:34,905 - DEBUG - Processing gamma level: 0.84
+2024-12-15 00:19:34,906 - DEBUG - Processing gamma level: 0.84
+2024-12-15 00:19:34,906 - DEBUG - Processing gamma level: 0.85
+2024-12-15 00:19:34,907 - DEBUG - Processing gamma level: 0.85
+2024-12-15 00:19:34,907 - DEBUG - Processing gamma level: 0.85
+2024-12-15 00:19:34,907 - DEBUG - Processing gamma level: 0.86
+2024-12-15 00:19:34,908 - DEBUG - Processing gamma level: 0.86
+2024-12-15 00:19:34,908 - DEBUG - Processing gamma level: 0.87
+2024-12-15 00:19:34,908 - DEBUG - Processing gamma level: 0.87
+2024-12-15 00:19:34,909 - DEBUG - Processing gamma level: 0.87
+2024-12-15 00:19:34,909 - DEBUG - Processing gamma level: 0.88
+2024-12-15 00:19:34,909 - DEBUG - Processing gamma level: 0.88
+2024-12-15 00:19:34,909 - DEBUG - Processing gamma level: 0.89
+2024-12-15 00:19:34,910 - DEBUG - Processing gamma level: 0.89
+2024-12-15 00:19:34,910 - DEBUG - Processing gamma level: 0.89
+2024-12-15 00:19:34,910 - DEBUG - Processing gamma level: 0.90
+2024-12-15 00:19:34,912 - DEBUG - Processing gamma level: 0.90
+2024-12-15 00:19:34,912 - DEBUG - Processing gamma level: 0.90
+2024-12-15 00:19:34,912 - DEBUG - Processing gamma level: 0.91
+2024-12-15 00:19:34,913 - DEBUG - Processing gamma level: 0.91
+2024-12-15 00:19:34,913 - DEBUG - Processing gamma level: 0.92
+2024-12-15 00:19:34,913 - DEBUG - Processing gamma level: 0.92
+2024-12-15 00:19:34,914 - DEBUG - Processing gamma level: 0.92
+2024-12-15 00:19:34,914 - DEBUG - Processing gamma level: 0.93
+2024-12-15 00:19:34,914 - DEBUG - Processing gamma level: 0.93
+2024-12-15 00:19:34,915 - DEBUG - Processing gamma level: 0.94
+2024-12-15 00:19:34,915 - DEBUG - Processing gamma level: 0.94
+2024-12-15 00:19:34,915 - DEBUG - Processing gamma level: 0.94
+2024-12-15 00:19:34,916 - DEBUG - Processing gamma level: 0.95
+2024-12-15 00:19:34,916 - DEBUG - Processing gamma level: 0.95
+2024-12-15 00:19:34,917 - DEBUG - Processing gamma level: 0.96
+2024-12-15 00:19:34,917 - DEBUG - Processing gamma level: 0.96
+2024-12-15 00:19:34,917 - DEBUG - Processing gamma level: 0.96
+2024-12-15 00:19:34,918 - DEBUG - Processing gamma level: 0.97
+2024-12-15 00:19:34,918 - DEBUG - Processing gamma level: 0.97
+2024-12-15 00:19:34,918 - DEBUG - Processing gamma level: 0.97
+2024-12-15 00:19:34,918 - DEBUG - Processing gamma level: 0.98
+2024-12-15 00:19:34,918 - DEBUG - Processing gamma level: 0.98
+2024-12-15 00:19:34,919 - DEBUG - Processing gamma level: 0.99
+2024-12-15 00:19:34,919 - DEBUG - Processing gamma level: 0.99
+2024-12-15 00:19:34,920 - INFO - Plotting interval lengths for confidence levels...
+2024-12-15 00:19:37,668 - DEBUG - Processing sample size: 10
+2024-12-15 00:19:37,668 - DEBUG - Processing sample size: 15
+2024-12-15 00:19:37,669 - DEBUG - Processing sample size: 20
+2024-12-15 00:19:37,670 - DEBUG - Processing sample size: 25
+2024-12-15 00:19:37,670 - DEBUG - Processing sample size: 30
+2024-12-15 00:19:37,670 - DEBUG - Processing sample size: 35
+2024-12-15 00:19:37,670 - DEBUG - Processing sample size: 40
+2024-12-15 00:19:37,671 - DEBUG - Processing sample size: 45
+2024-12-15 00:19:37,671 - DEBUG - Processing sample size: 50
+2024-12-15 00:19:37,671 - DEBUG - Processing sample size: 55
+2024-12-15 00:19:37,672 - DEBUG - Processing sample size: 60
+2024-12-15 00:19:37,672 - DEBUG - Processing sample size: 65
+2024-12-15 00:19:37,672 - DEBUG - Processing sample size: 70
+2024-12-15 00:19:37,672 - DEBUG - Processing sample size: 75
+2024-12-15 00:19:37,673 - DEBUG - Processing sample size: 80
+2024-12-15 00:19:37,673 - DEBUG - Processing sample size: 85
+2024-12-15 00:19:37,674 - DEBUG - Processing sample size: 90
+2024-12-15 00:19:37,674 - DEBUG - Processing sample size: 95
+2024-12-15 00:19:37,675 - DEBUG - Processing sample size: 100
+2024-12-15 00:19:37,675 - INFO - Plotting interval lengths for sample sizes...
+2024-12-15 00:19:38,101 - INFO - Generating histogram of combined samples...
+2024-12-15 00:19:38,878 - INFO - Generated all Z values.
+2024-12-15 00:19:38,878 - INFO - Mean Z: 16.117359015499368
+2024-12-15 00:19:38,879 - INFO - Variance Z: 33.00711271248033
+2024-12-15 00:19:38,879 - INFO - Median Z: 15.567742325666277
+2024-12-15 00:19:38,879 - INFO - Kurtosis Z: 0.8455673574121261
+2024-12-15 00:19:38,879 - INFO - Standard deviation Z: 5.743585589824535
+2024-12-15 00:19:39,499 - INFO - Generating boxplot for Z values...
+2024-12-15 00:19:40,111 - INFO - Program completed.
