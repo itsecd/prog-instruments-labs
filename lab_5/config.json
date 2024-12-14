@@ -1,0 +1,5 @@
+{
+    "input_cpp":"lab_5/generator_cc.txt",
+    "input_java":"lab_5/generator_java.txt",
+    "output":"lab_5/result_of_NIST_tests.txt"
+}
