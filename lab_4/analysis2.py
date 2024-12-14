@@ -23,10 +23,20 @@ gamma = 0.90
 n = 17
 M = 1800
 
-logging.info(f"Parameters initialized: a={a}, sigma2={sigma2}, gamma={gamma}, n={n}, M={M}")
+try:
+    if n <= 0 or M <= 0:
+        raise ValueError("Sample size (n) && number of simulations (M) must be positive.")
+    logging.info(f"Parameters initialized: a={a}, sigma2={sigma2}, gamma={gamma}, n={n}, M={M}")
+except ValueError as e:
+    logging.error(f"Invalid parameters: {e}")
+    raise
 
-sample = np.random.normal(loc = a, scale = std_sigma, size = n)
-logging.debug(f"Generated sample: {sample}")
+try:
+    sample = np.random.normal(loc = a, scale = std_sigma, size = n)
+    logging.debug(f"Generated sample: {sample}")
+except Exception as e:
+    logging.critical(f"Error generating sample: {e}")
+    raise
 
 t_gamma = stats.norm.ppf((1 + gamma) / 2)
 mean_sample = np.mean(sample)
@@ -46,11 +56,17 @@ logging.debug(f"Built-in confidence interval (known variance): {interval_mean_kn
 t_critical = stats.t.ppf((1 + gamma) / 2, df = n - 1)
 std_sample = np.std(sample, ddof = 1)
 
-error_unknow = t_critical * (std_sample / np.sqrt(n))
-interval_mean_unknown = (
-    mean_sample - error_unknow,
-    mean_sample + error_unknow
-)
+try:
+    if std_sample <= 0:
+        raise ValueError("Standard deviation of the sample must be positive.")
+    error_unknow = t_critical * (std_sample / np.sqrt(n))
+    interval_mean_unknown = (
+        mean_sample - error_unknow,
+        mean_sample + error_unknow
+    )
+except ValueError as e:
+    logging.error(f"Invalid sample standard deviation: {e}")
+    raise
 
 logging.info(f"Confidence interval for mean (unknown variance): {interval_mean_unknown}")
 logging.debug(f"t_critical value: {t_critical}, std_sample: {std_sample}, error: {error_unknow}")
