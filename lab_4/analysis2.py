@@ -1,11 +1,12 @@
 import logging
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s',
     filename='lab_4/program_log.log',
     filemode='w'
 )
+logging.getLogger('matplotlib').setLevel(logging.WARNING) # Системно логируется matplotlib, из-за чего файл с логированием мусорится им. Убрал INFO & DEBUG, оставив только WARNING & etc.
 
 logging.info("Program started.")
 
@@ -25,7 +26,7 @@ M = 1800
 logging.info(f"Parameters initialized: a={a}, sigma2={sigma2}, gamma={gamma}, n={n}, M={M}")
 
 sample = np.random.normal(loc = a, scale = std_sigma, size = n)
-logging.info(f"Sample generated: {sample}")
+logging.debug(f"Generated sample: {sample}")
 
 t_gamma = stats.norm.ppf((1 + gamma) / 2)
 mean_sample = np.mean(sample)
@@ -37,9 +38,10 @@ interval_mean_known = (
 )
 
 logging.info(f"Confidence interval for mean (known variance): {interval_mean_known}")
+logging.debug(f"t_gamma value: {t_gamma}, mean_sample: {mean_sample}, error: {error_known}")
 
 interval_mean_known_py = stats.norm.interval(gamma, loc=mean_sample, scale=std_sigma/np.sqrt(n))
-logging.info(f"Check confidence interval (known variance) with built-in function: {interval_mean_known_py}")
+logging.debug(f"Built-in confidence interval (known variance): {interval_mean_known_py}")
 
 t_critical = stats.t.ppf((1 + gamma) / 2, df = n - 1)
 std_sample = np.std(sample, ddof = 1)
@@ -51,9 +53,10 @@ interval_mean_unknown = (
 )
 
 logging.info(f"Confidence interval for mean (unknown variance): {interval_mean_unknown}")
+logging.debug(f"t_critical value: {t_critical}, std_sample: {std_sample}, error: {error_unknow}")
 
 interval_mean_unknown_py = stats.t.interval(gamma, df=n-1, loc=mean_sample, scale=std_sample/np.sqrt(n))
-logging.info(f"Check confidence interval (unknown variance) with built-in function: {interval_mean_unknown_py}")
+logging.debug(f"Built-in confidence interval (unknown variance): {interval_mean_unknown_py}")
 
 chi2_lower = stats.chi2.ppf((1 - gamma) / 2, df = n - 1)
 chi2_upper = stats.chi2.ppf((1 + gamma) / 2, df = n - 1)
@@ -63,12 +66,13 @@ var_upper = (n - 1) * (std_sample**2) / chi2_lower
 interval_var = (var_lower, var_upper)
 
 logging.info(f"Confidence interval for variance: {interval_var}")
+logging.debug(f"chi2_lower: {chi2_lower}, chi2_upper: {chi2_upper}, variance bounds: {interval_var}")
 
 chi2_interval = stats.chi2.interval(gamma, df=n-1)
 var_lower_py = (n - 1) * (std_sample ** 2) / chi2_interval[1]
 var_upper_py = (n - 1) * (std_sample ** 2) / chi2_interval[0]
 interval_var_py = (var_lower_py, var_upper_py)
-logging.info(f"Check confidence interval for variance with built-in function: {interval_var_py}")
+logging.debug(f"Built-in confidence interval for variance: {interval_var_py}")
 
 confidence_levels = np.linspace(0.80, 0.99, 50)
 interval_lengths_mean_known_variance = []
@@ -76,6 +80,7 @@ interval_lengths_variance_unknown_mean = []
 interval_lengths_variance = []
 
 for gamma_ in confidence_levels:
+    logging.debug(f"Processing gamma level: {gamma_:.2f}")
     # Для математического ожидания при известной дисперсии, но неизвестном математическом ожидании
     t_gamma_ = stats.norm.ppf((1 + gamma_) / 2)
     error_known_mean_ = t_gamma_ * (std_sigma / np.sqrt(n))
@@ -110,6 +115,7 @@ interval_lengths_variance_unknown_mean_3 = []
 interval_lengths_variance_3 = []
 
 for n_ in sample_sizes_3:
+    logging.debug(f"Processing sample size: {n_}")
     error_known_mean_ = t_gamma * (std_sigma / np.sqrt(n_))
     interval_length_mean_known_variance = 2 * error_known_mean_
     interval_lengths_mean_known_variance_3.append(interval_length_mean_known_variance)
@@ -152,11 +158,13 @@ plt.show()
 M = 1800
 Z_values = []
 
-for _ in range(M):
-    sample_m = np.random.normal(loc = a, scale = std_sigma, size = n)
-    s2_sample = np.var(sample_m, ddof = 1)
-    Z = (n - 1) * s2_sample / sigma2 
+for idx in range(M):
+    sample_m = np.random.normal(loc=a, scale=std_sigma, size=n)
+    s2_sample = np.var(sample_m, ddof=1)
+    Z = (n - 1) * s2_sample / sigma2
     Z_values.append(Z)
+
+logging.info("Generated all Z values.")
 
 mean_Z = np.mean(Z_values)
 variance_Z = np.var(Z_values, ddof = 1)
