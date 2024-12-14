@@ -37,6 +37,26 @@ async def analyze_file(file_name, content):
     }
 
 
+async def save_analysis(file_name, analysis_data):
+    """Сохраняет результаты анализа в файл."""
+    output_file = f"{file_name}_analysis.txt"
+    async with aiofiles.open(output_file, mode='w', encoding='utf-8') as f:
+        await f.write(f"Результаты анализа файла {file_name}:\n")
+        await f.write(f"Количество строк: {analysis_data['num_lines']}\n")
+        await f.write(f"Количество слов: {analysis_data['num_words']}\n")
+        await f.write(f"Количество символов: {analysis_data['num_chars']}\n\n")
+        
+        await f.write("Самые часто встречающиеся слова:\n")
+        for word, count in analysis_data['word_freq'].most_common(5):
+            await f.write(f"  {word}: {count}\n")
+        
+        await f.write("\nСамые длинные строки:\n")
+        for line in analysis_data['longest_lines']:
+            await f.write(f"  {line}\n")
+    
+    print(f"Результаты сохранены в файл {output_file}")
+
+
 async def main():
     # Создаём несколько текстовых файлов для примера
     file_names = ['file_1.txt', 'file_2.txt', 'file_3.txt']
