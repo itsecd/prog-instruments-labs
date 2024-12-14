@@ -1,0 +1,9 @@
+Results for C++ Generator:
+Frequency Test: 0.11161176829829222
+Consecutive Bits Test: 0.39320937215824525
+Longest Run of Ones Test: 0.9662110430474438
+
+Results for Java Generator:
+Frequency Test: 0.4795001221869535
+Consecutive Bits Test: 0.7561257193409985
+Longest Run of Ones Test: 0.986825907663123
