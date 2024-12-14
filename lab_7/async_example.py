@@ -11,3 +11,14 @@ async def read_file(file_name):
         content = await f.read()
     print(f"Файл {file_name} прочитан!")
     return file_name, content
+
+
+async def analyze_file(file_name, content):
+    """Анализирует содержимое файла."""
+    print(f"Анализ файла {file_name}...")
+    await asyncio.sleep(0.1)  # Имитация обработки для демонстрации
+    num_lines = content.count('\n') + 1
+    num_words = len(content.split())
+    num_chars = len(content)
+    print(f"Анализ завершён: {file_name}")
+    return file_name, num_lines, num_words, num_chars
