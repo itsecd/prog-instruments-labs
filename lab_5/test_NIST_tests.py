@@ -1,4 +1,5 @@
 import pytest
+from pytest import approx
 from NIST_tests import (frequency_test, 
                        consecutive_bits_test, longest_run_of_ones_test)
 from r_files import read_txt_file
@@ -34,7 +35,7 @@ def test_consecutive_bits_test():
     expected_frequency = 0.39320937215824525
     sequence = "10111001001100110000011100011100000011011101011000100111000101111011111111101100101010101110100110101111111111111010010111000001"
     
-    assert consecutive_bits_test(sequence) == expected_frequency
+    assert consecutive_bits_test(sequence) == approx(expected_frequency)
 
 
 @pytest.mark.parametrize("path, expected_value", [
@@ -42,7 +43,7 @@ def test_consecutive_bits_test():
 ])
 def test_consecutive_bits_test_with_reading(path, expected_value):
     sequence = read_txt_file(path)
-    assert consecutive_bits_test(sequence) == expected_value
+    assert consecutive_bits_test(sequence) == approx(expected_value)
 
 
 def test_longest_run_of_ones_test():
