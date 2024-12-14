@@ -14,13 +14,27 @@ async def read_file(file_name):
 
 async def analyze_file(file_name, content):
     """Анализирует содержимое файла."""
-    print(f"Анализ файла {file_name}...")
-    await asyncio.sleep(0.1)  # Имитация обработки для демонстрации
+    # Подсчёт строк, слов и символов
     num_lines = content.count('\n') + 1
     num_words = len(content.split())
     num_chars = len(content)
-    print(f"Анализ завершён: {file_name}")
-    return file_name, num_lines, num_words, num_chars
+    
+    # Подсчёт частоты слов
+    words = content.split()
+    word_freq = Counter(words)
+    
+    # Поиск самых длинных строк
+    lines = content.splitlines()
+    longest_lines = sorted(lines, key=len, reverse=True)[:3]
+    
+    return {
+        "file_name": file_name,
+        "num_lines": num_lines,
+        "num_words": num_words,
+        "num_chars": num_chars,
+        "word_freq": word_freq,
+        "longest_lines": longest_lines,
+    }
 
 
 async def main():
