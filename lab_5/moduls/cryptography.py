@@ -1,4 +1,4 @@
-from lab_5.moduls.asymetric import Asymetric
+from moduls.asymetric import Asymetric
 from moduls.symetric import Symetric
 from moduls.reader_writer import Texting
 

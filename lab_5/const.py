@@ -1,2 +1,2 @@
 SIZE = 128
-WAY = "lab_3\\way.json"
+WAY = "lab_5\\way.json"
