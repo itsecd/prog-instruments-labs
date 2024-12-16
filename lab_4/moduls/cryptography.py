@@ -8,13 +8,13 @@ class cryptography:
 
     def generation_proc(private_way: str, public_way: str, symm_way: str):
         logger = create_logger()
-        logger.info("Запуск процедкры генерации и сериализации ключей")
+        logger.info("Запуск процедуры генерации и сериализации ключей")
         sym_key = Symetric.create_sym_key()
         logger.info("Произошло создание симметричного ключа")
         asym_key = Asymetric.create_asym_key()
-        logger.info("Произогло создание асимметричного ключа")
+        logger.info("Произошло создание асимметричного ключа")
         cyph_sym_key = Asymetric.encrypt_sym_key(asym_key, sym_key)
-        logger.info("Произошла шифровка симметричного ключа")
+        logger.info("Произошло шифрование симметричного ключа")
         Texting.serialize_private(asym_key, private_way)
         logger.info("Произошла сериализация приватного ключа")
         Texting.serialize_public(asym_key, public_way)

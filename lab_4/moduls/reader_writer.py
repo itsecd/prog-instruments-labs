@@ -78,4 +78,4 @@ class Texting:
                 )
         except Exception as e:
             logger = create_logger()    
-            logger.warning("Возникла ошибка при сиреализацииЭ приватного ключа: ", e)
+            logger.warning("Возникла ошибка при сиреализации приватного ключа: ", e)

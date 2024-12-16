@@ -20,7 +20,7 @@ class Symetric:
         return key
 
     def encrypt_text(text: str, key: bytes) -> bytes:
-        """Выполняетя шифрования текста, получает текст строкой и ключ, возвращает зашифрованный текст в байтах"""
+        """Выполняется шифрование текста, получает текст строкой и ключ, возвращает зашифрованный текст в байтах"""
         padder = padding.PKCS7(64).padder()
         bi_text = bytes(text, "UTF-8")
         iv = os.urandom(8)
@@ -31,7 +31,7 @@ class Symetric:
         return c_text
 
     def decode_text(c_text: bytes, key: bytes) -> str:
-        """Выолняется дешифрование текста, принимается зашифрованный текст в байтах и ключ, возвращает расшифрованный текст строкой"""
+        """Выполняется дешифрование текста, принимается зашифрованный текст в байтах и ключ, возвращает расшифрованный текст строкой"""
         iv = c_text[:8]
         cipher_text = c_text[8:]
         cipher = Cipher(algorithms.IDEA(key), modes.CBC(iv))
