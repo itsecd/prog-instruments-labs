@@ -15,11 +15,14 @@ def frequency_bitwise_test(sequence: str) -> float:
     Returns: 
         float: the P-value 
     """
-    try:    
+    if not sequence:
+        raise ValueError("Input sequence is empty.")
+    if any(c not in '01' for c in sequence):
+        raise ValueError("Invalid character in sequence.")
+    try:
         sum_seq = sum(list(map(lambda x: 1 if x == '1' else -1, sequence)))
         s = abs(sum_seq) / math.sqrt(len(sequence))
         p_value = math.erfc(s / math.sqrt(2))
-        
         return p_value
     except Exception as error:
         print("An error occurred during frequency test:", error)
@@ -35,6 +38,10 @@ def consecutive_bits_test(sequence: str) -> float:
     Returns:
         float: the P-value 
     """
+    if not sequence:
+        raise ValueError("Input sequence is empty.")
+    if any(c not in '01' for c in sequence):
+        raise ValueError("Invalid character in sequence.")
     try:
         seq_len = len(sequence)
         one_c = sequence.count("1") / seq_len
@@ -48,7 +55,7 @@ def consecutive_bits_test(sequence: str) -> float:
                         (2 * math.sqrt(2 * seq_len) * one_c * (1 - one_c)))
         return p_value
     except Exception as error:
-        print("An error occured during consecutive bits test:", error)
+        print("An error occurred during consecutive bits test:", error)
         
 
 def longest_sequence_test(sequence: str) -> float:
