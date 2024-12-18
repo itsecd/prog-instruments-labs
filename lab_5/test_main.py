@@ -23,8 +23,8 @@ def test_p_value_range(test_function, sequence, expected_range):
         expected_range: ожидаемый диапазон P-значения.
     """
     p_value = test_function(sequence)
-    assert expected_range[0] <= p_value <= expected_range[1], f"{
-        test_function.__name__} returned invalid P-value"
+    assert expected_range[0] <= p_value <= expected_range[1], f"{test_function.__name__} returned invalid P-value"
+
 
 
 def test_frequency_test_empty_sequence():
