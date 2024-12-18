@@ -1,0 +1,6 @@
+0.37675911781158217 C++ frequency test
+0.5958830905651779 Java frequency test
+0.546465918049577 C++ cons. bits test
+0.494133083250592 Java cons. bits test
+0.294133733573452 C++ longest seq. test
+0.0293065840546161 Java longest seq. test
