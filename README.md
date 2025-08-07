@@ -1,5 +1,5 @@
 # Технологии и методы программирования
-[Таблица с успеваемостью](https://docs.google.com/spreadsheets/d/17gUhyaK20CFZuk3z73XZHiI7KEeHcWDrD1w_LXLhXg8/edit?usp=sharing)
+[Таблица с успеваемостью](https://docs.google.com/spreadsheets/d/1Oo_FVO-9iztwu1i8dQ5SnCTso_yKjNKWbaWGv6dl9oY/edit?usp=sharing)
 # Лабораторные работы
 1. [Стандарты кодирования](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_1/README.md)
 2. [Code review](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_2/README.md)
