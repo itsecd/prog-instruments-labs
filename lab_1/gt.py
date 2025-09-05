@@ -21,12 +21,12 @@ class Player(pygame.sprite.Sprite):
     walls = None
 
 
-    #Constructor
+    # Constructor
     def __init__(self, x, y):
         super(type(self), self).__init__()
 
-        #self.image = pygame.Surface([20, 20])
-        #self.image.fill(White)
+        # self.image = pygame.Surface([20, 20])
+        # self.image.fill(White)
         self.image = pygame.image.load("skull.jpeg").convert()
 
         self.rect = self.image.get_rect()
@@ -65,12 +65,12 @@ class Player_2(pygame.sprite.Sprite):
         walls = None
         
 
-        #Constructor
+        # Constructor
         def __init__(self, x, y):
                 super(type(self), self).__init__()
 
-                #self.image = pygame.Surface([20, 20])
-                #self.image.fill(White)
+                # self.image = pygame.Surface([20, 20])
+                # self.image.fill(White)
                 self.image = pygame.image.load("rsz_togepi.jpg").convert()
 
                 self.rect = self.image.get_rect()
