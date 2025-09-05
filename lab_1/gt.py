@@ -255,7 +255,11 @@ while not done:
     all_sprite_list.update()
 
     for bullet in bullet_list:
-        block_hit_list = pygame.sprite.spritecollide(bullet, player2_list, False)
+        block_hit_list = pygame.sprite.spritecollide(
+            bullet,
+            player2_list,
+            False
+        )
 
         for block in block_hit_list:
             bullet_list.remove(bullet)
@@ -267,7 +271,11 @@ while not done:
             all_sprite_list.remove(bullet)
 
     for bullet2 in bullet2_list:
-        block_hit_list2 = pygame.sprite.spritecollide(bullet2, player1_list, False)
+        block_hit_list2 = pygame.sprite.spritecollide(
+            bullet2,
+            player1_list,
+            False
+        )
 
         for block in block_hit_list2:
             bullet2_list.remove(bullet2)
@@ -279,9 +287,17 @@ while not done:
             all_sprite_list.remove(bullet2)
 
     screen.fill(Black)
-    player1health = font.render("Player 1 Health: " + str(P1Health), True, White)
+    player1health = font.render(
+        "Player 1 Health: " + str(P1Health),
+        True,
+        White
+    )
 
-    player2health = font.render("Player 2 Health: " + str(P2Health), True, White)
+    player2health = font.render(
+        "Player 2 Health: " + str(P2Health),
+        True,
+        White
+    )
     screen.blit(player1health, [550, 10])
     screen.blit(player2health, [20, 10])
 
