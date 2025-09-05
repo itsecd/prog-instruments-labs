@@ -32,14 +32,14 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        
+
     def changespeed(self, x, y):
         self.change_x += x
         self.change_y += y
 
     def update(self):
         self.rect.x += self.change_x
-        
+
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         for block in block_hit_list:
             if self.change_x > 0:
@@ -49,21 +49,21 @@ class Player(pygame.sprite.Sprite):
                 self.rect.left = block.rect.right
 
         self.rect.y += self.change_y
-        
+
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         for block in block_hit_list:
             if self.change_y > 0:
                 self.rect.bottom = block.rect.top
             elif self.change_y < 0:
                 self.rect.top = block.rect.bottom
- 
+
 
 
 class Player_2(pygame.sprite.Sprite):
         change_x = 0
         change_y = 0
         walls = None
-        
+
 
         # Constructor
         def __init__(self, x, y):
@@ -105,9 +105,9 @@ class Player_2(pygame.sprite.Sprite):
 class Cloud(pygame.sprite.Sprite):
     def __init__(self):
         super(type(self), self).__init__()
-        
+
         self.image = pygame.image.load("cloud.png").convert()
-        
+
         self.rect = self.image.get_rect()
 
     def update(self):
@@ -129,7 +129,7 @@ class Wall(pygame.sprite.Sprite):
         super(type(self), self).__init__()
         self.image = pygame.Surface([width, height])
         self.image.fill(Blue)
-    
+
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x
@@ -190,7 +190,7 @@ text1 = font.render("Game Over P1 Wins", True, White)
 text1_rect = text1.get_rect()
 text1_x = screen.get_width() / 2 - text1_rect.width / 2
 text1_y = screen.get_height() / 2 - text1_rect.height / 2
-            
+
 clock = pygame.time.Clock()
 
 done = False
@@ -217,15 +217,15 @@ while not done:
                 player2.changespeed(0, 6)
             elif event.key == pygame.K_w:
                 player2.changespeed(0, -6)
-                                     
+
                     elif event.key == pygame.K_SLASH:
                         bullet = Fireball()
                         bullet.rect.x = player1.rect.x
                         bullet.rect.y = player1.rect.y
-                                    
+
                         all_sprite_list.add(bullet)
                         bullet_list.add(bullet)
-            
+
             elif event.key == pygame.K_SPACE:
                 bullet2 = Cloud()
                 bullet2.rect.x = player2.rect.x
@@ -243,7 +243,7 @@ while not done:
                 player1.changespeed(0, -6)
             elif event.key == pygame.K_UP:
                 player1.changespeed(0, 6)
-    
+
             elif event.key == pygame.K_a:
                 player2.changespeed(6, 0)
             elif event.key == pygame.K_d:
@@ -252,47 +252,47 @@ while not done:
                 player2.changespeed(0, -6)
             elif event.key == pygame.K_w:
                 player2.changespeed(0, 6)
-                                          
-                                    
-                                     
+
+
+
     all_sprite_list.update()
 
         for bullet in bullet_list:
             block_hit_list = pygame.sprite.spritecollide(bullet, player2_list, False)
-            
+
                 for block in block_hit_list:
                     bullet_list.remove(bullet)
                     all_sprite_list.remove(bullet)
                     P2Health -= 1
-                    
-                
+
+
         if bullet.rect.x < -10:
             bullet_list.remove(bullet)
             all_sprite_list.remove(bullet) 
 
     for bullet2 in bullet2_list:
         block_hit_list2 = pygame.sprite.spritecollide(bullet2, player1_list, False)
-    
+
         for block in block_hit_list2:
             bullet2_list.remove(bullet2)
             all_sprite_list.remove(bullet2)
             P1Health -= 1
-            
+
 
         if bullet2.rect.x > 810:
             bullet2_list.remove(bullet2)
             all_sprite_list.remove(bullet2)
-    
-                      
-                                    
-                                     
+
+
+
+
     screen.fill(Black)
     player1health = font.render("Player 1 Health: " + str(P1Health), True, White)
 
         player2health = font.render("Player 2 Health: " + str(P2Health), True, White)
     screen.blit(player1health, [550, 10])
     screen.blit(player2health, [20, 10])
-    
+
     all_sprite_list.draw(screen)
 
     if (P1Health <= 0):
