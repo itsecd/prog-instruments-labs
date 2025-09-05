@@ -290,7 +290,7 @@ while not done:
     if (P1Health <= 0):
         screen.blit(text2, [text2_x, text2_y])
         gameover = True
-    elif(P2Health <= 0):
+    elif (P2Health <= 0):
         screen.blit(text1, [text1_x, text1_y])
         gameover = True
 
