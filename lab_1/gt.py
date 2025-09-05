@@ -60,46 +60,46 @@ class Player(pygame.sprite.Sprite):
 
 
 class Player_2(pygame.sprite.Sprite):
-        change_x = 0
-        change_y = 0
-        walls = None
+    change_x = 0
+    change_y = 0
+    walls = None
 
 
-        # Constructor
-        def __init__(self, x, y):
-                super(type(self), self).__init__()
+    # Constructor
+    def __init__(self, x, y):
+        super(type(self), self).__init__()
 
-                # self.image = pygame.Surface([20, 20])
-                # self.image.fill(White)
-                self.image = pygame.image.load("rsz_togepi.jpg").convert()
+        # self.image = pygame.Surface([20, 20])
+        # self.image.fill(White)
+        self.image = pygame.image.load("rsz_togepi.jpg").convert()
 
-                self.rect = self.image.get_rect()
-                self.rect.x = x
-                self.rect.y = y
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
-        def changespeed(self, x, y):
-                self.change_x += x
-                self.change_y += y
+    def changespeed(self, x, y):
+        self.change_x += x
+        self.change_y += y
 
-        def update(self):
-                self.rect.x += self.change_x
+    def update(self):
+        self.rect.x += self.change_x
 
-                block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
-                for block in block_hit_list:
-                        if self.change_x > 0:
-                                self.rect.right = block.rect.left
+        block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
+        for block in block_hit_list:
+            if self.change_x > 0:
+                self.rect.right = block.rect.left
 
-                        elif self.change_x < 0:
-                                self.rect.left = block.rect.right
+            elif self.change_x < 0:
+                self.rect.left = block.rect.right
 
-                self.rect.y += self.change_y
+        self.rect.y += self.change_y
 
-                block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
-                for block in block_hit_list:
-                        if self.change_y > 0:
-                                self.rect.bottom = block.rect.top
-                        elif self.change_y < 0:
-                                self.rect.top = block.rect.bottom
+        block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
+        for block in block_hit_list:
+            if self.change_y > 0:
+                self.rect.bottom = block.rect.top
+            elif self.change_y < 0:
+                self.rect.top = block.rect.bottom
 
 
 class Cloud(pygame.sprite.Sprite):
@@ -296,8 +296,8 @@ while not done:
     all_sprite_list.draw(screen)
 
     if (P1Health <= 0):
-                screen.blit(text2, [text2_x, text2_y])
-            gameover = True
+        screen.blit(text2, [text2_x, text2_y])
+        gameover = True
         elif(P2Health <= 0):
             screen.blit(text1, [text1_x, text1_y])
             gameover = True
