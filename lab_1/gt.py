@@ -1,14 +1,14 @@
 import pygame
 
-Black= (0,0,0)
-White=(255,255,255)
-Blue=(0,0,255)
+Black = (0,0,0)
+White = (255,255,255)
+Blue = (0,0,255)
 
-SCREEN_WIDTH=800
-SCREEN_HEIGHT=600
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 
-P1Health=10
-P2Health=10
+P1Health = 10
+P2Health = 10
 
 '''
 Player1 uses the skull and the fireball(bullet) stays at the right side
@@ -16,169 +16,169 @@ Player2 uses the togepi and the cloud(bullet2) stays at teh left side
 '''
 
 class Player(pygame.sprite.Sprite):
-	change_x=0
-	change_y=0
-	walls=None
+	change_x = 0
+	change_y = 0
+	walls = None
 
 
 	#Constructor
 	def __init__(self,x,y):
 		super(type(self),self).__init__()
 
-		#self.image=pygame.Surface([20,20])
+		#self.image = pygame.Surface([20,20])
 		#self.image.fill(White)
-		self.image=pygame.image.load("skull.jpeg").convert()
+		self.image = pygame.image.load("skull.jpeg").convert()
 
-		self.rect=self.image.get_rect()
+		self.rect = self.image.get_rect()
 		self.rect.x = x
 		self.rect.y = y
 		
 	def changespeed(self,x,y):
-		self.change_x+=x
-		self.change_y+=y
+		self.change_x += x
+		self.change_y += y
 
 	def update(self):
 		self.rect.x += self.change_x
 		
-		block_hit_list= pygame.sprite.spritecollide(self,self.walls,False)
+		block_hit_list = pygame.sprite.spritecollide(self,self.walls,False)
 		for block in block_hit_list:
-			if self.change_x>0:
-				self.rect.right=block.rect.left
+			if self.change_x > 0:
+				self.rect.right = block.rect.left
 
-			elif self.change_x<0:
-				self.rect.left=block.rect.right
+			elif self.change_x < 0:
+				self.rect.left = block.rect.right
 
 		self.rect.y += self.change_y
 		
-		block_hit_list=pygame.sprite.spritecollide(self,self.walls,False)
+		block_hit_list = pygame.sprite.spritecollide(self,self.walls,False)
 		for block in block_hit_list:
-			if self.change_y>0:
-				self.rect.bottom=block.rect.top
-			elif self.change_y<0:
-				self.rect.top=block.rect.bottom
+			if self.change_y > 0:
+				self.rect.bottom = block.rect.top
+			elif self.change_y < 0:
+				self.rect.top = block.rect.bottom
  
 
 
 class Player_2(pygame.sprite.Sprite):
-        change_x=0
-        change_y=0
-        walls=None
+        change_x = 0
+        change_y = 0
+        walls = None
         
 
         #Constructor
         def __init__(self,x,y):
                 super(type(self),self).__init__()
 
-                #self.image=pygame.Surface([20,20])
+                #self.image = pygame.Surface([20,20])
                 #self.image.fill(White)
-                self.image=pygame.image.load("rsz_togepi.jpg").convert()
+                self.image = pygame.image.load("rsz_togepi.jpg").convert()
 
-                self.rect=self.image.get_rect()
+                self.rect = self.image.get_rect()
                 self.rect.x = x
                 self.rect.y = y
 
         def changespeed(self,x,y):
-                self.change_x+=x
-                self.change_y+=y
+                self.change_x += x
+                self.change_y += y
 
         def update(self):
                 self.rect.x += self.change_x
 
-                block_hit_list= pygame.sprite.spritecollide(self,self.walls,False)
+                block_hit_list = pygame.sprite.spritecollide(self,self.walls,False)
                 for block in block_hit_list:
-                        if self.change_x>0:
-                                self.rect.right=block.rect.left
+                        if self.change_x > 0:
+                                self.rect.right = block.rect.left
 
-                        elif self.change_x<0:
-                                self.rect.left=block.rect.right
+                        elif self.change_x < 0:
+                                self.rect.left = block.rect.right
 
                 self.rect.y += self.change_y
 
-                block_hit_list=pygame.sprite.spritecollide(self,self.walls,False)
+                block_hit_list = pygame.sprite.spritecollide(self,self.walls,False)
                 for block in block_hit_list:
-                        if self.change_y>0:
-                                self.rect.bottom=block.rect.top
-                        elif self.change_y<0:
-                                self.rect.top=block.rect.bottom
+                        if self.change_y > 0:
+                                self.rect.bottom = block.rect.top
+                        elif self.change_y < 0:
+                                self.rect.top = block.rect.bottom
 
 
 class Cloud(pygame.sprite.Sprite):
 	def __init__(self):
 		super(type(self),self).__init__()
 		
-		self.image=pygame.image.load("cloud.png").convert()
+		self.image = pygame.image.load("cloud.png").convert()
 		
-		self.rect=self.image.get_rect()
+		self.rect = self.image.get_rect()
 
 	def update(self):
-		self.rect.x+=9
+		self.rect.x += 9
 
 class Fireball(pygame.sprite.Sprite):
 	def __init__(self):
 		super(type(self),self).__init__()
 
-		self.image=pygame.image.load("fireball.jpg").convert()
+		self.image = pygame.image.load("fireball.jpg").convert()
 
-		self.rect=self.image.get_rect()
+		self.rect = self.image.get_rect()
 
 	def update(self):
-		self.rect.x-=9		
+		self.rect.x -= 9		
 
 class Wall(pygame.sprite.Sprite):
 	def __init__(self,x,y,width,height):
 		super(type(self),self).__init__()
-		self.image=pygame.Surface([width,height])
+		self.image = pygame.Surface([width,height])
 		self.image.fill(Blue)
 	
-		self.rect=self.image.get_rect()
-		self.rect.y=y
-		self.rect.x=x
+		self.rect = self.image.get_rect()
+		self.rect.y = y
+		self.rect.x = x
 
 
 
 pygame.init()
 
-screen=pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
+screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 pygame.display.set_caption("Game Thingy")
-all_sprite_list=pygame.sprite.Group()
-player1_list=pygame.sprite.Group()
-player2_list=pygame.sprite.Group()
+all_sprite_list = pygame.sprite.Group()
+player1_list = pygame.sprite.Group()
+player2_list = pygame.sprite.Group()
 
-wall_list=pygame.sprite.Group()
+wall_list = pygame.sprite.Group()
 
-wall_1=Wall(0,0,10,600)
+wall_1 = Wall(0,0,10,600)
 wall_list.add(wall_1)
 all_sprite_list.add(wall_1)
 
-wall_2=Wall(790,0,10,600)
+wall_2 = Wall(790,0,10,600)
 wall_list.add(wall_2)
 all_sprite_list.add(wall_2)
 
-wall_3=Wall(400,0,10,600)
+wall_3 = Wall(400,0,10,600)
 wall_list.add(wall_3)
 all_sprite_list.add(wall_3)
 
-bullet_list=pygame.sprite.Group()
-bullet2_list=pygame.sprite.Group()
+bullet_list = pygame.sprite.Group()
+bullet2_list = pygame.sprite.Group()
 
-player1=Player(650,50)
-player1.walls=wall_list
+player1 = Player(650,50)
+player1.walls = wall_list
 
 all_sprite_list.add(player1)
 player1_list.add(player1)
 
-player2=Player_2(50,50)
-player2.walls=wall_list
+player2 = Player_2(50,50)
+player2.walls = wall_list
 player2_list.add(player2)
 
 all_sprite_list.add(player2)
 
 
-font=pygame.font.SysFont('Arial',25,False,False)
+font = pygame.font.SysFont('Arial',25,False,False)
 '''
-player1health=font.render("Health: " + str(P1Health), True, White)
+player1health = font.render("Health: " + str(P1Health), True, White)
 
-player2health=font.render("Health: " + str(P2Health), True, White)
+player2health = font.render("Health: " + str(P2Health), True, White)
 '''
 
 text2 = font.render("Game Over P2 Wins", True, White)
@@ -191,66 +191,66 @@ text1_rect = text1.get_rect()
 text1_x = screen.get_width() / 2 - text1_rect.width / 2
 text1_y = screen.get_height() / 2 - text1_rect.height / 2
         	
-clock=pygame.time.Clock()
+clock = pygame.time.Clock()
 
-done=False
-gameover=False
+done = False
+gameover = False
 while not done:
 	for event in pygame.event.get():
-		if event.type==pygame.QUIT:
-			done=True
-		if event.type == pygame.KEYDOWN and gameover==False:
-			if event.key==pygame.K_LEFT:
+		if event.type == pygame.QUIT:
+			done = True
+		if event.type == pygame.KEYDOWN and gameover == False:
+			if event.key == pygame.K_LEFT:
 				player1.changespeed(-6,0)
-			elif event.key==pygame.K_RIGHT:
+			elif event.key == pygame.K_RIGHT:
 				player1.changespeed(6,0)
-			elif event.key==pygame.K_DOWN:
+			elif event.key == pygame.K_DOWN:
 				player1.changespeed(0,6)
-			elif event.key==pygame.K_UP:
+			elif event.key == pygame.K_UP:
 				player1.changespeed(0,-6)
 
-			elif event.key==pygame.K_a:
+			elif event.key == pygame.K_a:
 				player2.changespeed(-6,0)
-			elif event.key==pygame.K_d:
+			elif event.key == pygame.K_d:
 				player2.changespeed(6,0)
-			elif event.key==pygame.K_s:
+			elif event.key == pygame.K_s:
 				player2.changespeed(0,6)
-			elif event.key==pygame.K_w:
+			elif event.key == pygame.K_w:
 				player2.changespeed(0,-6)
                                      
-            		elif event.key==pygame.K_SLASH:
-                		bullet=Fireball()
-                		bullet.rect.x=player1.rect.x
-                		bullet.rect.y=player1.rect.y
+            		elif event.key == pygame.K_SLASH:
+                		bullet = Fireball()
+                		bullet.rect.x = player1.rect.x
+                		bullet.rect.y = player1.rect.y
                                     
                 		all_sprite_list.add(bullet)
                 		bullet_list.add(bullet)
 			
-			elif event.key==pygame.K_SPACE:
-				bullet2=Cloud()
-				bullet2.rect.x=player2.rect.x
-				bullet2.rect.y=player2.rect.y
+			elif event.key == pygame.K_SPACE:
+				bullet2 = Cloud()
+				bullet2.rect.x = player2.rect.x
+				bullet2.rect.y = player2.rect.y
 
 				all_sprite_list.add(bullet2)
 				bullet2_list.add(bullet2)
 
-		elif event.type == pygame.KEYUP and gameover==False:
-			if event.key==pygame.K_LEFT:
+		elif event.type == pygame.KEYUP and gameover == False:
+			if event.key == pygame.K_LEFT:
 				player1.changespeed(6,0)
-			elif event.key==pygame.K_RIGHT:
+			elif event.key == pygame.K_RIGHT:
 				player1.changespeed(-6,0)
-			elif event.key==pygame.K_DOWN:
+			elif event.key == pygame.K_DOWN:
 				player1.changespeed(0,-6)
-			elif event.key==pygame.K_UP:
+			elif event.key == pygame.K_UP:
 				player1.changespeed(0,6)
 	
-			elif event.key==pygame.K_a:
+			elif event.key == pygame.K_a:
 				player2.changespeed(6,0)
-			elif event.key==pygame.K_d:
+			elif event.key == pygame.K_d:
 				player2.changespeed(-6,0)
-			elif event.key==pygame.K_s:
+			elif event.key == pygame.K_s:
 				player2.changespeed(0,-6)
-			elif event.key==pygame.K_w:
+			elif event.key == pygame.K_w:
 				player2.changespeed(0,6)
                                           
                                     
@@ -258,28 +258,28 @@ while not done:
 	all_sprite_list.update()
 
     	for bullet in bullet_list:
-        	block_hit_list= pygame.sprite.spritecollide(bullet, player2_list, False)
+        	block_hit_list = pygame.sprite.spritecollide(bullet, player2_list, False)
             
             	for block in block_hit_list:
                 	bullet_list.remove(bullet)
                 	all_sprite_list.remove(bullet)
-                	P2Health-=1
+                	P2Health -= 1
                 	
                 
-		if bullet.rect.x<-10:
+		if bullet.rect.x < -10:
 			bullet_list.remove(bullet)
 			all_sprite_list.remove(bullet) 
 
 	for bullet2 in bullet2_list:
-		block_hit_list2=pygame.sprite.spritecollide(bullet2,player1_list,False)
+		block_hit_list2 = pygame.sprite.spritecollide(bullet2,player1_list,False)
 	
 		for block in block_hit_list2:
 			bullet2_list.remove(bullet2)
 			all_sprite_list.remove(bullet2)
-			P1Health-=1
+			P1Health -= 1
 			
 
-		if bullet2.rect.x>810:
+		if bullet2.rect.x > 810:
 			bullet2_list.remove(bullet2)
 			all_sprite_list.remove(bullet2)
     
@@ -287,20 +287,20 @@ while not done:
                                     
                                      
 	screen.fill(Black)
-	player1health=font.render("Player 1 Health: " + str(P1Health), True, White)
+	player1health = font.render("Player 1 Health: " + str(P1Health), True, White)
 
-        player2health=font.render("Player 2 Health: " + str(P2Health), True, White)
+        player2health = font.render("Player 2 Health: " + str(P2Health), True, White)
 	screen.blit(player1health,[550,10])
 	screen.blit(player2health,[20,10])
 	
 	all_sprite_list.draw(screen)
 
-	if (P1Health<=0):
+	if (P1Health <= 0):
                 screen.blit(text2, [text2_x, text2_y])
-        	gameover=True
-    	elif(P2Health<=0):
+        	gameover = True
+    	elif(P2Health <= 0):
         	screen.blit(text1, [text1_x, text1_y])
-        	gameover=True
+        	gameover = True
 
 	pygame.display.flip()
 
