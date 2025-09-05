@@ -303,10 +303,10 @@ while not done:
 
     all_sprite_list.draw(screen)
 
-    if (p1_health <= 0):
+    if p1_health <= 0:
         screen.blit(text2, [text2_x, text2_y])
         gameover = True
-    elif (p2_health <= 0):
+    elif p2_health <= 0:
         screen.blit(text1, [text1_x, text1_y])
         gameover = True
 
