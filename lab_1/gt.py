@@ -1,8 +1,8 @@
 import pygame
 
-Black = (0,0,0)
-White = (255,255,255)
-Blue = (0,0,255)
+Black = (0, 0, 0)
+White = (255, 255, 255)
+Blue = (0, 0, 255)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -22,10 +22,10 @@ class Player(pygame.sprite.Sprite):
 
 
 	#Constructor
-	def __init__(self,x,y):
-		super(type(self),self).__init__()
+	def __init__(self, x, y):
+		super(type(self), self).__init__()
 
-		#self.image = pygame.Surface([20,20])
+		#self.image = pygame.Surface([20, 20])
 		#self.image.fill(White)
 		self.image = pygame.image.load("skull.jpeg").convert()
 
@@ -33,14 +33,14 @@ class Player(pygame.sprite.Sprite):
 		self.rect.x = x
 		self.rect.y = y
 		
-	def changespeed(self,x,y):
+	def changespeed(self, x, y):
 		self.change_x += x
 		self.change_y += y
 
 	def update(self):
 		self.rect.x += self.change_x
 		
-		block_hit_list = pygame.sprite.spritecollide(self,self.walls,False)
+		block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
 		for block in block_hit_list:
 			if self.change_x > 0:
 				self.rect.right = block.rect.left
@@ -50,7 +50,7 @@ class Player(pygame.sprite.Sprite):
 
 		self.rect.y += self.change_y
 		
-		block_hit_list = pygame.sprite.spritecollide(self,self.walls,False)
+		block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
 		for block in block_hit_list:
 			if self.change_y > 0:
 				self.rect.bottom = block.rect.top
@@ -66,10 +66,10 @@ class Player_2(pygame.sprite.Sprite):
         
 
         #Constructor
-        def __init__(self,x,y):
-                super(type(self),self).__init__()
+        def __init__(self, x, y):
+                super(type(self), self).__init__()
 
-                #self.image = pygame.Surface([20,20])
+                #self.image = pygame.Surface([20, 20])
                 #self.image.fill(White)
                 self.image = pygame.image.load("rsz_togepi.jpg").convert()
 
@@ -77,14 +77,14 @@ class Player_2(pygame.sprite.Sprite):
                 self.rect.x = x
                 self.rect.y = y
 
-        def changespeed(self,x,y):
+        def changespeed(self, x, y):
                 self.change_x += x
                 self.change_y += y
 
         def update(self):
                 self.rect.x += self.change_x
 
-                block_hit_list = pygame.sprite.spritecollide(self,self.walls,False)
+                block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
                 for block in block_hit_list:
                         if self.change_x > 0:
                                 self.rect.right = block.rect.left
@@ -94,7 +94,7 @@ class Player_2(pygame.sprite.Sprite):
 
                 self.rect.y += self.change_y
 
-                block_hit_list = pygame.sprite.spritecollide(self,self.walls,False)
+                block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
                 for block in block_hit_list:
                         if self.change_y > 0:
                                 self.rect.bottom = block.rect.top
@@ -104,7 +104,7 @@ class Player_2(pygame.sprite.Sprite):
 
 class Cloud(pygame.sprite.Sprite):
 	def __init__(self):
-		super(type(self),self).__init__()
+		super(type(self), self).__init__()
 		
 		self.image = pygame.image.load("cloud.png").convert()
 		
@@ -115,7 +115,7 @@ class Cloud(pygame.sprite.Sprite):
 
 class Fireball(pygame.sprite.Sprite):
 	def __init__(self):
-		super(type(self),self).__init__()
+		super(type(self), self).__init__()
 
 		self.image = pygame.image.load("fireball.jpg").convert()
 
@@ -125,9 +125,9 @@ class Fireball(pygame.sprite.Sprite):
 		self.rect.x -= 9		
 
 class Wall(pygame.sprite.Sprite):
-	def __init__(self,x,y,width,height):
-		super(type(self),self).__init__()
-		self.image = pygame.Surface([width,height])
+	def __init__(self, x, y, width, height):
+		super(type(self), self).__init__()
+		self.image = pygame.Surface([width, height])
 		self.image.fill(Blue)
 	
 		self.rect = self.image.get_rect()
@@ -146,35 +146,35 @@ player2_list = pygame.sprite.Group()
 
 wall_list = pygame.sprite.Group()
 
-wall_1 = Wall(0,0,10,600)
+wall_1 = Wall(0, 0, 10, 600)
 wall_list.add(wall_1)
 all_sprite_list.add(wall_1)
 
-wall_2 = Wall(790,0,10,600)
+wall_2 = Wall(790, 0, 10, 600)
 wall_list.add(wall_2)
 all_sprite_list.add(wall_2)
 
-wall_3 = Wall(400,0,10,600)
+wall_3 = Wall(400, 0, 10, 600)
 wall_list.add(wall_3)
 all_sprite_list.add(wall_3)
 
 bullet_list = pygame.sprite.Group()
 bullet2_list = pygame.sprite.Group()
 
-player1 = Player(650,50)
+player1 = Player(650, 50)
 player1.walls = wall_list
 
 all_sprite_list.add(player1)
 player1_list.add(player1)
 
-player2 = Player_2(50,50)
+player2 = Player_2(50, 50)
 player2.walls = wall_list
 player2_list.add(player2)
 
 all_sprite_list.add(player2)
 
 
-font = pygame.font.SysFont('Arial',25,False,False)
+font = pygame.font.SysFont('Arial', 25, False, False)
 '''
 player1health = font.render("Health: " + str(P1Health), True, White)
 
@@ -201,22 +201,22 @@ while not done:
 			done = True
 		if event.type == pygame.KEYDOWN and gameover == False:
 			if event.key == pygame.K_LEFT:
-				player1.changespeed(-6,0)
+				player1.changespeed(-6, 0)
 			elif event.key == pygame.K_RIGHT:
-				player1.changespeed(6,0)
+				player1.changespeed(6, 0)
 			elif event.key == pygame.K_DOWN:
-				player1.changespeed(0,6)
+				player1.changespeed(0, 6)
 			elif event.key == pygame.K_UP:
-				player1.changespeed(0,-6)
+				player1.changespeed(0, -6)
 
 			elif event.key == pygame.K_a:
-				player2.changespeed(-6,0)
+				player2.changespeed(-6, 0)
 			elif event.key == pygame.K_d:
-				player2.changespeed(6,0)
+				player2.changespeed(6, 0)
 			elif event.key == pygame.K_s:
-				player2.changespeed(0,6)
+				player2.changespeed(0, 6)
 			elif event.key == pygame.K_w:
-				player2.changespeed(0,-6)
+				player2.changespeed(0, -6)
                                      
             		elif event.key == pygame.K_SLASH:
                 		bullet = Fireball()
@@ -236,22 +236,22 @@ while not done:
 
 		elif event.type == pygame.KEYUP and gameover == False:
 			if event.key == pygame.K_LEFT:
-				player1.changespeed(6,0)
+				player1.changespeed(6, 0)
 			elif event.key == pygame.K_RIGHT:
-				player1.changespeed(-6,0)
+				player1.changespeed(-6, 0)
 			elif event.key == pygame.K_DOWN:
-				player1.changespeed(0,-6)
+				player1.changespeed(0, -6)
 			elif event.key == pygame.K_UP:
-				player1.changespeed(0,6)
+				player1.changespeed(0, 6)
 	
 			elif event.key == pygame.K_a:
-				player2.changespeed(6,0)
+				player2.changespeed(6, 0)
 			elif event.key == pygame.K_d:
-				player2.changespeed(-6,0)
+				player2.changespeed(-6, 0)
 			elif event.key == pygame.K_s:
-				player2.changespeed(0,-6)
+				player2.changespeed(0, -6)
 			elif event.key == pygame.K_w:
-				player2.changespeed(0,6)
+				player2.changespeed(0, 6)
                                           
                                     
                                      
@@ -271,7 +271,7 @@ while not done:
 			all_sprite_list.remove(bullet) 
 
 	for bullet2 in bullet2_list:
-		block_hit_list2 = pygame.sprite.spritecollide(bullet2,player1_list,False)
+		block_hit_list2 = pygame.sprite.spritecollide(bullet2, player1_list, False)
 	
 		for block in block_hit_list2:
 			bullet2_list.remove(bullet2)
@@ -290,8 +290,8 @@ while not done:
 	player1health = font.render("Player 1 Health: " + str(P1Health), True, White)
 
         player2health = font.render("Player 2 Health: " + str(P2Health), True, White)
-	screen.blit(player1health,[550,10])
-	screen.blit(player2health,[20,10])
+	screen.blit(player1health, [550, 10])
+	screen.blit(player2health, [20, 10])
 	
 	all_sprite_list.draw(screen)
 
