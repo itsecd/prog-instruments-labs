@@ -20,7 +20,6 @@ class Player(pygame.sprite.Sprite):
     change_y = 0
     walls = None
 
-
     # Constructor
     def __init__(self, x, y):
         super(type(self), self).__init__()
@@ -58,12 +57,10 @@ class Player(pygame.sprite.Sprite):
                 self.rect.top = block.rect.bottom
 
 
-
 class Player_2(pygame.sprite.Sprite):
     change_x = 0
     change_y = 0
     walls = None
-
 
     # Constructor
     def __init__(self, x, y):
@@ -133,7 +130,6 @@ class Wall(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x
-
 
 
 pygame.init()
@@ -253,8 +249,6 @@ while not done:
             elif event.key == pygame.K_w:
                 player2.changespeed(0, 6)
 
-
-
     all_sprite_list.update()
 
     for bullet in bullet_list:
@@ -264,7 +258,6 @@ while not done:
             bullet_list.remove(bullet)
             all_sprite_list.remove(bullet)
             P2Health -= 1
-
 
         if bullet.rect.x < -10:
             bullet_list.remove(bullet)
@@ -278,13 +271,9 @@ while not done:
             all_sprite_list.remove(bullet2)
             P1Health -= 1
 
-
         if bullet2.rect.x > 810:
             bullet2_list.remove(bullet2)
             all_sprite_list.remove(bullet2)
-
-
-
 
     screen.fill(Black)
     player1health = font.render("Player 1 Health: " + str(P1Health), True, White)
