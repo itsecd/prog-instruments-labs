@@ -23,7 +23,7 @@ class Player(pygame.sprite.Sprite):
 
     # Constructor
     def __init__(self, x, y):
-        super(type(self), self).__init__()
+        super().__init__()
 
         # self.image = pygame.Surface([20, 20])
         # self.image.fill(WHITE)
@@ -65,7 +65,7 @@ class Player2(pygame.sprite.Sprite):
 
     # Constructor
     def __init__(self, x, y):
-        super(type(self), self).__init__()
+        super().__init__()
 
         # self.image = pygame.Surface([20, 20])
         # self.image.fill(WHITE)
@@ -102,7 +102,7 @@ class Player2(pygame.sprite.Sprite):
 
 class Cloud(pygame.sprite.Sprite):
     def __init__(self):
-        super(type(self), self).__init__()
+        super().__init__()
 
         self.image = pygame.image.load("cloud.png").convert()
 
@@ -114,7 +114,7 @@ class Cloud(pygame.sprite.Sprite):
 
 class Fireball(pygame.sprite.Sprite):
     def __init__(self):
-        super(type(self), self).__init__()
+        super().__init__()
 
         self.image = pygame.image.load("fireball.jpg").convert()
 
@@ -126,7 +126,7 @@ class Fireball(pygame.sprite.Sprite):
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
-        super(type(self), self).__init__()
+        super().__init__()
         self.image = pygame.Surface([width, height])
         self.image.fill(BLUE)
 
