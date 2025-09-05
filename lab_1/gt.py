@@ -218,13 +218,13 @@ while not done:
             elif event.key == pygame.K_w:
                 player2.changespeed(0, -6)
 
-                    elif event.key == pygame.K_SLASH:
-                        bullet = Fireball()
-                        bullet.rect.x = player1.rect.x
-                        bullet.rect.y = player1.rect.y
+            elif event.key == pygame.K_SLASH:
+                bullet = Fireball()
+                bullet.rect.x = player1.rect.x
+                bullet.rect.y = player1.rect.y
 
-                        all_sprite_list.add(bullet)
-                        bullet_list.add(bullet)
+                all_sprite_list.add(bullet)
+                bullet_list.add(bullet)
 
             elif event.key == pygame.K_SPACE:
                 bullet2 = Cloud()
@@ -257,13 +257,13 @@ while not done:
 
     all_sprite_list.update()
 
-        for bullet in bullet_list:
-            block_hit_list = pygame.sprite.spritecollide(bullet, player2_list, False)
+    for bullet in bullet_list:
+        block_hit_list = pygame.sprite.spritecollide(bullet, player2_list, False)
 
-                for block in block_hit_list:
-                    bullet_list.remove(bullet)
-                    all_sprite_list.remove(bullet)
-                    P2Health -= 1
+        for block in block_hit_list:
+            bullet_list.remove(bullet)
+            all_sprite_list.remove(bullet)
+            P2Health -= 1
 
 
         if bullet.rect.x < -10:
@@ -289,7 +289,7 @@ while not done:
     screen.fill(Black)
     player1health = font.render("Player 1 Health: " + str(P1Health), True, White)
 
-        player2health = font.render("Player 2 Health: " + str(P2Health), True, White)
+    player2health = font.render("Player 2 Health: " + str(P2Health), True, White)
     screen.blit(player1health, [550, 10])
     screen.blit(player2health, [20, 10])
 
@@ -298,9 +298,9 @@ while not done:
     if (P1Health <= 0):
         screen.blit(text2, [text2_x, text2_y])
         gameover = True
-        elif(P2Health <= 0):
-            screen.blit(text1, [text1_x, text1_y])
-            gameover = True
+    elif(P2Health <= 0):
+        screen.blit(text1, [text1_x, text1_y])
+        gameover = True
 
     pygame.display.flip()
 
