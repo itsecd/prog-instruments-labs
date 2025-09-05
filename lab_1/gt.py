@@ -16,46 +16,46 @@ Player2 uses the togepi and the cloud(bullet2) stays at teh left side
 '''
 
 class Player(pygame.sprite.Sprite):
-	change_x = 0
-	change_y = 0
-	walls = None
+    change_x = 0
+    change_y = 0
+    walls = None
 
 
-	#Constructor
-	def __init__(self, x, y):
-		super(type(self), self).__init__()
+    #Constructor
+    def __init__(self, x, y):
+        super(type(self), self).__init__()
 
-		#self.image = pygame.Surface([20, 20])
-		#self.image.fill(White)
-		self.image = pygame.image.load("skull.jpeg").convert()
+        #self.image = pygame.Surface([20, 20])
+        #self.image.fill(White)
+        self.image = pygame.image.load("skull.jpeg").convert()
 
-		self.rect = self.image.get_rect()
-		self.rect.x = x
-		self.rect.y = y
-		
-	def changespeed(self, x, y):
-		self.change_x += x
-		self.change_y += y
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        
+    def changespeed(self, x, y):
+        self.change_x += x
+        self.change_y += y
 
-	def update(self):
-		self.rect.x += self.change_x
-		
-		block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
-		for block in block_hit_list:
-			if self.change_x > 0:
-				self.rect.right = block.rect.left
+    def update(self):
+        self.rect.x += self.change_x
+        
+        block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
+        for block in block_hit_list:
+            if self.change_x > 0:
+                self.rect.right = block.rect.left
 
-			elif self.change_x < 0:
-				self.rect.left = block.rect.right
+            elif self.change_x < 0:
+                self.rect.left = block.rect.right
 
-		self.rect.y += self.change_y
-		
-		block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
-		for block in block_hit_list:
-			if self.change_y > 0:
-				self.rect.bottom = block.rect.top
-			elif self.change_y < 0:
-				self.rect.top = block.rect.bottom
+        self.rect.y += self.change_y
+        
+        block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
+        for block in block_hit_list:
+            if self.change_y > 0:
+                self.rect.bottom = block.rect.top
+            elif self.change_y < 0:
+                self.rect.top = block.rect.bottom
  
 
 
@@ -103,36 +103,36 @@ class Player_2(pygame.sprite.Sprite):
 
 
 class Cloud(pygame.sprite.Sprite):
-	def __init__(self):
-		super(type(self), self).__init__()
-		
-		self.image = pygame.image.load("cloud.png").convert()
-		
-		self.rect = self.image.get_rect()
+    def __init__(self):
+        super(type(self), self).__init__()
+        
+        self.image = pygame.image.load("cloud.png").convert()
+        
+        self.rect = self.image.get_rect()
 
-	def update(self):
-		self.rect.x += 9
+    def update(self):
+        self.rect.x += 9
 
 class Fireball(pygame.sprite.Sprite):
-	def __init__(self):
-		super(type(self), self).__init__()
+    def __init__(self):
+        super(type(self), self).__init__()
 
-		self.image = pygame.image.load("fireball.jpg").convert()
+        self.image = pygame.image.load("fireball.jpg").convert()
 
-		self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect()
 
-	def update(self):
-		self.rect.x -= 9		
+    def update(self):
+        self.rect.x -= 9        
 
 class Wall(pygame.sprite.Sprite):
-	def __init__(self, x, y, width, height):
-		super(type(self), self).__init__()
-		self.image = pygame.Surface([width, height])
-		self.image.fill(Blue)
-	
-		self.rect = self.image.get_rect()
-		self.rect.y = y
-		self.rect.x = x
+    def __init__(self, x, y, width, height):
+        super(type(self), self).__init__()
+        self.image = pygame.Surface([width, height])
+        self.image.fill(Blue)
+    
+        self.rect = self.image.get_rect()
+        self.rect.y = y
+        self.rect.x = x
 
 
 
@@ -190,121 +190,121 @@ text1 = font.render("Game Over P1 Wins", True, White)
 text1_rect = text1.get_rect()
 text1_x = screen.get_width() / 2 - text1_rect.width / 2
 text1_y = screen.get_height() / 2 - text1_rect.height / 2
-        	
+            
 clock = pygame.time.Clock()
 
 done = False
 gameover = False
 while not done:
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			done = True
-		if event.type == pygame.KEYDOWN and gameover == False:
-			if event.key == pygame.K_LEFT:
-				player1.changespeed(-6, 0)
-			elif event.key == pygame.K_RIGHT:
-				player1.changespeed(6, 0)
-			elif event.key == pygame.K_DOWN:
-				player1.changespeed(0, 6)
-			elif event.key == pygame.K_UP:
-				player1.changespeed(0, -6)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+        if event.type == pygame.KEYDOWN and gameover == False:
+            if event.key == pygame.K_LEFT:
+                player1.changespeed(-6, 0)
+            elif event.key == pygame.K_RIGHT:
+                player1.changespeed(6, 0)
+            elif event.key == pygame.K_DOWN:
+                player1.changespeed(0, 6)
+            elif event.key == pygame.K_UP:
+                player1.changespeed(0, -6)
 
-			elif event.key == pygame.K_a:
-				player2.changespeed(-6, 0)
-			elif event.key == pygame.K_d:
-				player2.changespeed(6, 0)
-			elif event.key == pygame.K_s:
-				player2.changespeed(0, 6)
-			elif event.key == pygame.K_w:
-				player2.changespeed(0, -6)
+            elif event.key == pygame.K_a:
+                player2.changespeed(-6, 0)
+            elif event.key == pygame.K_d:
+                player2.changespeed(6, 0)
+            elif event.key == pygame.K_s:
+                player2.changespeed(0, 6)
+            elif event.key == pygame.K_w:
+                player2.changespeed(0, -6)
                                      
-            		elif event.key == pygame.K_SLASH:
-                		bullet = Fireball()
-                		bullet.rect.x = player1.rect.x
-                		bullet.rect.y = player1.rect.y
+                    elif event.key == pygame.K_SLASH:
+                        bullet = Fireball()
+                        bullet.rect.x = player1.rect.x
+                        bullet.rect.y = player1.rect.y
                                     
-                		all_sprite_list.add(bullet)
-                		bullet_list.add(bullet)
-			
-			elif event.key == pygame.K_SPACE:
-				bullet2 = Cloud()
-				bullet2.rect.x = player2.rect.x
-				bullet2.rect.y = player2.rect.y
+                        all_sprite_list.add(bullet)
+                        bullet_list.add(bullet)
+            
+            elif event.key == pygame.K_SPACE:
+                bullet2 = Cloud()
+                bullet2.rect.x = player2.rect.x
+                bullet2.rect.y = player2.rect.y
 
-				all_sprite_list.add(bullet2)
-				bullet2_list.add(bullet2)
+                all_sprite_list.add(bullet2)
+                bullet2_list.add(bullet2)
 
-		elif event.type == pygame.KEYUP and gameover == False:
-			if event.key == pygame.K_LEFT:
-				player1.changespeed(6, 0)
-			elif event.key == pygame.K_RIGHT:
-				player1.changespeed(-6, 0)
-			elif event.key == pygame.K_DOWN:
-				player1.changespeed(0, -6)
-			elif event.key == pygame.K_UP:
-				player1.changespeed(0, 6)
-	
-			elif event.key == pygame.K_a:
-				player2.changespeed(6, 0)
-			elif event.key == pygame.K_d:
-				player2.changespeed(-6, 0)
-			elif event.key == pygame.K_s:
-				player2.changespeed(0, -6)
-			elif event.key == pygame.K_w:
-				player2.changespeed(0, 6)
+        elif event.type == pygame.KEYUP and gameover == False:
+            if event.key == pygame.K_LEFT:
+                player1.changespeed(6, 0)
+            elif event.key == pygame.K_RIGHT:
+                player1.changespeed(-6, 0)
+            elif event.key == pygame.K_DOWN:
+                player1.changespeed(0, -6)
+            elif event.key == pygame.K_UP:
+                player1.changespeed(0, 6)
+    
+            elif event.key == pygame.K_a:
+                player2.changespeed(6, 0)
+            elif event.key == pygame.K_d:
+                player2.changespeed(-6, 0)
+            elif event.key == pygame.K_s:
+                player2.changespeed(0, -6)
+            elif event.key == pygame.K_w:
+                player2.changespeed(0, 6)
                                           
                                     
                                      
-	all_sprite_list.update()
+    all_sprite_list.update()
 
-    	for bullet in bullet_list:
-        	block_hit_list = pygame.sprite.spritecollide(bullet, player2_list, False)
+        for bullet in bullet_list:
+            block_hit_list = pygame.sprite.spritecollide(bullet, player2_list, False)
             
-            	for block in block_hit_list:
-                	bullet_list.remove(bullet)
-                	all_sprite_list.remove(bullet)
-                	P2Health -= 1
-                	
+                for block in block_hit_list:
+                    bullet_list.remove(bullet)
+                    all_sprite_list.remove(bullet)
+                    P2Health -= 1
+                    
                 
-		if bullet.rect.x < -10:
-			bullet_list.remove(bullet)
-			all_sprite_list.remove(bullet) 
+        if bullet.rect.x < -10:
+            bullet_list.remove(bullet)
+            all_sprite_list.remove(bullet) 
 
-	for bullet2 in bullet2_list:
-		block_hit_list2 = pygame.sprite.spritecollide(bullet2, player1_list, False)
-	
-		for block in block_hit_list2:
-			bullet2_list.remove(bullet2)
-			all_sprite_list.remove(bullet2)
-			P1Health -= 1
-			
+    for bullet2 in bullet2_list:
+        block_hit_list2 = pygame.sprite.spritecollide(bullet2, player1_list, False)
+    
+        for block in block_hit_list2:
+            bullet2_list.remove(bullet2)
+            all_sprite_list.remove(bullet2)
+            P1Health -= 1
+            
 
-		if bullet2.rect.x > 810:
-			bullet2_list.remove(bullet2)
-			all_sprite_list.remove(bullet2)
+        if bullet2.rect.x > 810:
+            bullet2_list.remove(bullet2)
+            all_sprite_list.remove(bullet2)
     
                       
                                     
                                      
-	screen.fill(Black)
-	player1health = font.render("Player 1 Health: " + str(P1Health), True, White)
+    screen.fill(Black)
+    player1health = font.render("Player 1 Health: " + str(P1Health), True, White)
 
         player2health = font.render("Player 2 Health: " + str(P2Health), True, White)
-	screen.blit(player1health, [550, 10])
-	screen.blit(player2health, [20, 10])
-	
-	all_sprite_list.draw(screen)
+    screen.blit(player1health, [550, 10])
+    screen.blit(player2health, [20, 10])
+    
+    all_sprite_list.draw(screen)
 
-	if (P1Health <= 0):
+    if (P1Health <= 0):
                 screen.blit(text2, [text2_x, text2_y])
-        	gameover = True
-    	elif(P2Health <= 0):
-        	screen.blit(text1, [text1_x, text1_y])
-        	gameover = True
+            gameover = True
+        elif(P2Health <= 0):
+            screen.blit(text1, [text1_x, text1_y])
+            gameover = True
 
-	pygame.display.flip()
+    pygame.display.flip()
 
-	clock.tick(60)
+    clock.tick(60)
 
 
 pygame.quit()
