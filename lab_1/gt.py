@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
                 self.rect.top = block.rect.bottom
 
 
-class Player_2(pygame.sprite.Sprite):
+class Player2(pygame.sprite.Sprite):
     change_x = 0
     change_y = 0
     walls = None
@@ -166,7 +166,7 @@ player1.walls = wall_list
 all_sprite_list.add(player1)
 player1_list.add(player1)
 
-player2 = Player_2(50, 50)
+player2 = Player2(50, 50)
 player2.walls = wall_list
 player2_list.add(player2)
 
