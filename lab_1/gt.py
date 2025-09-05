@@ -1,14 +1,14 @@
 import pygame
 
-Black = (0, 0, 0)
-White = (255, 255, 255)
-Blue = (0, 0, 255)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+BLUE = (0, 0, 255)
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-P1Health = 10
-P2Health = 10
+p1_health = 10
+p2_health = 10
 
 '''
 Player1 uses the skull and the fireball(bullet) stays at the right side
@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
         super(type(self), self).__init__()
 
         # self.image = pygame.Surface([20, 20])
-        # self.image.fill(White)
+        # self.image.fill(WHITE)
         self.image = pygame.image.load("skull.jpeg").convert()
 
         self.rect = self.image.get_rect()
@@ -68,7 +68,7 @@ class Player_2(pygame.sprite.Sprite):
         super(type(self), self).__init__()
 
         # self.image = pygame.Surface([20, 20])
-        # self.image.fill(White)
+        # self.image.fill(WHITE)
         self.image = pygame.image.load("rsz_togepi.jpg").convert()
 
         self.rect = self.image.get_rect()
@@ -128,7 +128,7 @@ class Wall(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
         super(type(self), self).__init__()
         self.image = pygame.Surface([width, height])
-        self.image.fill(Blue)
+        self.image.fill(BLUE)
 
         self.rect = self.image.get_rect()
         self.rect.y = y
@@ -175,17 +175,17 @@ all_sprite_list.add(player2)
 
 font = pygame.font.SysFont('Arial', 25, False, False)
 '''
-player1health = font.render("Health: " + str(P1Health), True, White)
+player1health = font.render("Health: " + str(p1_health), True, WHITE)
 
-player2health = font.render("Health: " + str(P2Health), True, White)
+player2health = font.render("Health: " + str(p2_health), True, WHITE)
 '''
 
-text2 = font.render("Game Over P2 Wins", True, White)
+text2 = font.render("Game Over P2 Wins", True, WHITE)
 text2_rect = text2.get_rect()
 text2_x = screen.get_width() / 2 - text2_rect.width / 2
 text2_y = screen.get_height() / 2 - text2_rect.height / 2
 
-text1 = font.render("Game Over P1 Wins", True, White)
+text1 = font.render("Game Over P1 Wins", True, WHITE)
 text1_rect = text1.get_rect()
 text1_x = screen.get_width() / 2 - text1_rect.width / 2
 text1_y = screen.get_height() / 2 - text1_rect.height / 2
@@ -264,7 +264,7 @@ while not done:
         for block in block_hit_list:
             bullet_list.remove(bullet)
             all_sprite_list.remove(bullet)
-            P2Health -= 1
+            p2_health -= 1
 
         if bullet.rect.x < -10:
             bullet_list.remove(bullet)
@@ -280,33 +280,33 @@ while not done:
         for block in block_hit_list2:
             bullet2_list.remove(bullet2)
             all_sprite_list.remove(bullet2)
-            P1Health -= 1
+            p1_health -= 1
 
         if bullet2.rect.x > 810:
             bullet2_list.remove(bullet2)
             all_sprite_list.remove(bullet2)
 
-    screen.fill(Black)
+    screen.fill(BLACK)
     player1health = font.render(
-        "Player 1 Health: " + str(P1Health),
+        "Player 1 Health: " + str(p1_health),
         True,
-        White
+        WHITE
     )
 
     player2health = font.render(
-        "Player 2 Health: " + str(P2Health),
+        "Player 2 Health: " + str(p2_health),
         True,
-        White
+        WHITE
     )
     screen.blit(player1health, [550, 10])
     screen.blit(player2health, [20, 10])
 
     all_sprite_list.draw(screen)
 
-    if (P1Health <= 0):
+    if (p1_health <= 0):
         screen.blit(text2, [text2_x, text2_y])
         gameover = True
-    elif (P2Health <= 0):
+    elif (p2_health <= 0):
         screen.blit(text1, [text1_x, text1_y])
         gameover = True
 
