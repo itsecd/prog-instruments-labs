@@ -15,6 +15,7 @@ Player1 uses the skull and the fireball(bullet) stays at the right side
 Player2 uses the togepi and the cloud(bullet2) stays at teh left side
 '''
 
+
 class Player(pygame.sprite.Sprite):
     change_x = 0
     change_y = 0
@@ -110,6 +111,7 @@ class Cloud(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += 9
 
+
 class Fireball(pygame.sprite.Sprite):
     def __init__(self):
         super(type(self), self).__init__()
@@ -120,6 +122,7 @@ class Fireball(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.x -= 9        
+
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x, y, width, height):
