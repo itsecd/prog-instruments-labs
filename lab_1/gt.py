@@ -121,7 +121,7 @@ class Fireball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
     def update(self):
-        self.rect.x -= 9        
+        self.rect.x -= 9
 
 
 class Wall(pygame.sprite.Sprite):
@@ -264,7 +264,7 @@ while not done:
 
         if bullet.rect.x < -10:
             bullet_list.remove(bullet)
-            all_sprite_list.remove(bullet) 
+            all_sprite_list.remove(bullet)
 
     for bullet2 in bullet2_list:
         block_hit_list2 = pygame.sprite.spritecollide(bullet2, player1_list, False)
