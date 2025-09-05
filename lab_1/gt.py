@@ -198,7 +198,7 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-        if event.type == pygame.KEYDOWN and gameover == False:
+        if event.type == pygame.KEYDOWN and gameover is False:
             if event.key == pygame.K_LEFT:
                 player1.changespeed(-6, 0)
             elif event.key == pygame.K_RIGHT:
@@ -233,7 +233,7 @@ while not done:
                 all_sprite_list.add(bullet2)
                 bullet2_list.add(bullet2)
 
-        elif event.type == pygame.KEYUP and gameover == False:
+        elif event.type == pygame.KEYUP and gameover is False:
             if event.key == pygame.K_LEFT:
                 player1.changespeed(6, 0)
             elif event.key == pygame.K_RIGHT:
