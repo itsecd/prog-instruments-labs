@@ -1,23 +1,5 @@
 import pygame
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-BLUE = (0, 0, 255)
-
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-
-p1_health = 10
-p2_health = 10
-
-LEFT_SPEED = (-6, 0)
-RIGHT_SPEED = (6, 0)
-DOWN_SPEED = (0, 6)
-UP_SPEED = (0, -6)
-
-PLAYER1_HEALTH_COORD = [550, 10]
-PLAYER2_HEALTH_COORD = [20, 10]
-
 '''
 Player1 uses the skull and the fireball(bullet) stays at the right side
 Player2 uses the togepi and the cloud(bullet2) stays at teh left side
@@ -143,7 +125,32 @@ class Wall(pygame.sprite.Sprite):
         self.rect.x = x
 
 
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+BLUE = (0, 0, 255)
+
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+
+p1_health = 10
+p2_health = 10
+
+LEFT_SPEED = (-6, 0)
+RIGHT_SPEED = (6, 0)
+DOWN_SPEED = (0, 6)
+UP_SPEED = (0, -6)
+
+PLAYER1_START_COORDS = (650, 50)
+PLAYER2_START_COORDS = (50, 50)
+
+PLAYER1_HEALTH_COORDS = (550, 10)
+PLAYER2_HEALTH_COORDS = (20, 10)
+
+FPS = 60
+
+
 pygame.init()
+
 
 screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 pygame.display.set_caption("Game Thingy")
@@ -168,13 +175,13 @@ all_sprite_list.add(wall_3)
 bullet_list = pygame.sprite.Group()
 bullet2_list = pygame.sprite.Group()
 
-player1 = Player(650, 50)
+player1 = Player(*PLAYER1_HEALTH_COORDS)
 player1.walls = wall_list
 
 all_sprite_list.add(player1)
 player1_list.add(player1)
 
-player2 = Player2(50, 50)
+player2 = Player2(*PLAYER2_START_COORDS)
 player2.walls = wall_list
 player2_list.add(player2)
 
@@ -206,6 +213,8 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+
+        # разгон при нажатии клавиши
         if event.type == pygame.KEYDOWN and gameover is False:
             if event.key == pygame.K_LEFT:
                 player1.changespeed(*LEFT_SPEED)
@@ -241,6 +250,7 @@ while not done:
                 all_sprite_list.add(bullet2)
                 bullet2_list.add(bullet2)
 
+        # остановка при отпускании клавиши
         elif event.type == pygame.KEYUP and gameover is False:
             if event.key == pygame.K_LEFT:
                 player1.changespeed(*RIGHT_SPEED)
@@ -262,6 +272,7 @@ while not done:
 
     all_sprite_list.update()
 
+    # фиксируем попадания пуль и вылет за границы
     for bullet in bullet_list:
         block_hit_list = pygame.sprite.spritecollide(
             bullet,
@@ -274,7 +285,7 @@ while not done:
             all_sprite_list.remove(bullet)
             p2_health -= 1
 
-        if bullet.rect.x < -10:
+        if bullet.rect.x < wall_1.rect.x:
             bullet_list.remove(bullet)
             all_sprite_list.remove(bullet)
 
@@ -290,10 +301,11 @@ while not done:
             all_sprite_list.remove(bullet2)
             p1_health -= 1
 
-        if bullet2.rect.x > 810:
+        if bullet2.rect.x > wall_2.rect.x:
             bullet2_list.remove(bullet2)
             all_sprite_list.remove(bullet2)
 
+    # рисуем хп
     screen.fill(BLACK)
     player1health = font.render(
         "Player 1 Health: " + str(p1_health),
@@ -306,8 +318,8 @@ while not done:
         True,
         WHITE
     )
-    screen.blit(player1health, PLAYER1_HEALTH_COORD)
-    screen.blit(player2health, PLAYER2_HEALTH_COORD)
+    screen.blit(player1health, PLAYER1_HEALTH_COORDS)
+    screen.blit(player2health, PLAYER2_HEALTH_COORDS)
 
     all_sprite_list.draw(screen)
 
@@ -320,7 +332,7 @@ while not done:
 
     pygame.display.flip()
 
-    clock.tick(60)
+    clock.tick(FPS)
 
 
 pygame.quit()
