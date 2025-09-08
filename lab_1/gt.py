@@ -15,6 +15,9 @@ RIGHT_SPEED = (6, 0)
 DOWN_SPEED = (0, 6)
 UP_SPEED = (0, -6)
 
+PLAYER1_HEALTH_COORD = [550, 10]
+PLAYER2_HEALTH_COORD = [20, 10]
+
 '''
 Player1 uses the skull and the fireball(bullet) stays at the right side
 Player2 uses the togepi and the cloud(bullet2) stays at teh left side
@@ -240,22 +243,22 @@ while not done:
 
         elif event.type == pygame.KEYUP and gameover is False:
             if event.key == pygame.K_LEFT:
-                player1.changespeed(*LEFT_SPEED)
-            elif event.key == pygame.K_RIGHT:
                 player1.changespeed(*RIGHT_SPEED)
+            elif event.key == pygame.K_RIGHT:
+                player1.changespeed(*LEFT_SPEED)
             elif event.key == pygame.K_DOWN:
-                player1.changespeed(*DOWN_SPEED)
-            elif event.key == pygame.K_UP:
                 player1.changespeed(*UP_SPEED)
+            elif event.key == pygame.K_UP:
+                player1.changespeed(*DOWN_SPEED)
 
             elif event.key == pygame.K_a:
-                player2.changespeed(*LEFT_SPEED)
-            elif event.key == pygame.K_d:
                 player2.changespeed(*RIGHT_SPEED)
+            elif event.key == pygame.K_d:
+                player2.changespeed(*LEFT_SPEED)
             elif event.key == pygame.K_s:
-                player2.changespeed(*DOWN_SPEED)
-            elif event.key == pygame.K_w:
                 player2.changespeed(*UP_SPEED)
+            elif event.key == pygame.K_w:
+                player2.changespeed(*DOWN_SPEED)
 
     all_sprite_list.update()
 
@@ -303,8 +306,8 @@ while not done:
         True,
         WHITE
     )
-    screen.blit(player1health, [550, 10])
-    screen.blit(player2health, [20, 10])
+    screen.blit(player1health, PLAYER1_HEALTH_COORD)
+    screen.blit(player2health, PLAYER2_HEALTH_COORD)
 
     all_sprite_list.draw(screen)
 
