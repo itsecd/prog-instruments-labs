@@ -1,16 +1,21 @@
-from tkinter import *
-from tkinter import Tk, Entry, mainloop, StringVar
-from tkinter import Text
-from random import *
-import tkinter
-import random
-from turtle import *
-import turtle
-from PIL import Image, ImageDraw, ImageFont
-import keyboard
 import os
 import sys
+import random
+import tkinter
+from random import randrange, randint
+
+from PIL import Image, ImageDraw, ImageFont
 import pygame
+import keyboard
+
+from tkinter import (
+    Tk, Entry, StringVar, Button, Label,
+    Radiobutton, Scale, HORIZONTAL
+)
+
+import turtle
+from turtle import showturtle, Turtle
+
 
 root = tkinter.Tk()
 
@@ -20,8 +25,8 @@ invent = ("")
 
 # переменные
 text = StringVar()  # IntVar() - число целое ; DoudleVar() - дробное число
-v1 = IntVar()
-v2 = IntVar()
+v1 = tkinter.IntVar()
+v2 = tkinter.IntVar()
 
 
 # функции
@@ -145,7 +150,7 @@ def game():
                             print('Ваш ответ оказался верным. Необычный вы человек,', name, '.')
                             print('Что ж, приступим ко второй загадке,', name, '.')
                             print('''Во второй загадке вы должны отгадать число.''')
-                            x = randrange(1000)
+                            x = random.randrange(1000)
                             print("Я загадал число. Сейчас я кое-что про него Вам расскажу")
                             print("В этом числе:")
                             if 0 <= x <= 9:
