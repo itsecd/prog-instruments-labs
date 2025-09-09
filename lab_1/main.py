@@ -38,7 +38,7 @@ def game():
 2)Дремучие леса
 3)Высокие горы
 Пишите понятно, я привык к хорошей речи (можете написать номер варианта)
-P.S. Прописан только 1 вариант\n""")
+P.S. Прописан только первый вариант\n""")
 
     '''---------------------------------------------------------------'''
     while direction_choice != 'Жаркая пустыня' or direction_choice != '1' or direction_choice != 'Дремучие леса' or direction_choice != '2' or direction_choice != 'Высокие горы' or direction_choice != '3':
@@ -225,14 +225,14 @@ P.S. Прописан только 1 вариант\n""")
 
                                             if choice_coconut == '1':
 
-                                                def i():
+                                                def down():
                                                     turtle.up()
                                                     turtle.goto(25, 0)
                                                     turtle.down()
                                                     for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
                                                     ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
-                                                                 font='verdana 10', command=y).pack()
+                                                                 font='verdana 10', command=up).pack()
                                                     ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
                                                     ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
@@ -240,7 +240,7 @@ P.S. Прописан только 1 вариант\n""")
                                                     ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
 
-                                                def y():
+                                                def up():
                                                     turtle.up()
                                                     turtle.goto(25, 80)
                                                     turtle.down()
@@ -249,13 +249,13 @@ P.S. Прописан только 1 вариант\n""")
                                                     ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
                                                     ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
-                                                                 font='verdana 10', command=i).pack()
+                                                                 font='verdana 10', command=down).pack()
                                                     ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
-                                                                 font='verdana 10', command=u).pack()
+                                                                 font='verdana 10', command=left).pack()
                                                     ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
-                                                                 font='verdana 10', command=op).pack()
+                                                                 font='verdana 10', command=get_coconut).pack()
 
-                                                def u():
+                                                def left():
                                                     turtle.up()
                                                     turtle.goto(-60, 80)
                                                     turtle.down()
@@ -268,9 +268,9 @@ P.S. Прописан только 1 вариант\n""")
                                                     ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
                                                     ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
-                                                                 font='verdana 10', command=o).pack()
+                                                                 font='verdana 10', command=right).pack()
 
-                                                def o():
+                                                def right():
                                                     turtle.up()
                                                     turtle.goto(25, 80)
                                                     turtle.down()
@@ -279,13 +279,13 @@ P.S. Прописан только 1 вариант\n""")
                                                     ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
                                                     ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
-                                                                 font='verdana 10', command=i).pack()
+                                                                 font='verdana 10', command=down).pack()
                                                     ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
-                                                                 font='verdana 10', command=u).pack()
+                                                                 font='verdana 10', command=left).pack()
                                                     ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
-                                                                 font='verdana 10', command=op).pack()
+                                                                 font='verdana 10', command=get_coconut).pack()
 
-                                                def op():
+                                                def get_coconut():
                                                     turtle.up()
                                                     turtle.goto(100, 80)
                                                     turtle.down()
@@ -319,7 +319,7 @@ P.S. Прописан только 1 вариант\n""")
                                                     choice_in_town = input(
                                                         'Выберите, куда вы хотите направиться (для этого напишите цифру, под которой обозначено здание).')
 
-                                                    def ky():
+                                                    def forge():
                                                         print('Вы вошли в кузницу')
                                                         img_of_forge = Image.open('Images for Python/kyz.jpg')
                                                         img_of_forge.show()
@@ -361,7 +361,7 @@ P.S. Прописан только 1 вариант\n""")
 2)Попросить у кого-нибудь ночлега
 ''')
 
-                                                            def noch():
+                                                            def night():
                                                                 print('''Всё было как нельзя лучше - всё-таки под открытым небом и на свежем воздухе,
 как вдруг вы, засыпая, услышали шорох в соседних кустах. Вы пристально посмотрели в то место и через некоторое время из кустов выпрыгнул зверь, очень похожий на рысь.
 Откуда рыси в здешних краях - вы даже успели подумать над этим вопросом.''')
@@ -382,12 +382,12 @@ P.S. Прописан только 1 вариант\n""")
                                                                 choice_in_town = input(
                                                                     'Выберите, куда вы хотите направиться (для этого напишите цифру, под которой обозначено здание.')
 
-                                                                def ky():
+                                                                def forge():
                                                                     print(
                                                                         '''Вы вошли в кузницу. Знакомого вам жителя здесь не оказалось''')
                                                                     print('Вы вышли из кузницы.')
 
-                                                                def pr():
+                                                                def grocery():
                                                                     print('''Вы вошли в продуктовую лавку.''')
                                                                     print(
                                                                         'Спустя 5 минут безудержных поисков, вы наткнулись на него в продовольственном магазине.')
@@ -421,22 +421,22 @@ P.S. Прописан только 1 вариант\n""")
 
                                                                 while choice_in_town != '1' or choice_in_town != '2' or choice_in_town != '3':
                                                                     if choice_in_town == '1':
-                                                                        pr()
+                                                                        grocery()
                                                                         break
                                                                     elif choice_in_town == '2':
-                                                                        ky()
+                                                                        forge()
                                                                         direction_choice_town = input(
                                                                             'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                                         while direction_choice_town != '1' or direction_choice_town != '3':
                                                                             if direction_choice_town == '1':
-                                                                                pr()
+                                                                                grocery()
                                                                                 break
                                                                             elif direction_choice_town == '3':
                                                                                 print('''Вы попытались открыть дверь
 Дверь заперта''')
                                                                                 print(
                                                                                     'Вы вспомнили, что вам нужно в продовольственный магазин')
-                                                                                pr()
+                                                                                grocery()
                                                                                 break
                                                                             else:
                                                                                 direction_choice_town = input(
@@ -447,24 +447,24 @@ P.S. Прописан только 1 вариант\n""")
 Дверь заперта''')
                                                                         while direction_choice_town_dlc != '1' or direction_choice_town_dlc != '2':
                                                                             if direction_choice_town_dlc == '1':
-                                                                                pr()
+                                                                                grocery()
                                                                                 break
 
                                                                             elif direction_choice_town_dlc == '2':
-                                                                                ky()
+                                                                                forge()
 
                                                                                 direction_choice_town = input(
                                                                                     'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                                                 while direction_choice_town != '1' or direction_choice_town != '3':
                                                                                     if direction_choice_town == '1':
-                                                                                        pr()
+                                                                                        grocery()
                                                                                         break
                                                                                     elif direction_choice_town == '3':
                                                                                         print('''Вы попытались открыть дверь
 Дверь заперта''')
                                                                                         print(
                                                                                             'Вы вспомнили, что вам нужно в продовольственный магазин')
-                                                                                        pr()
+                                                                                        grocery()
                                                                                         break
                                                                                     else:
                                                                                         direction_choice_town = input(
@@ -486,12 +486,12 @@ P.S. Прописан только 1 вариант\n""")
                                                                 if option_for_the_night == '1':
                                                                     print(
                                                                         'Вы решили прилечь на ночь под раскидистой пальмой недалеко от деревни.')
-                                                                    noch()
+                                                                    night()
                                                                     break
                                                                 elif option_for_the_night == '2':
                                                                     print('''Вы долго скитались, ища у кого попросить ночлега, но так и не нашли его.
 В итоге, Вы решили прилечь на ночь под раскидистой пальмой недалеко от деревни.''')
-                                                                    noch()
+                                                                    night()
                                                                     break
 
                                                                 else:
@@ -503,7 +503,7 @@ P.S. Прописан только 1 вариант\n""")
 1)Лечь под пальмой
 2)Попросить у кого-нибудь ночлега''')
 
-                                                    def pr():
+                                                    def grocery():
                                                         print('''Вы вошли в продуктовую лавку''')
                                                         img_of_grocery = Image.open('Images for Python/prod.jpg')
                                                         img_of_grocery.show()
@@ -533,7 +533,7 @@ P.S. Прописан только 1 вариант\n""")
                                                         print('Вы вышли из продуктовой лавки.')
                                                         coconut_yes = True
 
-                                                    def ky2():
+                                                    def forge_result():
                                                         print('''Вы вошли в кузницу''')
                                                         img_of_forge = Image.open('Images for Python/kyz.jpg')
                                                         img_of_forge.show()
@@ -564,7 +564,7 @@ P.S. Прописан только 1 вариант\n""")
                                                         sword_yes = True
                                                         coconut_yes = True
 
-                                                    def pr2():
+                                                    def grocery_result():
                                                         print('''Вы вошли в продуктовую лавку''')
                                                         img_of_grocery = Image.open('Images for Python/prod.jpg')
                                                         img_of_grocery.show()
@@ -609,7 +609,7 @@ P.S. Прописан только 1 вариант\n""")
 2)Попросить у кого-нибудь ночлега
 ''')
 
-                                                            def noch():
+                                                            def night():
                                                                 print('''Всё было как нельзя лучше - всё-таки под открытым небом и на свежем воздухе,
 как вдруг вы, засыпая, услышали шорох в соседних кустах. Вы пристально посмотрели в то место и через некоторое время из кустов выпрыгнул зверь, очень похожий на рысь.
 Откуда рыси в здешних краях - вы даже успели подумать над этим вопросом.''')
@@ -628,12 +628,12 @@ P.S. Прописан только 1 вариант\n""")
                                                                 choice_in_town = input(
                                                                     'Выберите, куда вы хотите направиться (для этого напишите цифру, под которой обозначено здание.')
 
-                                                                def ky():
+                                                                def forge():
                                                                     print(
                                                                         '''Вы вошли в кузницу. Знакомого вам жителя здесь не оказалось''')
                                                                     print('Вы вышли из кузницы.')
 
-                                                                def pr():
+                                                                def grocery():
                                                                     print('''Вы вошли в продуктовую лавку.''')
                                                                     print(
                                                                         'Спустя 5 минут безудержных поисков, вы наткнулись на него в продовольственном магазине.')
@@ -669,22 +669,22 @@ P.S. Прописан только 1 вариант\n""")
 
                                                                 while choice_in_town != '1' or choice_in_town != '2' or choice_in_town != '3':
                                                                     if choice_in_town == '1':
-                                                                        pr()
+                                                                        grocery()
                                                                         break
                                                                     elif choice_in_town == '2':
-                                                                        ky()
+                                                                        forge()
                                                                         direction_choice_town = input(
                                                                             'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                                         while direction_choice_town != '1' or direction_choice_town != '3':
                                                                             if direction_choice_town == '1':
-                                                                                pr()
+                                                                                grocery()
                                                                                 break
                                                                             elif direction_choice_town == '3':
                                                                                 print('''Вы попытались открыть дверь
 Дверь заперта''')
                                                                                 print(
                                                                                     'Вы вспомнили, что вам нужно в продовольственный магазин')
-                                                                                pr()
+                                                                                grocery()
                                                                                 break
                                                                             else:
                                                                                 direction_choice_town = input(
@@ -697,24 +697,24 @@ P.S. Прописан только 1 вариант\n""")
                                                                             'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                                         while direction_choice_town_dlc != '1' or direction_choice_town_dlc != '2':
                                                                             if direction_choice_town_dlc == '1':
-                                                                                pr()
+                                                                                grocery()
                                                                                 break
 
                                                                             elif direction_choice_town_dlc == '2':
-                                                                                ky()
+                                                                                forge()
 
                                                                                 direction_choice_town = input(
                                                                                     'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                                                 while direction_choice_town != '1' or direction_choice_town != '3':
                                                                                     if direction_choice_town == '1':
-                                                                                        pr()
+                                                                                        grocery()
                                                                                         break
                                                                                     elif direction_choice_town == '3':
                                                                                         print('''Вы попытались открыть дверь
 Дверь заперта''')
                                                                                         print(
                                                                                             'Вы вспомнили, что вам нужно в продовольственный магазин')
-                                                                                        pr()
+                                                                                        grocery()
                                                                                         break
                                                                                     else:
                                                                                         direction_choice_town = input(
@@ -736,12 +736,12 @@ P.S. Прописан только 1 вариант\n""")
                                                                 if option_for_the_night == '1':
                                                                     print(
                                                                         'Вы решили прилечь на ночь под раскидистой пальмой недалеко от деревни.')
-                                                                    noch()
+                                                                    night()
                                                                     break
                                                                 elif option_for_the_night == '2':
                                                                     print('''Вы долго скитались, ища у кого попросить ночлега, но так и не нашли его.
 В итоге, Вы решили прилечь на ночь под раскидистой пальмой недалеко от деревни.''')
-                                                                    noch()
+                                                                    night()
                                                                     break
 
                                                                 else:
@@ -755,18 +755,18 @@ P.S. Прописан только 1 вариант\n""")
 
                                                     while choice_in_town != '1' or choice_in_town != '2' or choice_in_town != '3':
                                                         if choice_in_town == '1':
-                                                            pr()
+                                                            grocery()
                                                             direction_choice_in_town = input(
                                                                 'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                             while direction_choice_in_town != '2' or direction_choice_in_town != '3':
                                                                 if direction_choice_in_town == '2':
-                                                                    ky()
+                                                                    forge()
                                                                     break
                                                                 elif direction_choice_in_town == '3':
                                                                     print('''Вы попытались открыть дверь
         Дверь заперта''')
                                                                     print('Вы вспомнили, что вам нужно в кузницу')
-                                                                    ky()
+                                                                    forge()
                                                                     break
                                                                 else:
                                                                     direction_choice_in_town = input(
@@ -774,19 +774,19 @@ P.S. Прописан только 1 вариант\n""")
                                                             break
 
                                                         elif choice_in_town == '2':
-                                                            ky2()
+                                                            forge_result()
                                                             direction_choice_town = input(
                                                                 'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                             while direction_choice_town != '1' or direction_choice_town != '3':
                                                                 if direction_choice_town == '1':
-                                                                    pr2()
+                                                                    grocery_result()
                                                                     break
                                                                 elif direction_choice_town == '3':
                                                                     print('''Вы попытались открыть дверь
         Дверь заперта''')
                                                                     print(
                                                                         'Вы вспомнили, что вам нужно в продовольственный магазин')
-                                                                    pr2()
+                                                                    grocery_result()
                                                                     break
                                                                 else:
                                                                     direction_choice_town = input(
@@ -800,39 +800,39 @@ P.S. Прописан только 1 вариант\n""")
                                                                 'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                             while direction_choice_town_dlc != '1' or direction_choice_town_dlc != '2':
                                                                 if direction_choice_town_dlc == '1':
-                                                                    pr()
+                                                                    grocery()
                                                                     direction_choice_in_town = input(
                                                                         'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                                     while direction_choice_in_town != '2' or direction_choice_in_town != '3':
                                                                         if direction_choice_in_town == '2':
-                                                                            ky()
+                                                                            forge()
                                                                             break
                                                                         elif direction_choice_in_town == '3':
                                                                             print('''Вы попытались открыть дверь
         Дверь заперта''')
                                                                             print(
                                                                                 'Вы вспомнили, что вам нужно в кузницу')
-                                                                            ky()
+                                                                            forge()
                                                                             break
                                                                         else:
                                                                             direction_choice_in_town = input(
                                                                                 'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                                         break
                                                                 if direction_choice_town_dlc == '2':
-                                                                    ky2()
+                                                                    forge_result()
 
                                                                     direction_choice_town = input(
                                                                         'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                                     while direction_choice_town != '1' or direction_choice_town != '3':
                                                                         if direction_choice_town == '1':
-                                                                            pr2()
+                                                                            grocery_result()
                                                                             break
                                                                         elif direction_choice_town == '3':
                                                                             print('''Вы попытались открыть дверь
                 Дверь заперта''')
                                                                             print(
                                                                                 'Вы вспомнили, что вам нужно в продовольственный магазин')
-                                                                            pr2()
+                                                                            grocery_result()
                                                                             break
                                                                     else:
                                                                         direction_choice_town = input(
@@ -856,7 +856,7 @@ P.S. Прописан только 1 вариант\n""")
 
                                                 showturtle()
 
-                                                def v():
+                                                def tree():
                                                     turtle.fillcolor("green")
                                                     turtle.begin_fill()
                                                     turtle.fd(80)
@@ -891,7 +891,7 @@ P.S. Прописан только 1 вариант\n""")
                                                 turtle.fd(50)
                                                 turtle.down()
 
-                                                v()
+                                                tree()
 
                                                 turtle.fillcolor("brown")
                                                 turtle.right(90)
@@ -906,7 +906,7 @@ P.S. Прописан только 1 вариант\n""")
                                                 turtle.down()
 
                                                 ba = Button(get_coconut_window, text='Достать кокос', bg='yellow', fg='brown',
-                                                            font='verdana 5', command=i).pack()
+                                                            font='verdana 5', command=down).pack()
 
                                                 get_coconut_window.mainloop()
                                                 break
@@ -967,11 +967,11 @@ P.S. Прописан только 1 вариант\n""")
     input("\nНажмите Enter, чтобы выйти")
 
 
-def q():
+def exit():
      main_window.destroy()
 
 
-def s():
+def developer_darkgray_brown():
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
@@ -979,10 +979,10 @@ def s():
     lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg='darkgray', fg='brown', font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=k).pack()
+    b45 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=menu).pack()
 
 
-def ks():
+def developer_red_black():
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
@@ -990,10 +990,10 @@ def ks():
     lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg='red', fg='black', font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg='red', fg='black', font='verdana 14', command=fon).pack()
+    b45 = Button(main_window, text='Выход', bg='red', fg='black', font='verdana 14', command=main_color).pack()
 
 
-def qs():
+def developer_lightblue_black():
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
@@ -1001,10 +1001,10 @@ def qs():
     lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg='lightblue', fg='black', font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg='lightblue', fg='black', font='verdana 14', command=fon).pack()
+    b45 = Button(main_window, text='Выход', bg='lightblue', fg='black', font='verdana 14', command=main_color).pack()
 
 
-def ps():
+def developer_green_black():
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
@@ -1012,22 +1012,22 @@ def ps():
     lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg='green', fg='black', font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg='green', fg='black', font='verdana 14', command=fon).pack()
+    b45 = Button(main_window, text='Выход', bg='green', fg='black', font='verdana 14', command=main_color).pack()
 
 
-def k():
+def menu():
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
     l1 = Label(main_window, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
     b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-    b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-    b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=s).pack()
-    b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+    b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
+    b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_darkgray_brown).pack()
+    b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
 
 
-def fon():
+def main_color():
     direction_choice = v1.get()
     if direction_choice == 0:
         main_window["bg"] = "red"
@@ -1039,9 +1039,9 @@ def fon():
             if w.winfo_class() == 'Button': w.destroy()
         l1 = Label(main_window, text="Меню", bg='red', fg='black', font='verdana 20').pack()
         b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=ks).pack()
-        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
+        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_red_black).pack()
+        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
     elif direction_choice == 1:
         main_window["bg"] = "lightblue"
         for w in main_window.winfo_children():
@@ -1052,9 +1052,9 @@ def fon():
             if w.winfo_class() == 'Button': w.destroy()
         l1 = Label(main_window, text="Меню", bg='lightblue', fg='brown', font='verdana 20').pack()
         b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=qs).pack()
-        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
+        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_lightblue_black).pack()
+        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
     elif direction_choice == 2:
         main_window["bg"] = "green"
         for w in main_window.winfo_children():
@@ -1065,9 +1065,9 @@ def fon():
             if w.winfo_class() == 'Button': w.destroy()
         l1 = Label(main_window, text="Меню", bg='green', fg='brown', font='verdana 20').pack()
         b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=ps).pack()
-        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
+        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_green_black).pack()
+        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
     else:
         main_window["bg"] = "darkgray"
         for w in main_window.winfo_children():
@@ -1078,12 +1078,12 @@ def fon():
             if w.winfo_class() == 'Button': w.destroy()
         l1 = Label(main_window, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
         b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=s).pack()
-        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
+        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_darkgray_brown).pack()
+        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
 
 
-def n():
+def color_background():
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
@@ -1094,16 +1094,16 @@ def n():
     r2 = Radiobutton(main_window, text='Светлоголубой', fg='lightblue', variable=v1, value=1).pack()
     r3 = Radiobutton(main_window, text='Зелёный', fg='green', variable=v1, value=2).pack()
     r4 = Radiobutton(main_window, text='Серый', fg='darkgray', variable=v1, value=3).pack()
-    but2 = Button(main_window, text='Поменять', command=fon).pack()
+    but2 = Button(main_window, text='Поменять', command=main_color).pack()
 
 
 # виджеты
 l1 = Label(main_window, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
 print("Добро пожаловать в игру 'Приключения'!");
 b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=s).pack()
-b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
+b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_darkgray_brown).pack()
+b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
 
 # ---
 
