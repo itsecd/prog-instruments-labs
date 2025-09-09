@@ -16,10 +16,12 @@ from tkinter import (
 import turtle
 from turtle import showturtle, Turtle
 
+from constants import *
+
 
 main_window = tkinter.Tk()
 
-main_window["bg"] = "darkgray"
+main_window["bg"] = BG_DARKGRAY
 main_window.geometry('500x300')
 
 text = StringVar()
@@ -231,13 +233,13 @@ P.S. Прописан только первый вариант\n""")
                                                     turtle.down()
                                                     for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
+                                                    ba1 = Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=up).pack()
-                                                    ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
+                                                    ba2 = Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
+                                                    ba3 = Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
+                                                    ba4 = Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
 
                                                 def up():
@@ -246,13 +248,13 @@ P.S. Прописан только первый вариант\n""")
                                                     turtle.down()
                                                     for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
+                                                    ba1 = Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
+                                                    ba2 = Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=down).pack()
-                                                    ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
+                                                    ba3 = Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=left).pack()
-                                                    ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
+                                                    ba4 = Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=get_coconut).pack()
 
                                                 def left():
@@ -261,13 +263,13 @@ P.S. Прописан только первый вариант\n""")
                                                     turtle.down()
                                                     for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
+                                                    ba1 = Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
+                                                    ba2 = Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
+                                                    ba3 = Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
+                                                    ba4 = Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=right).pack()
 
                                                 def right():
@@ -276,13 +278,13 @@ P.S. Прописан только первый вариант\n""")
                                                     turtle.down()
                                                     for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
+                                                    ba1 = Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
+                                                    ba2 = Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=down).pack()
-                                                    ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
+                                                    ba3 = Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=left).pack()
-                                                    ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
+                                                    ba4 = Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=get_coconut).pack()
 
                                                 def get_coconut():
@@ -341,9 +343,9 @@ P.S. Прописан только первый вариант\n""")
                                                         Inventory = ('1 кокос, 1 меч')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
                                                         root101 = tkinter.Tk()
-                                                        root101["bg"] = "yellow"
+                                                        root101["bg"] = BG_YELLOW
                                                         root101.geometry('300x50')
-                                                        li1 = Label(root101, text='O ⚔', bg='yellow', fg='brown',
+                                                        li1 = Label(root101, text='O ⚔', bg=BG_YELLOW, fg=FG_BROWN,
                                                                     font='verdana 10').pack()
                                                         root101.mainloop()
                                                         print('Вы вышли из кузницы.')
@@ -445,6 +447,8 @@ P.S. Прописан только первый вариант\n""")
                                                                     elif choice_in_town == '3':
                                                                         print('''Вы попытались открыть дверь
 Дверь заперта''')
+                                                                        direction_choice_town_dlc = input(
+                                                                            'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
                                                                         while direction_choice_town_dlc != '1' or direction_choice_town_dlc != '2':
                                                                             if direction_choice_town_dlc == '1':
                                                                                 grocery()
@@ -525,10 +529,10 @@ P.S. Прописан только первый вариант\n""")
                                                         Inventory = ('9 монет, 1 кокос')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
                                                         root100 = tkinter.Tk()
-                                                        root100["bg"] = "yellow"
+                                                        root100["bg"] = BG_YELLOW
                                                         root100.geometry('300x50')
-                                                        li1 = Label(root100, text='ooooo oooo O', bg='yellow',
-                                                                    fg='brown', font='verdana 10').pack()
+                                                        li1 = Label(root100, text='ooooo oooo O', bg=BG_YELLOW,
+                                                                    fg=FG_BROWN, font='verdana 10').pack()
                                                         root100.mainloop()
                                                         print('Вы вышли из продуктовой лавки.')
                                                         coconut_yes = True
@@ -555,9 +559,9 @@ P.S. Прописан только первый вариант\n""")
                                                         Inventory = ('1 монета, 1 меч')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
                                                         root101 = tkinter.Tk()
-                                                        root101["bg"] = "yellow"
+                                                        root101["bg"] = BG_YELLOW
                                                         root101.geometry('300x50')
-                                                        li1 = Label(root101, text='o ⚔', bg='yellow', fg='brown',
+                                                        li1 = Label(root101, text='o ⚔', bg=BG_YELLOW, fg=FG_BROWN,
                                                                     font='verdana 10').pack()
                                                         root101.mainloop()
                                                         print('Вы вышли из кузницы.')
@@ -586,9 +590,9 @@ P.S. Прописан только первый вариант\n""")
                                                         Inventory = ('1 кокос, 1 меч')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
                                                         root100 = tkinter.Tk()
-                                                        root100["bg"] = "yellow"
+                                                        root100["bg"] = BG_YELLOW
                                                         root100.geometry('300x50')
-                                                        li1 = Label(root100, text='O ⚔', bg='yellow', fg='brown',
+                                                        li1 = Label(root100, text='O ⚔', bg=BG_YELLOW, fg=FG_BROWN,
                                                                     font='verdana 10').pack()
                                                         print('Вы вышли из продуктовой лавки.')
                                                         root100.mainloop()
@@ -851,13 +855,13 @@ P.S. Прописан только первый вариант\n""")
                                                         break
 
                                                 get_coconut_window = tkinter.Tk()
-                                                get_coconut_window["bg"] = "yellow"
+                                                get_coconut_window["bg"] = BG_YELLOW
                                                 get_coconut_window.geometry('100x200')
 
                                                 showturtle()
 
                                                 def tree():
-                                                    turtle.fillcolor("green")
+                                                    turtle.fillcolor(TURTLE_GREEN)
                                                     turtle.begin_fill()
                                                     turtle.fd(80)
                                                     turtle.right(90)
@@ -873,7 +877,7 @@ P.S. Прописан только первый вариант\n""")
                                                 turtle.goto(0, -100)
                                                 turtle.down()
                                                 turtle.begin_fill()
-                                                turtle.fillcolor("brown")
+                                                turtle.fillcolor(TURTLE_BROWN)
                                                 turtle.left(90)
                                                 turtle.fd(230)
                                                 turtle.right(90)
@@ -893,19 +897,19 @@ P.S. Прописан только первый вариант\n""")
 
                                                 tree()
 
-                                                turtle.fillcolor("brown")
+                                                turtle.fillcolor(TURTLE_BROWN)
                                                 turtle.right(90)
 
                                                 turtle.up()
                                                 turtle.right(90)
                                                 turtle.right(90)
-                                                turtle.fillcolor("yellow")
+                                                turtle.fillcolor(TURTLE_YELLOW)
 
                                                 turtle.up()
                                                 turtle.goto(25, 0)
                                                 turtle.down()
 
-                                                ba = Button(get_coconut_window, text='Достать кокос', bg='yellow', fg='brown',
+                                                ba = Button(get_coconut_window, text='Достать кокос', bg=BG_YELLOW, fg=FG_BROWN,
                                                             font='verdana 5', command=down).pack()
 
                                                 get_coconut_window.mainloop()
@@ -978,8 +982,8 @@ def developer_darkgray_brown():
         if w.winfo_class() == 'Label': w.destroy()
     lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
-    (Ярославцев Максим Владимирович)''', bg='darkgray', fg='brown', font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=menu).pack()
+    (Ярославцев Максим Владимирович)''', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14').pack()
+    b45 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=menu).pack()
 
 
 def developer_red_black():
@@ -989,8 +993,8 @@ def developer_red_black():
         if w.winfo_class() == 'Label': w.destroy()
     lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
-    (Ярославцев Максим Владимирович)''', bg='red', fg='black', font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg='red', fg='black', font='verdana 14', command=main_color).pack()
+    (Ярославцев Максим Владимирович)''', bg=BG_RED, fg=FG_BLACK, font='verdana 14').pack()
+    b45 = Button(main_window, text='Выход', bg=BG_RED, fg=FG_BLACK, font='verdana 14', command=main_color).pack()
 
 
 def developer_lightblue_black():
@@ -1000,8 +1004,8 @@ def developer_lightblue_black():
         if w.winfo_class() == 'Label': w.destroy()
     lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
-    (Ярославцев Максим Владимирович)''', bg='lightblue', fg='black', font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg='lightblue', fg='black', font='verdana 14', command=main_color).pack()
+    (Ярославцев Максим Владимирович)''', bg=BG_LIGHTBLUE, fg=FG_BLACK, font='verdana 14').pack()
+    b45 = Button(main_window, text='Выход', bg=BG_LIGHTBLUE, fg=FG_BLACK, font='verdana 14', command=main_color).pack()
 
 
 def developer_green_black():
@@ -1011,8 +1015,8 @@ def developer_green_black():
         if w.winfo_class() == 'Label': w.destroy()
     lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
-    (Ярославцев Максим Владимирович)''', bg='green', fg='black', font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg='green', fg='black', font='verdana 14', command=main_color).pack()
+    (Ярославцев Максим Владимирович)''', bg=BG_GREEN, fg=FG_BLACK, font='verdana 14').pack()
+    b45 = Button(main_window, text='Выход', bg=BG_GREEN, fg=FG_BLACK, font='verdana 14', command=main_color).pack()
 
 
 def menu():
@@ -1020,67 +1024,67 @@ def menu():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    l1 = Label(main_window, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
-    b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-    b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
-    b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_darkgray_brown).pack()
-    b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
+    l1 = Label(main_window, text="Меню", bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 20').pack()
+    b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+    b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+    b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_darkgray_brown).pack()
+    b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
 
 
 def main_color():
     direction_choice = v1.get()
     if direction_choice == 0:
-        main_window["bg"] = "red"
+        main_window["bg"] = BG_RED
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Radiobutton': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Label': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(main_window, text="Меню", bg='red', fg='black', font='verdana 20').pack()
-        b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
-        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_red_black).pack()
-        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
+        l1 = Label(main_window, text="Меню", bg=BG_RED, fg=FG_BLACK, font='verdana 20').pack()
+        b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+        b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+        b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_red_black).pack()
+        b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
     elif direction_choice == 1:
-        main_window["bg"] = "lightblue"
+        main_window["bg"] = BG_LIGHTBLUE
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Radiobutton': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Label': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(main_window, text="Меню", bg='lightblue', fg='brown', font='verdana 20').pack()
-        b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
-        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_lightblue_black).pack()
-        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
+        l1 = Label(main_window, text="Меню", bg=BG_LIGHTBLUE, fg=FG_BROWN, font='verdana 20').pack()
+        b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+        b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+        b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_lightblue_black).pack()
+        b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
     elif direction_choice == 2:
-        main_window["bg"] = "green"
+        main_window["bg"] = BG_GREEN
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Radiobutton': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Label': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(main_window, text="Меню", bg='green', fg='brown', font='verdana 20').pack()
-        b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
-        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_green_black).pack()
-        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
+        l1 = Label(main_window, text="Меню", bg=BG_GREEN, fg=FG_BROWN, font='verdana 20').pack()
+        b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+        b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+        b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_green_black).pack()
+        b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
     else:
-        main_window["bg"] = "darkgray"
+        main_window["bg"] = BG_DARKGRAY
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Radiobutton': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Label': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(main_window, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
-        b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
-        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_darkgray_brown).pack()
-        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
+        l1 = Label(main_window, text="Меню", bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 20').pack()
+        b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+        b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+        b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_darkgray_brown).pack()
+        b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
 
 
 def color_background():
@@ -1090,20 +1094,20 @@ def color_background():
         if w.winfo_class() == 'Label': w.destroy()
     lab2 = Label(main_window, text="Цвет фона", font='verdana 14').pack()
     v1.set(4)
-    r1 = Radiobutton(main_window, text='Красный', fg='red', variable=v1, value=0).pack()
-    r2 = Radiobutton(main_window, text='Светлоголубой', fg='lightblue', variable=v1, value=1).pack()
-    r3 = Radiobutton(main_window, text='Зелёный', fg='green', variable=v1, value=2).pack()
-    r4 = Radiobutton(main_window, text='Серый', fg='darkgray', variable=v1, value=3).pack()
+    r1 = Radiobutton(main_window, text='Красный', fg=FG_RED, variable=v1, value=0).pack()
+    r2 = Radiobutton(main_window, text='Светлоголубой', fg=FG_LIGHTBLUE, variable=v1, value=1).pack()
+    r3 = Radiobutton(main_window, text='Зелёный', fg=FG_GREEN, variable=v1, value=2).pack()
+    r4 = Radiobutton(main_window, text='Серый', fg=FG_DARKGRAY, variable=v1, value=3).pack()
     but2 = Button(main_window, text='Поменять', command=main_color).pack()
 
 
 # виджеты
-l1 = Label(main_window, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
+l1 = Label(main_window, text="Меню", bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 20').pack()
 print("Добро пожаловать в игру 'Приключения'!");
-b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=color_background).pack()
-b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=developer_darkgray_brown).pack()
-b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=exit).pack()
+b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_darkgray_brown).pack()
+b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
 
 # ---
 

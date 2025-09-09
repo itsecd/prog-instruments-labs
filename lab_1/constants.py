@@ -1,0 +1,17 @@
+BG_DARKGRAY = "darkgray"
+BG_RED = "red"
+BG_LIGHTBLUE = "lightblue"
+BG_GREEN = "green"
+BG_YELLOW = "yellow"
+
+FG_BROWN = "brown"
+FG_DARKGRAY = "darkgray"
+FG_RED = "red"
+FG_BLACK = "black"
+FG_LIGHTBLUE = "lightblue"
+FG_GREEN = "green"
+
+TURTLE_GREEN = "green"
+TURTLE_YELLOW = "yellow"
+TURTLE_BROWN = "brown"
+TURTLE_LEMONCHIFFON = "lemonchiffon"
