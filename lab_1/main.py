@@ -17,21 +17,18 @@ import turtle
 from turtle import showturtle, Turtle
 
 
-root = tkinter.Tk()
+main_window = tkinter.Tk()
 
-root["bg"] = "darkgray"
-root.geometry('500x300')
-invent = ("")
+main_window["bg"] = "darkgray"
+main_window.geometry('500x300')
 
-# переменные
-text = StringVar()  # IntVar() - число целое ; DoudleVar() - дробное число
+text = StringVar()
 v1 = tkinter.IntVar()
 v2 = tkinter.IntVar()
 
 
-# функции
 def game():
-    root.destroy()
+    main_window.destroy()
     name = input('Здравствуйте, как мне вас называть? ')
     print('Ясненько, вас, значит, кличут', name)
     print('Ну что ж,', name, ',приступим-с.')
@@ -51,8 +48,8 @@ P.S. Прописан только 1 вариант\n""")
 Кругом - ни души.
 Надо что-то делать.""")
             print()
-            pust = Image.open('Images for Python/pust.jpg')
-            pust.show()
+            img_of_desert = Image.open('Images for Python/pust.jpg')
+            img_of_desert.show()
             input('Нажмите Enter, чтобы продолжить')
             action_choice = input('''Что же вы предпримете?
 Можете выбрать из предложенных:
@@ -143,8 +140,8 @@ P.S. Прописан только 1 вариант\n""")
                         print('''Первая загадка представляет собой стихотворение. Оно гласит:
 Я считаю дырки в сыре,
 Три плюс два равно ...''')
-                        img = Image.open('Images for Python/sur.jpg')
-                        img.show()
+                        img_of_cheese = Image.open('Images for Python/sur.jpg')
+                        img_of_cheese.show()
                         answer_input = input('Скажите ваш ответ.')
                         if answer_input == '5' or answer_input == 'пять':
                             print('Ваш ответ оказался верным. Необычный вы человек,', name, '.')
@@ -159,9 +156,7 @@ P.S. Прописан только 1 вариант\n""")
                                 print("2 знакa")
                             else:
                                 print("3 знакa")
-                                # 2
                             print("Оно заканчивается цифрой", mystery_number % 10)
-                            # 3
                             if mystery_number % 2 == 0:
                                 print("Это число чётное")
                             else:
@@ -234,60 +229,60 @@ P.S. Прописан только 1 вариант\n""")
                                                     turtle.up()
                                                     turtle.goto(25, 0)
                                                     turtle.down()
-                                                    for w in root3.winfo_children():
+                                                    for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(root3, text='↑', bg='yellow', fg='brown',
+                                                    ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
                                                                  font='verdana 10', command=y).pack()
-                                                    ba2 = Button(root3, text='↓', bg='yellow', fg='brown',
+                                                    ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
-                                                    ba3 = Button(root3, text='←', bg='yellow', fg='brown',
+                                                    ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
-                                                    ba4 = Button(root3, text='→', bg='yellow', fg='brown',
+                                                    ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
 
                                                 def y():
                                                     turtle.up()
                                                     turtle.goto(25, 80)
                                                     turtle.down()
-                                                    for w in root3.winfo_children():
+                                                    for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(root3, text='↑', bg='yellow', fg='brown',
+                                                    ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
-                                                    ba2 = Button(root3, text='↓', bg='yellow', fg='brown',
+                                                    ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
                                                                  font='verdana 10', command=i).pack()
-                                                    ba3 = Button(root3, text='←', bg='yellow', fg='brown',
+                                                    ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
                                                                  font='verdana 10', command=u).pack()
-                                                    ba4 = Button(root3, text='→', bg='yellow', fg='brown',
+                                                    ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
                                                                  font='verdana 10', command=op).pack()
 
                                                 def u():
                                                     turtle.up()
                                                     turtle.goto(-60, 80)
                                                     turtle.down()
-                                                    for w in root3.winfo_children():
+                                                    for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(root3, text='↑', bg='yellow', fg='brown',
+                                                    ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
-                                                    ba2 = Button(root3, text='↓', bg='yellow', fg='brown',
+                                                    ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
-                                                    ba3 = Button(root3, text='←', bg='yellow', fg='brown',
+                                                    ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
-                                                    ba4 = Button(root3, text='→', bg='yellow', fg='brown',
+                                                    ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
                                                                  font='verdana 10', command=o).pack()
 
                                                 def o():
                                                     turtle.up()
                                                     turtle.goto(25, 80)
                                                     turtle.down()
-                                                    for w in root3.winfo_children():
+                                                    for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(root3, text='↑', bg='yellow', fg='brown',
+                                                    ba1 = Button(get_coconut_window, text='↑', bg='yellow', fg='brown',
                                                                  font='verdana 10').pack()
-                                                    ba2 = Button(root3, text='↓', bg='yellow', fg='brown',
+                                                    ba2 = Button(get_coconut_window, text='↓', bg='yellow', fg='brown',
                                                                  font='verdana 10', command=i).pack()
-                                                    ba3 = Button(root3, text='←', bg='yellow', fg='brown',
+                                                    ba3 = Button(get_coconut_window, text='←', bg='yellow', fg='brown',
                                                                  font='verdana 10', command=u).pack()
-                                                    ba4 = Button(root3, text='→', bg='yellow', fg='brown',
+                                                    ba4 = Button(get_coconut_window, text='→', bg='yellow', fg='brown',
                                                                  font='verdana 10', command=op).pack()
 
                                                 def op():
@@ -304,10 +299,10 @@ P.S. Прописан только 1 вариант\n""")
                                                     turtle.goto(25, 0)
                                                     turtle.down()
                                                     showturtle()
-                                                    root3.destroy()
+                                                    get_coconut_window.destroy()
                                                     turtle.bye()
-                                                    img123 = Image.open('Images for Python/cocos.jpg')
-                                                    img123.show()
+                                                    img_of_coconut = Image.open('Images for Python/cocos.jpg')
+                                                    img_of_coconut.show()
                                                     input('Нажмите Enter, чтобы продолжить')
                                                     print(
                                                         'Вы смогли достать кокос - это возвысило вас в глазах жителей оазиса.')
@@ -319,15 +314,15 @@ P.S. Прописан только 1 вариант\n""")
                                                     print('Вы располагаете следующими вещами: ', Inventory)
                                                     print('''Записка гласила:
 Я думаю, вам необходимо приобрести пропитание и оружие для дальнейших странствий.''')
-                                                    img2 = Image.open('Images for Python/map_for_oasis.jpg')
-                                                    img2.show()
+                                                    img_of_map_of_oasis = Image.open('Images for Python/map_for_oasis.jpg')
+                                                    img_of_map_of_oasis.show()
                                                     choice_in_town = input(
                                                         'Выберите, куда вы хотите направиться (для этого напишите цифру, под которой обозначено здание).')
 
                                                     def ky():
                                                         print('Вы вошли в кузницу')
-                                                        img267 = Image.open('Images for Python/kyz.jpg')
-                                                        img267.show()
+                                                        img_of_forge = Image.open('Images for Python/kyz.jpg')
+                                                        img_of_forge.show()
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         print('''Вы можете приобрести: меч
 В наличии: 10 шт.''')
@@ -340,8 +335,8 @@ P.S. Прописан только 1 вариант\n""")
                                                         print(
                                                             '"С Вас девять монет" - сказал продавец и Вы отдали ему горстку монет, получив меч.')
                                                         print('Вы приобрели 1 меч')
-                                                        img268 = Image.open('Images for Python/sword.jpg')
-                                                        img268.show()
+                                                        img_of_sword = Image.open('Images for Python/sword.jpg')
+                                                        img_of_sword.show()
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         Inventory = ('1 кокос, 1 меч')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
@@ -371,8 +366,8 @@ P.S. Прописан только 1 вариант\n""")
 как вдруг вы, засыпая, услышали шорох в соседних кустах. Вы пристально посмотрели в то место и через некоторое время из кустов выпрыгнул зверь, очень похожий на рысь.
 Откуда рыси в здешних краях - вы даже успели подумать над этим вопросом.''')
                                                                 input('Для продолжения нажмите "Enter"')
-                                                                img3 = Image.open('Images for Python/caracal.jpg')
-                                                                img3.show()
+                                                                img_of_caracal = Image.open('Images for Python/caracal.jpg')
+                                                                img_of_caracal.show()
                                                                 input('Для продолжения нажмите "Enter"')
                                                                 print(
                                                                     '''Но потом, осмыслив ситуацию и осознав, что думать над происхождением животного - неуместно, вы быстро встали и побежали по напралению к деревне.''')
@@ -381,9 +376,9 @@ P.S. Прописан только 1 вариант\n""")
 "Странно" - подумали вы, - "Вроде напала, а не погналась вслед."
 Прибежав в деревню, вы начали искать уже знакомого вам жителя этого оазиса.''')
                                                                 print('Вы вошли в деревню.')
-                                                                img2 = Image.open(
+                                                                img_of_map_of_oasis = Image.open(
                                                                     'Images for Python/map_for_oasis.jpg')
-                                                                img2.show()
+                                                                img_of_map_of_oasis.show()
                                                                 choice_in_town = input(
                                                                     'Выберите, куда вы хотите направиться (для этого напишите цифру, под которой обозначено здание.')
 
@@ -510,8 +505,8 @@ P.S. Прописан только 1 вариант\n""")
 
                                                     def pr():
                                                         print('''Вы вошли в продуктовую лавку''')
-                                                        prod = Image.open('Images for Python/prod.jpg')
-                                                        prod.show()
+                                                        img_of_grocery = Image.open('Images for Python/prod.jpg')
+                                                        img_of_grocery.show()
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         print('''Вы можете приобрести: кокосы
 В наличии: 1 шт.''')
@@ -524,8 +519,8 @@ P.S. Прописан только 1 вариант\n""")
                                                         print(
                                                             '"С Вас одна монета" - сказал продавец и Вы отдали ему монету, получив кокос.')
                                                         print('Вы приобрели 1 кокос')
-                                                        cocos = Image.open('Images for Python/cocos_in_magaz.jpg')
-                                                        cocos.show()
+                                                        img_of_coconut = Image.open('Images for Python/cocos_in_magaz.jpg')
+                                                        img_of_coconut.show()
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         Inventory = ('9 монет, 1 кокос')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
@@ -540,8 +535,8 @@ P.S. Прописан только 1 вариант\n""")
 
                                                     def ky2():
                                                         print('''Вы вошли в кузницу''')
-                                                        kyz = Image.open('Images for Python/kyz.jpg')
-                                                        kyz.show()
+                                                        img_of_forge = Image.open('Images for Python/kyz.jpg')
+                                                        img_of_forge.show()
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         print('''Вы можете приобрести: меч.
 В наличии: 10 шт.''')
@@ -554,8 +549,8 @@ P.S. Прописан только 1 вариант\n""")
                                                         print(
                                                             '"С Вас девять монет" - сказал продавец и Вы отдали ему горстку монет, получив меч.')
                                                         print('Вы приобрели 1 меч')
-                                                        img262 = Image.open('Images for Python/sword.jpg')
-                                                        img262.show()
+                                                        img_of_sword = Image.open('Images for Python/sword.jpg')
+                                                        img_of_sword.show()
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         Inventory = ('1 монета, 1 меч')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
@@ -571,8 +566,8 @@ P.S. Прописан только 1 вариант\n""")
 
                                                     def pr2():
                                                         print('''Вы вошли в продуктовую лавку''')
-                                                        prod2 = Image.open('Images for Python/prod.jpg')
-                                                        prod2.show()
+                                                        img_of_grocery = Image.open('Images for Python/prod.jpg')
+                                                        img_of_grocery.show()
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         print('''Вы можете приобрести: кокосы
 В наличии: 1 шт.''')
@@ -585,8 +580,8 @@ P.S. Прописан только 1 вариант\n""")
                                                         print(
                                                             '"С Вас одна монета" - сказал продавец и Вы отдали ему монету, получив кокос.')
                                                         print('Вы приобрели 1 кокос')
-                                                        coc222 = Image.open('Images for Python/cocos_in_magaz.jpg')
-                                                        coc222.show()
+                                                        img_of_coconut = Image.open('Images for Python/cocos_in_magaz.jpg')
+                                                        img_of_coconut.show()
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         Inventory = ('1 кокос, 1 меч')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
@@ -619,8 +614,8 @@ P.S. Прописан только 1 вариант\n""")
 как вдруг вы, засыпая, услышали шорох в соседних кустах. Вы пристально посмотрели в то место и через некоторое время из кустов выпрыгнул зверь, очень похожий на рысь.
 Откуда рыси в здешних краях - вы даже успели подумать над этим вопросом.''')
                                                                 input('Для продолжения нажмите "Enter"')
-                                                                img34 = Image.open('Images for Python/caracal.jpg')
-                                                                img34.show()
+                                                                img_of_caracal = Image.open('Images for Python/caracal.jpg')
+                                                                img_of_caracal.show()
                                                                 input('Для продолжения нажмите "Enter"')
                                                                 print(
                                                                     '''Но потом, осмыслив ситуацию и осознав, что думать над происхождением животного - неуместно, вы быстро встали и побежали по напралению к деревне.''')
@@ -628,8 +623,8 @@ P.S. Прописан только 1 вариант\n""")
 "Странно" - подумали вы, - "Вроде напала, а не погналась вслед."
 Прибежав в деревню, вы начали искать уже знакомого вам жителя этого оазиса.''')
                                                                 print('Вы вошли в деревню.')
-                                                                img2 = Image.open('Images for Python/map_for_oasis.jpg')
-                                                                img2.show()
+                                                                img_of_map_of_oasis = Image.open('Images for Python/map_for_oasis.jpg')
+                                                                img_of_map_of_oasis.show()
                                                                 choice_in_town = input(
                                                                     'Выберите, куда вы хотите направиться (для этого напишите цифру, под которой обозначено здание.')
 
@@ -855,9 +850,9 @@ P.S. Прописан только 1 вариант\n""")
 
                                                         break
 
-                                                root3 = tkinter.Tk()
-                                                root3["bg"] = "yellow"
-                                                root3.geometry('100x200')
+                                                get_coconut_window = tkinter.Tk()
+                                                get_coconut_window["bg"] = "yellow"
+                                                get_coconut_window.geometry('100x200')
 
                                                 showturtle()
 
@@ -910,10 +905,10 @@ P.S. Прописан только 1 вариант\n""")
                                                 turtle.goto(25, 0)
                                                 turtle.down()
 
-                                                ba = Button(root3, text='Достать кокос', bg='yellow', fg='brown',
+                                                ba = Button(get_coconut_window, text='Достать кокос', bg='yellow', fg='brown',
                                                             font='verdana 5', command=i).pack()
 
-                                                root3.mainloop()
+                                                get_coconut_window.mainloop()
                                                 break
                                             if choice_coconut == '2':
                                                 print('Вам нужна была вода, вы же поленились её достать.')
@@ -973,146 +968,146 @@ P.S. Прописан только 1 вариант\n""")
 
 
 def q():
-    root.destroy()
+     main_window.destroy()
 
 
 def s():
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    lab2 = Label(root, text='''Разработчик-программист:
+    lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg='darkgray', fg='brown', font='verdana 14').pack()
-    b45 = Button(root, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=k).pack()
+    b45 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=k).pack()
 
 
 def ks():
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    lab2 = Label(root, text='''Разработчик-программист:
+    lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg='red', fg='black', font='verdana 14').pack()
-    b45 = Button(root, text='Выход', bg='red', fg='black', font='verdana 14', command=fon).pack()
+    b45 = Button(main_window, text='Выход', bg='red', fg='black', font='verdana 14', command=fon).pack()
 
 
 def qs():
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    lab2 = Label(root, text='''Разработчик-программист:
+    lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg='lightblue', fg='black', font='verdana 14').pack()
-    b45 = Button(root, text='Выход', bg='lightblue', fg='black', font='verdana 14', command=fon).pack()
+    b45 = Button(main_window, text='Выход', bg='lightblue', fg='black', font='verdana 14', command=fon).pack()
 
 
 def ps():
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    lab2 = Label(root, text='''Разработчик-программист:
+    lab2 = Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg='green', fg='black', font='verdana 14').pack()
-    b45 = Button(root, text='Выход', bg='green', fg='black', font='verdana 14', command=fon).pack()
+    b45 = Button(main_window, text='Выход', bg='green', fg='black', font='verdana 14', command=fon).pack()
 
 
 def k():
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    l1 = Label(root, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
-    b1 = Button(root, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-    b2 = Button(root, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-    b23 = Button(root, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=s).pack()
-    b3 = Button(root, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+    l1 = Label(main_window, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
+    b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
+    b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
+    b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=s).pack()
+    b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
 
 
 def fon():
     direction_choice = v1.get()
     if direction_choice == 0:
-        root["bg"] = "red"
-        for w in root.winfo_children():
+        main_window["bg"] = "red"
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Radiobutton': w.destroy()
-        for w in root.winfo_children():
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Label': w.destroy()
-        for w in root.winfo_children():
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(root, text="Меню", bg='red', fg='black', font='verdana 20').pack()
-        b1 = Button(root, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(root, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-        b23 = Button(root, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=ks).pack()
-        b3 = Button(root, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+        l1 = Label(main_window, text="Меню", bg='red', fg='black', font='verdana 20').pack()
+        b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
+        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
+        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=ks).pack()
+        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
     elif direction_choice == 1:
-        root["bg"] = "lightblue"
-        for w in root.winfo_children():
+        main_window["bg"] = "lightblue"
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Radiobutton': w.destroy()
-        for w in root.winfo_children():
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Label': w.destroy()
-        for w in root.winfo_children():
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(root, text="Меню", bg='lightblue', fg='brown', font='verdana 20').pack()
-        b1 = Button(root, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(root, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-        b23 = Button(root, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=qs).pack()
-        b3 = Button(root, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+        l1 = Label(main_window, text="Меню", bg='lightblue', fg='brown', font='verdana 20').pack()
+        b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
+        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
+        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=qs).pack()
+        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
     elif direction_choice == 2:
-        root["bg"] = "green"
-        for w in root.winfo_children():
+        main_window["bg"] = "green"
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Radiobutton': w.destroy()
-        for w in root.winfo_children():
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Label': w.destroy()
-        for w in root.winfo_children():
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(root, text="Меню", bg='green', fg='brown', font='verdana 20').pack()
-        b1 = Button(root, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(root, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-        b23 = Button(root, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=ps).pack()
-        b3 = Button(root, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+        l1 = Label(main_window, text="Меню", bg='green', fg='brown', font='verdana 20').pack()
+        b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
+        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
+        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=ps).pack()
+        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
     else:
-        root["bg"] = "darkgray"
-        for w in root.winfo_children():
+        main_window["bg"] = "darkgray"
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Radiobutton': w.destroy()
-        for w in root.winfo_children():
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Label': w.destroy()
-        for w in root.winfo_children():
+        for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(root, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
-        b1 = Button(root, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-        b2 = Button(root, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-        b23 = Button(root, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=s).pack()
-        b3 = Button(root, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+        l1 = Label(main_window, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
+        b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
+        b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
+        b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=s).pack()
+        b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
 
 
 def n():
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Button': w.destroy()
-    for w in root.winfo_children():
+    for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    lab2 = Label(root, text="Цвет фона", font='verdana 14').pack()
+    lab2 = Label(main_window, text="Цвет фона", font='verdana 14').pack()
     v1.set(4)
-    r1 = Radiobutton(root, text='Красный', fg='red', variable=v1, value=0).pack()
-    r2 = Radiobutton(root, text='Светлоголубой', fg='lightblue', variable=v1, value=1).pack()
-    r3 = Radiobutton(root, text='Зелёный', fg='green', variable=v1, value=2).pack()
-    r4 = Radiobutton(root, text='Серый', fg='darkgray', variable=v1, value=3).pack()
-    but2 = Button(root, text='Поменять', command=fon).pack()
+    r1 = Radiobutton(main_window, text='Красный', fg='red', variable=v1, value=0).pack()
+    r2 = Radiobutton(main_window, text='Светлоголубой', fg='lightblue', variable=v1, value=1).pack()
+    r3 = Radiobutton(main_window, text='Зелёный', fg='green', variable=v1, value=2).pack()
+    r4 = Radiobutton(main_window, text='Серый', fg='darkgray', variable=v1, value=3).pack()
+    but2 = Button(main_window, text='Поменять', command=fon).pack()
 
 
 # виджеты
-l1 = Label(root, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
+l1 = Label(main_window, text="Меню", bg='darkgray', fg='brown', font='verdana 20').pack()
 print("Добро пожаловать в игру 'Приключения'!");
-b1 = Button(root, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
-b2 = Button(root, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
-b23 = Button(root, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=s).pack()
-b3 = Button(root, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
+b1 = Button(main_window, text='Начать игру', bg='darkgray', fg='brown', font='verdana 14', command=game).pack()
+b2 = Button(main_window, text='Настройки', bg='darkgray', fg='brown', font='verdana 14', command=n).pack()
+b23 = Button(main_window, text='Создатели', bg='darkgray', fg='brown', font='verdana 14', command=s).pack()
+b3 = Button(main_window, text='Выход', bg='darkgray', fg='brown', font='verdana 14', command=q).pack()
 
 # ---
 
-root5 = tkinter.Tk()
+scale_window = tkinter.Tk()
 
 
 def getV(event):
@@ -1120,25 +1115,25 @@ def getV(event):
     print("Ваш возраст: ", an)
 
     if an > 5:
-        root5.destroy()
+        scale_window.destroy()
 
     if an > 5:
         print('Доступ к игре открыт')
 
     if an <= 5:
-        root5.destroy()
-        root.destroy()
+        scale_window.destroy()
+        main_window.destroy()
 
     if an <= 5:
         print('Доступ к игре закрыт')
 
 
-scale1 = Scale(root5, orient=HORIZONTAL, length=1000, from_=0, to=100, tickinterval=5,
+scale1 = Scale(scale_window, orient=HORIZONTAL, length=1000, from_=0, to=100, tickinterval=5,
                resolution=5)
-button1 = Button(root5, text=u"Подтвердите ваш возраст")
+button1 = Button(scale_window, text=u"Подтвердите ваш возраст")
 scale1.pack()
 button1.pack()
 button1.bind("<Button-1>", getV)
 
-root5.mainloop()
-root.mainloop()
+scale_window.mainloop()
+main_window.mainloop()
