@@ -1,66 +1,66 @@
 class Yahtzee:
+    DICE_COUNT = 5
+    MAX_DIE_VALUE = 6
 
     @staticmethod
-    def chance(d1, d2, d3, d4, d5):
-        return d1 + d2 + d3 + d4 + d5
+    def chance(die1, die2, die3, die4, die5):
+        return die1 + die2 + die3 + die4 + die5
 
     @staticmethod
     def yahtzee(dice):
-        counts = [0] * (len(dice) + 1)
+        first_die = dice[0]
         for die in dice:
-            counts[die - 1] += 1
-        for count in counts:
-            if count == 5:
-                return 50
-        return 0
+            if die != first_die:
+                return 0
+        return 50
 
     @staticmethod
-    def ones(d1, d2, d3, d4, d5):
+    def ones(die1, die2, die3, die4, die5):
         score = 0
-        if d1 == 1:
+        if die1 == 1:
             score += 1
-        if d2 == 1:
+        if die2 == 1:
             score += 1
-        if d3 == 1:
+        if die3 == 1:
             score += 1
-        if d4 == 1:
+        if die4 == 1:
             score += 1
-        if d5 == 1:
+        if die5 == 1:
             score += 1
         return score
 
     @staticmethod
-    def twos(d1, d2, d3, d4, d5):
+    def twos(die1, die2, die3, die4, die5):
         score = 0
-        if d1 == 2:
+        if die1 == 2:
             score += 2
-        if d2 == 2:
+        if die2 == 2:
             score += 2
-        if d3 == 2:
+        if die3 == 2:
             score += 2
-        if d4 == 2:
+        if die4 == 2:
             score += 2
-        if d5 == 2:
+        if die5 == 2:
             score += 2
         return score
 
     @staticmethod
-    def threes(d1, d2, d3, d4, d5):
+    def threes(die1, die2, die3, die4, die5):
         score = 0
-        if d1 == 3:
+        if die1 == 3:
             score += 3
-        if d2 == 3:
+        if die2 == 3:
             score += 3
-        if d3 == 3:
+        if die3 == 3:
             score += 3
-        if d4 == 3:
+        if die4 == 3:
             score += 3
-        if d5 == 3:
+        if die5 == 3:
             score += 3
         return score
 
-    def __init__(self, d1, d2, d3, d4, d5):
-        self.dice = [d1, d2, d3, d4, d5]
+    def __init__(self, die1, die2, die3, die4, die5):
+        self.dice = [die1, die2, die3, die4, die5]
 
     def fours(self):
         score = 0
@@ -84,119 +84,81 @@ class Yahtzee:
         return score
 
     @staticmethod
-    def score_pair(d1, d2, d3, d4, d5):
-        counts = [0] * 6
-        counts[d1 - 1] += 1
-        counts[d2 - 1] += 1
-        counts[d3 - 1] += 1
-        counts[d4 - 1] += 1
-        counts[d5 - 1] += 1
-        for i in range(5, -1, -1):
-            if counts[i] == 2:
+    def _count_dice_values(die1, die2, die3, die4, die5):
+        counts = [0] * Yahtzee.MAX_DIE_VALUE
+        counts[die1 - 1] += 1
+        counts[die2 - 1] += 1
+        counts[die3 - 1] += 1
+        counts[die4 - 1] += 1
+        counts[die5 - 1] += 1
+        return counts
+
+    @staticmethod
+    def score_pair(die1, die2, die3, die4, die5):
+        counts = Yahtzee._count_dice_values(die1, die2, die3, die4, die5)
+        for i in range(Yahtzee.MAX_DIE_VALUE - 1, -1, -1):
+            if counts[i] >= 2:
                 return (i + 1) * 2
         return 0
 
     @staticmethod
-    def two_pair(d1, d2, d3, d4, d5):
-        counts = [0] * 6
-        counts[d1 - 1] += 1
-        counts[d2 - 1] += 1
-        counts[d3 - 1] += 1
-        counts[d4 - 1] += 1
-        counts[d5 - 1] += 1
+    def two_pair(die1, die2, die3, die4, die5):
+        counts = Yahtzee._count_dice_values(die1, die2, die3, die4, die5)
+        pairs = []
+        for i in range(Yahtzee.MAX_DIE_VALUE - 1, -1, -1):
+            if counts[i] >= 2:
+                pairs.append(i + 1)
 
-        pairs_count = 0
-        total_score = 0
-
-        for i in range(5, -1, -1):
-            if counts[i] == 2:
-                pairs_count += 1
-                total_score += (i + 1)
-
-        if pairs_count == 2:
-            return total_score * 2
-        else:
-            return 0
+        if len(pairs) == 2:
+            return sum(pairs) * 2
+        return 0
 
     @staticmethod
-    def four_of_a_kind(d1, d2, d3, d4, d5):
-        counts = [0] * 6
-        counts[d1 - 1] += 1
-        counts[d2 - 1] += 1
-        counts[d3 - 1] += 1
-        counts[d4 - 1] += 1
-        counts[d5 - 1] += 1
-
-        for i in range(6):
-            if counts[i] == 4:
+    def four_of_a_kind(die1, die2, die3, die4, die5):
+        counts = Yahtzee._count_dice_values(die1, die2, die3, die4, die5)
+        for i in range(Yahtzee.MAX_DIE_VALUE):
+            if counts[i] >= 4:
                 return (i + 1) * 4
         return 0
 
     @staticmethod
-    def three_of_a_kind(d1, d2, d3, d4, d5):
-        counts = [0] * 6
-        counts[d1 - 1] += 1
-        counts[d2 - 1] += 1
-        counts[d3 - 1] += 1
-        counts[d4 - 1] += 1
-        counts[d5 - 1] += 1
-
-        for i in range(6):
-            if counts[i] == 3:
+    def three_of_a_kind(die1, die2, die3, die4, die5):
+        counts = Yahtzee._count_dice_values(die1, die2, die3, die4, die5)
+        for i in range(Yahtzee.MAX_DIE_VALUE):
+            if counts[i] >= 3:
                 return (i + 1) * 3
         return 0
 
     @staticmethod
-    def small_straight(d1, d2, d3, d4, d5):
-        counts = [0] * 6
-        counts[d1 - 1] += 1
-        counts[d2 - 1] += 1
-        counts[d3 - 1] += 1
-        counts[d4 - 1] += 1
-        counts[d5 - 1] += 1
-
-        if (counts[0] == 1 and counts[1] == 1 and counts[2] == 1 and
-                counts[3] == 1 and counts[4] == 1):
-            return 15
-        return 0
+    def small_straight(die1, die2, die3, die4, die5):
+        unique_values = set([die1, die2, die3, die4, die5])
+        return 15 if unique_values == {1, 2, 3, 4, 5} else 0
 
     @staticmethod
-    def large_straight(d1, d2, d3, d4, d5):
-        counts = [0] * 6
-        counts[d1 - 1] += 1
-        counts[d2 - 1] += 1
-        counts[d3 - 1] += 1
-        counts[d4 - 1] += 1
-        counts[d5 - 1] += 1
-
-        if (counts[1] == 1 and counts[2] == 1 and counts[3] == 1 and
-                counts[4] == 1 and counts[5] == 1):
-            return 20
-        return 0
+    def large_straight(die1, die2, die3, die4, die5):
+        unique_values = set([die1, die2, die3, die4, die5])
+        return 20 if unique_values == {2, 3, 4, 5, 6} else 0
 
     @staticmethod
-    def full_house(d1, d2, d3, d4, d5):
-        counts = [0] * 6
-        counts[d1 - 1] += 1
-        counts[d2 - 1] += 1
-        counts[d3 - 1] += 1
-        counts[d4 - 1] += 1
-        counts[d5 - 1] += 1
-
-        has_two = False
-        two_value = 0
+    def full_house(die1, die2, die3, die4, die5):
+        counts = Yahtzee._count_dice_values(die1, die2, die3, die4, die5)
         has_three = False
-        three_value = 0
+        has_two = False
 
-        for i in range(6):
-            if counts[i] == 2:
-                has_two = True
-                two_value = i + 1
-            elif counts[i] == 3:
+        for count in counts:
+            if count == 3:
                 has_three = True
-                three_value = i + 1
+            elif count == 2:
+                has_two = True
 
-        if has_two and has_three:
-            return two_value * 2 + three_value * 3
-        else:
-            return 0
+        if has_three and has_two:
+            three_value = 0
+            two_value = 0
+            for i in range(Yahtzee.MAX_DIE_VALUE):
+                if counts[i] == 3:
+                    three_value = i + 1
+                elif counts[i] == 2:
+                    two_value = i + 1
+            return three_value * 3 + two_value * 2
+
+        return 0
