@@ -65,9 +65,9 @@ d1 = 10
 d2 = 70 
 ci = 'y' 
 b = 'n' 
-l = 'n'
+L = 'n'
 batch = b 
-pathlengths = l 
+pathlengths = L
 missing = 'n'
 # parameter = 'm' 
 
