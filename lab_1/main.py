@@ -43,8 +43,8 @@ def game():
 P.S. Прописан только первый вариант\n""")
 
     '''---------------------------------------------------------------'''
-    while direction_choice != 'Жаркая пустыня' or direction_choice != '1' or direction_choice != 'Дремучие леса' or direction_choice != '2' or direction_choice != 'Высокие горы' or direction_choice != '3':
-        if direction_choice == 'Жаркая пустыня' or direction_choice == '1':
+    while True:
+        if direction_choice in ['Жаркая пустыня', '1']:
 
             print("""Вы очутились в жаркой и душной пустыне.
 Кругом - ни души.
@@ -60,7 +60,7 @@ P.S. Прописан только первый вариант\n""")
 (Напишите вариант выбранного ответа)''')
             print()
 
-            while action_choice != '1' or action_choice != '2':
+            while True:
                 if action_choice == '1':
                     pygame.init()
                     pygame.mixer.music.load('music/put_in_arab_gorod.mp3')
@@ -97,10 +97,9 @@ P.S. Прописан только первый вариант\n""")
 4)Восток
 (Напишите вариант выбранного ответа)''')
 
-                # ---
                 print()
-                while side_of_the_world_direction != '1' or side_of_the_world_direction != '2' or side_of_the_world_direction != '3' or side_of_the_world_direction != '4':
-                    if side_of_the_world_direction == '1' or side_of_the_world_direction == '2' or side_of_the_world_direction == '4':
+                while True:
+                    if side_of_the_world_direction in ['1', '2', '4']:
                         print('''К вашему глубочайшему сожалению, вы не смогли найти источник воды.
 Ваше же путешествие окончилось для вас, господин''', name, ',весьма печально.')
                         break
@@ -129,7 +128,7 @@ P.S. Прописан только первый вариант\n""")
                     riddle_attempt = input('Попытаетесь ли вы отгадать их? Ответьте: "да" или "нет".')
                     riddle_attempt = riddle_attempt.lower()
 
-                    while riddle_attempt != 'да' or riddle_attempt != 'нет':
+                    while True:
                         if riddle_attempt == 'да':
                             break
                         elif riddle_attempt  == 'нет':
@@ -145,32 +144,36 @@ P.S. Прописан только первый вариант\n""")
                         img_of_cheese = Image.open('Images for Python/sur.jpg')
                         img_of_cheese.show()
                         answer_input = input('Скажите ваш ответ.')
-                        if answer_input == '5' or answer_input == 'пять':
+                        if answer_input in ['5', 'пять']:
                             print('Ваш ответ оказался верным. Необычный вы человек,', name, '.')
                             print('Что ж, приступим ко второй загадке,', name, '.')
                             print('''Во второй загадке вы должны отгадать число.''')
                             mystery_number = random.randrange(1000)
                             print("Я загадал число. Сейчас я кое-что про него Вам расскажу")
                             print("В этом числе:")
+
                             if 0 <= mystery_number <= 9:
                                 print("1 знак")
                             elif 10 <= mystery_number <= 99:
                                 print("2 знакa")
                             else:
                                 print("3 знакa")
+
                             print("Оно заканчивается цифрой", mystery_number % 10)
+
                             if mystery_number % 2 == 0:
                                 print("Это число чётное")
                             else:
                                 print("Это число нечётное")
-                                # 4
+
                             print("Сумма цифр этого числа:")
                             summa = mystery_number // 100 + mystery_number % 10 + mystery_number % 100 // 10
                             print(summa)
-                            # 5
+
                             units_digit = mystery_number % 10
                             tens_digit = mystery_number % 100 // 10
                             hundreds_digit = mystery_number // 10
+
                             if 0 <= mystery_number <= 9:
                                 print("Цифра только одна")
                             elif 10 <= mystery_number <= 99:
@@ -183,7 +186,9 @@ P.S. Прописан только первый вариант\n""")
                                     print("Все цифры этого числа одинаковые")
                                 else:
                                     print("Цифры этого числа неодинаковые")
+
                             print("Угадаешь с 10 раз, какое число я загадал?")
+
                             for i in range(1, 11):
                                 user = int(input('Введите число '))
                                 if mystery_number == user:
@@ -201,6 +206,7 @@ P.S. Прописан только первый вариант\n""")
                                             print('Моё число меньше')
                                         else:
                                             break
+
                                     if i <= 6 and number == igrok:
                                         print('Поздравляю!')
                                         print('Я загадал число:', number)
@@ -209,6 +215,7 @@ P.S. Прописан только первый вариант\n""")
                                         print('К сожалению,ты не справился...')
                                         print('Было загадано число', number)
                                         break
+
                                     if number == igrok:
                                         print('Дорогой', name, ', вы профессионал.')
                                         print('''- Прошу проходить в наш уголок рая - пригласил вас пройти внутрь оазиса его житель.
@@ -223,7 +230,7 @@ P.S. Прописан только первый вариант\n""")
 2)Не доставать кокос
 ''')
 
-                                        while choice_coconut != '1' or choice_coconut != '2':
+                                        while True:
 
                                             if choice_coconut == '1':
 
@@ -233,13 +240,13 @@ P.S. Прописан только первый вариант\n""")
                                                     turtle.down()
                                                     for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=up).pack()
-                                                    ba2 = Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba3 = Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba4 = Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
 
                                                 def up():
@@ -248,13 +255,13 @@ P.S. Прописан только первый вариант\n""")
                                                     turtle.down()
                                                     for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba2 = Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=down).pack()
-                                                    ba3 = Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=left).pack()
-                                                    ba4 = Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=get_coconut).pack()
 
                                                 def left():
@@ -263,13 +270,13 @@ P.S. Прописан только первый вариант\n""")
                                                     turtle.down()
                                                     for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba2 = Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba3 = Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba4 = Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=right).pack()
 
                                                 def right():
@@ -278,13 +285,13 @@ P.S. Прописан только первый вариант\n""")
                                                     turtle.down()
                                                     for w in get_coconut_window.winfo_children():
                                                         if w.winfo_class() == 'Button': w.destroy()
-                                                    ba1 = Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='↑', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10').pack()
-                                                    ba2 = Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='↓', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=down).pack()
-                                                    ba3 = Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='←', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=left).pack()
-                                                    ba4 = Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
+                                                    Button(get_coconut_window, text='→', bg=BG_YELLOW, fg=FG_BROWN,
                                                                  font='verdana 10', command=get_coconut).pack()
 
                                                 def get_coconut():
@@ -342,17 +349,18 @@ P.S. Прописан только первый вариант\n""")
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         Inventory = ('1 кокос, 1 меч')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
-                                                        root101 = tkinter.Tk()
-                                                        root101["bg"] = BG_YELLOW
-                                                        root101.geometry('300x50')
-                                                        li1 = Label(root101, text='O ⚔', bg=BG_YELLOW, fg=FG_BROWN,
+                                                        window_inventory = tkinter.Tk()
+                                                        window_inventory["bg"] = BG_YELLOW
+                                                        window_inventory.geometry('300x50')
+                                                        Label(window_inventory, text='O ⚔', bg=BG_YELLOW, fg=FG_BROWN,
                                                                     font='verdana 10').pack()
-                                                        root101.mainloop()
+                                                        window_inventory.mainloop()
                                                         print('Вы вышли из кузницы.')
                                                         input("Нажмите Enter, чтобы продолжить")
                                                         sword_yes = True
                                                         coconut_yes = True
-                                                        if sword_yes == True and coconut_yes == True:
+
+                                                        if sword_yes and coconut_yes:
                                                             print(
                                                                 'Вы купили всё необходимое для дальнейших странствий.')
                                                             option_for_the_night = input('''Выйдя из деревни, вы вдруг вспомнили, что вам надо где-то переночевать.
@@ -409,7 +417,7 @@ P.S. Прописан только первый вариант\n""")
                                                                     img_caracal.show()
                                                                     window = Tk()
                                                                     window.title("Каракал")
-                                                                    lbl = Label(window, text='''Каракал - это пустынная кошка. Легко убивает антилоп. Делать это хищнику позволяют не только мощная хватка и ловкость, но и размеры:
+                                                                    Label(window, text='''Каракал - это пустынная кошка. Легко убивает антилоп. Делать это хищнику позволяют не только мощная хватка и ловкость, но и размеры:
 В длину каракал достигает 85-ти сантиметров. Высота животного составляет полметра. Окрас зверя песочный, шерсть короткая и мягкая. На ушах есть кисти из длинной ости. Это делает каракала похожим на рысь.
 Пустынная рысь одиночка, активна ночью. С наступлением темноты хищник охотится на среднего размера млекопитающих, птиц, пресмыкающихся. Название каракал, можно перевести как «черное ухо».''').pack()
 
@@ -421,7 +429,7 @@ P.S. Прописан только первый вариант\n""")
                                                                     input("\nНажмите Enter, чтобы выйти")
                                                                     sys.exit()
 
-                                                                while choice_in_town != '1' or choice_in_town != '2' or choice_in_town != '3':
+                                                                while True:
                                                                     if choice_in_town == '1':
                                                                         grocery()
                                                                         break
@@ -429,7 +437,7 @@ P.S. Прописан только первый вариант\n""")
                                                                         forge()
                                                                         direction_choice_town = input(
                                                                             'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                        while direction_choice_town != '1' or direction_choice_town != '3':
+                                                                        while True:
                                                                             if direction_choice_town == '1':
                                                                                 grocery()
                                                                                 break
@@ -443,13 +451,13 @@ P.S. Прописан только первый вариант\n""")
                                                                             else:
                                                                                 direction_choice_town = input(
                                                                                     'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                            break
+                                                                        break
                                                                     elif choice_in_town == '3':
                                                                         print('''Вы попытались открыть дверь
 Дверь заперта''')
                                                                         direction_choice_town_dlc = input(
                                                                             'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                        while direction_choice_town_dlc != '1' or direction_choice_town_dlc != '2':
+                                                                        while True:
                                                                             if direction_choice_town_dlc == '1':
                                                                                 grocery()
                                                                                 break
@@ -459,7 +467,7 @@ P.S. Прописан только первый вариант\n""")
 
                                                                                 direction_choice_town = input(
                                                                                     'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                                while direction_choice_town != '1' or direction_choice_town != '3':
+                                                                                while True:
                                                                                     if direction_choice_town == '1':
                                                                                         grocery()
                                                                                         break
@@ -473,19 +481,17 @@ P.S. Прописан только первый вариант\n""")
                                                                                     else:
                                                                                         direction_choice_town = input(
                                                                                             'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                                        break
+                                                                                break
                                                                             else:
                                                                                 direction_choice_town_dlc = input(
                                                                                     'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
 
-                                                                            break
-                                                                    elif choice_in_town != '1' or choice_in_town != '2' or choice_in_town != '3':
+                                                                        break
+                                                                    else:
                                                                         choice_in_town = input(
                                                                             'Выберите, куда вы хотите направиться (для этого напишите цифру, под которой обозначено здание.')
 
-                                                                    break
-
-                                                            while option_for_the_night != '1' or option_for_the_night != '2':
+                                                            while True:
 
                                                                 if option_for_the_night == '1':
                                                                     print(
@@ -528,12 +534,12 @@ P.S. Прописан только первый вариант\n""")
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         Inventory = ('9 монет, 1 кокос')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
-                                                        root100 = tkinter.Tk()
-                                                        root100["bg"] = BG_YELLOW
-                                                        root100.geometry('300x50')
-                                                        li1 = Label(root100, text='ooooo oooo O', bg=BG_YELLOW,
+                                                        window_inventory = tkinter.Tk()
+                                                        window_inventory["bg"] = BG_YELLOW
+                                                        window_inventory.geometry('300x50')
+                                                        Label(window_inventory, text='ooooo oooo O', bg=BG_YELLOW,
                                                                     fg=FG_BROWN, font='verdana 10').pack()
-                                                        root100.mainloop()
+                                                        window_inventory.mainloop()
                                                         print('Вы вышли из продуктовой лавки.')
                                                         coconut_yes = True
 
@@ -558,12 +564,12 @@ P.S. Прописан только первый вариант\n""")
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         Inventory = ('1 монета, 1 меч')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
-                                                        root101 = tkinter.Tk()
-                                                        root101["bg"] = BG_YELLOW
-                                                        root101.geometry('300x50')
-                                                        li1 = Label(root101, text='o ⚔', bg=BG_YELLOW, fg=FG_BROWN,
+                                                        window_inventory = tkinter.Tk()
+                                                        window_inventory["bg"] = BG_YELLOW
+                                                        window_inventory.geometry('300x50')
+                                                        Label(window_inventory, text='o ⚔', bg=BG_YELLOW, fg=FG_BROWN,
                                                                     font='verdana 10').pack()
-                                                        root101.mainloop()
+                                                        window_inventory.mainloop()
                                                         print('Вы вышли из кузницы.')
                                                         sword_yes = True
                                                         coconut_yes = True
@@ -589,20 +595,20 @@ P.S. Прописан только первый вариант\n""")
                                                         input('Нажмите Enter, чтобы продолжить')
                                                         Inventory = ('1 кокос, 1 меч')
                                                         print('Вы располагаете следующими вещами: ', Inventory)
-                                                        root100 = tkinter.Tk()
-                                                        root100["bg"] = BG_YELLOW
-                                                        root100.geometry('300x50')
-                                                        li1 = Label(root100, text='O ⚔', bg=BG_YELLOW, fg=FG_BROWN,
+                                                        window_inventory = tkinter.Tk()
+                                                        window_inventory["bg"] = BG_YELLOW
+                                                        window_inventory.geometry('300x50')
+                                                        Label(window_inventory, text='O ⚔', bg=BG_YELLOW, fg=FG_BROWN,
                                                                     font='verdana 10').pack()
                                                         print('Вы вышли из продуктовой лавки.')
-                                                        root100.mainloop()
+                                                        window_inventory.mainloop()
 
                                                         input("Нажмите Enter, чтобы продолжить")
 
                                                         sword_yes = True
                                                         coconut_yes = True
 
-                                                        if sword_yes == True and coconut_yes == True:
+                                                        if sword_yes and coconut_yes:
                                                             print(
                                                                 'Вы купили всё необходимое для дальнейших странствий.')
                                                             option_for_the_night = input('''Выйдя из деревни, вы вдруг вспомнили, что вам надо где-то переночевать.
@@ -658,7 +664,7 @@ P.S. Прописан только первый вариант\n""")
 
                                                                     window = Tk()
                                                                     window.title("Каракал")
-                                                                    lbl = Label(window, text='''Каракал - это пустынная кошка. Легко убивает антилоп. Делать это хищнику позволяют не только мощная хватка и ловкость, но и размеры:
+                                                                    Label(window, text='''Каракал - это пустынная кошка. Легко убивает антилоп. Делать это хищнику позволяют не только мощная хватка и ловкость, но и размеры:
 В длину каракал достигает 85-ти сантиметров. Высота животного составляет полметра. Окрас зверя песочный, шерсть короткая и мягкая. На ушах есть кисти из длинной ости. Это делает каракала похожим на рысь.
 Пустынная рысь одиночка, активна ночью. С наступлением темноты хищник охотится на среднего размера млекопитающих, птиц, пресмыкающихся. Название каракал, можно перевести как «черное ухо».''').pack()
 
@@ -671,7 +677,7 @@ P.S. Прописан только первый вариант\n""")
                                                                     input("\nНажмите Enter, чтобы выйти")
                                                                     sys.exit()
 
-                                                                while choice_in_town != '1' or choice_in_town != '2' or choice_in_town != '3':
+                                                                while True:
                                                                     if choice_in_town == '1':
                                                                         grocery()
                                                                         break
@@ -679,7 +685,7 @@ P.S. Прописан только первый вариант\n""")
                                                                         forge()
                                                                         direction_choice_town = input(
                                                                             'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                        while direction_choice_town != '1' or direction_choice_town != '3':
+                                                                        while True:
                                                                             if direction_choice_town == '1':
                                                                                 grocery()
                                                                                 break
@@ -693,13 +699,13 @@ P.S. Прописан только первый вариант\n""")
                                                                             else:
                                                                                 direction_choice_town = input(
                                                                                     'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                            break
+                                                                        break
                                                                     elif choice_in_town == '3':
                                                                         print('''Вы попытались открыть дверь
 Дверь заперта''')
                                                                         direction_choice_town_dlc = input(
                                                                             'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                        while direction_choice_town_dlc != '1' or direction_choice_town_dlc != '2':
+                                                                        while True:
                                                                             if direction_choice_town_dlc == '1':
                                                                                 grocery()
                                                                                 break
@@ -709,7 +715,7 @@ P.S. Прописан только первый вариант\n""")
 
                                                                                 direction_choice_town = input(
                                                                                     'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                                while direction_choice_town != '1' or direction_choice_town != '3':
+                                                                                while True:
                                                                                     if direction_choice_town == '1':
                                                                                         grocery()
                                                                                         break
@@ -723,19 +729,17 @@ P.S. Прописан только первый вариант\n""")
                                                                                     else:
                                                                                         direction_choice_town = input(
                                                                                             'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                                        break
+                                                                                break
                                                                             else:
                                                                                 direction_choice_town_dlc = input(
                                                                                     'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
 
-                                                                            break
-                                                                    elif choice_in_town != '1' or choice_in_town != '2' or choice_in_town != '3':
+                                                                        break
+                                                                    else:
                                                                         choice_in_town = input(
                                                                             'Выберите, куда вы хотите направиться (для этого напишите цифру, под которой обозначено здание.')
 
-                                                                    break
-
-                                                            while option_for_the_night != '1' or option_for_the_night != '2':
+                                                            while True:
 
                                                                 if option_for_the_night == '1':
                                                                     print(
@@ -757,12 +761,12 @@ P.S. Прописан только первый вариант\n""")
 1)Лечь под пальмой
 2)Попросить у кого-нибудь ночлега''')
 
-                                                    while choice_in_town != '1' or choice_in_town != '2' or choice_in_town != '3':
+                                                    while True:
                                                         if choice_in_town == '1':
                                                             grocery()
                                                             direction_choice_in_town = input(
                                                                 'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                            while direction_choice_in_town != '2' or direction_choice_in_town != '3':
+                                                            while True:
                                                                 if direction_choice_in_town == '2':
                                                                     forge()
                                                                     break
@@ -781,7 +785,7 @@ P.S. Прописан только первый вариант\n""")
                                                             forge_result()
                                                             direction_choice_town = input(
                                                                 'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                            while direction_choice_town != '1' or direction_choice_town != '3':
+                                                            while True:
                                                                 if direction_choice_town == '1':
                                                                     grocery_result()
                                                                     break
@@ -821,7 +825,7 @@ P.S. Прописан только первый вариант\n""")
                                                                         else:
                                                                             direction_choice_in_town = input(
                                                                                 'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-                                                                        break
+                                                                    break
                                                                 if direction_choice_town_dlc == '2':
                                                                     forge_result()
 
@@ -838,21 +842,19 @@ P.S. Прописан только первый вариант\n""")
                                                                                 'Вы вспомнили, что вам нужно в продовольственный магазин')
                                                                             grocery_result()
                                                                             break
-                                                                    else:
-                                                                        direction_choice_town = input(
-                                                                            'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
+                                                                        else:
+                                                                            direction_choice_town = input(
+                                                                                'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
+                                                                    break
                                                                 else:
                                                                     direction_choice_town_dlc = input(
                                                                         'Выберите, куда вы хотите направиться дальше(для этого напишите цифру, под которой обозначено здание.')
-
-                                                                break
                                                             break
 
-                                                        elif choice_in_town != '1' or choice_in_town != '2' or choice_in_town != '3':
+                                                        else:
                                                             choice_in_town = input(
                                                                 'Выберите, куда вы хотите направиться (для этого напишите цифру, под которой обозначено здание).')
 
-                                                        break
 
                                                 get_coconut_window = tkinter.Tk()
                                                 get_coconut_window["bg"] = BG_YELLOW
@@ -909,7 +911,7 @@ P.S. Прописан только первый вариант\n""")
                                                 turtle.goto(25, 0)
                                                 turtle.down()
 
-                                                ba = Button(get_coconut_window, text='Достать кокос', bg=BG_YELLOW, fg=FG_BROWN,
+                                                Button(get_coconut_window, text='Достать кокос', bg=BG_YELLOW, fg=FG_BROWN,
                                                             font='verdana 5', command=down).pack()
 
                                                 get_coconut_window.mainloop()
@@ -919,7 +921,7 @@ P.S. Прописан только первый вариант\n""")
                                                 print('Последствия ужасны.')
                                                 break
 
-                                            if choice_coconut != '1' or choice_coconut != '2':
+                                            if choice_coconut in ['1', '2']:
                                                 choice_coconut = input('''Выберете из предложенных вариантов:
 1)Доставать кокос
 2)Не доставать кокос
@@ -980,10 +982,10 @@ def developer_darkgray_brown():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    lab2 = Label(main_window, text='''Разработчик-программист:
+    Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=menu).pack()
+    Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=menu).pack()
 
 
 def developer_red_black():
@@ -991,10 +993,10 @@ def developer_red_black():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    lab2 = Label(main_window, text='''Разработчик-программист:
+    Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg=BG_RED, fg=FG_BLACK, font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg=BG_RED, fg=FG_BLACK, font='verdana 14', command=main_color).pack()
+    Button(main_window, text='Выход', bg=BG_RED, fg=FG_BLACK, font='verdana 14', command=main_color).pack()
 
 
 def developer_lightblue_black():
@@ -1002,10 +1004,10 @@ def developer_lightblue_black():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    lab2 = Label(main_window, text='''Разработчик-программист:
+    Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg=BG_LIGHTBLUE, fg=FG_BLACK, font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg=BG_LIGHTBLUE, fg=FG_BLACK, font='verdana 14', command=main_color).pack()
+    Button(main_window, text='Выход', bg=BG_LIGHTBLUE, fg=FG_BLACK, font='verdana 14', command=main_color).pack()
 
 
 def developer_green_black():
@@ -1013,10 +1015,10 @@ def developer_green_black():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    lab2 = Label(main_window, text='''Разработчик-программист:
+    Label(main_window, text='''Разработчик-программист:
     Ярославцев М.В.
     (Ярославцев Максим Владимирович)''', bg=BG_GREEN, fg=FG_BLACK, font='verdana 14').pack()
-    b45 = Button(main_window, text='Выход', bg=BG_GREEN, fg=FG_BLACK, font='verdana 14', command=main_color).pack()
+    Button(main_window, text='Выход', bg=BG_GREEN, fg=FG_BLACK, font='verdana 14', command=main_color).pack()
 
 
 def menu():
@@ -1024,11 +1026,11 @@ def menu():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    l1 = Label(main_window, text="Меню", bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 20').pack()
-    b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
-    b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
-    b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_darkgray_brown).pack()
-    b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
+    Label(main_window, text="Меню", bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 20').pack()
+    Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+    Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+    Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_darkgray_brown).pack()
+    Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
 
 
 def main_color():
@@ -1041,11 +1043,11 @@ def main_color():
             if w.winfo_class() == 'Label': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(main_window, text="Меню", bg=BG_RED, fg=FG_BLACK, font='verdana 20').pack()
-        b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
-        b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_red_black).pack()
-        b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
+        Label(main_window, text="Меню", bg=BG_RED, fg=FG_BLACK, font='verdana 20').pack()
+        Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+        Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+        Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_red_black).pack()
+        Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
     elif direction_choice == 1:
         main_window["bg"] = BG_LIGHTBLUE
         for w in main_window.winfo_children():
@@ -1054,11 +1056,11 @@ def main_color():
             if w.winfo_class() == 'Label': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(main_window, text="Меню", bg=BG_LIGHTBLUE, fg=FG_BROWN, font='verdana 20').pack()
-        b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
-        b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_lightblue_black).pack()
-        b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
+        Label(main_window, text="Меню", bg=BG_LIGHTBLUE, fg=FG_BROWN, font='verdana 20').pack()
+        Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+        Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+        Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_lightblue_black).pack()
+        Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
     elif direction_choice == 2:
         main_window["bg"] = BG_GREEN
         for w in main_window.winfo_children():
@@ -1067,11 +1069,11 @@ def main_color():
             if w.winfo_class() == 'Label': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(main_window, text="Меню", bg=BG_GREEN, fg=FG_BROWN, font='verdana 20').pack()
-        b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
-        b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_green_black).pack()
-        b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
+        Label(main_window, text="Меню", bg=BG_GREEN, fg=FG_BROWN, font='verdana 20').pack()
+        Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+        Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+        Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_green_black).pack()
+        Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
     else:
         main_window["bg"] = BG_DARKGRAY
         for w in main_window.winfo_children():
@@ -1080,11 +1082,11 @@ def main_color():
             if w.winfo_class() == 'Label': w.destroy()
         for w in main_window.winfo_children():
             if w.winfo_class() == 'Button': w.destroy()
-        l1 = Label(main_window, text="Меню", bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 20').pack()
-        b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
-        b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
-        b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_darkgray_brown).pack()
-        b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
+        Label(main_window, text="Меню", bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 20').pack()
+        Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+        Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+        Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_darkgray_brown).pack()
+        Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
 
 
 def color_background():
@@ -1092,24 +1094,21 @@ def color_background():
         if w.winfo_class() == 'Button': w.destroy()
     for w in main_window.winfo_children():
         if w.winfo_class() == 'Label': w.destroy()
-    lab2 = Label(main_window, text="Цвет фона", font='verdana 14').pack()
+    Label(main_window, text="Цвет фона", font='verdana 14').pack()
     v1.set(4)
-    r1 = Radiobutton(main_window, text='Красный', fg=FG_RED, variable=v1, value=0).pack()
-    r2 = Radiobutton(main_window, text='Светлоголубой', fg=FG_LIGHTBLUE, variable=v1, value=1).pack()
-    r3 = Radiobutton(main_window, text='Зелёный', fg=FG_GREEN, variable=v1, value=2).pack()
-    r4 = Radiobutton(main_window, text='Серый', fg=FG_DARKGRAY, variable=v1, value=3).pack()
-    but2 = Button(main_window, text='Поменять', command=main_color).pack()
+    Radiobutton(main_window, text='Красный', fg=FG_RED, variable=v1, value=0).pack()
+    Radiobutton(main_window, text='Светлоголубой', fg=FG_LIGHTBLUE, variable=v1, value=1).pack()
+    Radiobutton(main_window, text='Зелёный', fg=FG_GREEN, variable=v1, value=2).pack()
+    Radiobutton(main_window, text='Серый', fg=FG_DARKGRAY, variable=v1, value=3).pack()
+    Button(main_window, text='Поменять', command=main_color).pack()
 
 
-# виджеты
-l1 = Label(main_window, text="Меню", bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 20').pack()
-print("Добро пожаловать в игру 'Приключения'!");
-b1 = Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
-b2 = Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
-b23 = Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_darkgray_brown).pack()
-b3 = Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
-
-# ---
+Label(main_window, text="Меню", bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 20').pack()
+print("Добро пожаловать в игру 'Приключения'!")
+Button(main_window, text='Начать игру', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=game).pack()
+Button(main_window, text='Настройки', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=color_background).pack()
+Button(main_window, text='Создатели', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=developer_darkgray_brown).pack()
+Button(main_window, text='Выход', bg=BG_DARKGRAY, fg=FG_BROWN, font='verdana 14', command=exit).pack()
 
 scale_window = tkinter.Tk()
 
