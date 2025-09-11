@@ -57,12 +57,6 @@ del sys.argv[1]
 # output = open('output','w')
 # out.write(allelesfile)
 # out.close()
-###-----------------options-------------------------###
-
-"""p = permutations for confidence intervals, d1 and d2 are range for number of 
-species for funnel plot. parameter: m = AvTD, v = VarTD, e = euler, b = AvTD and VarTd. 
-ci = confidence intervals b = batch file. l = user-defined path lengths
-"""
 
 parser = OptionParser()
 
@@ -298,9 +292,10 @@ def atd_mean(data, sample):
     taxonN = {} 
     AvTD = 0 
     n = 0
-    # Taxon are counts of taxa at each level, taxonN are numbers of pairwise differences
-    # at each level, with n being the accumlation of pairwise differences at that level. the difference
-    # between n and TaxonN is the number of species that are in different taxa in that level
+    # Taxon are counts of taxa at each level, taxonN are numbers of
+    # pairwise differences at each level, with n being the accumlation of
+    # pairwise differences at that level. the difference between n and TaxonN
+    # is the number of species that are in different taxa in that level
     # but not in upper levels
 
     for t in taxon:
@@ -310,7 +305,8 @@ def atd_mean(data, sample):
             Taxon[t][i] = x.count(i)
 
     for t in taxon:
-        taxonN[t] = sum([Taxon[t][i] * Taxon[t][j] for i in Taxon[t] for j in Taxon[t] if i != j])
+        taxonN[t] = sum([Taxon[t][i] * Taxon[t][j] for i in Taxon[t]
+                                                  for j in Taxon[t] if i != j])
         n = taxonN[t] - n
         AvTD = AvTD + (n * coef[t])
         n = taxonN[t]
@@ -353,7 +349,8 @@ def euler(data, atd, TaxonN):
     N = 0
     for t in taxon:
         k = len(Taxon[t])
-        TDmin += coef[t] * (((k - 1) * (n - k + 1) * 2 + (k - 1) * (k - 2)) - N)
+        TDmin += coef[t] * (((k - 1) * (n - k + 1) * 2 +
+                                 (k - 1) * (k - 2)) - N)
         N += ((k - 1) * (n - k + 1) * 2 + (k - 1) * (k - 2)) - N
 
     TDmin /= (n * (n - 1))
@@ -381,7 +378,8 @@ def euler(data, atd, TaxonN):
                 TaxMax[t].append([])
                 s = taxon[taxon.index(t) - 1]
 
-                Tax = [TaxMax[s][j] for j in range(i, len(Taxon[s]), len(Taxon[t]))]
+                Tax = [TaxMax[s][j] for j in range(i, len(Taxon[s]),
+                                                      len(Taxon[t]))]
 
                 for j in Tax:
                     TaxMax[t][i] += j
@@ -393,7 +391,9 @@ def euler(data, atd, TaxonN):
     N = len(sample)
     for t in taxon:
         taxonN[t] = sum(
-            [len(TaxMax[t][i]) * len(TaxMax[t][j]) for i in range(len(TaxMax[t])) for j in range(len(TaxMax[t])) if
+            [len(TaxMax[t][i]) * len(TaxMax[t][j])
+            for i in range(len(TaxMax[t]))
+            for j in range(len(TaxMax[t])) if
              i != j])
         n = taxonN[t] - n
         TDmax += n * coef[t]
