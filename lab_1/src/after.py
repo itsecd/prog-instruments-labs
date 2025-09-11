@@ -37,6 +37,7 @@ from optparse import OptionParser
 from random import sample
 from re import match
 
+
 samplefile = sys.argv[1];
 del sys.argv[1]
 popfile = sys.argv[1];
