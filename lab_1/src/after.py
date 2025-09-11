@@ -37,6 +37,10 @@ from optparse import OptionParser
 from random import sample
 from re import match
 
+P = 1000
+D1 = 10
+D2 = 70
+
 
 samplefile = sys.argv[1] 
 del sys.argv[1]
@@ -59,18 +63,6 @@ del sys.argv[1]
 species for funnel plot. parameter: m = AvTD, v = VarTD, e = euler, b = AvTD and VarTd. 
 ci = confidence intervals b = batch file. l = user-defined path lengths
 """
-
-p = 1000 
-d1 = 10 
-d2 = 70 
-ci = 'y' 
-b = 'n' 
-L = 'n'
-batch = b 
-pathlengths = L
-missing = 'n'
-# parameter = 'm' 
-
 
 parser = OptionParser()
 
