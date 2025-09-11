@@ -93,6 +93,7 @@ def deep_format(obj, paramdict):
                 raise JenkinsJobsException(desc)
     else:
         ret = obj
+        
     return ret
 
 
@@ -130,6 +131,7 @@ class YamlParser(object):
             self.config.has_option('job_builder', 'keep_descriptions'):
             keep_desc = self.config.getboolean('job_builder',
                                                'keep_descriptions')
+                
         return keep_desc
 
     def parse_fp(self, fp):
