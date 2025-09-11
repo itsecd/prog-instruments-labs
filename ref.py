@@ -17,6 +17,7 @@ import copy
 import itertools
 import fnmatch
 import six
+
 from jenkins_jobs.errors import JenkinsJobsException
 import jenkins_jobs.local_yaml as local_yaml
 
