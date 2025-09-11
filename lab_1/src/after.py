@@ -129,7 +129,7 @@ saveout = sys.stdout
 sys.stdout = open(output, 'w')
 
 
-# def Taxon():
+# def taxon():
 if batch == 'y':
     Files = []
 else:
@@ -243,7 +243,7 @@ if len(duplicates) > 0:
     for i in duplicates: print(i, '\n')
 
 
-def PathLength(population):
+def path_length(population):
     taxonN = {}
 
     X = {}
@@ -291,14 +291,14 @@ def PathLength(population):
 
 
 if pathlengths == 'n':
-    coef, popN, pathLengths = PathLength(population)
+    coef, popN, pathLengths = path_length(population)
 if pathlengths == 'y':
-    XXX, popN, YYY = PathLength(population)
+    XXX, popN, YYY = path_length(population)
     del XXX, YYY
 
 
 # N = len(sample.keys())
-def ATDmean(data, sample):
+def atd_mean(data, sample):
     # [sample = data.keys()
     N = len(sample)
 
@@ -329,7 +329,7 @@ def ATDmean(data, sample):
     return AvTD, taxonN, Taxon
 
 
-def ATDvariance(taxonN, sample, atd):
+def atd_variance(taxonN, sample, atd):
     vtd = []
 
     # N = sum(taxon)
@@ -421,7 +421,7 @@ def euler(data, atd, TaxonN):
 print("Output from Average Taxonomic Distinctness\n")
 
 
-def Sample(samplefile):
+def sample(samplefile):
     sample = {}
     print(samplefile)
     for i in open(samplefile):
@@ -443,7 +443,7 @@ def Sample(samplefile):
 results = {}
 
 for f in Files:
-    sample = Sample(f)
+    sample = sample(f)
     f = f.split('.')
     f = f[0]
 
@@ -451,8 +451,8 @@ for f in Files:
 
     samp = sample.keys()
 
-    atd, taxonN, Taxon = ATDmean(sample, samp)
-    vtd = ATDvariance(taxonN, samp, atd)
+    atd, taxonN, Taxon = atd_mean(sample, samp)
+    vtd = atd_variance(taxonN, samp, atd)
     Eresults = euler(sample, atd, taxonN)
 
     results[f]['atd'] = atd
