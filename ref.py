@@ -39,7 +39,7 @@ def writexml(self, writer, indent="", addindent="", newl=""):
     a_names.sort()
 
     for a_name in a_names:
-        writer.write(" %s=\"" % a_name)
+        writer.write(" {}"".format(a_name))
         minidom._write_data(writer, attrs[a_name].value)
         writer.write("\"")
     if self.childNodes:
@@ -52,9 +52,9 @@ def writexml(self, writer, indent="", addindent="", newl=""):
             for node in self.childNodes:
                 node.writexml(writer, indent + addindent, addindent, newl)
             writer.write(indent)
-        writer.write("</%s>%s" % (self.tagName, newl))
+        writer.write("</{}>%{}"format(self.tagName, newl))
     else:
-        writer.write("/>%s" % (newl))
+        writer.write("/>{}" % (newl))
 
 # PyXML xml.__name__ is _xmlplus. Check that if we don't have the default
 # system version of the minidom, then patch the writexml method
@@ -74,7 +74,7 @@ def deep_format(obj, paramdict):
                 ret = obj.format(**paramdict)
         except KeyError as exc:
             missing_key = exc.message
-            desc = "%s parameter missing to format %s\nGiven:\n%s" % (
+            desc = "{} parameter missing to format {}\nGiven:\n{}" % (
                 missing_key,obj,pformat(paramdict))
             raise JenkinsJobsException(desc)
     elif isinstance(obj, list):
@@ -88,7 +88,7 @@ def deep_format(obj, paramdict):
                 ret[item.format(**paramdict)] = deep_format(obj[item], paramdict)
             except KeyError as exc:
                 missing_key = exc.message
-                desc = "%s parameter missing to format %s\nGiven:\n%s" % (
+                desc = "{} parameter missing to format {}\nGiven:\n{}" % (
                     missing_key,obj,pformat(paramdict))
                 raise JenkinsJobsException(desc)
     else:
