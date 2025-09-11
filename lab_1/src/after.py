@@ -38,11 +38,11 @@ from random import sample
 from re import match
 
 
-samplefile = sys.argv[1];
+samplefile = sys.argv[1] 
 del sys.argv[1]
-popfile = sys.argv[1];
+popfile = sys.argv[1] 
 del sys.argv[1]
-# outfile= sys.argv[1];      del sys.argv[1]
+# outfile= sys.argv[1]       del sys.argv[1]
 
 # outfile = samplefile
 # output = open(outfile, 'w')
@@ -60,23 +60,23 @@ species for funnel plot. parameter: m = AvTD, v = VarTD, e = euler, b = AvTD and
 ci = confidence intervals b = batch file. l = user-defined path lengths
 """
 
-p = 1000;
-d1 = 10;
-d2 = 70;
-ci = 'y';
-b = 'n';
+p = 1000 
+d1 = 10 
+d2 = 70 
+ci = 'y' 
+b = 'n' 
 l = 'n'
-batch = b;
-pathlengths = l;
+batch = b 
+pathlengths = l 
 missing = 'n'
-# parameter = 'm';
+# parameter = 'm' 
 
 
 parser = OptionParser()
 
-d1 = int(sys.argv[1]);
+d1 = int(sys.argv[1]) 
 del sys.argv[1]
-d2 = int(sys.argv[1]);
+d2 = int(sys.argv[1]) 
 del sys.argv[1]
 
 parser.add_option('-o')
@@ -118,7 +118,7 @@ if options.l:
 else:
     pathlengths = 'n'
 
-sample = {};
+sample = {} 
 population = {}
 
 output = out + '.out'
@@ -135,10 +135,10 @@ if batch == 'y':
 else:
     Files = [samplefile]
 
-Index = {};
-Taxon = {};
-coef = {};
-Taxon = {};
+Index = {} 
+Taxon = {} 
+coef = {} 
+Taxon = {} 
 taxon = []
 
 pathLengths = {}
@@ -207,7 +207,7 @@ for i in open(popfile):
     # if match('Taxon:', i): continue
     # if match('Coefficients:', i): continue
 
-    species = x[0];
+    species = x[0] 
     population[species] = {}
 
     if species in sample.keys():
@@ -280,7 +280,7 @@ def PathLength(population):
     s = sum(raw)
     adjco = [i * 100 / s for i in raw]
 
-    coef = {};
+    coef = {} 
     pathLengths = {}
     for i in range(len(taxon)):
         t = taxon[i]
@@ -302,9 +302,9 @@ def ATDmean(data, sample):
     # [sample = data.keys()
     N = len(sample)
 
-    Taxon = {};
-    taxonN = {};
-    AvTD = 0;
+    Taxon = {} 
+    taxonN = {} 
+    AvTD = 0 
     n = 0
     # Taxon are counts of taxa at each level, taxonN are numbers of pairwise differences
     # at each level, with n being the accumlation of pairwise differences at that level. the difference
@@ -334,8 +334,8 @@ def ATDvariance(taxonN, sample, atd):
 
     # N = sum(taxon)
 
-    vtd = 0;
-    N = 0;
+    vtd = 0 
+    N = 0 
     n = 0
 
     for t in taxon:
@@ -395,9 +395,9 @@ def euler(data, atd, TaxonN):
                     TaxMax[t][i] += j
         TaxMax[t].reverse()
 
-    taxon.reverse();
-    TDmax = 0;
-    n = 0;
+    taxon.reverse() 
+    TDmax = 0 
+    n = 0 
     N = len(sample)
     for t in taxon:
         taxonN[t] = sum(
