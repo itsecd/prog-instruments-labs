@@ -33,8 +33,8 @@ size = (700, 500)
 screen = pygame.display.set_mode(size)
 
 """
-    This is a simple Ball class for respresenting a ball 
-    in the game. 
+    This is a simple Ball class for respresenting a ball
+    in the game.
 """
 
 
@@ -210,7 +210,7 @@ class Brick(pygame.sprite.Sprite):
 
 
 """
-    This is a simple class for representing a 
+    This is a simple class for representing a
     brick wall.
 """
 
@@ -386,4 +386,5 @@ while not done:
 # Close the window and quit.
 
 pygame.quit()
+
 
