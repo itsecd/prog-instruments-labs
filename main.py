@@ -60,7 +60,8 @@ class Ball(object):
         """
         draws the ball onto screen.
         """
-        pygame.draw.circle(screen, (255, 0, 0), (self._xLoc, self._yLoc), self._radius)
+        pygame.draw.circle(screen, (255, 0, 0), (self._xLoc, self._yLoc),
+                           self._radius)
 
     def update(self, paddle, brickwall):
         """
@@ -94,7 +95,8 @@ class Ball(object):
         ballX = self._xLoc
         ballY = self._yLoc
 
-        if ((ballX + self._radius) >= paddleX and ballX <= (paddleX + paddleW)) and (
+        if ((ballX + self._radius) >= paddleX and ballX <=
+            (paddleX + paddleW)) and (
             (ballY + self._radius) >= paddleY and ballY <= (paddleY + paddleH)
         ):
             self.__yVel *= -1
@@ -123,7 +125,8 @@ class Paddle(object):
         draws the paddle onto screen.
         """
         pygame.draw.rect(
-            screen, (0, 0, 0), (self._xLoc, self._yLoc, self._width, self._height), 0
+            screen, (0, 0, 0), (self._xLoc, self._yLoc, self._width,
+                                self._height), 0
         )
 
     def update(self):
@@ -349,7 +352,8 @@ while not done:
         # for counting and displaying the score
         if brickWall.collide(ball):
             score += 10
-        textsurfaceScore = mgScore.render("score: " + str(score), False, (0, 0, 0))
+        textsurfaceScore = mgScore.render("score: " + str(score), False,
+                                          (0, 0, 0))
         screen.blit(textsurfaceScore, (300, 0))
 
         # after scoring. because hit bricks are removed in the update-method
@@ -370,11 +374,13 @@ while not done:
     else:  # game isn't running.
         if isGameOver:  # player lose
             screen.blit(textsurfaceGameOver, (0, 0))
-            textsurfaceScore = mgScore.render("score: " + str(score), False, (0, 0, 0))
+            textsurfaceScore = mgScore.render("score: " + str(score), False,
+                                              (0, 0, 0))
             screen.blit(textsurfaceScore, (300, 0))
         elif brickWall.hasWin():  # player win
             screen.blit(textsurfaceWin, (0, 0))
-            textsurfaceScore = mgScore.render("score: " + str(score), False, (0, 0, 0))
+            textsurfaceScore = mgScore.render("score: " + str(score), False,
+                                              (0, 0, 0))
             screen.blit(textsurfaceScore, (300, 0))
 
     # --- Go ahead and update the screen with what we've drawn.
@@ -386,6 +392,7 @@ while not done:
 # Close the window and quit.
 
 pygame.quit()
+
 
 
 
