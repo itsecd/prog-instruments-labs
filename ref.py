@@ -65,10 +65,6 @@ if sys.version_info[:3] < (2, 7, 3) or xml.__name__ != 'xml':
 def deep_format(obj, paramdict):
     """Apply the paramdict via str.format() to all string objects found within
        the supplied obj. Lists and dicts are traversed recursively."""
-    # YAML serialisation was originally used to achieve this, but that places
-    # limitations on the values in paramdict - the post-format result must
-    # still be valid YAML (so substituting-in a string containing quotes, for
-    # example, is problematic).
     if hasattr(obj, 'format'):
         try:
             result = re.match('^{obj:(?P<key>\w+)}$', obj)
@@ -79,7 +75,7 @@ def deep_format(obj, paramdict):
         except KeyError as exc:
             missing_key = exc.message
             desc = "%s parameter missing to format %s\nGiven:\n%s" % (
-                   missing_key, obj, pformat(paramdict))
+                missing_key,obj,pformat(paramdict))
             raise JenkinsJobsException(desc)
     elif isinstance(obj, list):
         ret = []
@@ -89,12 +85,11 @@ def deep_format(obj, paramdict):
         ret = {}
         for item in obj:
             try:
-                ret[item.format(**paramdict)] = \
-                    deep_format(obj[item], paramdict)
+                ret[item.format(**paramdict)] = deep_format(obj[item], paramdict)
             except KeyError as exc:
                 missing_key = exc.message
                 desc = "%s parameter missing to format %s\nGiven:\n%s" % (
-                    missing_key, obj, pformat(paramdict))
+                    missing_key,obj,pformat(paramdict))
                 raise JenkinsJobsException(desc)
     else:
         ret = obj
@@ -123,16 +118,16 @@ class YamlParser(object):
         self.registry = ModuleRegistry(self.config)
         self.path = ["."]
         if self.config:
-            if config.has_section('job_builder') and \
-                    config.has_option('job_builder', 'include_path'):
+            if (self.config.has_section('job_builder') and 
+                self.config.has_option('job_builder', 'include_path'):
                 self.path = config.get('job_builder',
                                        'include_path').split(':')
         self.keep_desc = self.get_keep_desc()
 
     def get_keep_desc(self):
         keep_desc = False
-        if self.config and self.config.has_section('job_builder') and \
-                self.config.has_option('job_builder', 'keep_descriptions'):
+        if self.config and self.config.has_section('job_builder') and
+            self.config.has_option('job_builder', 'keep_descriptions'):
             keep_desc = self.config.getboolean('job_builder',
                                                'keep_descriptions')
         return keep_desc
@@ -210,8 +205,7 @@ class YamlParser(object):
         else:
             description = job.get("description", '')
         if description is not None:
-            job["description"] = description + \
-                self.get_managed_string().lstrip()
+            job["description"] = description + self.get_managed_string().lstrip()
 
     def expandYaml(self, jobs_filter=None):
         changed = True
