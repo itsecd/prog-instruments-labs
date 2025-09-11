@@ -196,9 +196,7 @@ class Brick(pygame.sprite.Sprite):
         brickH = self._height
         ballX = ball._xLoc
         ballY = ball._yLoc
-        ballXVel = ball.getXVel()
-        ballYVel = ball.getYVel()
-
+        
         if (
             (ballX + ball._radius) >= brickX
             and (ballX + ball._radius) <= (brickX + brickW)
@@ -388,3 +386,4 @@ while not done:
 # Close the window and quit.
 
 pygame.quit()
+
