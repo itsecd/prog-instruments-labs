@@ -35,36 +35,36 @@ def add():
     print("3-Super Deluxe (1500/Day)")
     print("4-Premium Deluxe (2000/Day)")
 
-    Room_Type = int(input("\nWhich type you want(1-4): \n"))
+    room_type = int(input("\nWhich type you want(1-4): \n"))
 
-    match Room_Type:
+    match room_type:
         case 1:
             cost = 500
-            Room_Type = "Normal"
+            room_type = "Normal"
         case 2:
             cost = 1000
-            Room_Type = "Deluxe"
+            room_type = "Deluxe"
         case 3:
             cost = 1500
-            Room_Type = "Super Deluxe"
+            room_type = "Super Deluxe"
         case 4:
             cost = 2000
-            Room_Type = "Premium"
+            room_type = "Premium"
 
-    Days = int(input("How many days you will stay: "))
-    Money = cost * Days
-    Money = str(Money)
+    days = int(input("How many days you will stay: "))
+    money = cost * days
+    money = str(money)
     print("")
 
-    print("You have to pay ", (Money))
+    print("You have to pay ", (money))
     print("")
 
-    Payment = input("Mode of payment(Card/Cash/Online): ").capitalize()
-    if Payment == "Card":
+    payment = input("Mode of payment(Card/Cash/Online): ").capitalize()
+    if payment == "Card":
         print("Payment with card")
-    elif Payment == "Cash":
+    elif payment == "Cash":
         print("Payment with cash")
-    elif Payment == "Online":
+    elif payment == "Online":
         print("Online payment")
     print("")
 
@@ -74,27 +74,27 @@ def add():
         dictionary = json.loads(string)
 
     if len(dictionary.get("Room")) == 0:
-        Room_num = "501"
+        room_num = "501"
     else:
         listt = dictionary.get("Room")
         tempp = len(listt) - 1
         temppp = int(listt[tempp])
-        Room_num = 1 + temppp
-        Room_num = str(Room_num)
+        room_num = 1 + temppp
+        room_num = str(room_num)
 
-    print("You have been assigned Room Number", Room_num)
+    print("You have been assigned Room Number", room_num)
     print(f"name : {name} {surname}")
     print(f"phone number : +91{phone_num}")
-    print(f"Room type : {Room_Type}")
-    print(f"Stay (day) : {Days}")
+    print(f"Room type : {room_type}")
+    print(f"Stay (day) : {days}")
 
     dictionary["First_Name"].append(name)
     dictionary["Last_Name"].append(surname)
     dictionary["Phone_num"].append(phone_num)
-    dictionary["Room_Type"].append(Room_Type)
-    dictionary["Days"].append(Days)
-    dictionary["Price"].append(Money)
-    dictionary["Room"].append(Room_num)
+    dictionary["Room_Type"].append(room_type)
+    dictionary["Days"].append(days)
+    dictionary["Price"].append(money)
+    dictionary["Room"].append(room_num)
 
     with open("Management.txt", "w", encoding="utf-8") as File:
         File.write(str(dictionary))
@@ -131,10 +131,10 @@ def modify():
         print("\nThere is no data in our database\n")
         menu()
     else:
-        Room = input("\nEnter your Room Number: ")
+        room = input("\nEnter your Room Number: ")
 
         listt = dictionary["Room"]
-        index = int(listt.index(Room))
+        index = int(listt.index(room))
 
         print("\n1-Change your first name")
         print("2-Change your last name")
@@ -175,10 +175,10 @@ def search():
         print("\nThere is no data in our database\n")
         menu()
     else:
-        Room = input("\nEnter your Room Number: ")
+        room = input("\nEnter your Room Number: ")
 
         listt_num = dictionary.get("Room")
-        index = int(listt_num.index(Room))
+        index = int(listt_num.index(room))
 
         listt_fname = dictionary.get("First_Name")
         listt_lname = dictionary.get("Last_Name")
@@ -208,10 +208,10 @@ def remove():
         print("\nThere is no data in our database\n")
         menu()
     else:
-        Room = input("\nEnter your Room Number: ")
+        room = input("\nEnter your Room Number: ")
 
         listt = dictionary["Room"]
-        index = int(listt.index(Room))
+        index = int(listt.index(room))
 
         listt_fname = dictionary.get("First_Name")
         listt_lname = dictionary.get("Last_Name")
