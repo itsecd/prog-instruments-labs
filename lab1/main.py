@@ -13,8 +13,12 @@ from collections import defaultdict
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-# -------------------- ЛОГИРОВАНИЕ --------------------
-# Собираем сообщения по каждому номеру файла, чтобы затем вывести их в порядке 1 → N
+
+"""
+-------------------- ЛОГИРОВАНИЕ --------------------
+Собираем сообщения по каждому номеру файла,
+чтобы затем вывести их в порядке 1 → N
+"""
 
 LOGS_BY_FILE: dict[int, list[str]] = defaultdict(list)
 _LOG_LOCK = threading.Lock()
@@ -51,7 +55,10 @@ GITHUB_TOKEN = os.environ.get("MY_TOKEN")
 # Имя репозитория для загрузки файлов
 REPO_NAME = "AvenCores/goida-vpn-configs"
 
-# Создаём объект Github и репозиторий один раз, чтобы не делать это при каждой загрузке
+"""
+Создаём объект Github и репозиторий один раз,
+чтобы не делать это при каждой загрузке
+"""
 if GITHUB_TOKEN:
     g = Github(auth=Auth.Token(GITHUB_TOKEN))
 else:
@@ -65,31 +72,31 @@ if not os.path.exists("githubmirror"):
 
 # Список URL-адресов для скачивания конфигов
 URLS = [
-    "https://istanbulsydneyhotel.com/blogs/site/sni.php?security=reality", #1
-    "https://istanbulsydneyhotel.com/blogs/site/sni.php", #2
-    "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt", #3
-    "https://raw.githubusercontent.com/acymz/AutoVPN/refs/heads/main/data/V2.txt", #4
-    "https://raw.githubusercontent.com/AliDev-ir/FreeVPN/main/pcvpn", #5
-    "https://raw.githubusercontent.com/roosterkid/openproxylist/main/V2RAY_RAW.txt", #6
-    "https://github.com/Epodonios/v2ray-configs/raw/main/Splitted-By-Protocol/trojan.txt", #7
-    "https://raw.githubusercontent.com/YasserDivaR/pr0xy/main/mycustom1.txt", #8
-    "https://vpn.fail/free-proxy/v2ray", #9
-    "https://raw.githubusercontent.com/Proxydaemitelegram/Proxydaemi44/refs/heads/main/Proxydaemi44", #10
-    "https://raw.githubusercontent.com/youfoundamin/V2rayCollector/main/mixed_iran.txt", #11
-    "https://raw.githubusercontent.com/mheidari98/.proxy/refs/heads/main/all", #12
-    "https://github.com/Kwinshadow/TelegramV2rayCollector/raw/refs/heads/main/sublinks/mix.txt", #13
-    "https://github.com/LalatinaHub/Mineral/raw/refs/heads/master/result/nodes", #14
-    "https://raw.githubusercontent.com/miladtahanian/multi-proxy-config-fetcher/refs/heads/main/configs/proxy_configs.txt", #15
-    "https://github.com/freefq/free/raw/refs/heads/master/v2", #16
-    "https://github.com/MhdiTaheri/V2rayCollector_Py/raw/refs/heads/main/sub/Mix/mix.txt", #17
-    "https://github.com/Epodonios/v2ray-configs/raw/main/Splitted-By-Protocol/vmess.txt", #18
-    "https://github.com/MhdiTaheri/V2rayCollector/raw/refs/heads/main/sub/mix", #19
-    "https://raw.githubusercontent.com/mehran1404/Sub_Link/refs/heads/main/V2RAY-Sub.txt", #20
-    "https://raw.githubusercontent.com/shabane/kamaji/master/hub/merged.txt", #21
-    "https://raw.githubusercontent.com/wuqb2i4f/xray-config-toolkit/main/output/base64/mix-uri", #22
-    "https://raw.githubusercontent.com/AzadNetCH/Clash/refs/heads/main/AzadNet.txt", #23
-    "https://raw.githubusercontent.com/STR97/STRUGOV/refs/heads/main/STR.BYPASS#STR.BYPASS%F0%9F%91%BE", #24
-    "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/vless.txt", #25
+    "https://istanbulsydneyhotel.com/blogs/site/sni.php?security=reality", #1 # noqa: E501
+    "https://istanbulsydneyhotel.com/blogs/site/sni.php", #2 # noqa: E501
+    "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt", #3 # noqa: E501
+    "https://raw.githubusercontent.com/acymz/AutoVPN/refs/heads/main/data/V2.txt", #4 # noqa: E501
+    "https://raw.githubusercontent.com/AliDev-ir/FreeVPN/main/pcvpn", #5 # noqa: E501
+    "https://raw.githubusercontent.com/roosterkid/openproxylist/main/V2RAY_RAW.txt", #6 # noqa: E501
+    "https://github.com/Epodonios/v2ray-configs/raw/main/Splitted-By-Protocol/trojan.txt", #7 # noqa: E501
+    "https://raw.githubusercontent.com/YasserDivaR/pr0xy/main/mycustom1.txt", #8 # noqa: E501
+    "https://vpn.fail/free-proxy/v2ray", #9 # noqa: E501
+    "https://raw.githubusercontent.com/Proxydaemitelegram/Proxydaemi44/refs/heads/main/Proxydaemi44", #10 # noqa: E501
+    "https://raw.githubusercontent.com/youfoundamin/V2rayCollector/main/mixed_iran.txt", #11 # noqa: E501
+    "https://raw.githubusercontent.com/mheidari98/.proxy/refs/heads/main/all", #12 # noqa: E501
+    "https://github.com/Kwinshadow/TelegramV2rayCollector/raw/refs/heads/main/sublinks/mix.txt", #13 # noqa: E501
+    "https://github.com/LalatinaHub/Mineral/raw/refs/heads/master/result/nodes", #14 # noqa: E501
+    "https://raw.githubusercontent.com/miladtahanian/multi-proxy-config-fetcher/refs/heads/main/configs/proxy_configs.txt", #15 # noqa: E501
+    "https://github.com/freefq/free/raw/refs/heads/master/v2", #16 # noqa: E501
+    "https://github.com/MhdiTaheri/V2rayCollector_Py/raw/refs/heads/main/sub/Mix/mix.txt", #17 # noqa: E501
+    "https://github.com/Epodonios/v2ray-configs/raw/main/Splitted-By-Protocol/vmess.txt", #18 # noqa: E501
+    "https://github.com/MhdiTaheri/V2rayCollector/raw/refs/heads/main/sub/mix", #19 # noqa: E501
+    "https://raw.githubusercontent.com/mehran1404/Sub_Link/refs/heads/main/V2RAY-Sub.txt", #20 # noqa: E501
+    "https://raw.githubusercontent.com/shabane/kamaji/master/hub/merged.txt", #21 # noqa: E501
+    "https://raw.githubusercontent.com/wuqb2i4f/xray-config-toolkit/main/output/base64/mix-uri", #22 # noqa: E501
+    "https://raw.githubusercontent.com/AzadNetCH/Clash/refs/heads/main/AzadNet.txt", #23 # noqa: E501
+    "https://raw.githubusercontent.com/STR97/STRUGOV/refs/heads/main/STR.BYPASS#STR.BYPASS%F0%9F%91%BE", #24 # noqa: E501
+    "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/vless.txt", #25 # noqa: E501
 ]
 
 # Пути для сохранения файлов локально и в репозитории
@@ -113,7 +120,10 @@ DEFAULT_MAX_WORKERS = int(os.environ.get("MAX_WORKERS", "16"))
 # Глобальная HTTP-сессия с пулом соединений для ускорения повторных запросов
 def _build_session(max_pool_size: int) -> requests.Session:
     session = requests.Session()
-    # Минимальные автоматические ретраи для сетевых сбоев на уровне TCP/соединения
+    """
+    Минимальные автоматические ретраи
+    для сетевых сбоев на уровне TCP/соединения
+    """
     adapter = HTTPAdapter(
         pool_connections=max_pool_size,
         pool_maxsize=max_pool_size,
@@ -134,11 +144,18 @@ def _build_session(max_pool_size: int) -> requests.Session:
     return session
 
 
-REQUESTS_SESSION = _build_session(max_pool_size=max(DEFAULT_MAX_WORKERS, len(URLS))) if 'URLS' in globals() else _build_session(DEFAULT_MAX_WORKERS)
+REQUESTS_SESSION = _build_session(
+    max_pool_size=max(DEFAULT_MAX_WORKERS, len(URLS))) if 'URLS' in globals() \
+    else _build_session(DEFAULT_MAX_WORKERS)
 
 
 # Функция для скачивания данных по URL
-def fetch_data(url: str, timeout: int = 10, max_attempts: int = 3, session: requests.Session | None = None) -> str:
+def fetch_data(
+        url: str,
+        timeout: int = 10,
+        max_attempts: int = 3,
+        session: requests.Session | None = None
+) -> str:
     """Пытается скачать данные по URL, делая несколько попыток.
 
     Логика попыток:
@@ -200,7 +217,9 @@ def upload_to_github(local_path, remote_path):
             remote_content = None
             if getattr(file_in_repo, "encoding", None) == "base64":
                 try:
-                    remote_content = file_in_repo.decoded_content.decode("utf-8")
+                    remote_content = file_in_repo.decoded_content.decode(
+                        "utf-8"
+                    )
                 except Exception:
                     remote_content = None
 
@@ -208,7 +227,10 @@ def upload_to_github(local_path, remote_path):
                 basename = os.path.basename(remote_path)
                 repo.update_file(
                     path=remote_path,
-                    message=f"🚀 Обновление {basename} по часовому поясу Европа/Москва: {offset}",
+                    message=(
+                        f"🚀 Обновление {basename} "
+                        f"по часовому поясу Европа/Москва: {offset}"
+                    ),
                     content=content,
                     sha=file_in_repo.sha
                 )
@@ -221,17 +243,26 @@ def upload_to_github(local_path, remote_path):
                 basename = os.path.basename(remote_path)
                 repo.create_file(
                     path=remote_path,
-                    message=f"🆕 Первый коммит {basename} по часовому поясу Европа/Москва: {offset}",
+                    message=(
+                        f"🆕 Первый коммит {basename}"
+                        f"по часовому поясу Европа/Москва: {offset}"
+                    ),
                     content=content
                 )
                 log(f"🆕 Файл {remote_path} создан.")
                 return
             elif e.status == 409 and attempt < max_retries - 1:
                 # SHA conflict — повторяем попытку
-                log(f"⚠️ Конфликт SHA при обновлении {remote_path}, повторяю (попытка {attempt+1})")
+                log(
+                    f"⚠️ Конфликт SHA при обновлении {remote_path},"
+                    f"повторяю (попытка {attempt+1})"
+                )
                 continue
             else:
-                log(f"⚠️ Ошибка при загрузке {remote_path}: {e.data.get('message', e)}")
+                log(
+                    f"⚠️ Ошибка при загрузке {remote_path}:"
+                    f"{e.data.get('message', e)}"
+                )
                 return
 
 # Функция для параллельного скачивания и сохранения файла
@@ -241,13 +272,19 @@ def download_and_save(idx):
     try:
         data = fetch_data(url)
 
-        # Если локальный файл уже существует и содержимое не изменилось — пропускаем запись и загрузку
+        """
+        Если локальный файл уже существует и содержимое не изменилось, то
+        пропускаем запись и загрузку
+        """
         if os.path.exists(local_path):
             try:
                 with open(local_path, "r", encoding="utf-8") as f_old:
                     old_data = f_old.read()
                 if old_data == data:
-                    log(f"🔄 Изменений для {local_path} нет (локально). Пропуск загрузки в GitHub.")
+                    log(
+                        f"🔄 Изменений для {local_path} нет (локально)."
+                        f"Пропуск загрузки в GitHub."
+                    )
                     return None
             except Exception:
                 # Если не удалось прочитать старый файл — просто перезапишем
@@ -266,12 +303,22 @@ def download_and_save(idx):
 def main():
     # Параллельно скачиваем файлы и сохраняем их локально
     max_workers_download = min(DEFAULT_MAX_WORKERS, max(1, len(URLS)))
-    max_workers_upload = max(2, min(6, len(URLS)))  # ограничиваем аплоадеры, чтобы не упереться в rate limit
+    # ограничиваем аплоадеры, чтобы не упереться в rate limit
+    max_workers_upload = max(2, min(6, len(URLS)))
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers_download) as download_pool, \
-         concurrent.futures.ThreadPoolExecutor(max_workers=max_workers_upload) as upload_pool:
+    with (
+        concurrent.futures.ThreadPoolExecutor(
+            max_workers=max_workers_download
+        ) as download_pool,
+        concurrent.futures.ThreadPoolExecutor(
+            max_workers=max_workers_upload
+        ) as upload_pool
+    ):
 
-        download_futures = [download_pool.submit(download_and_save, i) for i in range(len(URLS))]
+        download_futures = [
+            download_pool.submit(download_and_save, i)
+            for i in range(len(URLS))
+        ]
         upload_futures: list[concurrent.futures.Future] = []
 
         # По мере завершения скачивания — отправляем в пул загрузок на GitHub
@@ -279,7 +326,11 @@ def main():
             result = future.result()
             if result:
                 local_path, remote_path = result
-                upload_futures.append(upload_pool.submit(upload_to_github, local_path, remote_path))
+                upload_futures.append(upload_pool.submit(
+                    upload_to_github,
+                    local_path,
+                    remote_path
+                ))
 
         # Дожидаемся завершения всех загрузок
         for uf in concurrent.futures.as_completed(upload_futures):
