@@ -26,13 +26,23 @@ logger = logging.getLogger(__name__)
 MAGIC_MANAGE_STRING = "<!-- Managed by Jenkins Job Builder -->"
 
 
-# Python 2.6's minidom toprettyxml produces broken output by adding extraneous
-# whitespace around data. This patches the broken implementation with one taken
-# from Python > 2.7.3
 def writexml(self, writer, indent="", addindent="", newl=""):
-    # indent = current indentation
-    # addindent = indentation to add to higher levels
-    # newl = newline string
+    """
+    Write XML content to a writer with proper formatting, addressing issues in Python 2.6's
+    minidom toprettyxml, which adds extraneous whitespace around data.
+
+    This method patches the broken implementation with a corrected version inspired by
+    Python versions > 2.7.3, ensuring clean XML output without unnecessary whitespace.
+
+    Args:
+        writer: The output stream or file-like object to write the XML to.
+        indent (str, optional): The current level of indentation (default is an empty string).
+        addindent (str, optional): Additional indentation for nested elements (default is an empty string).
+        newl (str, optional): The newline character(s) to use (default is an empty string).
+
+    Returns:
+        None
+    """
     writer.write(indent + "<" + self.tagName)
 
     attrs = self._get_attributes()
