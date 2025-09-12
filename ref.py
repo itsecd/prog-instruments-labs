@@ -1,24 +1,25 @@
-import errno
-import os
-import operator
-import sys
-import hashlib
-import yaml
-import json
-import xml.etree.ElementTree as XML
-import xml
-from xml.dom import minidom
-import jenkins
-import re
-import pkg_resources
-from pprint import pformat
-import logging
 import copy
-import itertools
+import errno
 import fnmatch
+import hashlib
+import itertools
+import json
+import logging
+import operator
+import os
+import pkg_resources
+import re
 import six
+import sys
+import xml
+import yaml
 
+from pprint import pformat
+from xml.dom import minidom
+from xml.etree import ElementTree as XML
 from jenkins_jobs.errors import JenkinsJobsException
+
+import jenkins
 import jenkins_jobs.local_yaml as local_yaml
 
 logger = logging.getLogger(__name__)
