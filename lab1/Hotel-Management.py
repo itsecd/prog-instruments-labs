@@ -56,7 +56,7 @@ def add():
     money = str(money)
     print("")
 
-    print("You have to pay ", (money))
+    print("You have to pay ", money)
     print("")
 
     payment = input("Mode of payment(Card/Cash/Online): ").capitalize()
