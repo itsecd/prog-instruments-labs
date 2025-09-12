@@ -518,10 +518,15 @@ class XmlJob(object):
 
 
 class CacheStorage(object):
-    # ensure each instance of the class has a reference to the required
-    # modules so that they are available to be used when the destructor
-    # is being called since python will not guarantee that it won't have
-    # removed global module references during teardown.
+    """
+    Cache storage for Jenkins job configurations.
+
+    This class ensures that each instance maintains references to required
+    modules (like yaml and logger) so they remain available during destructor
+    calls. Python does not guarantee that global module references will persist
+    during teardown, which could otherwise cause issues when saving cache data
+    on exit.
+    """
     _yaml = yaml
     _logger = logger
 
