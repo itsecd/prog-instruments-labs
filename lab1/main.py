@@ -45,6 +45,7 @@ def log(message: str):
     with _LOG_LOCK:
         LOGS_BY_FILE[idx].append(message)
 
+
 # Получение текущего времени по часовому поясу Европа/Москва
 zone = zoneinfo.ZoneInfo("Europe/Moscow")
 thistime = datetime.now(zone)
@@ -352,6 +353,7 @@ def main():
         output_lines.extend(LOGS_BY_FILE[0])
 
     print("\n".join(output_lines))
+
 
 # Точка входа в программу
 if __name__ == "__main__":
