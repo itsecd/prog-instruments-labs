@@ -73,31 +73,31 @@ if not os.path.exists("githubmirror"):
 
 # Список URL-адресов для скачивания конфигов
 URLS = [
-    "https://istanbulsydneyhotel.com/blogs/site/sni.php?security=reality",  #1 # noqa: E501
-    "https://istanbulsydneyhotel.com/blogs/site/sni.php",  #2 # noqa: E501
-    "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt",  #3 # noqa: E501
-    "https://raw.githubusercontent.com/acymz/AutoVPN/refs/heads/main/data/V2.txt",  #4 # noqa: E501
-    "https://raw.githubusercontent.com/AliDev-ir/FreeVPN/main/pcvpn",  #5 # noqa: E501
-    "https://raw.githubusercontent.com/roosterkid/openproxylist/main/V2RAY_RAW.txt",  #6 # noqa: E501
-    "https://github.com/Epodonios/v2ray-configs/raw/main/Splitted-By-Protocol/trojan.txt",  #7 # noqa: E501
-    "https://raw.githubusercontent.com/YasserDivaR/pr0xy/main/mycustom1.txt",  #8 # noqa: E501
-    "https://vpn.fail/free-proxy/v2ray",  #9 # noqa: E501
-    "https://raw.githubusercontent.com/Proxydaemitelegram/Proxydaemi44/refs/heads/main/Proxydaemi44",  #10 # noqa: E501
-    "https://raw.githubusercontent.com/youfoundamin/V2rayCollector/main/mixed_iran.txt",  #11 # noqa: E501
-    "https://raw.githubusercontent.com/mheidari98/.proxy/refs/heads/main/all",  #12 # noqa: E501
-    "https://github.com/Kwinshadow/TelegramV2rayCollector/raw/refs/heads/main/sublinks/mix.txt",  #13 # noqa: E501
-    "https://github.com/LalatinaHub/Mineral/raw/refs/heads/master/result/nodes",  #14 # noqa: E501
-    "https://raw.githubusercontent.com/miladtahanian/multi-proxy-config-fetcher/refs/heads/main/configs/proxy_configs.txt",  #15 # noqa: E501
-    "https://github.com/freefq/free/raw/refs/heads/master/v2",  #16 # noqa: E501
-    "https://github.com/MhdiTaheri/V2rayCollector_Py/raw/refs/heads/main/sub/Mix/mix.txt",  #17 # noqa: E501
-    "https://github.com/Epodonios/v2ray-configs/raw/main/Splitted-By-Protocol/vmess.txt",  #18 # noqa: E501
-    "https://github.com/MhdiTaheri/V2rayCollector/raw/refs/heads/main/sub/mix",  #19 # noqa: E501
-    "https://raw.githubusercontent.com/mehran1404/Sub_Link/refs/heads/main/V2RAY-Sub.txt",  #20 # noqa: E501
-    "https://raw.githubusercontent.com/shabane/kamaji/master/hub/merged.txt",  #21 # noqa: E501
-    "https://raw.githubusercontent.com/wuqb2i4f/xray-config-toolkit/main/output/base64/mix-uri",  #22 # noqa: E501
-    "https://raw.githubusercontent.com/AzadNetCH/Clash/refs/heads/main/AzadNet.txt",  #23 # noqa: E501
-    "https://raw.githubusercontent.com/STR97/STRUGOV/refs/heads/main/STR.BYPASS#STR.BYPASS%F0%9F%91%BE",  #24 # noqa: E501
-    "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/vless.txt",  #25 # noqa: E501
+    "https://istanbulsydneyhotel.com/blogs/site/sni.php?security=reality",  # 1 # noqa: E501
+    "https://istanbulsydneyhotel.com/blogs/site/sni.php",  # 2 # noqa: E501
+    "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt",  # 3 # noqa: E501
+    "https://raw.githubusercontent.com/acymz/AutoVPN/refs/heads/main/data/V2.txt",  # 4 # noqa: E501
+    "https://raw.githubusercontent.com/AliDev-ir/FreeVPN/main/pcvpn",  # 5 # noqa: E501
+    "https://raw.githubusercontent.com/roosterkid/openproxylist/main/V2RAY_RAW.txt",  # 6 # noqa: E501
+    "https://github.com/Epodonios/v2ray-configs/raw/main/Splitted-By-Protocol/trojan.txt",  # 7 # noqa: E501
+    "https://raw.githubusercontent.com/YasserDivaR/pr0xy/main/mycustom1.txt",  # 8 # noqa: E501
+    "https://vpn.fail/free-proxy/v2ray",  # 9 # noqa: E501
+    "https://raw.githubusercontent.com/Proxydaemitelegram/Proxydaemi44/refs/heads/main/Proxydaemi44",  # 10 # noqa: E501
+    "https://raw.githubusercontent.com/youfoundamin/V2rayCollector/main/mixed_iran.txt",  # 11 # noqa: E501
+    "https://raw.githubusercontent.com/mheidari98/.proxy/refs/heads/main/all",  # 12 # noqa: E501
+    "https://github.com/Kwinshadow/TelegramV2rayCollector/raw/refs/heads/main/sublinks/mix.txt",  # 13 # noqa: E501
+    "https://github.com/LalatinaHub/Mineral/raw/refs/heads/master/result/nodes",  # 14 # noqa: E501
+    "https://raw.githubusercontent.com/miladtahanian/multi-proxy-config-fetcher/refs/heads/main/configs/proxy_configs.txt",  # 15 # noqa: E501
+    "https://github.com/freefq/free/raw/refs/heads/master/v2",  # 16 # noqa: E501
+    "https://github.com/MhdiTaheri/V2rayCollector_Py/raw/refs/heads/main/sub/Mix/mix.txt",  # 17 # noqa: E501
+    "https://github.com/Epodonios/v2ray-configs/raw/main/Splitted-By-Protocol/vmess.txt",  # 18 # noqa: E501
+    "https://github.com/MhdiTaheri/V2rayCollector/raw/refs/heads/main/sub/mix",  # 19 # noqa: E501
+    "https://raw.githubusercontent.com/mehran1404/Sub_Link/refs/heads/main/V2RAY-Sub.txt",  # 20 # noqa: E501
+    "https://raw.githubusercontent.com/shabane/kamaji/master/hub/merged.txt",  # 21 # noqa: E501
+    "https://raw.githubusercontent.com/wuqb2i4f/xray-config-toolkit/main/output/base64/mix-uri",  # 22 # noqa: E501
+    "https://raw.githubusercontent.com/AzadNetCH/Clash/refs/heads/main/AzadNet.txt",  # 23 # noqa: E501
+    "https://raw.githubusercontent.com/STR97/STRUGOV/refs/heads/main/STR.BYPASS#STR.BYPASS%F0%9F%91%BE",  # 24 # noqa: E501
+    "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/vless.txt",  # 25 # noqa: E501
 ]
 
 # Пути для сохранения файлов локально и в репозитории
