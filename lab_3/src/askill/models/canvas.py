@@ -14,7 +14,7 @@ class Canvas(Construction):
         self.height = height
 
     def __repr__(self):
-        return f"Canvas({self.width}, {self.height}, '{self.fill}')"
+        return f"Canvas({self.width}, {self.height}, {repr(self.fill)})"
 
     def construct(self, where: list[list[str]]):
         for row in range(self.height):

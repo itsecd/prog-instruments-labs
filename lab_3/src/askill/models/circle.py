@@ -16,4 +16,4 @@ class Circle(Construction):
         self.fill = fill
 
     def __repr__(self):
-        return f"Circle({self.x}, {self.y}, {self.r}, '{self.border}', '{self.fill}')"
+        return f"Circle({self.x}, {self.y}, {self.r}, {repr(self.border)}, {repr(self.fill)})"

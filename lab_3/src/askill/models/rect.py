@@ -14,4 +14,4 @@ class Rect(Construction):
         self.fill = fill
 
     def __repr__(self):
-        return f"Rect({self.x1}, {self.y1}, {self.x2}, {self.y2}, '{self.border}', '{self.fill}')"
+        return f"Rect({self.x1}, {self.y1}, {self.x2}, {self.y2}, {repr(self.border)}, {repr(self.fill)})"
