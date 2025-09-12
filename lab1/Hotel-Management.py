@@ -39,20 +39,20 @@ def add():
 
     match Room_Type:
         case 1:
-            x = 500
+            cost = 500
             Room_Type = "Normal"
         case 2:
-            x = 1000
+            cost = 1000
             Room_Type = "Deluxe"
         case 3:
-            x = 1500
+            cost = 1500
             Room_Type = "Super Deluxe"
         case 4:
-            x = 2000
+            cost = 2000
             Room_Type = "Premium"
 
     Days = int(input("How many days you will stay: "))
-    Money = x * Days
+    Money = cost * Days
     Money = str(Money)
     print("")
 
