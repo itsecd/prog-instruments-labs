@@ -25,9 +25,9 @@ def menu():
 
 
 def add():
-    Name1 = input("\nEnter your first name: \n")
-    Name2 = input("\nEnter your last name: \n")
-    Phone_Num = input("\nEnter your phone number(without +91): \n")
+    name = input("\nEnter your first name: \n")
+    surname = input("\nEnter your last name: \n")
+    phone_num = input("\nEnter your phone number(without +91): \n")
 
     print("These are the rooms that are currently available")
     print("1-Normal (500/Day)")
@@ -83,14 +83,14 @@ def add():
         Room_num = str(Room_num)
 
     print("You have been assigned Room Number", Room_num)
-    print(f"name : {Name1} {Name2}")
-    print(f"phone number : +91{Phone_Num}")
+    print(f"name : {name} {surname}")
+    print(f"phone number : +91{phone_num}")
     print(f"Room type : {Room_Type}")
     print(f"Stay (day) : {Days}")
 
-    dictionary["First_Name"].append(Name1)
-    dictionary["Last_Name"].append(Name2)
-    dictionary["Phone_num"].append(Phone_Num)
+    dictionary["First_Name"].append(name)
+    dictionary["Last_Name"].append(surname)
+    dictionary["Phone_num"].append(phone_num)
     dictionary["Room_Type"].append(Room_Type)
     dictionary["Days"].append(Days)
     dictionary["Price"].append(Money)
