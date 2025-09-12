@@ -1,3 +1,7 @@
+import os
+import json
+
+
 def menu():
     options = {
         1: {"title": "Add new customer details", "method": lambda: add()},
@@ -99,9 +103,6 @@ def add():
 
     exit_menu()
 
-
-import os
-import json
 
 filecheck = os.path.isfile("Management.txt")
 if not filecheck:
