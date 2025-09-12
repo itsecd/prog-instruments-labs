@@ -23,10 +23,10 @@ import jenkins
 import jenkins_jobs.local_yaml as local_yaml
 
 logger = logging.getLogger(__name__)
-MAGIC_MANAGE_STRING = "<!-- Managed by Jenkins Job Builder -->"
+MAGIC_MANAGE_STRING = '<!-- Managed by Jenkins Job Builder -->'
 
 
-def writexml(self, writer, indent="", addindent="", newl=""):
+def writexml(self, writer, indent='', addindent='', newl=''):
     """
     Write XML content to a writer with proper formatting, addressing issues in Python 2.6's
     minidom toprettyxml, which adds extraneous whitespace around data.
@@ -43,18 +43,18 @@ def writexml(self, writer, indent="", addindent="", newl=""):
     Returns:
         None
     """
-    writer.write(indent + "<" + self.tagName)
+    writer.write(indent + '<' + self.tagName)
 
     attrs = self._get_attributes()
     a_names = attrs.keys()
     a_names.sort()
 
     for a_name in a_names:
-        writer.write(" {}"".format(a_name))
+        writer.write(' {}''.format(a_name))
         minidom._write_data(writer, attrs[a_name].value)
-        writer.write("\"")
+        writer.write('\'')
     if self.childNodes:
-        writer.write(">")
+        writer.write('>')
         if (len(self.childNodes) == 1 and
                 self.childNodes[0].nodeType == minidom.Node.TEXT_NODE):
             self.childNodes[0].writexml(writer, '', '', '')
@@ -63,9 +63,9 @@ def writexml(self, writer, indent="", addindent="", newl=""):
             for node in self.childNodes:
                 node.writexml(writer, indent + addindent, addindent, newl)
             writer.write(indent)
-        writer.write("</{}>%{}"format(self.tagName, newl))
+        writer.write('</{}>%{}'format(self.tagName, newl))
     else:
-        writer.write("/>{}" % (newl))
+        writer.write('/>{}' % (newl))
 
 # PyXML xml.__name__ is _xmlplus. Check that if we don't have the default
 # system version of the minidom, then patch the writexml method
@@ -80,12 +80,12 @@ def deep_format(obj, paramdict):
         try:
             result = re.match('^{obj:(?P<key>\w+)}$', obj)
             if result is not None:
-                ret = paramdict[result.group("key")]
+                ret = paramdict[result.group('key')]
             else:
                 ret = obj.format(**paramdict)
         except KeyError as exc:
             missing_key = exc.message
-            desc = "{} parameter missing to format {}\nGiven:\n{}" % (
+            desc = '{} parameter missing to format {}\nGiven:\n{}' % (
                 missing_key, obj, pformat(paramdict))
             raise JenkinsJobsException(desc)
     elif isinstance(obj, list):
@@ -99,7 +99,7 @@ def deep_format(obj, paramdict):
                 ret[item.format(**paramdict)] = deep_format(obj[item], paramdict)
             except KeyError as exc:
                 missing_key = exc.message
-                desc = "{} parameter missing to format {}\nGiven:\n{}" % (
+                desc = '{} parameter missing to format {}\nGiven:\n{}' % (
                     missing_key, obj, pformat(paramdict))
                 raise JenkinsJobsException(desc)
     else:
@@ -128,7 +128,7 @@ class YamlParser(object):
         self.xml_jobs = []
         self.config = config
         self.registry = ModuleRegistry(self.config)
-        self.path = ["."]
+        self.path = ['.']
         if self.config:
             if (self.config.has_section('job_builder') and 
                 self.config.has_option('job_builder', 'include_path'):
@@ -214,11 +214,11 @@ class YamlParser(object):
 
     def formatDescription(self, job):
         if self.keep_desc:
-            description = job.get("description", None)
+            description = job.get('description', None)
         else:
-            description = job.get("description", '')
+            description = job.get('description', '')
         if description is not None:
-            job["description"] = description + self.get_managed_string().lstrip()
+            job['description'] = description + self.get_managed_string().lstrip()
 
     def expandYaml(self, jobs_filter=None):
         changed = True
@@ -231,7 +231,7 @@ class YamlParser(object):
 
         for job in self.data.get('job', {}).values():
             if jobs_filter and not matches(job['name'], jobs_filter):
-                logger.debug("Ignoring job {0}".format(job['name']))
+                logger.debug('Ignoring job {0}'.format(job['name']))
                 continue
             logger.debug("Expanding job '{0}'".format(job['name']))
             job = self.applyDefaults(job)
@@ -373,7 +373,7 @@ class YamlParser(object):
     def get_managed_string(self):
         # The \n\n is not hard coded, because they get stripped if the
         # project does not otherwise have a description.
-        return "\n\n" + MAGIC_MANAGE_STRING
+        return '\n\n' + MAGIC_MANAGE_STRING
 
     def generateXML(self):
         for job in self.jobs:
@@ -482,7 +482,7 @@ class ModuleRegistry(object):
                 eps[module_ep.name] = module_ep
 
             ModuleRegistry.entry_points_cache[component_list_type] = eps
-            logger.debug("Cached entry point group %s = %s",
+            logger.debug('Cached entry point group %s = %s',
                          component_list_type, eps)
 
         if name in eps:
@@ -574,7 +574,7 @@ class CacheStorage(object):
                 self._logger.error("Failed to write to cache file '%s' on "
                                    "exit: %s" % (self.cachefilename, e))
             else:
-                self._logger.info("Cache saved")
+                self._logger.info('Cache saved')
                 self._logger.debug("Cache written out to '%s'" %
                                    self.cachefilename)
 
@@ -613,7 +613,7 @@ class Jenkins(object):
         xml = self.jenkins.get_job_config(job_name)
         try:
             out = XML.fromstring(xml)
-            description = out.find(".//description").text
+            description = out.find('.//description').text
             return description.endswith(MAGIC_MANAGE_STRING)
         except (TypeError, AttributeError):
             pass
@@ -657,7 +657,7 @@ class Builder(object):
                 fname = in_file.name
             else:
                 fname = in_file
-            logger.debug("Parsing YAML file {0}".format(fname))
+            logger.debug('Parsing YAML file {0}'.format(fname))
             if hasattr(in_file, 'read'):
                 self.parser.parse_fp(in_file)
             else:
@@ -672,7 +672,7 @@ class Builder(object):
                             .format(job['name']))
                 self.delete_job(job['name'])
             else:
-                logger.debug("Ignoring unmanaged jenkins job %s",
+                logger.debug('Ignoring unmanaged jenkins job %s',
                              job['name'])
 
     def delete_job(self, glob_name, fn=None):
@@ -686,7 +686,7 @@ class Builder(object):
             jobs = [glob_name]
 
         if jobs is not None:
-            logger.info("Removing jenkins job(s): %s" % ", ".join(jobs))
+            logger.info('Removing jenkins job(s): %s' % ', '.join(jobs))
         for job in jobs:
             self.jenkins.delete_job(job)
             if(self.cache.is_cached(job)):
