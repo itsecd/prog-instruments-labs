@@ -32,13 +32,22 @@ pygame.init()
 size = (700, 500)
 screen = pygame.display.set_mode(size)
 
-"""
-    This is a simple Ball class for respresenting a ball
-    in the game.
-"""
-
 
 class Ball(object):
+    """
+    A class representing a ball in the Brickout game.
+
+    Attributes:
+        __screen: The game screen surface
+        _radius: Radius of the ball
+        _xLoc: X-coordinate of the ball's center
+        _yLoc: Y-coordinate of the ball's center
+        __xVel: X-axis velocity of the ball
+        __yVel: Y-axis velocity of the ball
+        __width: Width of the game screen
+        __height: Height of the game screen
+    """
+
     def __init__(self, screen, radius, x, y):
         self.__screen = screen
         self._radius = radius
@@ -51,22 +60,28 @@ class Ball(object):
         self.__height = h
 
     def getXVel(self):
+        """Get the X velocity of the ball."""
         return self.__xVel
 
     def getYVel(self):
+        """Get the Y velocity of the ball."""
         return self.__yVel
 
     def draw(self):
         """
-        draws the ball onto screen.
+        Draw the ball onto the screen.
+        :param self: self
+        :return: None
         """
-        pygame.draw.circle(screen, (255, 0, 0), (self._xLoc, self._yLoc),
-                           self._radius)
+        pygame.draw.circle(screen, (255, 0, 0), (self._xLoc, self._yLoc), self._radius)
 
     def update(self, paddle, brickwall):
         """
-        moves the ball at the screen.
-        contains some collision detection.
+         Update the ball's position and handle collisions.
+        :param self: self
+        :param paddle: The paddle object for collision detection
+        :param brickwall: The brick wall object for collision detection
+        :return: True if ball dropped out of bottom, else return false
         """
         self._xLoc += self.__xVel
         self._yLoc += self.__yVel
@@ -95,8 +110,7 @@ class Ball(object):
         ballX = self._xLoc
         ballY = self._yLoc
 
-        if ((ballX + self._radius) >= paddleX and ballX <=
-            (paddleX + paddleW)) and (
+        if ((ballX + self._radius) >= paddleX and ballX <= (paddleX + paddleW)) and (
             (ballY + self._radius) >= paddleY and ballY <= (paddleY + paddleH)
         ):
             self.__yVel *= -1
@@ -104,12 +118,20 @@ class Ball(object):
         return False
 
 
-"""
-    Simple class for representing a paddle
-"""
-
-
 class Paddle(object):
+    """
+    A class representing the player's paddle in the Brickout game.
+
+    Attributes:
+        __screen: The game screen surface
+        _width: Width of the paddle
+        _height: Height of the paddle
+        _xLoc: X-coordinate of the paddle's top-left corner
+        _yLoc: Y-coordinate of the paddle's top-left corner
+        __W: Width of the game screen
+        __H: Height of the game screen
+    """
+
     def __init__(self, screen, width, height, x, y):
         self.__screen = screen
         self._width = width
@@ -122,29 +144,38 @@ class Paddle(object):
 
     def draw(self):
         """
-        draws the paddle onto screen.
+        Draw the paddle onto the screen.
+        :return: None
         """
         pygame.draw.rect(
-            screen, (0, 0, 0), (self._xLoc, self._yLoc, self._width,
-                                self._height), 0
+            screen, (0, 0, 0), (self._xLoc, self._yLoc, self._width, self._height), 0
         )
 
     def update(self):
         """
         moves the paddle at the screen via mouse
+        :return: None
         """
         x, y = pygame.mouse.get_pos()
         if x >= 0 and x <= (self.__W - self._width):
             self._xLoc = x
 
 
-"""
-    This class represents a simple Brick class.
-    For representing bricks onto screen.
-"""
-
-
 class Brick(pygame.sprite.Sprite):
+    """
+    A class representing an individual brick in the game.
+
+    Attributes:
+        __screen: The game screen surface
+        _width: Width of the brick
+        _height: Height of the brick
+        _xLoc: X-coordinate of the brick's top-left corner
+        _yLoc: Y-coordinate of the brick's top-left corner
+        __W: Width of the game screen
+        __H: Height of the game screen
+        __isInGroup: Boolean indicating if brick is part of a group
+    """
+
     def __init__(self, screen, width, height, x, y):
         self.__screen = screen
         self._width = width
@@ -158,8 +189,9 @@ class Brick(pygame.sprite.Sprite):
 
     def draw(self):
         """
-        draws the brick onto screen.
+        Draw the brick onto the screen with blue color.
         color: rgb(56, 177, 237)
+        :return: None
         """
         pygame.draw.rect(
             screen,
@@ -170,28 +202,34 @@ class Brick(pygame.sprite.Sprite):
 
     def add(self, group):
         """
-        adds this brick to a given group.
+        Add this brick to a given group.
+        :param group: The group to add the brick to
+        :return: None
         """
         group.add(self)
         self.__isInGroup = True
 
     def remove(self, group):
         """
-        removes this brick from the given group.
+        Remove this brick from the given group.
+        :param group: The group to remove the brick from
+        :return: None
         """
         group.remove(self)
         self.__isInGroup = False
 
     def alive(self):
         """
-        returns true when this brick belongs to the brick wall.
-        otherwise false
+        Check if the brick belongs to the brick wall.
+        :return: True if brick is in a group, else return false
         """
         return self.__isInGroup
 
     def collide(self, ball):
         """
-        collision detection between ball and this brick
+         Check collision between the ball and this brick.
+        :param ball: The ball object to check collision with
+        :return: True if collision detected, else return false
         """
         brickX = self._xLoc
         brickY = self._yLoc
@@ -199,7 +237,7 @@ class Brick(pygame.sprite.Sprite):
         brickH = self._height
         ballX = ball._xLoc
         ballY = ball._yLoc
-        
+
         if (
             (ballX + ball._radius) >= brickX
             and (ballX + ball._radius) <= (brickX + brickW)
@@ -212,13 +250,19 @@ class Brick(pygame.sprite.Sprite):
             return False
 
 
-"""
-    This is a simple class for representing a
-    brick wall.
-"""
-
-
 class BrickWall(pygame.sprite.Group):
+    """
+    A class representing a wall of bricks in the game.
+
+    Attributes:
+        __screen: The game screen surface
+        _x: Starting X-coordinate of the brick wall
+        _y: Starting Y-coordinate of the brick wall
+        _width: Width of each brick
+        _height: Height of each brick
+        _bricks: List containing all bricks in the wall
+    """
+
     def __init__(self, screen, x, y, width, height):
         self.__screen = screen
         self._x = x
@@ -238,27 +282,34 @@ class BrickWall(pygame.sprite.Group):
 
     def add(self, brick):
         """
-        adds a brick to this BrickWall (group)
+        Add a brick to this BrickWall.
+        :param brick: The brick to add to the wall
+        :return: None
         """
         self._bricks.append(brick)
 
     def remove(self, brick):
         """
-        removes a brick from this BrickWall (group)
+        Remove a brick from this BrickWall.
+        :param brick: The brick to remove from the wall
+        :return: None
         """
         self._bricks.remove(brick)
 
     def draw(self):
         """
-        draws all bricks onto screen.
+        Draw all bricks in the wall onto the screen.
+        :return: None
         """
         for brick in self._bricks:
-            if is not None:
+            if brick is not None:
                 brick.draw()
 
     def update(self, ball):
         """
-        checks collision between ball and bricks.
+        Check and handle collisions between ball and bricks.
+        :param ball:The ball object to check collisions with
+        :return:
         """
         for i in range(len(self._bricks)):
             if (self._bricks[i] is not None) and self._bricks[i].collide(ball):
@@ -271,14 +322,16 @@ class BrickWall(pygame.sprite.Group):
 
     def hasWin(self):
         """
-        Has player win the game?
+        Check if player has won the game.
+        :return:True if all bricks are destroyed, else return false
         """
         return len(self._bricks) == 0
 
     def collide(self, ball):
         """
-        check collisions between the ball and
-        any of the bricks.
+         Check collisions between the ball and any brick in the wall.
+        :param ball:The ball object to check collisions with
+        :return:True if collision detected with any brick, else return false
         """
         for brick in self._bricks:
             if brick.collide(ball):
@@ -352,8 +405,7 @@ while not done:
         # for counting and displaying the score
         if brickWall.collide(ball):
             score += 10
-        textsurfaceScore = mgScore.render("score: " + str(score), False,
-                                          (0, 0, 0))
+        textsurfaceScore = mgScore.render("score: " + str(score), False, (0, 0, 0))
         screen.blit(textsurfaceScore, (300, 0))
 
         # after scoring. because hit bricks are removed in the update-method
@@ -374,13 +426,11 @@ while not done:
     else:  # game isn't running.
         if isGameOver:  # player lose
             screen.blit(textsurfaceGameOver, (0, 0))
-            textsurfaceScore = mgScore.render("score: " + str(score), False,
-                                              (0, 0, 0))
+            textsurfaceScore = mgScore.render("score: " + str(score), False, (0, 0, 0))
             screen.blit(textsurfaceScore, (300, 0))
         elif brickWall.hasWin():  # player win
             screen.blit(textsurfaceWin, (0, 0))
-            textsurfaceScore = mgScore.render("score: " + str(score), False,
-                                              (0, 0, 0))
+            textsurfaceScore = mgScore.render("score: " + str(score), False, (0, 0, 0))
             screen.blit(textsurfaceScore, (300, 0))
 
     # --- Go ahead and update the screen with what we've drawn.
@@ -390,9 +440,4 @@ while not done:
     clock.tick(60)
 
 # Close the window and quit.
-
 pygame.quit()
-
-
-
-
