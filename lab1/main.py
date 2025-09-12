@@ -1,15 +1,15 @@
-import os
-import requests
-import urllib.parse
-import urllib3
-from github import Github, Auth
-from github import GithubException
-from datetime import datetime
-import zoneinfo
 import concurrent.futures
-import threading
+import os
 import re
+import threading
 from collections import defaultdict
+from datetime import datetime
+from urllib.parse import urlparse
+
+import requests
+import urllib3
+import zoneinfo
+from github import Auth, Github, GithubException
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
