@@ -32,7 +32,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 """
 
 import sys
-
 from optparse import OptionParser
 from random import sample
 from re import match
