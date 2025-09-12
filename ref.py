@@ -242,11 +242,9 @@ class YamlParser(object):
                 logger.debug("Ignoring job {0}".format(project['name']))
                 continue
             logger.debug("Expanding project '{0}'".format(project['name']))
-            # use a set to check for duplicate job references in projects
             seen = set()
             for jobspec in project.get('jobs', []):
                 if isinstance(jobspec, dict):
-                    # Singleton dict containing dict of job-specific params
                     jobname, jobparams = next(iter(jobspec.items()))
                     if not isinstance(jobparams, dict):
                         jobparams = {}
@@ -255,14 +253,12 @@ class YamlParser(object):
                     jobparams = {}
                 job = self.getJob(jobname)
                 if job:
-                    # Just naming an existing defined job
                     if jobname in seen:
                         self._handle_dups("Duplicate job '{0}' specified "
                                           "for project '{1}'".format(
                                               jobname, project['name']))
                     seen.add(jobname)
                     continue
-                # see if it's a job group
                 group = self.getJobGroup(jobname)
                 if group:
                     for group_jobspec in group['jobs']:
@@ -284,19 +280,16 @@ class YamlParser(object):
                             seen.add(group_jobname)
                             continue
                         template = self.getJobTemplate(group_jobname)
-                        # Allow a group to override parameters set by a project
                         d = {}
                         d.update(project)
                         d.update(jobparams)
                         d.update(group)
                         d.update(group_jobparams)
-                        # Except name, since the group's name is not useful
                         d['name'] = project['name']
                         if template:
                             self.expandYamlForTemplateJob(d, template,
                                                           jobs_filter)
                     continue
-                # see if it's a template
                 template = self.getJobTemplate(jobname)
                 if template:
                     d = {}
@@ -307,9 +300,7 @@ class YamlParser(object):
                     raise JenkinsJobsException("Failed to find suitable "
                                                "template named '{0}'"
                                                .format(jobname))
-        # check for duplicate generated jobs
         seen = set()
-        # walk the list in reverse so that last definition wins
         for job in self.jobs[::-1]:
             if job['name'] in seen:
                 self._handle_dups("Duplicate definitions for job '{0}' "
@@ -322,8 +313,6 @@ class YamlParser(object):
         for (k, v) in project.items():
             if type(v) == list and k not in ['jobs']:
                 dimensions.append(zip([k] * len(v), v))
-        # XXX somewhat hackish to ensure we actually have a single
-        # pass through the loop
         if len(dimensions) == 0:
             dimensions = [(("", ""),)]
         checksums = set([])
@@ -358,7 +347,6 @@ class YamlParser(object):
                 uniq = uniq.encode('utf-8')
             checksum = hashlib.md5(uniq).hexdigest()
 
-            # Lookup the checksum
             if checksum not in checksums:
                 # We also want to skip expansion whenever the user did
                 # not ask for that job.
@@ -371,8 +359,6 @@ class YamlParser(object):
                 checksums.add(checksum)
 
     def get_managed_string(self):
-        # The \n\n is not hard coded, because they get stripped if the
-        # project does not otherwise have a description.
         return '\n\n' + MAGIC_MANAGE_STRING
 
     def generateXML(self):
@@ -454,7 +440,6 @@ class ModuleRegistry(object):
             .component_list_type
 
         if isinstance(component, dict):
-            # The component is a singleton dictionary of name: dict(args)
             name, component_data = next(iter(component.items()))
             if template_data:
                 # Template data contains values that should be interpolated
@@ -532,7 +517,6 @@ class CacheStorage(object):
 
     def __init__(self, jenkins_url, flush=False):
         cache_dir = self.get_cache_dir()
-        # One cache per remote Jenkins URL:
         host_vary = re.sub('[^A-Za-z0-9\-\~]', '_', jenkins_url)
         self.cachefilename = os.path.join(
             cache_dir, 'cache-host-jobs-' + host_vary + '.yml')
