@@ -12,9 +12,6 @@ Don't expect good documentation for a little while.
 """
 
 
-version = '2.4'
-revision = '3'
-
 import datetime
 import os
 import sys
@@ -27,13 +24,15 @@ from random import randint
 from threading import Thread as Process
 # from multiprocessing import Process
 
-
 try:
     import traceback
     import requests
 except ImportError:
     pass
 
+
+version = '2.4'
+revision = '3'
 
 #connUser = False
 threadUse = False
