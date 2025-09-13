@@ -1,20 +1,18 @@
 import os
-import sys
 import random
+import sys
 import tkinter
-from random import randrange, randint
-
-from PIL import Image, ImageDraw, ImageFont
-import pygame
-import keyboard
-
+from random import randint, randrange
 from tkinter import (
-    Tk, Entry, StringVar, Button, Label,
-    Radiobutton, Scale, HORIZONTAL
+    Button, Entry, HORIZONTAL, Label,
+    Radiobutton, Scale, StringVar, Tk
 )
 
+import keyboard
+import pygame
 import turtle
-from turtle import showturtle, Turtle
+from PIL import Image, ImageDraw, ImageFont
+from turtle import Turtle, showturtle
 
 from constants import *
 
