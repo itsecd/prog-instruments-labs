@@ -14,7 +14,7 @@ Don't expect good documentation for a little while.
 """
 version = '2.4'
 revision = '3'
-######################################################
+
 import datetime
 import os
 import sys
@@ -26,12 +26,15 @@ import urllib2
 from random import randint
 from threading import Thread as Process
 # from multiprocessing import Process
+
+
 try:
     import traceback
     import requests
 except ImportError:
     pass
-#####################################################
+
+
 #connUser = False
 threadUse = False
 stop = False
@@ -52,19 +55,20 @@ console = False
 text = ''
 songNum = 1
 kill = False
-######################################################
-#                                                    ############
-print ("Starting Python Music Player " + version + "." + revision) #
-#                                                    ############
-######################################################
+
+print ("Starting Python Music Player " + version + "." + revision) 
+
+
 def mkdir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
-######################################################
+
+
 def touch(path):
     with open(path, 'a'):
         os.utime(path, None)
-######################################################
+
+
 # The shutdown process
 def shutdown():
     try:
@@ -89,7 +93,8 @@ def shutdown():
         log_file.close()
         pygame.quit()
         quit()
-######################################################
+
+
 # Custom logging function
 def log(string):
     try:
@@ -100,7 +105,8 @@ def log(string):
             log_file.write("\n")
     except:
         pass
-######################################################
+
+
 def LogErr():
     try:
         exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -111,7 +117,8 @@ def LogErr():
             bcast("[Error]: " + ''.join(line for line in lines), True)
     except:
         pass
-######################################################
+
+
 def bcast(string, err=False):
     try:
         if err:
@@ -123,7 +130,8 @@ def bcast(string, err=False):
         #display(string, background, screen)
     except:
         pass
-######################################################
+
+
 def updater():
     log('Update requested; attempting...')
     if update == 0:
@@ -148,6 +156,7 @@ def updater():
                 bcast('Installing...')
                 log('Download success')
                 log('Will now attempt to install update')
+
                 try:
                     mkdir('update')
                     os.rename("music-player-" + str(ver) + ".tar.gz", 'update/update.tar.gz')
@@ -169,10 +178,9 @@ def updater():
         except:
             LogErr()
             bcast('Download failed')
-######################################################
+
 
 # To control the player remotely (non-functional)
-
 def server():
     try:
         import socket
@@ -194,7 +202,8 @@ def server():
     except:
         print("Couldn't create control server")
         LogErr()
-######################################################
+
+
 # Get news updates
 def news():
     log("Getting news")
@@ -210,14 +219,17 @@ def news():
     except:
         LogErr()
         bcast("Couldn't get news updates", True)
-######################################################
+
+
 def control():
     threadUse = True
     option = ''
     option = raw_input('> ')
+
     try:
         option = option.replace("\n", '')
         option = option.lower()
+        
         if option == 'quit' or option == 'stop':
             print("Use Control-C to quit")
             #stop = True
@@ -253,7 +265,8 @@ def control():
         LogErr()
     sleep(0.1)
     threadUse = False
-###################################################
+
+
 def control2():
     try:
         for event in pygame.event.get():
@@ -284,7 +297,8 @@ def control2():
     except:
         LogErr()
     sleep(0.2)
-######################################################
+
+
 mkdir('logs')
 time = datetime.datetime.now()
 try:
@@ -292,7 +306,8 @@ try:
 except:
     LogErr()
     bcast("Failed to create log")
-######################################################
+
+
 """
 def text_objects(text, font):
     textSurface = font.render(text, True, black)
@@ -307,6 +322,8 @@ def display(text):
     pygame.display.update()
     pygame.display.flip()
 """
+
+
 def display(text, background, screen):
     font = pygame.font.Font("freesansbold", 36)
     out = font.render(text, 1, (10, 10, 10))
@@ -316,9 +333,9 @@ def display(text, background, screen):
     # Blit everything to the screen
     screen.blit(background, (0, 0))
     pygame.display.flip()
-######################################################
+
+
 #server()
-######################################################
 # Looking for pygame...
 try:
     import pygame
@@ -358,7 +375,7 @@ except ImportError:
         LogErr()
         shutdown()
     exit()
-#######################################################
+
 # Load pygame module
 try:
     pygame.init()
@@ -369,7 +386,7 @@ except:
     bcast("Couldn't run pygame.init()", True)
     log("pygame.init() failed")
     LogErr()
-#######################################################
+
 try:
     if len(sys.argv) > 1:
         i = 1
@@ -408,7 +425,7 @@ except:
     pass
 if kill:
     exit()
-######################################################
+
 # Checking for updates...
 url = "benjaminurquhart.me" # This wasn't the original URL - replaced for privacy
 update = 0
@@ -419,6 +436,7 @@ try:
     rev = urllib2.urlopen('http://' + url + '/rev.txt')
     ver = ver.read()
     rev = rev.read()
+
     if float(ver) > float(version):
         log('Update found!')
         bcast("Python Music Player " + ver + " is availible")
@@ -439,11 +457,11 @@ except:
     bcast('Failed to check for updates', True)
     LogErr()
     log('Update check failed')
-######################################################
+
 mkdir('Music')
 log("Player starting...")
 news()
-######################################################
+
 try:
     if console == False:
         screen = pygame.display.set_mode((1000, 200))
@@ -457,6 +475,7 @@ except:
     LogErr()
     console = True
 log("Player started")
+
 # Check the Music folder for tracks
 sound_data = os.listdir('./Music')
 try:
@@ -469,7 +488,7 @@ try:
         bcast('No music found!')
         shutdown()
     bcast("Number of songs: " + str(amount))
-#######################################################
+
 # Play the music
     while i != amount:
         select = randint(0, amount - 1)
@@ -490,7 +509,7 @@ try:
                 log('Now Playing: ' + current)
             except:
                 bcast("Couldn't play " + current)
-#######################################################
+
 # Play loaded track
             pygame.mixer.music.play()
 # Take user input for controlling player
@@ -507,7 +526,7 @@ try:
                     t = Process(None, control())
                     t.daemon = False
                     t.start()
-#######################################################
+
             if not current in played:
                 played.append(current)
                 i = i + 1
@@ -516,7 +535,7 @@ try:
     bcast("All songs have been played!")
     log('All songs have been played')
     shutdown()
-#######################################################
+
 except:
     LogErr()
     shutdown()
