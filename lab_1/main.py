@@ -12,7 +12,7 @@ import keyboard
 import pygame
 import turtle
 from PIL import Image, ImageDraw, ImageFont
-from turtle import Turtle, showturtle
+from turtle import showturtle, Turtle
 
 from constants import *
 
