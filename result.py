@@ -34,8 +34,8 @@ except ImportError:
 version = '2.4'
 revision = '3'
 
-#connUser = False
-threadUse = False
+#conn_user = False
+thread_use = False
 stop = False
 skip = False
 pause = False
@@ -52,10 +52,10 @@ width = 800
 height = 600
 console = False
 text = ''
-songNum = 1
+song_num = 1
 kill = False
 
-print ("Starting Python Music Player " + version + "." + revision) 
+print (f"Starting Python Music Player {version}.{revision}") 
 
 
 def mkdir(directory):
@@ -98,7 +98,7 @@ def shutdown():
 def log(string):
     try:
         if debug:
-            print ("[Debug]: " + string)
+            print (f"[Debug]: {string}")
             log_file.write("[Logger]: ")
             log_file.write(string)
             log_file.write("\n")
@@ -123,7 +123,7 @@ def bcast(string, err=False):
         if err:
             print (string)
         else:
-            print ("[Player]: " + string)
+            print ("[Player]: {string}")
         #conn.send(string)
         text = string
         #display(string, background, screen)
@@ -189,7 +189,7 @@ def server():
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.bind((HOST, PORT))
         except socket.error as msg:
-            print('Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
+            print(f"Bind failed. Error Code : {str(msg[0])} 'Message' {msg[1]}")
             LogErr()
             try:
                 s.close()
@@ -197,7 +197,7 @@ def server():
                 LogErr()
                 pass
         s.listen(2)
-        print('Started control server on ' + HOST + ':' + str(PORT))
+        print(f"Started control server on {HOST} : {str(PORT)}")
     except:
         print("Couldn't create control server")
         LogErr()
@@ -221,7 +221,7 @@ def news():
 
 
 def control():
-    threadUse = True
+    thread_use = True
     option = ''
     option = raw_input('> ')
 
@@ -263,7 +263,7 @@ def control():
     except:
         LogErr()
     sleep(0.1)
-    threadUse = False
+    thread_use = False
 
 
 def control2():
@@ -356,7 +356,7 @@ except ImportError:
             print("Use the command 'sudo pip install pygame' to download\nthe nessasary modules")
             log(osv + ' detected; pip installer recommended')
         else:
-            print('Unrecognized os: ' + osv)
+            print(f"Unrecognized os: {osv}")
         try:
             urllib.urlretrieve('http://' + url + '/pygame.tar.gz', 'pygame.tar.gz')
             tar = tarfile.open("pygame.tar.gz")
@@ -367,7 +367,7 @@ except ImportError:
             LogErr()
             print("Failed to get assets")
             exit()
-        print('Please run the installer that has been dropped into the ' + os.path.dirname(os.getcwd()) + ' folder')
+        print(f"Please run the installer that has been dropped into the {os.path.dirname(os.getcwd())} folder")
     except:
         print('Failed to get assets')
         print("Please install the 'pygame' module manually at pygame.org")
@@ -399,7 +399,7 @@ try:
                 pygame.init()
                 try:
                     pygame.mixer.music.load(sys.argv[i+1])
-                    print("Now Playing: " + sys.argv[i+1])
+                    print(f"Now Playing: {sys.argv[i+1]}")
                     pygame.mixer.music.play()
                     while pygame.mixer.music.get_busy():
                         continue
@@ -410,14 +410,14 @@ try:
                     kill = True
             elif arg == "-h" or arg == "--help":
                 print('Plays music in the "Music" folder within the current directory\n')
-                print("Usage: " + sys.argv[0] + " [-hvc] [-f <filepath>]")
+                print(f"Usage: {sys.argv[0]} [-hvc] [-f <filepath>]")
                 print("Options: ")
                 print("\t -h, --help\t Displays this help text")
                 print("\t -v, --verbose\t Displays extra information")
                 print("\t -c, --console\t Disables Pygame screen (text-only mode)")
                 print("\t -f, --file\t Plays the file at the filepath specified")
                 print("\nExamples: \n\t " + sys.argv[0] + " -v -c -f /sample/file/path/foo.bar")
-                print("\t " + sys.argv[0] + " -f foo.bar")
+                print(f"\t{sys.argv[0]} -f foo.bar")
                 kill = True
             i = i + 1
 except:
@@ -500,8 +500,8 @@ try:
             #current = current.replace("\n", "")
         if current not in played:
             # Try to load the track
-            bcast("Now Playing: " + current + " (" + str(songNum) + " out of " + str(amount) + ")")
-            log("Song " + str(songNum) + " out of " + str(amount))
+            bcast("Now Playing: " + current + " (" + str(song_num) + " out of " + str(amount) + ")")
+            log("Song " + str(song_num) + " out of " + str(amount))
             try:
                 log("Loading '" + current + "'")
                 pygame.mixer.music.load("./Music/" + current)
@@ -531,7 +531,7 @@ try:
                 played.append(current)
                 i = i + 1
             sleep(0.2)
-            songNum = songNum + 1
+            song_num = song_num + 1
     bcast("All songs have been played!")
     log('All songs have been played')
     shutdown()
