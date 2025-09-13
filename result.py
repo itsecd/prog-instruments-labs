@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 """
-#######################################################
-# Python Music Player
-# By Benjamin Urquhart
-# VERSION: 2.4.3
+Python Music Player
+By Benjamin Urquhart
+VERSION: 2.4.3
 
 This player is designed to play music on a Raspberry Pi,
 but can be used on Windows and OSX.
 OSX support is limited.
 
 Don't expect good documentation for a little while.
-#######################################################
 """
+
+
 version = '2.4'
 revision = '3'
 
