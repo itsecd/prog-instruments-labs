@@ -29,17 +29,21 @@ class Parser:
                     int(group_dict["width"]), int(group_dict["height"]),
                     group_dict["fill"],
                 )
+
         raise RuntimeError(f"Bad parsing: {string}")
 
     @classmethod
     def parse(cls, text: str) -> list[Construction]:
         strings = text.split("\n")
 
+        constructions = []
+
         canvas = cls._parse_string(strings[0])
         if not isinstance(canvas, Canvas):
             raise RuntimeError("Don't have '# CANVAS' construction in start of file")
+        
+        constructions.append(canvas)
 
-        constructions = []
         for string in strings[1:]:
             if string.isspace() or len(string) == 0:
                 continue
@@ -49,5 +53,5 @@ class Parser:
             
             construction = cls._parse_string(string)
             constructions.append(construction)
-        
-        return cls(canvas=canvas, constructions=constructions)
+
+        return constructions
