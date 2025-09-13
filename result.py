@@ -229,7 +229,7 @@ def control():
     try:
         option = option.replace("\n", '')
         option = option.lower()
-        
+
         if option == 'quit' or option == 'stop':
             print("Use Control-C to quit")
             #stop = True
@@ -427,7 +427,7 @@ if kill:
     exit()
 
 # Checking for updates...
-url = "benjaminurquhart.me" # This wasn't the original URL - replaced for privacy
+url = "benjaminurquhart.me"  # This wasn't the original URL - replaced for privacy
 update = 0
 try:
     log('Checking for updates...')
@@ -489,7 +489,7 @@ try:
         shutdown()
     bcast("Number of songs: " + str(amount))
 
-# Play the music
+    # Play the music
     while i != amount:
         select = randint(0, amount - 1)
         if option.lower() == "y":
@@ -498,9 +498,9 @@ try:
             option = "n"
         else:
             current = playlist[select]
-        #current = current.replace("\n", "")
+            #current = current.replace("\n", "")
         if current not in played:
-# Try to load the track
+            # Try to load the track
             bcast("Now Playing: " + current + " (" + str(songNum) + " out of " + str(amount) + ")")
             log("Song " + str(songNum) + " out of " + str(amount))
             try:
@@ -510,9 +510,10 @@ try:
             except:
                 bcast("Couldn't play " + current)
 
-# Play loaded track
+            # Play loaded track
             pygame.mixer.music.play()
-# Take user input for controlling player
+
+            # Take user input for controlling player
             while pygame.mixer.music.get_busy():
                 if console == False:
                     #font = pygame.font.Font(None, 36)
