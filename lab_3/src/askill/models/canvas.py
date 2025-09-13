@@ -1,7 +1,4 @@
-from .construction import Construction
-
-
-class Canvas(Construction):
+class Canvas:
     def __init__(self, width: int, height: int, fill: str):
         if width <= 0:
             raise ValueError("width cannot be <= 0")
@@ -13,10 +10,7 @@ class Canvas(Construction):
         self.width = width
         self.height = height
 
-    def __repr__(self):
-        return f"Canvas({self.width}, {self.height}, {repr(self.fill)})"
+        self.matrix: list[list[str]] = [[fill] * width for _ in range(height)]
 
-    def construct(self, where: list[list[str]]):
-        for row in range(self.height):
-            for col in range(self.width):
-                where[row][col] = self.fill
+    def __repr__(self):
+        return f"Canvas({self.width}, {self.height}, {repr(self.fill)})"        

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from .surface import Surface
+from . import Canvas
 
 
 class Construction:#(ABC):
     # @abstractmethod
-    def construct(self, surface: Surface): pass
+    def construct(self, canvas: Canvas): pass
