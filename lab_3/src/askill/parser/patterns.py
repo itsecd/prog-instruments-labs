@@ -30,14 +30,14 @@ RECT_CMD = fr"{START}RECT\s+{RAW_SYMB.format('border')}\s+{RAW_FROM_TO_2D.format
 CIRCLE_CMD = fr"{START}CIRCLE\s+{RAW_SYMB.format('border')}\s+{RAW_COORDS_3D.format('x', 'y', 'r')}( {RAW_FILL_ARG.format('fill')})?{END}"
 """Examples:
 ```
-CIRCLE "A" (1,2, 4) FILL "2"   # ASD
+'CIRCLE "A" (1,2, 4) FILL "2"   # ASD'
 ```
 """
 
 LINE_CMD = fr"{START}LINE\s+{RAW_SYMB.format('fill')}\s+{RAW_FROM_TO_2D.format('x1', 'y1', 'x2', 'y2')}{END}"
 """Examples:
 ```
-LINE "U" (0,0) -> (1, 1)# ASD
+'LINE "U" (0,0) -> (1, 1)# ASD'
 ```
 """
 
