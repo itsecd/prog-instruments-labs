@@ -1,5 +1,3 @@
-import re
-
 COMMENT = r"\#"  # "#"
 START = r"^\s*"
 END = fr"\s*{COMMENT}?.*$"  # "... #..."
