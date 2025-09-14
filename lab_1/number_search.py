@@ -1,17 +1,31 @@
-import multiprocessing
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit, QTextEdit,
-                             QProgressBar, QSpinBox, QFormLayout, QMessageBox)
-from PyQt5.QtCore import QThread, pyqtSignal
-import time
-import matplotlib.pyplot as plt
-from itertools import product
-from typing import List, Optional, Generator
+import argparse
 import hashlib
 import json
-import constants
-from tqdm import tqdm
+import multiprocessing
+import time
 import unittest
-import argparse
+from itertools import product
+from typing import List, Optional
+
+import matplotlib.pyplot as plt
+from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtWidgets import (
+    QApplication,
+    QFormLayout,
+    QLabel,
+    QLineEdit,
+    QMainWindow,
+    QMessageBox,
+    QProgressBar,
+    QPushButton,
+    QSpinBox,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+from tqdm import tqdm
+
+import constants
 
 
 class CardNumberFinder:
