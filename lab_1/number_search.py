@@ -1,5 +1,6 @@
 import multiprocessing
-from PyQt5.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit, QTextEdit,QProgressBar, QSpinBox, QFormLayout, QMessageBox)
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QLabel, QLineEdit, QTextEdit,
+                             QProgressBar, QSpinBox, QFormLayout, QMessageBox)
 from PyQt5.QtCore import QThread, pyqtSignal
 import time
 import matplotlib.pyplot as plt
@@ -11,13 +12,17 @@ import constants
 from tqdm import tqdm
 import unittest
 import argparse
+
+
 class CardNumberFinder:
-    def __init__(self, hash_value: str = None, last_four: str = None,bins: List[str] = None, middle_len: int = None, path: str = None):
+    def __init__(self, hash_value: str = None, last_four: str = None, bins: List[str] = None, middle_len: int = None,
+                 path: str = None):
         self.bins = bins or constants.alfabank_visa_debit_bins
         self.last_four = last_four or constants.last_4_characters_card
         self.middle_len = middle_len or constants.middle_lenght
         self.hash_value = hash_value or constants.hash_value
         self.path = path or constants.hash_value
+
     def generate_and_check_cards(self, bin_prefix: str) -> List[str]:
         matching = []
         total_possibilities = 10 ** self.middle_len
@@ -31,6 +36,7 @@ class CardNumberFinder:
                     matching.append(card)
                     pbar.set_postfix({'found': len(matching)})
         return matching
+
     @staticmethod
     def luhn_check(card_number: str) -> bool:
         total = 0
@@ -42,6 +48,7 @@ class CardNumberFinder:
                     num = (num // 10) + (num % 10)
             total += num
         return total % 10 == 0
+
     def check_hash(self, card_number: str) -> bool:
         hashed = hashlib.sha3_224(card_number.encode()).hexdigest()
         return hashed == self.hash_value
