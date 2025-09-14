@@ -17,11 +17,11 @@ import argparse
 class CardNumberFinder:
     def __init__(self, hash_value: str = None, last_four: str = None, bins: List[str] = None, middle_len: int = None,
                  path: str = None):
-        self.bins = bins or constants.alfabank_visa_debit_bins
-        self.last_four = last_four or constants.last_4_characters_card
-        self.middle_len = middle_len or constants.middle_lenght
-        self.hash_value = hash_value or constants.hash_value
-        self.path = path or constants.hash_value
+        self.bins = bins or constants.ALFABANK_VISA_DEBIT_BINS
+        self.last_four = last_four or constants.LAST_4_CHARACTERS_CARD
+        self.middle_len = middle_len or constants.MIDDLE_LENGTH
+        self.hash_value = hash_value or constants.HASH_VALUE
+        self.path = path or constants.PATH_TO_SAVE
 
     def generate_and_check_cards(self, bin_prefix: str) -> List[str]:
         matching = []
