@@ -29,8 +29,18 @@ import constants
 
 
 class CardNumberFinder:
+    """Class for finding card numbers that match a given hash value."""
+
     def __init__(self, hash_value: str = None, last_four: str = None, bins: List[str] = None, middle_len: int = None,
                  path: str = None):
+        """
+        Initialize the CardNumberFinder.
+        :param hash_value:Target SHA3-224 hash value to match
+        :param last_four:Last 4 digits of the card number
+        :param bins:List of BIN (Bank Identification Number) prefixes
+        :param middle_len:Length of the middle digits to brute force
+        :param path:Length of the middle digits to brute force
+        """
         self.bins = bins or constants.ALFABANK_VISA_DEBIT_BINS
         self.last_four = last_four or constants.LAST_4_CHARACTERS_CARD
         self.middle_len = middle_len or constants.MIDDLE_LENGTH
@@ -38,6 +48,11 @@ class CardNumberFinder:
         self.path = path or constants.PATH_TO_SAVE
 
     def generate_and_check_cards(self, bin_prefix: str) -> List[str]:
+        """
+        Generate card numbers for a given BIN and check against target hash.
+        :param bin_prefix:BIN prefix to generate cards for
+        :return:List of matching card numbers
+        """
         matching = []
         total_possibilities = 10 ** self.middle_len
         with tqdm(product('0123456789', repeat=self.middle_len),
@@ -53,6 +68,11 @@ class CardNumberFinder:
 
     @staticmethod
     def luhn_check(card_number: str) -> bool:
+        """
+        Validate card number using Luhn algorithm.
+        :param card_number:Card number to validate
+        :return:True if card number is valid, False otherwise
+        """
         total = 0
         for i, digit in enumerate(reversed(card_number)):
             num = int(digit)
@@ -64,10 +84,20 @@ class CardNumberFinder:
         return total % 10 == 0
 
     def check_hash(self, card_number: str) -> bool:
+        """
+        Check if card number matches the target hash.
+        :param card_number:Card number to check
+        :return:True if hash matches, False otherwise
+        """
         hashed = hashlib.sha3_224(card_number.encode()).hexdigest()
         return hashed == self.hash_value
 
     def find_matching_cards(self, num_processes: int) -> Optional[List[str]]:
+        """
+        Find all card numbers that match the target hash using multiprocessing.
+        :param num_processes:Number of parallel processes to use
+        :return:List of matching card numbers or None if none found
+        """
         matching_cards = []
         with multiprocessing.Pool(processes=num_processes) as pool:
             results = pool.imap_unordered(
@@ -81,6 +111,11 @@ class CardNumberFinder:
         return matching_cards or None
 
     def save_to_json(self, card_numbers: List[str]) -> None:
+        """
+        Save matching card numbers to JSON file.
+        :param card_numbers:List of card numbers to save
+        :return:None
+        """
         try:
             with open(self.path, "w") as f:
                 json.dump({"matching_cards": card_numbers}, f, indent=2)
@@ -89,6 +124,14 @@ class CardNumberFinder:
 
 
 def benchmark(hash_value: str, last_four: str, bins: List[str], middle_len: int = 6):
+    """
+    Benchmark performance with different numbers of processes.
+    :param hash_value:Target hash value
+    :param last_four:Last 4 digits of card
+    :param bins:List of BIN prefixes
+    :param middle_len:Length of middle digits
+    :return:Tuple of (process_counts, times) for each process count
+    """
     max_processes = int(multiprocessing.cpu_count() * 1.5)
     process_counts = range(1, max_processes + 1)
     times = []
@@ -114,6 +157,12 @@ def benchmark(hash_value: str, last_four: str, bins: List[str], middle_len: int 
 
 
 def plot_results(process_counts, times):
+    """
+    Plot benchmark results and find optimal number of processes.
+    :param process_counts:List of process counts used
+    :param times:List of execution times for each process count
+    :return:Optimal number of processes
+    """
     min_time = min(times)
     min_index = times.index(min_time)
     optimal_processes = process_counts[min_index]
@@ -136,7 +185,13 @@ def plot_results(process_counts, times):
 
 
 class TestCardNumberFinder(unittest.TestCase):
+    """Test cases for CardNumberFinder class."""
+
     def setUp(self):
+        """
+        Set up test fixtures.
+        :return: None
+        """
         self.finder = CardNumberFinder(
             hash_value="a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0",
             last_four="1234",
@@ -145,16 +200,28 @@ class TestCardNumberFinder(unittest.TestCase):
         )
 
     def test_luhn_check(self):
+        """
+        Test Luhn algorithm validation.
+        :return:None
+        """
         self.assertTrue(CardNumberFinder.luhn_check("4111111111111111"))
         self.assertFalse(CardNumberFinder.luhn_check("4111111111111112"))
 
     def test_check_hash(self):
+        """
+        Test hash checking functionality.
+        :return: None
+        """
         test_card = "123456001234"
         test_hash = hashlib.sha3_224(test_card.encode()).hexdigest()
         finder = CardNumberFinder(hash_value=test_hash, last_four="1234", bins=["123456"], middle_len=2)
         self.assertTrue(finder.check_hash(test_card))
 
     def test_generate_and_check_cards(self):
+        """
+        Test card generation and hash checking.
+        :return: None
+        """
         test_card = "123456001234"
         test_hash = hashlib.sha3_224(test_card.encode()).hexdigest()
         finder = CardNumberFinder(hash_value=test_hash, last_four="1234", bins=["123456"], middle_len=2)
@@ -163,23 +230,36 @@ class TestCardNumberFinder(unittest.TestCase):
 
 
 class WorkerThread(QThread):
+    """Worker thread for running card search in background."""
     finished = pyqtSignal(list)
     progress = pyqtSignal(int)
     message = pyqtSignal(str)
 
     def __init__(self, finder: CardNumberFinder, num_processes: int):
+        """
+        Initialize worker thread.
+        :param finder:CardNumberFinder instance
+        :param num_processes:Number of processes to use
+        """
         super().__init__()
         self.finder = finder
         self.num_processes = num_processes
 
     def run(self):
+        """
+        Execute the card search in the thread.
+        :return: None
+        """
         self.message.emit("Starting search...")
         matching_cards = self.finder.find_matching_cards(self.num_processes)
         self.finished.emit(matching_cards if matching_cards else [])
 
 
 class CardFinderGUI(QMainWindow):
+    """GUI application for card number finding."""
+
     def __init__(self):
+        """Initialize the GUI application."""
         super().__init__()
         self.setWindowTitle("Card Number Finder")
         self.setGeometry(100, 100, 600, 500)
@@ -233,6 +313,10 @@ class CardFinderGUI(QMainWindow):
         self.worker = None
 
     def start_search(self):
+        """
+        Start the card number search process.
+        :return:None
+        """
         if self.worker and self.worker.isRunning():
             QMessageBox.warning(self, "Warning", "A search is already in progress!")
             return
@@ -255,6 +339,10 @@ class CardFinderGUI(QMainWindow):
         self.progress_bar.setValue(0)
 
     def run_benchmark(self):
+        """
+        Run performance benchmark with different process counts.
+        :return:None
+        """
         bins = [bin.strip() for bin in self.bins_input.text().split(",")]
         self.output_area.append("Running benchmark...")
 
@@ -272,6 +360,11 @@ class CardFinderGUI(QMainWindow):
         self.processes_input.setValue(optimal)
 
     def on_search_finished(self, results):
+        """
+        Handle search completion.
+        :param results:Handle search completion.
+        :return:None
+        """
         self.start_btn.setEnabled(True)
         if results:
             self.output_area.append("\nFound matching cards:")
@@ -283,6 +376,10 @@ class CardFinderGUI(QMainWindow):
 
 
 def parse_args():
+    """
+    Parse command line arguments.
+    :return:Parsed arguments namespace
+    """
     parser = argparse.ArgumentParser(description="Card Number Finder")
     parser.add_argument("--hash", help="Target hash value", default=constants.HASH_VALUE)
     parser.add_argument("--last4", help="Last 4 digits of card", default=constants.LAST_4_CHARACTERS_CARD)
@@ -299,6 +396,10 @@ def parse_args():
 
 
 def main():
+    """
+    Main entry point of the application.
+    :return: None
+    """
     args = parse_args()
 
     if args.test:
