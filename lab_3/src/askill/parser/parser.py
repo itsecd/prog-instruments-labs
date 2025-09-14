@@ -1,5 +1,8 @@
 import re
-from ..models import Construction, Rect, Canvas
+from ..models import (
+    Construction, Canvas,
+    Rect, Circle, Line
+)
 
 
 class Parser:
@@ -25,6 +28,18 @@ class Parser:
                     int(group_dict["x1"]), int(group_dict["y1"]),
                     int(group_dict["x2"]), int(group_dict["y2"]),
                     group_dict["border"], group_dict["fill"],
+                )
+            elif command == "CIRCLE":
+                return Circle(
+                    int(group_dict["x"]), int(group_dict["y"]),
+                    int(group_dict["r"]),
+                    group_dict["border"], group_dict["fill"],
+                )
+            elif command == "LINE":
+                return Line(
+                    int(group_dict["x1"]), int(group_dict["y1"]),
+                    int(group_dict["x2"]), int(group_dict["y2"]),
+                    group_dict["fill"],
                 )
             elif command == "CANVAS":
                 return Canvas(
