@@ -40,3 +40,10 @@ LINE_CMD = fr"{START}LINE\s+{RAW_SYMB.format('fill')}\s+{RAW_FROM_TO_2D.format('
 LINE "U" (0,0) -> (1, 1)# ASD
 ```
 """
+
+PATTERNS = {
+    "canvas": CANVAS_CMD,
+    "rect": RECT_CMD,
+    "line": LINE_CMD,
+    "circle": CIRCLE_CMD,
+}
