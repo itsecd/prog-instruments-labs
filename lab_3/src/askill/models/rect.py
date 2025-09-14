@@ -1,7 +1,7 @@
-from .construction import Construction
+from .construction import Action
 
 
-class Rect(Construction):
+class Rect(Action):
     def __init__(
         self, x1: int, y1: int, x2: int, y2: int,
         border: str, fill: str | None = None,

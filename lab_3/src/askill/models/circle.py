@@ -1,7 +1,7 @@
-from .construction import Construction
+from .construction import Action
 
 
-class Circle(Construction):
+class Circle(Action):
     def __init__(
         self, x: int, y: int, r: int,
         border: str, fill: str | None = None,
