@@ -1,8 +1,5 @@
 from abc import ABC, abstractmethod
 
-# class Construction:#(ABC):
-#     # @abstractmethod
-#     def construct(self, canvas: Canvas): pass
 
 class Construction:
     pass
