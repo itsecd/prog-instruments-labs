@@ -1,17 +1,22 @@
 import re
 
-_COMMENT = r"\#"  # "#"
-_START = r"^"
-_END = fr"\s*{_COMMENT}*$"  # "... #..."
+COMMENT = r"\#"  # "#"
+START = r"^"
+END = fr"\s*{COMMENT}*$"  # "... #..."
 
-_RAW_NUM = r"(?P<{}>\d+)"  # "123"
-_RAW_SYMB = r"\"(?P<{}>.)\""  # '"s"'
+RAW_NUM = r"(?P<{}>\d+)"  # "123"
+RAW_SYMB = r"\"(?P<{}>.)\""  # '"s"'
 
-_RAW_COORDS_2D = fr"\({_RAW_NUM},\s*{_RAW_NUM}\)"  # "(1, 2)"
-_RAW_COORDS_3D = fr"\({_RAW_NUM},\s*{_RAW_NUM},\s*{_RAW_NUM}\)"  # "(1, 2, 3)"
-_RAW_FROM_TO_2D = fr"{_RAW_COORDS_2D}\s+->\s+{_RAW_COORDS_2D}"  # "(1,2)  -> (3, 4)"
-_RAW_FILL_ARG = fr"FILL\s+{_RAW_SYMB}"  # 'FILL  "X"'
+RAW_COORDS_2D = fr"\({RAW_NUM},\s*{RAW_NUM}\)"  # "(1, 2)"
+RAW_COORDS_3D = fr"\({RAW_NUM},\s*{RAW_NUM},\s*{RAW_NUM}\)"  # "(1, 2, 3)"
+RAW_FROM_TO_2D = fr"{RAW_COORDS_2D}\s+->\s+{RAW_COORDS_2D}"  # "(1,2)  -> (3, 4)"
+RAW_FILL_ARG = fr"FILL\s+{RAW_SYMB}"  # 'FILL  "X"'
+
+CANVAS_CMD = fr"{START}{COMMENT}\s*CANVAS\s+{RAW_SYMB.format('fill')}\s+{RAW_COORDS_2D.format('width', 'height')}{END}"
+# '# CANVAS "x" (24, 24)'
 
 
 if __name__ == "__main__":
-    pass
+    m = re.match(CANVAS_CMD, '# CANVAS "x" (24, 24)')
+
+    print(m.groupdict())
