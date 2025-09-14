@@ -17,6 +17,3 @@ class Canvas(Context):
 
     def __repr__(self):
         return f"Canvas({self.width}, {self.height}, {repr(self.fill)})"
-
-    def construct(self, *args, **kwargs):
-        pass        
