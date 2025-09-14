@@ -10,7 +10,12 @@ def parse_args() -> argparse.Namespace:
 
     parser.add_argument("filepath")
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    if not args.filepath.endswith(".ask"):
+        raise RuntimeError("File must ends with '.ask'")
+
+    return args
 
 
 def main():
