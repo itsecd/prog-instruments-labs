@@ -12,6 +12,6 @@ class Context(Construction):
     pass
 
 
-class Action(Construction):#(ABC):
-    # @abstractmethod
+class Action(Construction, ABC):
+    @abstractmethod
     def construct(self, context: Context): pass

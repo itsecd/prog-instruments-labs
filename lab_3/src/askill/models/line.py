@@ -1,4 +1,5 @@
 from .construction import Action
+from .canvas import Canvas
 
 
 class Line(Action):
@@ -14,3 +15,6 @@ class Line(Action):
     
     def __repr__(self):
         return f"Line({self.x1}, {self.y1}, {self.x2}, {self.y2}, {repr(self.fill)})"
+
+    def construct(self, canvas: Canvas):
+        canvas.matrix[2][0] = "line"
