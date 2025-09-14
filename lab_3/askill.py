@@ -1,5 +1,5 @@
 import argparse
-from .src.askill import Askill
+from src.askill import Askill
 
 
 def parse_args() -> argparse.Namespace:
