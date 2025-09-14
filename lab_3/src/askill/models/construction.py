@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from . import Canvas
-
 
 # class Construction:#(ABC):
 #     # @abstractmethod
@@ -14,5 +12,6 @@ class Context(Construction):
     pass
 
 
-class Action(Construction):
-    pass
+class Action(Construction):#(ABC):
+    # @abstractmethod
+    def construct(self, context: Context): pass
