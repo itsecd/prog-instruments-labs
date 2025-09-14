@@ -40,22 +40,3 @@ LINE_CMD = fr"{START}LINE\s+{RAW_SYMB.format('fill')}\s+{RAW_FROM_TO_2D.format('
 LINE "U" (0,0) -> (1, 1)# ASD
 ```
 """
-
-
-if __name__ == "__main__":
-    strings = {
-        "canvas": '# CANVAS "x" (24, 24)',
-        "rect": 'RECT "X" (1,2) -> (3, 4) FILL "X"',
-        "circle": 'CIRCLE "A" (1,2, 4) FILL "2"   # ASD',
-        "line": 'LINE "U" (0,0) -> (1, 1)# ASD'
-    }
-
-    matches = {
-        "canvas": re.match(CANVAS_CMD, strings["canvas"]),
-        "rect": re.match(RECT_CMD, strings["rect"]),
-        "circle": re.match(CIRCLE_CMD, strings["circle"]),
-        "line": re.match(LINE_CMD, strings['line']),
-    }
-
-    for _, match_ in matches.items():
-        print(match_.groupdict())
