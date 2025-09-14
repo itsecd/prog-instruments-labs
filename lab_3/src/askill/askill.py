@@ -1,4 +1,4 @@
-from .models import Construction, Action, Context, Canvas
+from .models import Construction, Action, Canvas
 from .parser import Parser
 
 
