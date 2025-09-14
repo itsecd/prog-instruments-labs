@@ -2,7 +2,7 @@ import re
 
 COMMENT = r"\#"  # "#"
 START = r"^"
-END = fr"\s*{COMMENT}*$"  # "... #..."
+END = fr"\s*{COMMENT}?.*$"  # "... #..."
 
 RAW_NUM = r"(?P<{}>\d+)"  # "123"
 RAW_SYMB = r"\"(?P<{}>.)\""  # '"s"'
@@ -15,8 +15,20 @@ RAW_FILL_ARG = fr"FILL\s+{RAW_SYMB}"  # 'FILL  "X"'
 CANVAS_CMD = fr"{START}{COMMENT}\s*CANVAS\s+{RAW_SYMB.format('fill')}\s+{RAW_COORDS_2D.format('width', 'height')}{END}"
 # '# CANVAS "x" (24, 24)'
 
+RECT_CMD = fr"{START}\s*RECT\s+{RAW_SYMB.format('border')}\s+{RAW_FROM_TO_2D.format('x1', 'y1', 'x2', 'y2')}( {RAW_FILL_ARG.format('fill')})?{END}"
+
+print(RECT_CMD)
 
 if __name__ == "__main__":
-    m = re.match(CANVAS_CMD, '# CANVAS "x" (24, 24)')
+    strings = {
+        "canvas": '# CANVAS "x" (24, 24)',
+        "rect": 'RECT "X" (1,2) -> (3, 4)',
+    }
 
-    print(m.groupdict())
+    matches = {
+        "canvas": re.match(CANVAS_CMD, strings["canvas"]),
+        "rect": re.match(RECT_CMD, strings["rect"]),
+    }
+
+    for _, match_ in matches.items():
+        print(match_.groupdict())
