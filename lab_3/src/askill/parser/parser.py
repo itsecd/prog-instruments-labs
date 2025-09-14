@@ -52,8 +52,9 @@ class Parser:
 
         canvas = cls._parse_string(strings[0])
         if not isinstance(canvas, Canvas):
-            raise RuntimeError("Don't have '# CANVAS' construction in start of file")
-        
+            raise RuntimeError("Don't have '# CANVAS' \
+                               construction in start of file")
+
         constructions.append(canvas)
 
         for string in strings[1:]:
@@ -62,7 +63,7 @@ class Parser:
 
             if string.startswith("#"):
                 continue
-            
+
             construction = cls._parse_string(string)
             constructions.append(construction)
 

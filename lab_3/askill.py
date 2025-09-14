@@ -32,7 +32,7 @@ def main():
     ask.draw()
 
     spaces = args.spaces if args.spaces is not None else 1
-    enters = args.enters if args.enters is not None else 1 
+    enters = args.enters if args.enters is not None else 1
 
     render = ask.render(spaces, enters)
 

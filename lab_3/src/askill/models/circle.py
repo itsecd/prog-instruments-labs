@@ -17,7 +17,8 @@ class Circle(Action):
         self.fill = fill
 
     def __repr__(self):
-        return f"Circle({self.x}, {self.y}, {self.r}, {repr(self.border)}, {repr(self.fill)})"
+        return f"Circle({self.x}, {self.y}, \
+            {self.r}, {repr(self.border)}, {repr(self.fill)})"
 
     def construct(self, canvas: Canvas):
         r2 = self.r * self.r
@@ -28,7 +29,7 @@ class Circle(Action):
                 dy = row - self.y
                 dist2 = dx*dx + dy*dy
 
-                if abs(dist2 - r2) <= self.r:  
+                if abs(dist2 - r2) <= self.r:
                     canvas.matrix[row][col] = self.border
 
                 elif self.fill is not None and dist2 < r2:
