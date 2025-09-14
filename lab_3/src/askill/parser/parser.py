@@ -7,10 +7,22 @@ from .patterns import PATTERNS
 
 
 class Parser:
+    """Parser class for Askill"""
     _PATTERNS = PATTERNS
 
     @classmethod
     def _parse_string(cls, string: str) -> Construction:
+        """Method for string parsing
+
+        Args:
+            string (str): input string
+
+        Raises:
+            RuntimeError: bad parsing
+
+        Returns:
+            Construction: result construction
+        """
         for command, pattern in cls._PATTERNS.items():
             matches = re.match(pattern, string)
             if matches is None:
@@ -46,14 +58,25 @@ class Parser:
 
     @classmethod
     def parse(cls, text: str) -> list[Construction]:
+        """Method for text parsing
+
+        Args:
+            text (str): input text
+
+        Raises:
+            RuntimeError: there is no "# Canvas" construct at the beginning of the file
+
+        Returns:
+            list[Construction]: list of result constructions
+        """
         strings = text.split("\n")
 
         constructions = []
 
         canvas = cls._parse_string(strings[0])
         if not isinstance(canvas, Canvas):
-            raise RuntimeError("Don't have '# CANVAS' \
-                               construction in start of file")
+            raise RuntimeError("There is no \"# Canvas\" \
+                               construct at the beginning of the file")
 
         constructions.append(canvas)
 

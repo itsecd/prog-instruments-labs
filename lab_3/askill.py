@@ -3,6 +3,7 @@ from src.askill import Askill
 
 
 def parse_args() -> argparse.Namespace:
+    """Parse command arguments"""
     parser = argparse.ArgumentParser(
         prog="Askill",
         description="ASCII mini-language",
@@ -22,6 +23,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main():
+    """Entry point"""
     args = parse_args()
 
     with open(args.filepath, "r") as file:
