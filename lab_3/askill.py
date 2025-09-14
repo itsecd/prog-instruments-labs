@@ -5,10 +5,13 @@ from src.askill import Askill
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="Askill",
-        usage="python argparse.py file.ask"
+        description="ASCII mini-language",
+        usage="python askill.py file.ask",
     )
 
     parser.add_argument("filepath")
+    parser.add_argument("-s", "--spaces", type=int)
+    parser.add_argument("-e", "--enters", type=int)
 
     args = parser.parse_args()
 
@@ -28,7 +31,12 @@ def main():
 
     ask.draw()
 
-    print(ask.render())
+    spaces = args.spaces if args.spaces is not None else 1
+    enters = args.enters if args.enters is not None else 1 
+
+    render = ask.render(spaces, enters)
+
+    print(render)
 
 
 if __name__ == "__main__":
