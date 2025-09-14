@@ -19,7 +19,7 @@ CANVAS_CMD = fr"{START}{COMMENT}\s*CANVAS\s+{RAW_SYMB.format('fill')}\s+{RAW_COO
 ```
 """
 
-RECT_CMD = fr"{START}\s*RECT\s+{RAW_SYMB.format('border')}\s+{RAW_FROM_TO_2D.format('x1', 'y1', 'x2', 'y2')}( {RAW_FILL_ARG.format('fill')})?{END}"
+RECT_CMD = fr"{START}RECT\s+{RAW_SYMB.format('border')}\s+{RAW_FROM_TO_2D.format('x1', 'y1', 'x2', 'y2')}( {RAW_FILL_ARG.format('fill')})?{END}"
 """Examples:
 ```
 'RECT "X" (1,2) -> (3, 4) FILL "X" # comment'
@@ -27,19 +27,34 @@ RECT_CMD = fr"{START}\s*RECT\s+{RAW_SYMB.format('border')}\s+{RAW_FROM_TO_2D.for
 ```
 """
 
-CIRCLE_CMD = fr"{START}\s"
+CIRCLE_CMD = fr"{START}CIRCLE\s+{RAW_SYMB.format('border')}\s+{RAW_COORDS_3D.format('x', 'y', 'r')}( {RAW_FILL_ARG.format('fill')})?{END}"
+"""Examples:
+```
+CIRCLE "A" (1,2, 4) FILL "2"   # ASD
+```
+"""
 
-print(RECT_CMD)
+LINE_CMD = fr"{START}LINE\s+{RAW_SYMB.format('fill')}\s+{RAW_FROM_TO_2D.format('x1', 'y1', 'x2', 'y2')}{END}"
+"""Examples:
+```
+LINE "U" (0,0) -> (1, 1)# ASD
+```
+"""
+
 
 if __name__ == "__main__":
     strings = {
         "canvas": '# CANVAS "x" (24, 24)',
         "rect": 'RECT "X" (1,2) -> (3, 4) FILL "X"',
+        "circle": 'CIRCLE "A" (1,2, 4) FILL "2"   # ASD',
+        "line": 'LINE "U" (0,0) -> (1, 1)# ASD'
     }
 
     matches = {
         "canvas": re.match(CANVAS_CMD, strings["canvas"]),
         "rect": re.match(RECT_CMD, strings["rect"]),
+        "circle": re.match(CIRCLE_CMD, strings["circle"]),
+        "line": re.match(LINE_CMD, strings['line']),
     }
 
     for _, match_ in matches.items():
