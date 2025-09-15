@@ -58,8 +58,9 @@ def _copy(value):
 
 class Mock(object):
 
-    def __init__(self, spec = None, side_effect = None, return_value = DEFAULT, 
-                 name = None, parent = None, wraps = None):
+    def __init__(self, spec = None, 
+                side_effect = None, return_value = DEFAULT, 
+                name = None, parent = None, wraps = None):
         self._parent = parent
         self._name = name
         if spec is not None and not isinstance(spec, list):
@@ -133,7 +134,7 @@ class Mock(object):
     def __getattr__(self, name):
         if self._methods is not None:
             if name not in self._methods:
-                raise AttributeError("Mock object has no attribute '%s'" % name)
+                raise AttributeError("Object has no attribute '%s'" % name)
         elif _is_magic(name):
             raise AttributeError(name)
         
@@ -147,7 +148,10 @@ class Mock(object):
     
     
     def assert_called_with(self, *args, **kwargs):
-        assert self.call_args == (args, kwargs) , 'Expected: %s\nCalled with: %s' % ( (args, kwargs) , self.call_args )
+        exception = 'Expected: %s\nCalled with: %s' % ( 
+                                                        (args, kwargs) , 
+                                                        self.call_args )
+        assert self.call_args == (args, kwargs) , exception
         
 
 def _dot_lookup(thing, comp, import_path):
@@ -218,7 +222,8 @@ class _patch(object):
                 # For instances of classes with slots, they have no __dict__
                 original = getattr(target, name)
         elif not create and not hasattr(target, name):
-            raise AttributeError( "%s does not have the attribute %r" % (target, name) )
+            exception = "%s does not have the attribute %r" % (target, name)
+            raise AttributeError(exception)
         return original
 
     
@@ -249,7 +254,8 @@ class _patch(object):
         del self.temp_original
             
                 
-def patch_object(target, attribute, new = DEFAULT, spec = None, create = False):
+def patch_object(target, attribute, new = DEFAULT, 
+                 spec = None, create = False):
     return _patch(target, attribute, new, spec, create)
 
 
@@ -257,7 +263,8 @@ def patch(target, new = DEFAULT, spec = None, create = False):
     try:
         target, attribute = target.rsplit('.', 1)    
     except (TypeError, ValueError):
-        raise TypeError("Need a valid target to patch. You supplied: %r" % (target,))
+        exception = "Need a valid target. You supplied: %r" % (target,)
+        raise TypeError(exception)
     target = _importer(target)
     return _patch(target, attribute, new, spec, create)
 

@@ -10,7 +10,8 @@ class Prescription(object):
         return self.dispense_date + timedelta(days = self.days_supply)
         
     def days_taken(self):
-        return [self.dispense_date + timedelta(days=i) for i in range(self.days_supply)]
+        return [self.dispense_date + timedelta(days =i ) 
+                for i in range(self.days_supply)]
         
     def __cmp__(self, other):
         return cmp(self.dispense_date, other.dispense_date)
