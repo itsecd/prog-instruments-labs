@@ -15,7 +15,6 @@ Don't expect good documentation for a little while.
 import datetime
 import os
 import sys
-import string
 import tarfile
 from time import sleep
 import urllib
