@@ -5,9 +5,12 @@ __version__ = "0.0.0"  # SemVer # Understand more about it
 __license__ = "MIT"  # Understand more about it
 # Want to make it open source but how to do it?
 # Program to make a simple calculator
-# Will have to extensively work on Jarvis and local_document and MongoDb and Redis and JavaScript and CSS and DOM manipulation to understand it.
+# Will have to extensively work on Jarvis and local_document
+# and MongoDb and Redis and JavaScript and CSS and DOM manipulation
+# to understand it.
 # Will have to study maths to understand it more better.
-# How can I market gtts? Like showing used google's api? This is how can I market it?
+# How can I market gtts? Like showing used google's api?
+# This is how can I market it?
 # Project description? What will be the project description?
 
 from gtts import gTTS
@@ -16,7 +19,8 @@ from io import BytesIO
 from pprint import pprint
 
 
-# Find the best of best extensions for the auto generation of the documentation parts.
+# Find the best of best extensions for the auto generation of
+# the documentation parts.
 # For your favourite languages like JavaScript, Python ,etc,...
 # Should be able to print date and time too.
 # Should use voice assistant for specially abled people.
@@ -145,7 +149,8 @@ class Calculator:
     # class time: # Working with days calculator
     def age_calculator(self):
         """_summary_: Get the age of the user"""
-        # This is be very accurate and precise it should include proper leap year and last birthday till now every detail.
+        # This is be very accurate and precise it should include
+        # proper leap year and last birthday till now every detail.
         # Should show the preciseness in seconds when called.
         pass
 
@@ -162,7 +167,9 @@ class Calculator:
         pass
 
     class Trigonometry:
-        """_summary_: Class enriched with all the methods to solve basic trignometric problems"""
+        """_summary_: Class enriched with all the methods to solve
+        basic trignometric problems
+        """
 
         def pythagorean_theorem(self):
             """_summary_: Get the pythagorean theorem of the user"""
@@ -188,12 +195,15 @@ class Calculator:
         pass
 
     def open_system_calculator(self):
-        """_summary_: Open the calculator present on the machine of the user"""
+        """_summary_: Open the calculator present on the machine
+        of the user
+        """
         # first identify the os
         # track the calculator
         # add a debugging feature like error handling
         # for linux and mac
-        # if no such found then print a message to the user that sorry dear it wasn't possible to so
+        # if no such found then print a message to the user
+        # that sorry dear it wasn't possible to so
         # then open it
 
     def take_inputs(self):
@@ -217,7 +227,9 @@ class Calculator:
     def greeting(self):
         """_summary_: Greet the user with using Audio"""
         text_to_audio = "Welcome To The Calculator"
-        self.gtts_object = gTTS(text=text_to_audio, lang="en", tld="co.in", slow=False)
+        self.gtts_object = gTTS(
+            text=text_to_audio, lang="en", tld="co.in", slow=False
+        )  # ИСПРАВЛЕНО: разбита длинная строка
         tts = self.gtts_object
         fp = BytesIO()
         tts.write_to_fp(fp)
@@ -230,11 +242,15 @@ class Calculator:
 
     # Here OOP is not followed.
     def user_name(self):
-        """_summary_: Get the name of the user and have an option to greet him/her"""
+        """_summary_: Get the name of the user and have an option
+        to greet him/her
+        """
         self.name = input("Please enter your good name: ")
         # Making validation checks here
         text_to_audio = "{self.name}"
-        self.gtts_object = gTTS(text=text_to_audio, lang="en", tld="co.in", slow=False)
+        self.gtts_object = gTTS(
+            text=text_to_audio, lang="en", tld="co.in", slow=False
+        )  # ИСПРАВЛЕНО: разбита длинная строка
         tts = self.gtts_object
         fp = BytesIO()
         tts.write_to_fp(fp)
@@ -246,7 +262,9 @@ class Calculator:
             time.Clock().tick(10)
 
     def user_name_art(self):
-        """_summary_: Get the name of the user and have an option to show him his user name in art"""
+        """_summary_: Get the name of the user and have an option
+        to show him his user name in art
+        """
         # Default is to show = True, else False if user tries to disable it.
 
         # Tell him to show the time and date
@@ -286,10 +304,12 @@ class Calculator:
             pass
 
         def area(self):
-            # This will to have multiple shapes and polygons to it to improve it's area.
-            # This will to have multiple shapes and polygons to it to improve it's area.
-            # I will try to use the best of the formula to do it like the n number of polygons to be solved.
-
+            # This will to have multiple shapes and polygons to it
+            # to improve it's area.
+            # This will to have multiple shapes and polygons to it
+            # to improve it's area.
+            # I will try to use the best of the formula to do it
+            # like the n number of polygons to be solved.
             pass
 
         def volume(self):
@@ -369,8 +389,10 @@ if __name__ == "__main__":
     # Operations
     # User interaction
     # Study them properly and try to understand them.
-    # Study them properly and try to understand them in very detailed length. Please.
-    # Add a function to continually ask for input until the user enters a valid input.
+    # Study them properly and try to understand them in very
+    # detailed length. Please.
+    # Add a function to continually ask for input until the user
+    # enters a valid input.
 
 
 # Let's explore colorma
