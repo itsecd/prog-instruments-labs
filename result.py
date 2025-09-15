@@ -19,10 +19,9 @@ import string
 import tarfile
 from time import sleep
 import urllib
-import urllib2
 from random import randint
 from threading import Thread as Process
-# from multiprocessing import Process
+
 
 try:
     import traceback
@@ -34,7 +33,6 @@ except ImportError:
 version = '2.4'
 revision = '3'
 
-#conn_user = False
 thread_use = False
 stop = False
 skip = False
@@ -68,20 +66,11 @@ def touch(path):
         os.utime(path, None)
 
 
-# The shutdown process
 def shutdown():
     try:
         bcast("\n")
         bcast("Stopping...")
         pygame.mixer.music.stop()
-        """
-        try:
-            conn.close()
-            s.close()
-        except:
-            LogErr()
-            pass
-            """
         log("Shutdown success")
         log_file.close()
         pygame.quit()
@@ -94,7 +83,6 @@ def shutdown():
         quit()
 
 
-# Custom logging function
 def log(string):
     try:
         if debug:
@@ -124,9 +112,7 @@ def bcast(string, err=False):
             print (string)
         else:
             print ("[Player]: {string}")
-        #conn.send(string)
         text = string
-        #display(string, background, screen)
     except:
         pass
 
@@ -179,7 +165,6 @@ def updater():
             bcast('Download failed')
 
 
-# To control the player remotely (non-functional)
 def server():
     try:
         import socket
@@ -203,7 +188,6 @@ def server():
         LogErr()
 
 
-# Get news updates
 def news():
     log("Getting news")
     try:
@@ -231,21 +215,14 @@ def control():
 
         if option == 'quit' or option == 'stop':
             print("Use Control-C to quit")
-            #stop = True
-            #shutdown()
         elif option == 'skip':
-            #skip = True
             pygame.mixer.music.stop()
         elif option == 'update':
-            #update = True
             updater()
-        # Play/Pause indev
         elif option == 'pause':
-            #pause = True
             pygame.mixer.music.pause()
             bcast('Paused')
         elif option == 'play':
-            #play = True
             pygame.mixer.music.play()
         elif option == '':
             option = ''
@@ -307,22 +284,6 @@ except:
     bcast("Failed to create log")
 
 
-"""
-def text_objects(text, font):
-    textSurface = font.render(text, True, black)
-    return textSurface, textSurface.get_rect()
-######################################################
-def display(text):
-    screen.fill((225, 225, 225))
-    largeText = pygame.font.Font('freesansbold.ttf',115)
-    TextSurf, TextRect = text_objects(text, largeText)
-    TextRect.center = ((width/2),(height/2))
-    screen.blit(TextSurf, TextRect)
-    pygame.display.update()
-    pygame.display.flip()
-"""
-
-
 def display(text, background, screen):
     font = pygame.font.Font("freesansbold", 36)
     out = font.render(text, 1, (10, 10, 10))
@@ -334,12 +295,9 @@ def display(text, background, screen):
     pygame.display.flip()
 
 
-#server()
-# Looking for pygame...
 try:
     import pygame
     from pygame.locals import *
-    #import Screen
 except ImportError:
     LogErr()
     try:
@@ -379,7 +337,6 @@ except ImportError:
 try:
     pygame.init()
     pygame.mixer.init()
-    #pygame.font.init()
     log('Pygame initialized')
 except:
     bcast("Couldn't run pygame.init()", True)
@@ -425,8 +382,7 @@ except:
 if kill:
     exit()
 
-# Checking for updates...
-url = "benjaminurquhart.me"  # This wasn't the original URL - replaced for privacy
+url = "benjaminurquhart.me"
 update = 0
 try:
     log('Checking for updates...')
@@ -497,7 +453,6 @@ try:
             option = "n"
         else:
             current = playlist[select]
-            #current = current.replace("\n", "")
         if current not in played:
             # Try to load the track
             bcast("Now Playing: " + current + " (" + str(song_num) + " out of " + str(amount) + ")")
@@ -515,12 +470,7 @@ try:
             # Take user input for controlling player
             while pygame.mixer.music.get_busy():
                 if console == False:
-                    #font = pygame.font.Font(None, 36)
-                    #out = font.render(text, 1, (10, 10, 10))
-                    #textpos = out.get_rect()
-                    ##textpos.centerx = background.get_rect().centerx
                     screen.blit(background, (0, 0))
-                    #pygame.display.flip()
                     control2()
                 else:
                     t = Process(None, control())
