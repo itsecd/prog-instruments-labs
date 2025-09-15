@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+
 class Medicine(object):
     
     def __init__(self, name):

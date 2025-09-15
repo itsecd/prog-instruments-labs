@@ -173,7 +173,7 @@ def _importer(target):
     return thing
 
 
-class _patch(object):
+class Patch(object):
     def __init__(self, target, attribute, new, spec, create):
         self.target = target
         self.attribute = attribute
@@ -256,7 +256,7 @@ class _patch(object):
                 
 def patch_object(target, attribute, new = DEFAULT, 
                  spec = None, create = False):
-    return _patch(target, attribute, new, spec, create)
+    return Patch(target, attribute, new, spec, create)
 
 
 def patch(target, new = DEFAULT, spec = None, create = False):
@@ -266,7 +266,7 @@ def patch(target, new = DEFAULT, spec = None, create = False):
         exception = "Need a valid target. You supplied: %r" % (target,)
         raise TypeError(exception)
     target = _importer(target)
-    return _patch(target, attribute, new, spec, create)
+    return Patch(target, attribute, new, spec, create)
 
 
 

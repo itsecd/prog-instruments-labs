@@ -1,7 +1,10 @@
 import unittest
+
+
 from datetime import date, timedelta
 
-from patient import *
+
+from patient import Patient
 from medicine import Medicine
 from prescription import Prescription
 

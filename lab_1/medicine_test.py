@@ -1,10 +1,13 @@
 import unittest
 
-from datetime import date, timedelta
-from mockito import *
 
+from datetime import date, timedelta
+
+
+from mock import *
 from prescription import Prescription
 from medicine import *
+
 
 class MedicineTest(unittest.TestCase):
     
@@ -53,7 +56,7 @@ class MedicineTest(unittest.TestCase):
         when(self.medicine).possession_ratio_lower_bound_date(90).thenReturn( 
                                                                     date(2009, 11, 30) )
         self.medicine.add_prescription( Prescription( 
-                                            dispense_date = date(2009, 12, 01) , 
+                                            dispense_date = date(2009, 12, 1) , 
                                             days_supply = 30 ) )
         self.assertEquals( self.medicine.initial_dispense_date() , 
                           self.medicine.possession_effective_start_date(90) )
@@ -62,7 +65,7 @@ class MedicineTest(unittest.TestCase):
         when(self.medicine).possession_ratio_lower_bound_date(90).thenReturn( 
                                                                     date(2009, 12, 30) )
         self.medicine.add_prescription( Prescription(
-                                            dispense_date = date(2009, 12, 01) , 
+                                            dispense_date = date(2009, 12, 1) , 
                                             days_supply = 30) )
         self.assertEquals( date(2009, 12, 30) , 
                           self.medicine.possession_effective_start_date(90) )
@@ -102,7 +105,7 @@ class MedicineTest(unittest.TestCase):
     
     def test_dates_prescribed_in_effective_range(self):
         self.medicine.add_prescription( Prescription( 
-                                            dispense_date = date.today() - timedelta(days=2) , 
+                                            dispense_date = date.today() - timedelta(days = 2) , 
                                             days_supply = 4 ) )
         self.assertEquals( 
             [ date.today() - timedelta(days = 2), 

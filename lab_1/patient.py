@@ -1,4 +1,3 @@
-
 class Patient(object):
     
     def __init__(self, medicines = None):
