@@ -52,7 +52,7 @@ text = ''
 song_num = 1
 kill = False
 
-print (f"Starting Python Music Player {version}.{revision}") 
+print(f"Starting Python Music Player {version}.{revision}") 
 
 
 def mkdir(directory):
@@ -85,7 +85,7 @@ def shutdown():
 def log(string):
     try:
         if debug:
-            print (f"[Debug]: {string}")
+            print(f"[Debug]: {string}")
             log_file.write("[Logger]: ")
             log_file.write(string)
             log_file.write("\n")
@@ -108,9 +108,9 @@ def LogErr():
 def bcast(string, err=False):
     try:
         if err:
-            print (string)
+            print(string)
         else:
-            print ("[Player]: {string}")
+            print("[Player]: {string}")
         text = string
     except:
         pass
