@@ -3,6 +3,10 @@ from .canvas import Canvas
 
 
 class Rect(Action):
+    """
+    Class of rect action.
+    Designed for drawing a rect on canvas.
+    """
     def __init__(
         self, x1: int, y1: int, x2: int, y2: int,
         border: str, fill: str | None = None,

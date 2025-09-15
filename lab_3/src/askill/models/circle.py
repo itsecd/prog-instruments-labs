@@ -3,6 +3,10 @@ from .canvas import Canvas
 
 
 class Circle(Action):
+    """
+    Class of circle action.
+    Designed for drawing a circle on canvas.
+    """
     def __init__(
         self, x: int, y: int, r: int,
         border: str, fill: str | None = None,

@@ -2,6 +2,10 @@ from .construction import Context
 
 
 class Canvas(Context):
+    """
+    Class of canvas context.
+    Stores the drawing field as a two-dimensional matrix (list).
+    """
     def __init__(self, width: int, height: int, fill: str):
         if width <= 0:
             raise ValueError("width cannot be <= 0")
