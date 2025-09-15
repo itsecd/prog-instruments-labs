@@ -185,7 +185,7 @@ class _patch(object):
             return func
 
         def patched(*args, **keywargs):
-            # don't use a with here (backwards compatability with 2.5)
+            # Don't use a with here (backwards compatability with 2.5)
             extra_args = []
             for patching in patched.patchings:
                 arg = patching.__enter__()
@@ -215,7 +215,7 @@ class _patch(object):
             try:
                 original = target.__dict__[name]
             except AttributeError:
-                # for instances of classes with slots, they have no __dict__
+                # For instances of classes with slots, they have no __dict__
                 original = getattr(target, name)
         elif not create and not hasattr(target, name):
             raise AttributeError( "%s does not have the attribute %r" % (target, name) )
@@ -229,7 +229,7 @@ class _patch(object):
             # XXXX what if original is DEFAULT - shouldn't use it as a spec
             inherit = False
             if spec == True:
-                # set spec to the object we are replacing
+                # Set spec to the object we are replacing
                 spec = original
                 if isinstance(spec, (type, ClassType)):
                     inherit = True
@@ -267,5 +267,5 @@ def _has_local_attr(obj, name):
     try:
         return name in vars(obj)
     except TypeError:
-        # objects without a __dict__
+        # Objects without a __dict__
         return hasattr(obj, name)
