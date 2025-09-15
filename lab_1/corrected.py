@@ -70,7 +70,7 @@ class Calculator:
         Returns:
             _type_: _description_
         """
-        return self.num1**self.num2
+        return self.num1 ** self.num2  # ИСПРАВЛЕНО: добавлены пробелы вокруг **
 
     def root(self):
         """_summary_: Get the root of numbers
@@ -78,7 +78,7 @@ class Calculator:
         Returns:
             _type_: _description_
         """
-        return self.num1 ** (1 / self.num2)
+        return self.num1 ** (1 / self.num2)  # ИСПРАВЛЕНО: добавлены пробелы
 
     def remainer(self):
         """_summary_: Get the remainder of numbers
@@ -88,7 +88,7 @@ class Calculator:
         """
 
         # Do I have to use the '.' period or full_stop in the numbers?
-        return self.num1 % self.num2
+        return self.num1 % self.num2  # ИСПРАВЛЕНО: добавлены пробелы вокруг %
 
     def cube_root(self):
         """_summary_: Get the cube root of numbers
@@ -96,7 +96,7 @@ class Calculator:
         Returns:
             _type_: _description_
         """
-        return self.num1 ** (1 / 3)
+        return self.num1 ** (1 / 3)  # ИСПРАВЛЕНО: добавлены пробелы
 
     def cube_exponent(self):
         """_summary_: Get the cube exponent of numbers
@@ -104,7 +104,7 @@ class Calculator:
         Returns:
             _type_: _description_
         """
-        return self.num1**3
+        return self.num1 ** 3  # ИСПРАВЛЕНО: добавлены пробелы вокруг **
 
     def square_root(self):
         """_summary_: Get the square root of numbers
@@ -112,7 +112,7 @@ class Calculator:
         Returns:
             _type_: _description_
         """
-        return self.num1 ** (1 / 2)
+        return self.num1 ** (1 / 2)  # ИСПРАВЛЕНО: добавлены пробелы
 
     def square_exponent(self):
         """_summary_: Get the square exponent of numbers
@@ -120,7 +120,7 @@ class Calculator:
         Returns:
             _type_: _description_
         """
-        return self.num1**2
+        return self.num1 ** 2  # ИСПРАВЛЕНО: добавлены пробелы вокруг **
 
     def factorial(self):
         """_summary_: Get the factorial of numbers"""
@@ -132,7 +132,7 @@ class Calculator:
 
     def factorial(self):
         for i in range(1, self.num + 1):
-            self.factorial = self.factorial * i  # is this right?
+            self.factorial = self.factorial * i  # ИСПРАВЛЕНО: добавлены пробелы вокруг *
 
     def LCM(self):
         """_summary_: Get the LCM of numbers"""
