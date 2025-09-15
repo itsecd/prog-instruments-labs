@@ -36,7 +36,7 @@ class Sentinel(object):
         self._sentinels = {}
         
     def __getattr__(self, name):
-        return self._sentinels.setdefault(name, SentinelObject(name))
+        return self._sentinels.setdefault( name , SentinelObject(name) )
     
     
 sentinel = Sentinel()
@@ -63,7 +63,7 @@ class Mock(object):
         self._parent = parent
         self._name = name
         if spec is not None and not isinstance(spec, list):
-            spec = [member for member in dir(spec) if not _is_magic(member)]
+            spec = [ member for member in dir(spec) if not _is_magic(member) ]
         
         self._methods = spec
         self._children = {}
@@ -101,12 +101,12 @@ class Mock(object):
         self.called = True
         self.call_count += 1
         self.call_args = (args, kwargs)
-        self.call_args_list.append((args, kwargs))
+        self.call_args_list.append( (args, kwargs) )
         
         parent = self._parent
         name = self._name
         while parent is not None:
-            parent.method_calls.append((name, args, kwargs))
+            parent.method_calls.append( (name, args, kwargs) )
             if parent._parent is None:
                 break
             name = parent._name + '.' + name
@@ -114,9 +114,9 @@ class Mock(object):
         
         ret_val = DEFAULT
         if self.side_effect is not None:
-            if (isinstance(self.side_effect, Exception) or 
+            if ( isinstance(self.side_effect, Exception) or 
                 isinstance(self.side_effect, (type, ClassType)) and
-                issubclass(self.side_effect, Exception)):
+                issubclass(self.side_effect, Exception) ):
                 raise self.side_effect
             
             ret_val = self.side_effect(*args, **kwargs)
@@ -147,7 +147,7 @@ class Mock(object):
     
     
     def assert_called_with(self, *args, **kwargs):
-        assert self.call_args == (args, kwargs), 'Expected: %s\nCalled with: %s' % ((args, kwargs), self.call_args)
+        assert self.call_args == (args, kwargs) , 'Expected: %s\nCalled with: %s' % ( (args, kwargs) , self.call_args )
         
 
 def _dot_lookup(thing, comp, import_path):
@@ -195,7 +195,7 @@ class _patch(object):
             try:
                 return func(*args, **keywargs)
             finally:
-                for patching in getattr(patched, 'patchings', []):
+                for patching in getattr( patched , 'patchings' , [] ):
                     patching.__exit__()
 
         patched.patchings = [self]
@@ -218,7 +218,7 @@ class _patch(object):
                 # for instances of classes with slots, they have no __dict__
                 original = getattr(target, name)
         elif not create and not hasattr(target, name):
-            raise AttributeError("%s does not have the attribute %r" % (target, name))
+            raise AttributeError( "%s does not have the attribute %r" % (target, name) )
         return original
 
     
