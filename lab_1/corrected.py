@@ -36,166 +36,168 @@ class Calculator:
         self.take_inputs()
 
     def add(self):
-        """summary: Get the sum of numbers
+        """Get the sum of numbers.
 
         Returns:
-            _type_: _description_
+            float: The sum of num1 and num2.
         """
         return self.num1 + self.num2
 
     def sub(self):
-        """_summary_: Get the difference of numbers
+        """Get the difference of numbers.
 
         Returns:
-            _type_: _description_
+            float: The difference of num1 and num2.
         """
         return self.num1 - self.num2
 
     def multi(self):
-        """_summary_: Get the product of numbers
+        """Get the product of numbers.
 
         Returns:
-            _type_: _description_
+            float: The product of num1 and num2.
         """
         return self.num1 * self.num2
 
     def div(self):
-        """_summary_: Get the quotient of numbers
+        """Get the quotient of numbers.
 
         Returns:
-            _type_: _description_
+            float: The quotient of num1 divided by num2.
         """
         # What do we mean by quotient?
         return self.num1 / self.num2
 
     def power(self):
-        """_summary_: Get the power of numbers
+        """Get the power of numbers.
 
         Returns:
-            _type_: _description_
+            float: num1 raised to the power of num2.
         """
         return self.num1 ** self.num2  # ИСПРАВЛЕНО: добавлены пробелы вокруг **
 
     def root(self):
-        """_summary_: Get the root of numbers
+        """Get the root of numbers.
 
         Returns:
-            _type_: _description_
+            float: num2-th root of num1.
         """
         return self.num1 ** (1 / self.num2)  # ИСПРАВЛЕНО: добавлены пробелы
 
     def remainer(self):
-        """_summary_: Get the remainder of numbers
+        """Get the remainder of numbers.
 
         Returns:
-            _type_: _description_
+            float: The remainder of num1 divided by num2.
         """
-
         # Do I have to use the '.' period or full_stop in the numbers?
         return self.num1 % self.num2  # ИСПРАВЛЕНО: добавлены пробелы вокруг %
 
     def cube_root(self):
-        """_summary_: Get the cube root of numbers
+        """Get the cube root of numbers.
 
         Returns:
-            _type_: _description_
+            float: The cube root of num1.
         """
         return self.num1 ** (1 / 3)  # ИСПРАВЛЕНО: добавлены пробелы
 
     def cube_exponent(self):
-        """_summary_: Get the cube exponent of numbers
+        """Get the cube exponent of numbers.
 
         Returns:
-            _type_: _description_
+            float: num1 cubed.
         """
         return self.num1 ** 3  # ИСПРАВЛЕНО: добавлены пробелы вокруг **
 
     def square_root(self):
-        """_summary_: Get the square root of numbers
+        """Get the square root of numbers.
 
         Returns:
-            _type_: _description_
+            float: The square root of num1.
         """
         return self.num1 ** (1 / 2)  # ИСПРАВЛЕНО: добавлены пробелы
 
     def square_exponent(self):
-        """_summary_: Get the square exponent of numbers
+        """Get the square exponent of numbers.
 
         Returns:
-            _type_: _description_
+            float: num1 squared.
         """
         return self.num1 ** 2  # ИСПРАВЛЕНО: добавлены пробелы вокруг **
 
     def factorial(self):
-        """_summary_: Get the factorial of numbers"""
+        """Get the factorial of numbers."""
         pass
 
     def list_factors(self):
-        """_summary_: Get the list of factors of numbers"""
+        """Get the list of factors of numbers."""
         pass
 
-    def factorial(self):
+    def calculate_factorial(self):  # ИСПРАВЛЕНО: переименован метод
+        """Calculate factorial of a number."""
+        result = 1
         for i in range(1, self.num + 1):
-            self.factorial = self.factorial * i  # ИСПРАВЛЕНО: добавлены пробелы вокруг *
+            result = result * i  # ИСПРАВЛЕНО: добавлены пробелы вокруг *
+        return result
 
-    def LCM(self):
-        """_summary_: Get the LCM of numbers"""
+    def lcm(self):  # ИСПРАВЛЕНО: переименован в нижний регистр
+        """Get the LCM of numbers."""
         pass
 
-    def HCF(self):
-        """_summary_: Get the HCF of numbers"""
+    def hcf(self):  # ИСПРАВЛЕНО: переименован в нижний регистр
+        """Get the HCF of numbers."""
         pass
 
     # class time: # Working with days calculator
     def age_calculator(self):
-        """_summary_: Get the age of the user"""
+        """Get the age of the user."""
         # This is be very accurate and precise it should include
         # proper leap year and last birthday till now every detail.
         # Should show the preciseness in seconds when called.
         pass
 
     def days_calculator(self):
-        """_summary_: Get the days between two dates"""
+        """Get the days between two dates."""
         pass
 
     def leap_year(self):
-        """_summary_: Get the leap year of the user"""
+        """Get the leap year of the user."""
         pass
 
     def perimeter(self):
-        """_summary_: Get the perimeter of the user"""
+        """Get the perimeter of the user."""
         pass
 
     class Trigonometry:
-        """_summary_: Class enriched with all the methods to solve
+        """Class enriched with all the methods to solve
         basic trignometric problems
         """
 
         def pythagorean_theorem(self):
-            """_summary_: Get the pythagorean theorem of the user"""
+            """Get the pythagorean theorem of the user."""
             pass
 
         def find_hypotenuse(self):
-            """_summary_: Get the hypotenuse of the user"""
+            """Get the hypotenuse of the user."""
             pass
 
         def find_base(self):
-            """_summary_: Get the base of the user"""
+            """Get the base of the user."""
             pass
 
         def find_perpendicular(self):
-            """_summary_: Get the perpendicular of the user"""
+            """Get the perpendicular of the user."""
             pass
 
     # class Logarithms:
     # Learn more about Maths in general
 
     def quadratic_equation(self):
-        """_summary_: Get the quadratic equation of the user"""
+        """Get the quadratic equation of the user."""
         pass
 
     def open_system_calculator(self):
-        """_summary_: Open the calculator present on the machine
+        """Open the calculator present on the machine
         of the user
         """
         # first identify the os
@@ -207,7 +209,7 @@ class Calculator:
         # then open it
 
     def take_inputs(self):
-        """_summary_: Take the inputs from the user in proper sucession"""
+        """Take the inputs from the user in proper sucession."""
         while True:
             while True:
                 try:
@@ -225,7 +227,7 @@ class Calculator:
         #     exit()  # Some how I need to exit it
 
     def greeting(self):
-        """_summary_: Greet the user with using Audio"""
+        """Greet the user with using Audio."""
         text_to_audio = "Welcome To The Calculator"
         self.gtts_object = gTTS(
             text=text_to_audio, lang="en", tld="co.in", slow=False
@@ -242,12 +244,12 @@ class Calculator:
 
     # Here OOP is not followed.
     def user_name(self):
-        """_summary_: Get the name of the user and have an option
+        """Get the name of the user and have an option
         to greet him/her
         """
         self.name = input("Please enter your good name: ")
         # Making validation checks here
-        text_to_audio = "{self.name}"
+        text_to_audio = f"{self.name}"  # ИСПРАВЛЕНО: исправлена f-строка
         self.gtts_object = gTTS(
             text=text_to_audio, lang="en", tld="co.in", slow=False
         )  # ИСПРАВЛЕНО: разбита длинная строка
@@ -262,7 +264,7 @@ class Calculator:
             time.Clock().tick(10)
 
     def user_name_art(self):
-        """_summary_: Get the name of the user and have an option
+        """Get the name of the user and have an option
         to show him his user name in art
         """
         # Default is to show = True, else False if user tries to disable it.
@@ -288,22 +290,23 @@ class Calculator:
         # Remove everything
 
     class UnitConversion:
-        """_summary_: Class enriched with all the methods to convert units"""
+        """Class enriched with all the methods to convert units"""
 
         # Do we full-stops in generating documentations?
 
         def __init__(self):
-            """_summary_: Initialise the class with the required attributes"""
+            """Initialize the class with the required attributes."""
             self.take_inputs()
 
         def length(self):
-            """_summary_: Convert length units"""
+            """Convert length units."""
             # It should have a meter to unit and unit to meter converter
             # Othe lengths units it should also have.
             # Like cm to pico meter and what not
             pass
 
         def area(self):
+            """Calculate area of different shapes."""
             # This will to have multiple shapes and polygons to it
             # to improve it's area.
             # This will to have multiple shapes and polygons to it
@@ -313,69 +316,92 @@ class Calculator:
             pass
 
         def volume(self):
+            """Calculate volume of different shapes."""
             # Different shapes and polygons to it to improve it's volume.
             pass
 
         def mass(self):
+            """Convert mass units."""
             pass
 
         def time(self):
+            """Convert time units."""
             pass
 
         def speed(self):
+            """Convert speed units."""
             pass
 
         def temperature(self):
+            """Convert temperature units."""
             pass
 
         def data(self):
+            """Convert data units."""
             pass
 
         def pressure(self):
+            """Convert pressure units."""
             pass
 
         def energy(self):
+            """Convert energy units."""
             pass
 
         def power(self):
+            """Convert power units."""
             pass
 
         def angle(self):
+            """Convert angle units."""
             pass
 
         def force(self):
+            """Convert force units."""
             pass
 
         def frequency(self):
+            """Convert frequency units."""
             pass
 
         def take_inputs(self):
+            """Take inputs for unit conversion."""
             pass
 
     class CurrencyConverter:
+        """Class to handle currency conversions."""
+
         def __init__(self):
             self.take_inputs()
 
         def take_inputs(self):
+            """Take inputs for currency conversion."""
             pass
 
         def convert(self):
+            """Convert currencies."""
             pass
 
     class Commands:
+        """Class to handle calculator commands."""
+
         def __init__(self):
             self.take_inputs()
 
         def previous_number(self):
+            """Retrieve previous number."""
             pass
 
         def previous_operation(self):
+            """Retrieve previous operation."""
             pass
 
         def previous_result(self):
+            """Retrieve previous result."""
             pass
 
     def clear_screen(self):
+        """Clear the console screen."""
         # Do I need a clear screen?
         # os.system("cls" if os.name == "nt" else "clear")
         # os.system("cls")
@@ -384,7 +410,7 @@ class Calculator:
 
 
 if __name__ == "__main__":
-    operation_1 = Calculator(10, 5)
+    operation_1 = Calculator()
 
     # Operations
     # User interaction
