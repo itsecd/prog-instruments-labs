@@ -68,8 +68,8 @@ def add():
         print("Online payment")
     print("")
 
-    with open("Management.txt", "r") as File:
-        string = File.read()
+    with open("Management.txt", "r") as file:
+        string = file.read()
         string = string.replace("'", '"')
         dictionary = json.loads(string)
 
@@ -96,8 +96,8 @@ def add():
     dictionary["Price"].append(money)
     dictionary["Room"].append(room_num)
 
-    with open("Management.txt", "w", encoding="utf-8") as File:
-        File.write(str(dictionary))
+    with open("Management.txt", "w", encoding="utf-8") as file:
+        file.write(str(dictionary))
 
     print("\nYour data has been successfully added to our database.")
 
@@ -106,7 +106,7 @@ def add():
 
 filecheck = os.path.isfile("Management.txt")
 if not filecheck:
-    with open("Management.txt", "a", encoding="utf-8") as File:
+    with open("Management.txt", "a", encoding="utf-8") as file:
         temp1 = {
             "First_Name": [],
             "Last_Name": [],
@@ -116,12 +116,12 @@ if not filecheck:
             "Price": [],
             "Room": [],
         }
-        File.write(str(temp1))
+        file.write(str(temp1))
 
 
 def modify():
-    with open("Management.txt", "r") as File:
-        string = File.read()
+    with open("Management.txt", "r") as file:
+        string = file.read()
         string = string.replace("'", '"')
         dictionary = json.loads(string)
 
@@ -143,7 +143,7 @@ def modify():
         choice = int(input("\nEnter your choice: "))
         print()
 
-        with open("Management.txt", "w", encoding="utf-8") as File:
+        with open("Management.txt", "w", encoding="utf-8") as file:
             match choice:
                 case 1:
                     category = "First_Name"
@@ -158,15 +158,15 @@ def modify():
             dictionary[category] = None
             dictionary[category] = listt1
 
-            File.write(str(dictionary))
+            file.write(str(dictionary))
 
         print("\nYour data has been successfully updated")
         exit_menu()
 
 
 def search():
-    with open("Management.txt") as File:
-        dictionary = json.loads(File.read().replace("'", '"'))
+    with open("Management.txt") as file:
+        dictionary = json.loads(file.read().replace("'", '"'))
 
     dict_num = dictionary.get("Room")
     dict_len = len(dict_num)
@@ -199,8 +199,8 @@ def search():
 
 
 def remove():
-    with open("Management.txt") as File:
-        dictionary = json.loads(File.read().replace("'", '"'))
+    with open("Management.txt") as file:
+        dictionary = json.loads(file.read().replace("'", '"'))
 
     dict_num = dictionary.get("Room")
     dict_len = len(dict_num)
@@ -250,8 +250,8 @@ def remove():
         dictionary["Room"] = None
         dictionary["Room"] = listt_num
 
-        with open("Management.txt", "w", encoding="utf-8") as file1:
-            file1.write(str(dictionary))
+        with open("Management.txt", "w", encoding="utf-8") as file:
+            file.write(str(dictionary))
 
         print("Details has been removed successfully")
 
@@ -259,8 +259,8 @@ def remove():
 
 
 def view():
-    with open("Management.txt") as File:
-        dictionary = json.loads(File.read().replace("'", '"'))
+    with open("Management.txt") as file:
+        dictionary = json.loads(file.read().replace("'", '"'))
 
     dict_num = dictionary.get("Room")
     dict_len = len(dict_num)
