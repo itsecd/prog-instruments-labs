@@ -12,7 +12,6 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import (
     QApplication,
     QFormLayout,
-    QLabel,
     QLineEdit,
     QMainWindow,
     QMessageBox,
