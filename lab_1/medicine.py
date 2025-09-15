@@ -27,7 +27,7 @@ class Medicine(object):
         return self.first_prescription().dispense_date
     
     def possession_ratio_lower_bound_date(self, day_count):
-        return self.possession_effective_end_date() - timedelta(days=day_count)
+        return self.possession_effective_end_date() - timedelta(days = day_count)
         
     def possession_effective_start_date(self, day_count):
         return max(self.possession_ratio_lower_bound_date(day_count), self.initial_dispense_date())

@@ -16,11 +16,11 @@ class MedicineTest(unittest.TestCase):
         self.assertEquals(date(2009, 12, 31), self.medicine.possession_end_date())
         
     def test_possession_effective_end_date_when_before_today(self):
-        self.medicine.add_prescription(Prescription(dispense_date = date.today() - timedelta(days=40), days_supply = 30))
-        self.assertEquals(date.today() - timedelta(days=10), self.medicine.possession_effective_end_date())
+        self.medicine.add_prescription(Prescription(dispense_date = date.today() - timedelta(days = 40), days_supply = 30))
+        self.assertEquals(date.today() - timedelta(days = 10), self.medicine.possession_effective_end_date())
 
     def test_possession_effective_end_date_when_after_today(self):
-        self.medicine.add_prescription(Prescription(dispense_date = date.today() - timedelta(days=15), days_supply = 30))
+        self.medicine.add_prescription(Prescription(dispense_date = date.today() - timedelta(days = 15), days_supply = 30))
         self.assertEquals(date.today(), self.medicine.possession_effective_end_date())
         
     def test_initial_dispense_date(self):
@@ -63,7 +63,7 @@ class MedicineTest(unittest.TestCase):
     
     def test_dates_prescribed_in_effective_range(self):
         self.medicine.add_prescription(Prescription(dispense_date = date.today() - timedelta(days=2), days_supply = 4))
-        self.assertEquals([date.today() - timedelta(days=2), date.today() - timedelta(days=1)], 
+        self.assertEquals([date.today() - timedelta(days = 2), date.today() - timedelta(days = 1)], 
                             self.medicine.dates_prescribed_in_effective_range(2))
                             
     def test_number_of_days_prescribed(self):

@@ -5,7 +5,7 @@ from prescription import Prescription
 class PrescriptionTest(unittest.TestCase):
     
     def test_completion_date(self):
-        prescription = Prescription(dispense_date = date.today() - timedelta(days=15), days_supply = 30)
+        prescription = Prescription(dispense_date = date.today() - timedelta(days = 15), days_supply = 30)
         self.assertEquals(date.today() + timedelta(days=15), prescription.completion_date())
         
     def test_days_supply(self):

@@ -58,8 +58,8 @@ def _copy(value):
 
 class Mock(object):
 
-    def __init__(self, spec=None, side_effect=None, return_value=DEFAULT, 
-                 name=None, parent=None, wraps=None):
+    def __init__(self, spec = None, side_effect = None, return_value = DEFAULT, 
+                 name = None, parent = None, wraps = None):
         self._parent = parent
         self._name = name
         if spec is not None and not isinstance(spec, list):
@@ -141,7 +141,7 @@ class Mock(object):
             wraps = None
             if self._wraps is not None:
                 wraps = getattr(self._wraps, name)
-            self._children[name] = Mock(parent=self, name=name, wraps=wraps)
+            self._children[name] = Mock(parent = self, name = name, wraps = wraps)
             
         return self._children[name]
     
@@ -233,9 +233,9 @@ class _patch(object):
                 spec = original
                 if isinstance(spec, (type, ClassType)):
                     inherit = True
-            new = Mock(spec=spec)
+            new = Mock(spec = spec)
             if inherit:
-                new.return_value = Mock(spec=spec)
+                new.return_value = Mock(spec = spec)
         self.temp_original = original
         setattr(self.target, self.attribute, new)
         return new
@@ -249,11 +249,11 @@ class _patch(object):
         del self.temp_original
             
                 
-def patch_object(target, attribute, new=DEFAULT, spec=None, create=False):
+def patch_object(target, attribute, new = DEFAULT, spec = None, create = False):
     return _patch(target, attribute, new, spec, create)
 
 
-def patch(target, new=DEFAULT, spec=None, create=False):
+def patch(target, new = DEFAULT, spec = None, create = False):
     try:
         target, attribute = target.rsplit('.', 1)    
     except (TypeError, ValueError):
