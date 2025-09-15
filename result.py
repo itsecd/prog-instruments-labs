@@ -207,7 +207,7 @@ def news():
 def control():
     thread_use = True
     option = ''
-    option = raw_input('> ')
+    option = input('> ')
 
     try:
         option = option.replace("\n", '')
