@@ -100,7 +100,7 @@ def LogErr():
         log('')
         log(''.join(line for line in lines))
         if debug:
-            bcast("[Error]: " + ''.join(line for line in lines), True)
+            bcast(f"[Error]: {''.join(line for line in lines)}", True)
     except:
         pass
 
@@ -110,7 +110,7 @@ def bcast(string, err=False):
         if err:
             print(string)
         else:
-            print("[Player]: {string}")
+            print(f"[Player]: {string}")
         text = string
     except:
         pass
@@ -124,16 +124,16 @@ def updater():
     else:
         bcast('Attempting to retrive tarball...')
         try:
-            log('Connecting to ' + url +'...')
+            log(f"Connecting to {url}...")
             try:
-                r = requests.get('http://' + url)
+                r = requests.get(f"http://{url}")
                 status = r.status_code
             except:
                 status = 200
                 LogErr()
             if status == int(200):
                 try:
-                    filename = urllib.urlretrieve('http://' + url + '/python/downloads/player/music-player-' + str(ver) + '.tar.gz', 'music-player-' + str(ver) + '.tar.gz')
+                    filename = urllib.urlretrieve(f"http://{url}/python/downloads/player/music-player-{str(ver)}.tar.gz", f"music-player-{str(ver)}.tar.gz")
                 except:
                     LogErr()
                     raise IOError
@@ -143,7 +143,7 @@ def updater():
 
                 try:
                     mkdir('update')
-                    os.rename("music-player-" + str(ver) + ".tar.gz", 'update/update.tar.gz')
+                    os.rename(f"music-player-{str(ver)}.tar.gz", 'update/update.tar.gz')
                     os.chdir('update')
                     tar = tarfile.open("update.tar.gz")
                     tar.extractall()
@@ -152,7 +152,7 @@ def updater():
                     os.chdir('..')
                     log('Success!')
                     bcast('Done!')
-                    bcast("Move 'player.py' from the folder 'update' to: " + os.path.dirname(os.getcwd()))
+                    bcast(f"Move 'player.py' from the folder 'update' to: {os.path.dirname(os.getcwd())}")
                 except:
                     LogErr()
                     bcast('Installation failed')
@@ -190,7 +190,7 @@ def server():
 def news():
     log("Getting news")
     try:
-        news = urllib2.urlopen("http://" + url + "/news.txt")
+        news = urllib.request.urlopen(f"http://{url}/news.txt")
         news = news.read()
         if news == '':
             bcast("No News")
@@ -235,7 +235,7 @@ def control():
         elif option == "news":
             news()
         else:
-            bcast("Invalid command: " + option)
+            bcast(f"Invalid command: {option}")
     except:
         LogErr()
     sleep(0.1)
@@ -277,7 +277,7 @@ def control2():
 mkdir('logs')
 time = datetime.datetime.now()
 try:
-    log_file = open("./logs/" + str(time), "w+")
+    log_file = open(f"./logs/{str(time)}", "w+")
 except:
     LogErr()
     bcast("Failed to create log")
@@ -315,7 +315,7 @@ except ImportError:
         else:
             print(f"Unrecognized os: {osv}")
         try:
-            urllib.urlretrieve('http://' + url + '/pygame.tar.gz', 'pygame.tar.gz')
+            urllib.urlretrieve(f"http://{url}/pygame.tar.gz", 'pygame.tar.gz')
             tar = tarfile.open("pygame.tar.gz")
             tar.extractall()
             tar.close()
@@ -362,17 +362,17 @@ try:
                     kill = True
                 except:
                     LogErr()
-                    print("There was an error playing the file")
+                    print(f"There was an error playing the file")
                     kill = True
             elif arg == "-h" or arg == "--help":
-                print('Plays music in the "Music" folder within the current directory\n')
+                print(f"Plays music in the "Music" folder within the current directory\n")
                 print(f"Usage: {sys.argv[0]} [-hvc] [-f <filepath>]")
-                print("Options: ")
-                print("\t -h, --help\t Displays this help text")
-                print("\t -v, --verbose\t Displays extra information")
-                print("\t -c, --console\t Disables Pygame screen (text-only mode)")
-                print("\t -f, --file\t Plays the file at the filepath specified")
-                print("\nExamples: \n\t " + sys.argv[0] + " -v -c -f /sample/file/path/foo.bar")
+                print(f"Options: ")
+                print(f"\t -h, --help\t Displays this help text")
+                print(f"\t -v, --verbose\t Displays extra information")
+                print(f"\t -c, --console\t Disables Pygame screen (text-only mode)")
+                print(f"\t -f, --file\t Plays the file at the filepath specified")
+                print(f"\nExamples: \n\t {sys.argv[0]} -v -c -f /sample/file/path/foo.bar")
                 print(f"\t{sys.argv[0]} -f foo.bar")
                 kill = True
             i = i + 1
@@ -385,15 +385,15 @@ url = "benjaminurquhart.me"
 update = 0
 try:
     log('Checking for updates...')
-    log('Getting info from ' + url)
-    ver = urllib2.urlopen('http://' + url + '/version.txt')
-    rev = urllib2.urlopen('http://' + url + '/rev.txt')
+    log(f"Getting info from {url}")
+    ver = urllib.request.urlopen(f"http://'{url}/version.txt")
+    rev = urllib.request.urlopen(f"http://' + {url} + '/rev.txt")
     ver = ver.read()
     rev = rev.read()
 
     if float(ver) > float(version):
         log('Update found!')
-        bcast("Python Music Player " + ver + " is availible")
+        bcast(f"Python Music Player {ver} is availible")
         bcast("Type update at the prompt to download")
         update = 1
     elif float(ver) < float(version):
@@ -401,7 +401,7 @@ try:
         bcast('Indev version in use')
     elif int(rev) > int(revision) and float(ver) == float(version):
         log('New revision found!')
-        bcast('Revision ' + str(rev) + ' is availible')
+        bcast(f"Revision {str(rev)} is availible")
         bcast('Type update at the prompt to download')
         update = 1
     elif float(ver) == float(version):
@@ -454,14 +454,14 @@ try:
             current = playlist[select]
         if current not in played:
             # Try to load the track
-            bcast("Now Playing: " + current + " (" + str(song_num) + " out of " + str(amount) + ")")
-            log("Song " + str(song_num) + " out of " + str(amount))
+            bcast(f"Now Playing: {current} ({str(song_num)} out of {str(amount)})")
+            log(f"Song {str(song_num)} out of {str(amount)}")
             try:
-                log("Loading '" + current + "'")
-                pygame.mixer.music.load("./Music/" + current)
-                log('Now Playing: ' + current)
+                log(f"Loading '{current}'")
+                pygame.mixer.music.load(f"./Music/{current}")
+                log(f"Now Playing: {current}")
             except:
-                bcast("Couldn't play " + current)
+                bcast(f"Couldn't play {current}")
 
             # Play loaded track
             pygame.mixer.music.play()
