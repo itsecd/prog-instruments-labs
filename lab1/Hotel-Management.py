@@ -270,10 +270,10 @@ def view():
 
     else:
         listt = dictionary["Room"]
-        a = len(listt)
+        room_count = len(listt)
 
         index = 0
-        while index != a:
+        while index != room_count:
             listt_fname = dictionary.get("First_Name")
             listt_lname = dictionary.get("Last_Name")
             listt_phone = dictionary.get("Phone_num")
