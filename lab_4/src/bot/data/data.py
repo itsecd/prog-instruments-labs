@@ -1,7 +1,7 @@
 import sqlite3
 import json
 
-db = 'data/users.db'    
+db = r'C:\Users\user\Desktop\UNIVERSITY\prog-instruments-labs\lab_4\data\users.db'    
 conn = sqlite3.connect(db)
 cursor = conn.cursor()
 print("database was connected")

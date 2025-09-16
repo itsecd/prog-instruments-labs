@@ -3,8 +3,8 @@ from aiogram import Bot, Dispatcher
 
 #local imports
 import config
-from handlers import handlers
-bot = Bot(token=config.TOKEN)
+from lab_4.src.bot.handlers import handlers
+bot = Bot(token="7903937342:AAErWCbbve88OaGhIlRfU3dcBoTOyBTHWiw")
 
 async def main():
     dp = Dispatcher()
