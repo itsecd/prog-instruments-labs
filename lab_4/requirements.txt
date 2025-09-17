@@ -1,2 +1,3 @@
 aiogram==3.22.0
 python-dotenv==1.1.1
+aiogram_dialog==2.4.0
