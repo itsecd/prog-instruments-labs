@@ -6,7 +6,7 @@ from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from src.config import BOT_TOKEN
+from src.config import config
 
 async def main():
     logging.basicConfig(
@@ -15,7 +15,7 @@ async def main():
     )
 
     bot = Bot(
-        token=BOT_TOKEN,
+        token=config.bot_token,
         default=DefaultBotProperties(
             parse_mode=ParseMode.MARKDOWN_V2,
         ),
