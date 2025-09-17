@@ -4,9 +4,9 @@ from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 
 from bot import bot
-from data import data
-import lab_4.src.bot.keyboards.keyboards 
-from templ import templates
+from src.bot.data import data
+import src.bot.keyboards.keyboards 
+from src.bot.templ import templates
 
 rt = Router()
 
@@ -16,7 +16,7 @@ async def startcmd(message: types.Message):
     print("start rt")
     await message.answer(
         f'Приветствую {message.from_user.first_name}! \nЖелаешь воспользоваться таск-листом?',
-        reply_markup=lab_4.src.bot.keyboards.keyboards.startMarkup)
+        reply_markup=src.bot.keyboards.keyboards.startMarkup)
 
 #id state
 class idgetter(StatesGroup):
