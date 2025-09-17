@@ -158,7 +158,7 @@ class Yahtzee:
         return 0
 
     @staticmethod
-    def smallStraight(die1, die2, die3, die4, die5):
+    def small_straight(die1, die2, die3, die4, die5):
         counts = [0] * 6
         counts[die1 - 1] += 1
         counts[die2 - 1] += 1
@@ -174,7 +174,7 @@ class Yahtzee:
         return 0
 
     @staticmethod
-    def largeStraight(die1, die2, die3, die4, die5):
+    def large_straight(die1, die2, die3, die4, die5):
         counts = [0] * 6
         counts[die1 - 1] += 1
         counts[die2 - 1] += 1
@@ -190,7 +190,7 @@ class Yahtzee:
         return 0
 
     @staticmethod
-    def fullHouse(die1, die2, die3, die4, die5):
+    def full_house(die1, die2, die3, die4, die5):
         counts = []
         has_pair = False
         i = 0
