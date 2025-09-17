@@ -1,12 +1,11 @@
 import unittest
 
-
 from datetime import date, timedelta
-
 
 from patient import Patient
 from medicine import Medicine
 from prescription import Prescription
+
 
 def days_ago(days):
    return date.today() - timedelta(days=days) 

@@ -1,8 +1,6 @@
 import unittest
 
-
 from datetime import date, timedelta
-
 
 from mock import *
 from prescription import Prescription
