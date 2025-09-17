@@ -1,2 +1,2 @@
 aiogram==3.22.0
-config==0.5.1
+python-dotenv==1.1.1
