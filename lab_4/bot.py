@@ -6,7 +6,13 @@ from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 
+from aiogram_dialog import setup_dialogs
+
+from src.bot.dialogs import DIALOGS
+from src.bot.handlers import ROUTERS
+
 from src.config import config
+
 
 async def main():
     logging.basicConfig(
@@ -24,8 +30,10 @@ async def main():
     dp = Dispatcher(storage=MemoryStorage())
 
     dp.include_routers(
-        #...
+        *ROUTERS,
+        *DIALOGS,
     )
+    setup_dialogs(dp)
 
     await bot.delete_webhook(drop_pending_updates=True)
     try:
