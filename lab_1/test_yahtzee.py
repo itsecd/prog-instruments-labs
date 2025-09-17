@@ -1,4 +1,4 @@
-from MarginsOpersVars.yahtzee import Yahtzee
+from yahtzee import Yahtzee
 
 # These unit tests can be run using the py.test framework
 # available from http://pytest.org/
