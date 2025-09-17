@@ -33,52 +33,52 @@ class Yahtzee:
     @staticmethod
     def ones(die1, die2, die3, die4, die5):
         score = 0
-        if (die1 == 1):
+        if die1 == 1:
             score += 1
-        if (die2 == 1):
+        if die2 == 1:
             score += 1
-        if (die3 == 1):
+        if die3 == 1:
             score += 1
-        if (die4 == 1):
+        if die4 == 1:
             score += 1
-        if (die5 == 1):
+        if die5 == 1:
             score += 1
         return score
 
     @staticmethod
     def twos(die1, die2, die3, die4, die5):
         score = 0
-        if (die1 == 2):
+        if die1 == 2:
             score += 2
-        if (die2 == 2):
+        if die2 == 2:
             score += 2
-        if (die3 == 2):
+        if die3 == 2:
             score += 2
-        if (die4 == 2):
+        if die4 == 2:
             score += 2
-        if (die5 == 2):
+        if die5 == 2:
             score += 2
         return score
 
     @staticmethod
     def threes(die1, die2, die3, die4, die5):
         score = 0
-        if (die1 == 3):
+        if die1 == 3:
             score += 3
-        if (die2 == 3):
+        if die2 == 3:
             score += 3
-        if (die3 == 3):
+        if die3 == 3:
             score += 3
-        if (die4 == 3):
+        if die4 == 3:
             score += 3
-        if (die5 == 3):
+        if die5 == 3:
             score += 3
         return score
 
     def fours(self):
         score = 0
         for i in range(5):
-            if (self.dice[i] == 4):
+            if self.dice[i] == 4:
                 score += 4
         return score
 
@@ -86,14 +86,14 @@ class Yahtzee:
         score = 0
         i = 0
         for i in range(len(self.dice)): 
-            if (self.dice[i] == 5):
+            if self.dice[i] == 5:
                 score = score + 5
         return score
 
     def sixes(self):
         score = 0
         for i in range(len(self.dice)):
-            if (self.dice[i] == 6):
+            if self.dice[i] == 6:
                 score = score + 6
         return score
     
@@ -107,7 +107,7 @@ class Yahtzee:
         counts[die5 - 1] += 1
         at = 0
         for i in range(6):
-            if (counts[6 - i - 1] == 2):
+            if counts[6 - i - 1] == 2:
                 return (6 - i) * 2
         return 0
     
@@ -122,11 +122,11 @@ class Yahtzee:
         pair_count = 0
         pair_score = 0
         for i in range(6):
-            if (counts[6 - i - 1] == 2):
+            if counts[6 - i - 1] == 2:
                 pair_count = pair_count + 1
-                pair_score += (6 - i)
+                pair_score += 6 - i
                     
-        if (pair_count == 2):
+        if pair_count == 2:
             return pair_score * 2
         else:
             return 0
@@ -140,7 +140,7 @@ class Yahtzee:
         counts[die4 - 1] += 1
         counts[die5 - 1] += 1
         for i in range(6):
-            if (counts[i] == 4):
+            if counts[i] == 4:
                 return (i + 1) * 4
         return 0
 
@@ -153,7 +153,7 @@ class Yahtzee:
         counts[die4 - 1] += 1
         counts[die5 - 1] += 1
         for i in range(6):
-            if (counts[i] == 3):
+            if counts[i] == 3:
                 return (i + 1) * 3
         return 0
 
@@ -206,16 +206,16 @@ class Yahtzee:
         counts[die5 - 1] += 1
 
         for i in range(6):
-            if (counts[i] == 2):
+            if counts[i] == 2:
                 has_pair = True
                 pair_value = i + 1
 
         for i in range(6):
-            if (counts[i] == 3):
+            if counts[i] == 3:
                 has_three_of_kind = True
                 three_of_kind_value = i + 1
 
-        if (has_pair and has_three_of_kind):
+        if has_pair and has_three_of_kind:
             return pair_value * 2 + three_of_kind_value * 3
         else:
             return 0
