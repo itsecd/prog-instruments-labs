@@ -28,10 +28,14 @@ async def do_delete(callback: CallbackQuery, button: Button, dialog_manager: Dia
     await dialog_manager.switch_to(MainMenuStatesGroup.deleting_task)
 
 
+async def do_edit(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(MainMenuStatesGroup.editing_task)
+
+
 window = Window(
     Format("Selected task:\n{task}"),
     Row(
-        Button(Const("Edit"), id="edit_task"),
+        Button(Const("Edit"), id="edit_task", on_click=do_edit),
         Button(Const("Delete"), id="delete_task", on_click=do_delete),
     ),
     Button(Const("Back"), id="back", on_click=do_back),
