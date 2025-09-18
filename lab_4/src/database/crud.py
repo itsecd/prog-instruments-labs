@@ -3,17 +3,25 @@ from .db import get_connection
 
 
 def create_user(tg_id: int, tasks_reversed: bool = False):
-    conn = get_connection()
-    conn.execute("INSERT INTO users (tg_id, tasks_reversed) VALUES (?, ?)", (tg_id, tasks_reversed))
-    conn.commit()
-    conn.close()
+    with get_connection() as conn:
+        conn.execute(
+            "INSERT INTO users (tg_id, tasks_reversed) VALUES (?, ?)",
+            (tg_id, int(tasks_reversed))
+        )
+        conn.commit()
 
 
-def get_user(tg_id: int) -> dict[str, Any]:
-    conn = get_connection()
-    cursor = conn.execute("SELECT * FROM users WHERE tg_id = ?", (tg_id, ))
-    row = cursor.fetchone()
+def set_tasks_reversed(tg_id: int, value: bool):
+    with get_connection() as conn:
+        conn.execute(
+            "UPDATE users SET tasks_reversed = ? WHERE tg_id = ?",
+            (int(value), tg_id)
+        )
 
-    conn.close()
 
-    return dict(row)
+def get_user(tg_id: int) -> dict[str, Any] | None:
+    with get_connection() as conn:
+        cursor = conn.execute("SELECT * FROM users WHERE tg_id = ?", (tg_id, ))
+        row = cursor.fetchone()
+
+    return dict(row) if row else None
