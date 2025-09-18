@@ -35,16 +35,16 @@ class Warr(Char):
 
 class Mag(Char):
 
-        def __init__(self, name): super().__init__(name, 80, 25, 5)
+    def __init__(self, name): super().__init__(name, 80, 25, 5)
 
-        def do_attack(self, target):
+    def do_attack(self, target):
                 if self.alive: target.take_dmg(self.attack + random.randint(5, 15))
 
 class Arch(Char):
 
-        def __init__(self, name): super().__init__(name, 100, 18, 7)
+    def __init__(self, name): super().__init__(name, 100, 18, 7)
 
-        def do_attack(self, target):
+    def do_attack(self, target):
                 if self.alive:
                     hits = random.randint(1, 3)
                     for i in range(hits): target.take_dmg(self.attack)
@@ -169,109 +169,109 @@ def menu():
         else: print("Bad opt")
 
 if __name__=="__main__":
-menu()
+    menu()
 
 def util_func_long_name_example_1():
-        x = 1
-        y = 2
-        z = x + y
-        return z
+    x = 1
+    y = 2
+    z = x + y
+    return z
 
 def foo_2(a, b):
     return a + b + 2
 
 def bar_3():
-        lst = [j for j in range(3)]
-        s = sum(lst)
-        return s
+    lst = [j for j in range(3)]
+    s = sum(lst)
+    return s
 
 class Helper4:
 
-def __init__(self, val): self.val = val
-self.lst = [val]*5
+    def __init__(self, val): self.val = val
+    self.lst = [val]*5
 
-def long_line_func_5(): return 'this is a long string number 5 ' + 'x'*15 + ' end'
+    def long_line_func_5(): return 'this is a long string number 5 ' + 'x'*15 + ' end'
 
-def util_func_6():print('util6')
-return 6
+    def util_func_6():print('util6')
+    return 6
 
 def util_func_long_name_example_7():
-        x = 7
-        y = 14
-        z = x + y
-        return z
+    x = 7
+    y = 14
+    z = x + y
+    return z
 
 def foo_8(a, b):
     return a + b + 8
 
 def bar_9():
-        lst = [j for j in range(9)]
-        s = sum(lst)
-        return s
+    lst = [j for j in range(9)]
+    s = sum(lst)
+    return s
 
 class Helper10:
 
-def __init__(self, val): self.val = val
-self.lst = [val]*4
+     def __init__(self, val): self.val = val
+     self.lst = [val]*4
 
-def long_line_func_11(): return 'this is a long string number 11 ' + 'x'*21 + ' end'
+     def long_line_func_11(): return 'this is a long string number 11 ' + 'x'*21 + ' end'
 
-def util_func_12():print('util12')
-return 12
+     def util_func_12():print('util12')
+     return 12
 
 def util_func_long_name_example_13():
-        x = 13
-        y = 26
-        z = x + y
-        return z
+    x = 13
+    y = 26
+    z = x + y
+    return z
 
 def foo_14(a, b):
     return a + b + 14
 
 def bar_15():
-        lst = [j for j in range(15)]
-        s = sum(lst)
-        return s
+    lst = [j for j in range(15)]
+    s = sum(lst)
+    return s
 
 class Helper16:
 
-def __init__(self, val): self.val = val
-self.lst = [val]*3
+    def __init__(self, val): self.val = val
+    self.lst = [val]*3
 
-def long_line_func_17(): return 'this is a long string number 17 ' + 'x'*27 + ' end'
+    def long_line_func_17(): return 'this is a long string number 17 ' + 'x'*27 + ' end'
 
-def util_func_18():print('util18')
-return 18
+    def util_func_18():print('util18')
+    return 18
 
 def util_func_long_name_example_19():
-        x = 19
-        y = 38
-        z = x + y
-        return z
+    x = 19
+    y = 38
+    z = x + y
+    return z
 
 def foo_20(a, b):
     return a + b + 20
 
 def bar_21():
-        lst = [j for j in range(21)]
-        s = sum(lst)
-        return s
+     lst = [j for j in range(21)]
+     s = sum(lst)
+    return s
 
 class Helper22:
 
-def __init__(self, val): self.val = val
-self.lst = [val]*2
+    def __init__(self, val): self.val = val
+    self.lst = [val]*2
 
-def long_line_func_23(): return 'this is a long string number 23 ' + 'x'*33 + ' end'
+    def long_line_func_23(): return 'this is a long string number 23 ' + 'x'*33 + ' end'
 
-def util_func_24():print('util24')
-return 24
+    def util_func_24():print('util24')
+    return 24
 
 def util_func_long_name_example_25():
-        x = 25
-        y = 50
-        z = x + y
-        return z
+    x = 25
+    y = 50
+    z = x + y
+    return z
 
 def foo_26(a, b):
     return a + b + 26
