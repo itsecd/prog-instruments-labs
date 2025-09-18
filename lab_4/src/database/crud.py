@@ -20,7 +20,7 @@ def set_tasks_reversed(tg_id: int, value: bool):
         conn.commit()
 
 
-def get_user(tg_id: int) -> tuple[int, bool]:
+def get_user(tg_id: int) -> dict[str, Any]:
     with get_connection() as conn:
         cursor = conn.execute(
             "SELECT tg_id, tasks_reversed FROM users WHERE tg_id = ?",
@@ -74,9 +74,9 @@ def delete_task_by_idx(tg_id: int, idx: int):
 def get_tasks(tg_id: int) -> list[str]:
     with get_connection() as conn:
         cursor = conn.execute(
-            "SELECT * FROM tasks WHERE user_id = ?",
+            "SELECT * FROM tasks WHERE user_id = ? ORDER BY id",
             (tg_id, )
         )
         rows = cursor.fetchall()
 
-    return [dict(task) for task in list(rows)]
+    return [dict(task) for task in rows]
