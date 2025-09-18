@@ -28,6 +28,6 @@ class Paths:
 paths = Paths(
     config_dir=CONFIG_DIR,
     data_dir=DATA_DIR,
-    db_dir=DB_FILE,
+    db_file=DB_FILE,
     schema_file=SCHEMA_FILE,
 )
