@@ -53,7 +53,7 @@ VERY_LONG_HELP_TEXT = (
     "Поддерживается управление кодировкой, рекурсией и стоп-словами."
 )
 
-def tryImportChardet():
+def try_import_chardet():
     try:
         import chardet  # type: ignore
         return chardet
@@ -62,7 +62,7 @@ def tryImportChardet():
 
 
 def detect_encoding(path: str, sample_size: int = 200_000) -> str:
-    chardet = tryImportChardet()
+    chardet = try_import_chardet()
     if chardet is None:
         return "utf-8"
     try:
@@ -88,10 +88,10 @@ def read_text(path: str, encoding: Optional[str]) -> str:
             return fh.read()
 
 
-def tokenize_words(text: str, stoplist: List[str] = []) -> List[str]:
+def tokenize_words(text: str, stop_list: List[str] = []) -> List[str]:
     words = [w.lower() for w in WORD_RE.findall(text)]
-    if stoplist != None:
-        words = [w for w in words if w not in stoplist]
+    if stop_list is not None:
+        words = [w for w in words if w not in stop_list]
     return words
 
 
