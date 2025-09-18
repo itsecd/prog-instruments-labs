@@ -12,7 +12,10 @@ router = Router()
 
 @router.message(Command("start"))
 async def start_message_handler(message: Message, dialog_manager: DialogManager):
-    await dialog_manager.start(MainMenuStatesGroup.main, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(
+        MainMenuStatesGroup.main,
+        mode=StartMode.RESET_STACK,
+    )
 
 
 @router.message(Command("tasks"))

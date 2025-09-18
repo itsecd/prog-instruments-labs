@@ -24,11 +24,15 @@ async def get_task(dialog_manager: DialogManager, **kwargs):
     return {"task": user_tasks[task_idx]}
 
 
+async def do_delete(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(MainMenuStatesGroup.deleting_task)
+
+
 window = Window(
     Format("Selected task:\n{task}"),
     Row(
         Button(Const("Edit"), id="edit_task"),
-        Button(Const("Delete"), id="delete_task"),
+        Button(Const("Delete"), id="delete_task", on_click=do_delete),
     ),
     Button(Const("Back"), id="back", on_click=do_back),
     state=MainMenuStatesGroup.task_choosen,

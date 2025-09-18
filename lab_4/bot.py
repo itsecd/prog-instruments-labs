@@ -6,7 +6,7 @@ from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from aiogram_dialog import setup_dialogs
+from aiogram_dialog import setup_dialogs, ShowMode
 
 from src.bot.dialogs import DIALOGS
 from src.bot.handlers import ROUTERS

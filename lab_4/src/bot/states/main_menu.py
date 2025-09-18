@@ -7,5 +7,5 @@ class MainMenuStatesGroup(StatesGroup):
     selecting_task = State()
     task_choosen = State()
     # editing_task = State()
-    # deleting_task = State()
+    deleting_task = State()
     # reversing_task = State()

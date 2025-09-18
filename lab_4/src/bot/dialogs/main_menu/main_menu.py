@@ -29,7 +29,6 @@ async def do_select(callback: CallbackQuery, button: Button, dialog_manager: Dia
     await dialog_manager.switch_to(MainMenuStatesGroup.selecting_task)
     
 
-
 async def get_tasks(dialog_manager: DialogManager, **kwargs):
     user_id = dialog_manager.event.from_user.id
     user_tasks = tasks.get(user_id, [])
