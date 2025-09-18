@@ -8,13 +8,16 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from aiogram_dialog import setup_dialogs
 
+from src.database.db import init_db
+
 from src.bot.dialogs import DIALOGS
 from src.bot.handlers import ROUTERS
 
 from src.config import config
 
-
 async def main():
+    init_db()
+
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
@@ -43,7 +46,11 @@ async def main():
 
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        logging.info("Exit Telegram Bot")
+    init_db()
+    from src.database.crud import get_user, create_user
+    create_user(1)
+    get_user(1)
+    # try:
+    #     asyncio.run(main())
+    # except KeyboardInterrupt:
+    #     logging.info("Exit Telegram Bot")
