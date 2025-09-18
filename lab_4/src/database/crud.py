@@ -61,12 +61,22 @@ def update_task_by_idx(tg_id: int, idx: int, new_task: str):
         conn.commit()
 
 
+def delete_task_by_idx(tg_id: int, idx: int):
+    task = get_task_by_idx(tg_id, idx)
+    with get_connection() as conn:
+        conn.execute(
+            "DELETE FROM tasks WHERE id = ?",
+            (task["id"], )
+        )
+        conn.commit()
+
+
 def get_tasks(tg_id: int) -> list[str]:
     with get_connection() as conn:
         cursor = conn.execute(
-            "SELECT task FROM tasks WHERE user_id = ?",
+            "SELECT * FROM tasks WHERE user_id = ?",
             (tg_id, )
         )
         rows = cursor.fetchall()
 
-    return [d["task"] for d in list(rows)]
+    return [dict(task) for task in list(rows)]

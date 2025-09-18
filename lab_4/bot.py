@@ -47,11 +47,15 @@ async def main():
 
 if __name__ == "__main__":
     init_db()
-    from src.database.crud import get_user, get_tasks, get_task_by_idx, update_task_by_idx
+    from src.database.crud import \
+        get_user, get_tasks, \
+        get_task_by_idx, update_task_by_idx, \
+        delete_task_by_idx
     # add_task(1, "some")
     # add_task(1, "some2")
     print(get_tasks(1))
     update_task_by_idx(1, 0, "new")
+    delete_task_by_idx(1, 0)
     print(get_task_by_idx(1, 0))
     print(get_user(1))
     # try:
