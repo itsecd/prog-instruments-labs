@@ -10,7 +10,7 @@ ROOT_DIR = os.path.dirname(SRC_DIR)
 
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 
-DATABASE_DIR = os.path.join(ROOT_DIR, "database")
+DATABASE_DIR = os.path.join(SRC_DIR, "database")
 
 SCHEMA_FILE = os.path.join(DATABASE_DIR, "schema.sql")
 
