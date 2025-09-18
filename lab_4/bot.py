@@ -47,9 +47,11 @@ async def main():
 
 if __name__ == "__main__":
     init_db()
-    from src.database.crud import get_user, create_user
-    create_user(1)
-    get_user(1)
+    from src.database.crud import get_user, get_tasks, add_task
+    # add_task(1, "some")
+    # add_task(1, "some2")
+    print(get_tasks(1))
+    print(get_user(1))
     # try:
     #     asyncio.run(main())
     # except KeyboardInterrupt:
