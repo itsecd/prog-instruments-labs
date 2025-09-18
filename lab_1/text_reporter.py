@@ -14,8 +14,6 @@ from glob import glob
 from typing import Dict, Iterable, List, Optional, Tuple
 
 
-
-
 DEFAULT_STOPWORDS = {
     "и",
     "в",
@@ -42,10 +40,8 @@ DEFAULT_STOPWORDS = {
     "или",
 }
 
-
 WORD_RE = re.compile(r"[\w\-']+", re.UNICODE)
 SENTENCE_END_RE = re.compile(r"[.!?]+\s+")
-
 
 VERY_LONG_HELP_TEXT = (
     "Инструмент анализирует текстовые файлы: считает слова/символы, формирует топы "
@@ -169,7 +165,6 @@ class FileStats:
     frequent_lines: List[Tuple[str, int]]
     flesch_reading_ease: float
     flesch_kincaid_grade: float
-
 
 
 def compute_stats_for_text(
@@ -410,5 +405,4 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
 
