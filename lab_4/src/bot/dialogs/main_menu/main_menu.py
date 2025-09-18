@@ -21,6 +21,15 @@ async def do_reverse(callback: CallbackQuery, button: Button, dialog_manager: Di
     await dialog_manager.switch_to(MainMenuStatesGroup.main)
 
 
+async def do_select(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+    if len(tasks.get(callback.from_user.id, [])) == 0:
+        await callback.answer("No tasks!")
+        return
+
+    await dialog_manager.switch_to(MainMenuStatesGroup.selecting_task)
+    
+
+
 async def get_tasks(dialog_manager: DialogManager, **kwargs):
     user_id = dialog_manager.event.from_user.id
     user_tasks = tasks.get(user_id, [])
@@ -37,7 +46,7 @@ window = Window(
         items="tasks",
     ),
     Button(Const("Add"), id="add_task", on_click=do_add), # C
-    Button(Const("Delete/Edit"), id="delete_or_edit_task"), # UD
+    Button(Const("Delete/Edit"), id="delete_or_edit_task", on_click=do_select), # UD
     Button(Const("Reverse"), id="reverse_tasks", on_click=do_reverse),
     state=MainMenuStatesGroup.main,
     getter=get_tasks,
