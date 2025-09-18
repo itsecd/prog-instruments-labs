@@ -33,7 +33,7 @@ async def do_edit(callback: CallbackQuery, button: Button, dialog_manager: Dialo
 
 
 window = Window(
-    Format("Selected task:\n{task}"),
+    Format("Selected action fot task:\n{task}"),
     Row(
         Button(Const("Edit"), id="edit_task", on_click=do_edit),
         Button(Const("Delete"), id="delete_task", on_click=do_delete),

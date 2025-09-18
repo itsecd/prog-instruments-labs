@@ -16,7 +16,7 @@ async def do_add(callback: CallbackQuery, button: Button, dialog_manager: Dialog
 
 
 async def do_reverse(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    # ...
+    tasks[callback.from_user.id].reverse()
     await callback.answer(text="Reversed!")
     await dialog_manager.switch_to(MainMenuStatesGroup.main)
 

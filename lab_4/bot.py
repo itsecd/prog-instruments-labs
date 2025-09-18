@@ -6,7 +6,7 @@ from aiogram.enums import ParseMode
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 
-from aiogram_dialog import setup_dialogs, ShowMode
+from aiogram_dialog import setup_dialogs
 
 from src.bot.dialogs import DIALOGS
 from src.bot.handlers import ROUTERS
@@ -23,7 +23,7 @@ async def main():
     bot = Bot(
         token=config.bot_token,
         default=DefaultBotProperties(
-            parse_mode=ParseMode.MARKDOWN_V2,
+            # parse_mode=ParseMode.MARKDOWN_V2,
         ),
     )
 
