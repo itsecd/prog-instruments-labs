@@ -47,10 +47,12 @@ async def main():
 
 if __name__ == "__main__":
     init_db()
-    from src.database.crud import get_user, get_tasks, add_task
+    from src.database.crud import get_user, get_tasks, get_task_by_idx, update_task_by_idx
     # add_task(1, "some")
     # add_task(1, "some2")
     print(get_tasks(1))
+    update_task_by_idx(1, 0, "new")
+    print(get_task_by_idx(1, 0))
     print(get_user(1))
     # try:
     #     asyncio.run(main())
