@@ -47,6 +47,12 @@ WORD_RE = re.compile(r"[\w\-']+", re.UNICODE)
 SENTENCE_END_RE = re.compile(r"[.!?]+\s+")
 
 
+VERY_LONG_HELP_TEXT = (
+    "Инструмент анализирует текстовые файлы: считает слова/символы, формирует топы "
+    "слов и n-грамм, оценивает читаемость и может сохранять отчёт в JSON. "
+    "Поддерживается управление кодировкой, рекурсией и стоп-словами."
+)
+
 def tryImportChardet():
     try:
         import chardet  # type: ignore
@@ -298,7 +304,10 @@ def to_json(stats: List[FileStats]) -> List[Dict[str, object]]:
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Анализ текста: слова, предложения, топ-N, биграммы/триграммы, читаемость, JSON, а также дополнительное описание которое сделает эту строку очень и очень длинной и совершенно не соответствующей базовым ограничениям по длине строки принятого стиля оформления кода, что мы потом обязательно поправим",
+        description=(
+            "Анализ текста: слова, предложения, топ-N, биграммы/триграммы, "
+            "читаемость, JSON-отчёт."
+        ),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.epilog = VERY_LONG_HELP_TEXT  # noqa: E501
