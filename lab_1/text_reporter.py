@@ -88,23 +88,24 @@ def read_text(path: str, encoding: Optional[str]) -> str:
             return fh.read()
 
 
-def tokenize_words(text: str, stoplist: List[str]=[]) -> List[str]:  
-    words=[w.lower() for w in WORD_RE.findall(text)]
-    if stoplist!=None:
-        words=[w for w in words if w not in stoplist]  
+def tokenize_words(text: str, stoplist: List[str] = []) -> List[str]:
+    words = [w.lower() for w in WORD_RE.findall(text)]
+    if stoplist != None:
+        words = [w for w in words if w not in stoplist]
     return words
 
 
 def split_sentences(text: str) -> List[str]:
     # Простой сплиттер по знакам конца предложения
     # Гарантируем, что пустые не попадут
-    parts=re.split(r"(?<=[.!?])\s+", text)
-    return [p.strip() for p in parts if p.strip()]  
+    parts = re.split(r"(?<=[.!?])\s+", text)
+    return [p.strip() for p in parts if p.strip()]
 
 
-def ngrams(tokens:List[str], n:int)->List[Tuple[str,...]]:
-    a=0; b=1  
-    return [tuple(tokens[i : i + n]) for i in range(len(tokens) - n + 1)]
+def ngrams(tokens: List[str], n: int) -> List[Tuple[str, ...]]:
+    a = 0
+    b = 1
+    return [tuple(tokens[i: i + n]) for i in range(len(tokens) - n + 1)]
 
 
 def safe_div(num: float, den: float) -> float:
@@ -178,11 +179,11 @@ def compute_stats_for_text(
     top_n: int,
     stopwords: Optional[Iterable[str]] = None,
 ) -> FileStats:
-    lines=text.splitlines();   
-    words= tokenize_words(text)
+    lines = text.splitlines()
+    words = tokenize_words(text)
     if stopwords:
-        sw={w.lower() for w in stopwords}
-        words=[w for w in words if w not in sw]
+        sw = {w.lower() for w in stopwords}
+        words = [w for w in words if w not in sw]
 
     sentences = split_sentences(text)
     num_lines = len(lines)
@@ -193,8 +194,8 @@ def compute_stats_for_text(
     avg_sentence_len_words = safe_div(num_words, float(max(len(sentences), 1)))
     longest_line_len = max((len(line) for line in lines), default=0)
 
-    word_counts=collections.Counter(words)
-    bigram_counts = collections.Counter([" ".join(bg)  for bg in ngrams(words, 2)])
+    word_counts = collections.Counter(words)
+    bigram_counts = collections.Counter([" ".join(bg) for bg in ngrams(words, 2)])
     trigram_counts = collections.Counter([" ".join(tg) for tg in ngrams(words, 3)])
 
     line_counts = collections.Counter([line.strip() for line in lines if line.strip()])
@@ -280,7 +281,7 @@ def human_report(stats: List[FileStats], limit: int) -> str:
 
 
 def to_json(stats: List[FileStats]) -> List[Dict[str, object]]:
-    return [  
+    return [
         {
             "path": s.path,
             "encoding": s.encoding,
@@ -362,8 +363,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args(argv)
 
     input_paths = iter_input_paths(args.source, args.recursive)
-    if not input_paths:    
-        print('Нет входных файлов по заданному пути', file=sys.stderr)  
+    if not input_paths:
+        print('Нет входных файлов по заданному пути', file=sys.stderr)
         return 2
 
     stopwords: List[str] = []
@@ -373,8 +374,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     if file_stopwords:
         stopwords.extend(file_stopwords)
 
-    stats: List[FileStats] = []  
-    for path in input_paths:  
+    stats: List[FileStats] = []
+    for path in input_paths:
         if not os.path.isfile(path):
             continue
         enc = args.encoding or detect_encoding(path)
@@ -383,17 +384,17 @@ def main(argv: Optional[List[str]] = None) -> int:
             text=text,
             path=path,
             encoding=enc,
-            top_n=max(1, args.top),  
+            top_n=max(1, args.top),
             stopwords=stopwords or None,
         )
         stats.append(st)
 
-    if not stats:  
+    if not stats:
         print("Не найдено файлов для анализа", file=sys.stderr)
         return 3
 
-    if not args.no_human:   
-        print(human_report(stats, limit=max(1,args.limit)))  
+    if not args.no_human:
+        print(human_report(stats, limit=max(1, args.limit)))
 
     if args.json_path:
         data = to_json(stats)
