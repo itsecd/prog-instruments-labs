@@ -10,6 +10,10 @@ ROOT_DIR = os.path.dirname(SRC_DIR)
 
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 
+DATABASE_DIR = os.path.join(ROOT_DIR, "database")
+
+SCHEMA_FILE = os.path.join(DATABASE_DIR, "schema.sql")
+
 DB_FILE = os.path.join(DATA_DIR, "database.db")
 
 
@@ -18,10 +22,12 @@ class Paths:
     config_dir: str
     data_dir: str
     db_file: str
+    schema_file: str
 
 
 paths = Paths(
     config_dir=CONFIG_DIR,
     data_dir=DATA_DIR,
     db_dir=DB_FILE,
+    schema_file=SCHEMA_FILE,
 )
