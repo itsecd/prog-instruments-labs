@@ -60,7 +60,7 @@ class Yahtzee:
             if die == 6:
                 score += 6
         return score
-    
+
     @staticmethod
     def score_pair(die1, die2, die3, die4, die5):
         counts = [0] * 6
@@ -86,7 +86,7 @@ class Yahtzee:
         if len(pairs) == 2:
             return sum(pairs) * 2
         return 0
-    
+
     @staticmethod
     def four_of_a_kind(die1, die2, die3, die4, die5):
         counts = [0] * 6
