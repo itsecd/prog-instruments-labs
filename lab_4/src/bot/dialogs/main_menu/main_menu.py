@@ -5,10 +5,11 @@ from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const, List, Format
 
 from src.bot.states.main_menu import MainMenuStatesGroup
-
-
-# for tests
-tasks = {}
+from src.database.crud import (
+    get_tasks as get_tasks_from_db,
+    set_tasks_reversed,
+    get_user,
+)
 
 
 async def do_add(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
@@ -16,13 +17,16 @@ async def do_add(callback: CallbackQuery, button: Button, dialog_manager: Dialog
 
 
 async def do_reverse(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    tasks[callback.from_user.id].reverse()
+    user_id = callback.from_user.id
+    user = get_user(user_id)
+    set_tasks_reversed(user_id, not bool(user["tasks_reversed"]))
+
     await callback.answer(text="Reversed!")
     await dialog_manager.switch_to(MainMenuStatesGroup.main)
 
 
 async def do_select(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    if len(tasks.get(callback.from_user.id, [])) == 0:
+    if len(get_tasks_from_db(callback.from_user.id)) == 0:
         await callback.answer("No tasks!")
         return
 
@@ -31,11 +35,16 @@ async def do_select(callback: CallbackQuery, button: Button, dialog_manager: Dia
 
 async def get_tasks(dialog_manager: DialogManager, **kwargs):
     user_id = dialog_manager.event.from_user.id
-    user_tasks = tasks.get(user_id, [])
+    user_tasks = map(lambda t: t["task"], get_tasks_from_db(user_id))
+
+    user = get_user(user_id)
+    if user["tasks_reversed"]:
+        user_tasks = reversed(list(user_tasks))
 
     return {
-        "tasks": list(enumerate(user_tasks, start=1))
+        "tasks": list(enumerate(user_tasks, start=1)),
     }
+
 
 
 window = Window(

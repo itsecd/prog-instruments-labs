@@ -46,6 +46,8 @@ async def main():
 
 
 if __name__ == "__main__":
+    # from src.database.crud import create_user
+    # create_user(1)
     try:
         asyncio.run(main())
     except KeyboardInterrupt:

@@ -5,8 +5,7 @@ from aiogram_dialog.widgets.kbd import Button, Row
 from aiogram_dialog.widgets.text import Const, Format
 
 from src.bot.states.main_menu import MainMenuStatesGroup
-
-from .main_menu import tasks
+from src.database.crud import get_tasks
 
 
 async def do_back(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
@@ -15,13 +14,13 @@ async def do_back(callback: CallbackQuery, button: Button, dialog_manager: Dialo
 
 async def get_task(dialog_manager: DialogManager, **kwargs):
     user_id = dialog_manager.event.from_user.id
-    user_tasks = tasks.get(user_id, [])
+    user_tasks = get_tasks(user_id)
 
     task_idx = dialog_manager.dialog_data.get("task_idx")
     if task_idx is None or task_idx >= len(user_tasks):
         return {"task": "No task selected"}
 
-    return {"task": user_tasks[task_idx]}
+    return {"task": user_tasks[task_idx]["task"]}
 
 
 async def do_delete(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):

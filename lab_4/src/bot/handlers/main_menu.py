@@ -4,7 +4,11 @@ from aiogram.types import Message
 
 from aiogram_dialog import DialogManager, StartMode
 
+from contextlib import suppress
+from sqlite3 import IntegrityError
+
 from src.bot.states.main_menu import MainMenuStatesGroup
+from src.database.crud import create_user
 
 
 router = Router()
@@ -12,6 +16,9 @@ router = Router()
 
 @router.message(Command("start"))
 async def start_message_handler(message: Message, dialog_manager: DialogManager):
+    with suppress(IntegrityError):
+        create_user(message.from_user.id)
+
     await dialog_manager.start(
         MainMenuStatesGroup.main,
         mode=StartMode.RESET_STACK,

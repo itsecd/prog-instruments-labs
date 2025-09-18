@@ -6,6 +6,7 @@ from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const
 
 from src.bot.states.main_menu import MainMenuStatesGroup
+from src.database.crud import add_task
 
 
 async def do_back(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
@@ -15,12 +16,7 @@ async def do_back(callback: CallbackQuery, button: Button, dialog_manager: Dialo
 async def save_task(message: Message, _, dialog_manager: DialogManager):
     task = message.text
 
-    from .main_menu import tasks
-    user_tasks = tasks.get(message.from_user.id, [])
-    if user_tasks == []:
-        tasks[message.from_user.id] = [task]
-    else:
-        tasks[message.from_user.id].append(task) 
+    add_task(message.from_user.id, task)
 
     await dialog_manager.switch_to(MainMenuStatesGroup.main)
 

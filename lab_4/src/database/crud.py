@@ -20,7 +20,7 @@ def set_tasks_reversed(tg_id: int, value: bool):
         conn.commit()
 
 
-def get_user(tg_id: int) -> dict[str, Any]:
+def get_user(tg_id: int) -> dict[str, Any] | None:
     with get_connection() as conn:
         cursor = conn.execute(
             "SELECT tg_id, tasks_reversed FROM users WHERE tg_id = ?",
@@ -28,7 +28,7 @@ def get_user(tg_id: int) -> dict[str, Any]:
         )
         row = cursor.fetchone()
 
-    return dict(row)
+    return dict(row) if row is not None else None
 
 
 def add_task(tg_id: int, task: str):
@@ -40,7 +40,7 @@ def add_task(tg_id: int, task: str):
         conn.commit()
 
 
-def get_task_by_idx(tg_id: int, idx: int) -> dict[str, Any]:
+def get_task_by_idx(tg_id: int, idx: int) -> dict[str, Any] | None:
     with get_connection() as conn:
         cursor = conn.execute(
             "SELECT * from tasks WHERE user_id = ? ORDER BY id LIMIT 1 OFFSET ?",
@@ -48,7 +48,7 @@ def get_task_by_idx(tg_id: int, idx: int) -> dict[str, Any]:
         )
         row = cursor.fetchone()
 
-    return dict(row)
+    return dict(row) if row is not None else None
 
 
 def update_task_by_idx(tg_id: int, idx: int, new_task: str):
@@ -71,7 +71,7 @@ def delete_task_by_idx(tg_id: int, idx: int):
         conn.commit()
 
 
-def get_tasks(tg_id: int) -> list[str]:
+def get_tasks(tg_id: int) -> list[dict[str, Any]]:
     with get_connection() as conn:
         cursor = conn.execute(
             "SELECT * FROM tasks WHERE user_id = ? ORDER BY id",
