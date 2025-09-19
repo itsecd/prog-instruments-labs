@@ -31,8 +31,6 @@ async def task_getter(dialog_manager: DialogManager, **kwargs) -> dict[str, str]
     user_tasks = get_tasks(user_id)
 
     task_idx = dialog_manager.dialog_data.get("task_idx")
-    if task_idx is None or task_idx >= len(user_tasks):
-        return None
 
     return {
         "task": user_tasks[task_idx]["task"]
