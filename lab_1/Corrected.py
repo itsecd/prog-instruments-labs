@@ -43,7 +43,8 @@ class Member:
         return len(self.borrowed_books) < 5 and self.fines == 0
 
     def __str__(self):
-        return f"Member {self.member_id}: {self.name} ({len(self.borrowed_books)} books borrowed, ${self.fines} fines)"
+        return (f"Member {self.member_id}: {self.name} "
+                f"({len(self.borrowed_books)} books borrowed, ${self.fines} fines)")
 
 
 class Library:
@@ -94,10 +95,11 @@ class Library:
             return False, "Member cannot borrow more books or has unpaid fines"
 
         book.is_available = False
+        due_date = datetime.date.today() + datetime.timedelta(days=self.loan_period)
         member.borrowed_books.append({
             'book': book,
             'borrow_date': datetime.date.today(),
-            'due_date': datetime.date.today() + datetime.timedelta(days=self.loan_period)
+            'due_date': due_date
         })
 
         self.transactions.append({
@@ -105,10 +107,11 @@ class Library:
             'isbn': isbn,
             'member_id': member_id,
             'date': datetime.date.today(),
-            'due_date': datetime.date.today() + datetime.timedelta(days=self.loan_period)
+            'due_date': due_date
         })
 
-        return True, f"Book borrowed successfully. Due date: {datetime.date.today() + datetime.timedelta(days=self.loan_period)}"
+        success_message = f"Book borrowed successfully. Due date: {due_date}"
+        return True, success_message
 
     def return_book(self, isbn, member_id):
         book = self.find_book_by_isbn(isbn)
@@ -138,7 +141,9 @@ class Library:
                         'days_late': days_late
                     })
 
-                    return True, f"Book returned with ${fine:.2f} fine for {days_late} days late"
+                    fine_message = (f"Book returned with ${fine:.2f} fine "
+                                    f"for {days_late} days late")
+                    return True, fine_message
 
                 self.transactions.append({
                     'type': 'return',
@@ -246,8 +251,10 @@ class Library:
                 if book:
                     member.borrowed_books.append({
                         'book': book,
-                        'borrow_date': datetime.date.fromisoformat(borrowed_data['borrow_date']),
-                        'due_date': datetime.date.fromisoformat(borrowed_data['due_date'])
+                        'borrow_date': datetime.date.fromisoformat(
+                            borrowed_data['borrow_date']),
+                        'due_date': datetime.date.fromisoformat(
+                            borrowed_data['due_date'])
                     })
                     book.is_available = False
 
@@ -280,11 +287,16 @@ def main():
 
     # Add some sample data
     sample_books = [
-        Book("The Great Gatsby", "F. Scott Fitzgerald", "978-0-7432-7356-5", 1925, 180),
-        Book("To Kill a Mockingbird", "Harper Lee", "978-0-06-112008-4", 1960, 281),
-        Book("1984", "George Orwell", "978-0-452-28423-4", 1949, 328),
-        Book("Pride and Prejudice", "Jane Austen", "978-0-14-143951-8", 1813, 432),
-        Book("The Catcher in the Rye", "J.D. Salinger", "978-0-316-76948-0", 1951, 234)
+        Book("The Great Gatsby", "F. Scott Fitzgerald",
+             "978-0-7432-7356-5", 1925, 180),
+        Book("To Kill a Mockingbird", "Harper Lee",
+             "978-0-06-112008-4", 1960, 281),
+        Book("1984", "George Orwell",
+             "978-0-452-28423-4", 1949, 328),
+        Book("Pride and Prejudice", "Jane Austen",
+             "978-0-14-143951-8", 1813, 432),
+        Book("The Catcher in the Rye", "J.D. Salinger",
+             "978-0-316-76948-0", 1951, 234)
     ]
 
     for book in sample_books:
@@ -355,8 +367,9 @@ def main():
             if overdue:
                 print(f"\nOverdue Books ({len(overdue)}):")
                 for i, item in enumerate(overdue, 1):
-                    print(f"{i}. {item['book'].title} - Due: {item['due_date']} "
-                          f"({item['days_late']} days late) - {item['member'].name}")
+                    overdue_info = (f"{i}. {item['book'].title} - Due: {item['due_date']} "
+                                    f"({item['days_late']} days late) - {item['member'].name}")
+                    print(overdue_info)
             else:
                 print("No overdue books.")
 
@@ -369,7 +382,8 @@ def main():
                 if member.fines > 0:
                     amount = float(input("Enter amount to pay: "))
                     if member.pay_fine(amount):
-                        print(f"Paid ${amount:.2f}. Remaining fine: ${member.fines:.2f}")
+                        remaining = f"Remaining fine: ${member.fines:.2f}"
+                        print(f"Paid ${amount:.2f}. {remaining}")
                     else:
                         print("Invalid payment amount.")
                 else:
