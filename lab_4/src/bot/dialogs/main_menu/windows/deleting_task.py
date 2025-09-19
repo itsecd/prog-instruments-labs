@@ -8,11 +8,11 @@ from src.bot.states.main_menu import MainMenuStatesGroup
 from src.database.crud import get_tasks, delete_task_by_idx
 
 
-async def do_back(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def _do_back(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.switch_to(MainMenuStatesGroup.task_choosen)
 
 
-async def do_delete(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def _do_delete(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
     user_id = dialog_manager.event.from_user.id
     user_tasks = get_tasks(user_id)
 
@@ -27,7 +27,7 @@ async def do_delete(callback: CallbackQuery, button: Button, dialog_manager: Dia
 
 window = Window(
     Format("Delete?"),
-    Button(Const("Delete"), id="delete_task", on_click=do_delete),
-    Button(Const("Back"), id="back", on_click=do_back),
+    Button(Const("Delete"), id="delete_task", on_click=_do_delete),
+    Button(Const("Back"), id="back", on_click=_do_back),
     state=MainMenuStatesGroup.deleting_task,
 )

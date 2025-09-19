@@ -20,7 +20,7 @@ async def start_message_handler(message: Message, dialog_manager: DialogManager)
         create_user(message.from_user.id)
 
     await dialog_manager.start(
-        MainMenuStatesGroup.main,
+        MainMenuStatesGroup.choosing_action,
         mode=StartMode.RESET_STACK,
     )
 
