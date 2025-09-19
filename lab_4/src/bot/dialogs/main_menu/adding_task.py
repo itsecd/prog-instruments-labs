@@ -10,7 +10,7 @@ from src.database.crud import add_task
 
 
 async def do_back(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    await dialog_manager.switch_to(MainMenuStatesGroup.main)
+    await dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
 
 
 async def save_task(message: Message, _, dialog_manager: DialogManager):
@@ -18,7 +18,7 @@ async def save_task(message: Message, _, dialog_manager: DialogManager):
 
     add_task(message.from_user.id, task)
 
-    await dialog_manager.switch_to(MainMenuStatesGroup.main)
+    await dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
 
 
 window = Window(

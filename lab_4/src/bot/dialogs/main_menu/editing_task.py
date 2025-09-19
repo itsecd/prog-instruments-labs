@@ -19,7 +19,7 @@ async def edit_task(message: Message, _, dialog_manager: DialogManager):
 
     update_task_by_idx(user_id, task_idx, task)
 
-    await dialog_manager.switch_to(MainMenuStatesGroup.selecting_task)
+    await dialog_manager.switch_to(MainMenuStatesGroup.choosing_task)
 
 
 window = Window(

@@ -2,9 +2,9 @@ from aiogram.fsm.state import State, StatesGroup
 
 
 class MainMenuStatesGroup(StatesGroup):
-    main = State()
+    choosing_action = State()
     adding_task = State()
-    selecting_task = State()
+    choosing_task = State()
     task_choosen = State()
     editing_task = State()
     deleting_task = State()

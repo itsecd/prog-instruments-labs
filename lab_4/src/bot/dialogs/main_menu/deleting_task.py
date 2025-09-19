@@ -22,7 +22,7 @@ async def do_delete(callback: CallbackQuery, button: Button, dialog_manager: Dia
         return
 
     delete_task_by_idx(user_id, task_idx)
-    await dialog_manager.switch_to(MainMenuStatesGroup.selecting_task)
+    await dialog_manager.switch_to(MainMenuStatesGroup.choosing_task)
 
 
 window = Window(

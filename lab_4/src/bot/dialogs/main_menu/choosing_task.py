@@ -5,11 +5,11 @@ from aiogram_dialog.widgets.kbd import Button, ScrollingGroup, Radio
 from aiogram_dialog.widgets.text import Const, Format
 
 from src.bot.states.main_menu import MainMenuStatesGroup
-from .main_menu import get_tasks
+from .choosing_action import get_tasks
 
 
 async def do_back(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    await dialog_manager.switch_to(MainMenuStatesGroup.main)
+    await dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
 
 
 async def do_choose(callback: CallbackQuery, button: Button, dialog_manager: DialogManager, item_id: str):
@@ -34,6 +34,6 @@ window = Window(
         height=5,
     ),
     Button(Const("Back"), id="back", on_click=do_back),
-    state=MainMenuStatesGroup.selecting_task,
+    state=MainMenuStatesGroup.choosing_task,
     getter=get_tasks,
 )

@@ -9,7 +9,7 @@ from src.database.crud import get_tasks
 
 
 async def do_back(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    await dialog_manager.switch_to(MainMenuStatesGroup.selecting_task)
+    await dialog_manager.switch_to(MainMenuStatesGroup.choosing_task)
 
 
 async def get_task(dialog_manager: DialogManager, **kwargs):

@@ -22,7 +22,7 @@ async def do_reverse(callback: CallbackQuery, button: Button, dialog_manager: Di
     set_tasks_reversed(user_id, not bool(user["tasks_reversed"]))
 
     await callback.answer(text="Reversed!")
-    await dialog_manager.switch_to(MainMenuStatesGroup.main)
+    await dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
 
 
 async def do_select(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
@@ -30,7 +30,7 @@ async def do_select(callback: CallbackQuery, button: Button, dialog_manager: Dia
         await callback.answer("No tasks!")
         return
 
-    await dialog_manager.switch_to(MainMenuStatesGroup.selecting_task)
+    await dialog_manager.switch_to(MainMenuStatesGroup.choosing_task)
     
 
 async def get_tasks(dialog_manager: DialogManager, **kwargs):
@@ -56,6 +56,6 @@ window = Window(
     Button(Const("Add"), id="add_task", on_click=do_add), # C
     Button(Const("Delete/Edit"), id="delete_or_edit_task", on_click=do_select), # UD
     Button(Const("Reverse"), id="reverse_tasks", on_click=do_reverse),
-    state=MainMenuStatesGroup.main,
+    state=MainMenuStatesGroup.choosing_action,
     getter=get_tasks,
 )
