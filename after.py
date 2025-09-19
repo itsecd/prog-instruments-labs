@@ -192,7 +192,7 @@ class Bill_App:
             textvariable=self.hand_gloves,
             font=('times new roman', 16, 'bold'),
             bd=5,
-            relief =GROOVE
+            relief = GROOVE
         )
         hand_gloves_txt.grid(row=2, column=1, padx=10, pady=10)
 
@@ -804,7 +804,7 @@ class Bill_App:
                 f"Bill no:{self.bill_no.get()} Saved Successfully"
             )
         else:
-           return
+            return
 
     # =================== Find Bill =====================
     def find_bill(self):
