@@ -7,6 +7,6 @@ def dict_to_sn(d: dict) -> SimpleNamespace:
         if isinstance(value, dict):
             setattr(sn, key, dict_to_sn(value))
         else:
-            setattr(sn, key, dict_to_sn(value))
+            setattr(sn, key, value)
     
     return sn

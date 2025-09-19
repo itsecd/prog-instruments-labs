@@ -6,6 +6,8 @@ from aiogram_dialog.widgets.text import Const, Format
 
 from src.bot.states.main_menu import MainMenuStatesGroup
 
+from src.config import ui
+
 from ..getters import tasks_getter
 
 
@@ -20,11 +22,11 @@ async def _do_choose(callback: CallbackQuery, button: Button, dialog_manager: Di
 
 
 window = Window(
-    Const("Select task:"),
+    Const(ui.messages.choose_task),
     ScrollingGroup(
         Radio(
-            Format("{item[0]}. {item[1]}"),
-            Format("{item[0]}. {item[1]}"),
+            Format(ui.formats.tasks),
+            Format(ui.formats.tasks),
             id="task_radio",
             item_id_getter=lambda x: str(x[0]),
             items="tasks",
@@ -34,7 +36,7 @@ window = Window(
         width=1,
         height=5,
     ),
-    Button(Const("Back"), id="back", on_click=_do_back),
+    Button(Const(ui.buttons.back), id="back", on_click=_do_back),
     state=MainMenuStatesGroup.choosing_task,
     getter=tasks_getter,
 )

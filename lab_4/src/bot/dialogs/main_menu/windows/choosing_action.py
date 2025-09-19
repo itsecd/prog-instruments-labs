@@ -11,7 +11,10 @@ from src.database.crud import (
     get_user,
 )
 
+from src.config import ui
+
 from ..getters import tasks_getter
+
 
 async def _do_add(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.switch_to(MainMenuStatesGroup.adding_task)
@@ -35,14 +38,14 @@ async def _do_select(callback: CallbackQuery, button: Button, dialog_manager: Di
 
 
 window = Window(
-    Const("Your tasks:"),
+    Const(ui.messages.your_tasks),
     List(
-        Format("{item[0]}\. {item[1]}"),
+        Format(ui.formats.tasks),
         items="tasks",
     ),
-    Button(Const("Add"), id="add_task", on_click=_do_add), # C
-    Button(Const("Delete/Edit"), id="delete_or_edit_task", on_click=_do_select), # UD
-    Button(Const("Reverse"), id="reverse_tasks", on_click=_do_reverse),
+    Button(Const(ui.buttons.add), id="add_task", on_click=_do_add), # C
+    Button(Const(ui.buttons.edit_or_delete), id="delete_or_edit_task", on_click=_do_select), # UD
+    Button(Const(ui.buttons.reverse), id="reverse_tasks", on_click=_do_reverse),
     state=MainMenuStatesGroup.choosing_action,
     getter=tasks_getter,
 )

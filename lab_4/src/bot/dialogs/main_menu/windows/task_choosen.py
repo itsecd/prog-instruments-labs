@@ -6,6 +6,8 @@ from aiogram_dialog.widgets.text import Const, Format
 
 from src.bot.states.main_menu import MainMenuStatesGroup
 
+from src.config import ui
+
 from ..getters import task_getter
 
 
@@ -22,7 +24,8 @@ async def _do_edit(callback: CallbackQuery, button: Button, dialog_manager: Dial
 
 
 window = Window(
-    Format("Selected action fot task:\n{task}"),
+    Format(ui.messages.choose_action),
+    Format("{task}"),
     Row(
         Button(Const("Edit"), id="edit_task", on_click=_do_edit),
         Button(Const("Delete"), id="delete_task", on_click=_do_delete),
