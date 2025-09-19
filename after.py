@@ -763,14 +763,20 @@ class Bill_App:
                 f"\n Sanitizer\t\t{self.sanitizer.get()}\t\t{self.m_s_p}"
             )
         if self.mask.get() != 0:
-            self.txtarea.insert(END, f"\n Sanitizer\t\t{self.mask.get()}\t\t{self.m_m_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Sanitizer\t\t{self.mask.get()}\t\t{self.m_m_p}"
+            )
         if self.hand_gloves.get() != 0:
             self.txtarea.insert(
                 END,
                 f"\n Hand Gloves\t\t{self.hand_gloves.get()}\t\t{self.m_h_g_p}"
             )
         if self.dettol.get() != 0:
-            self.txtarea.insert(END, f"\n Dettol\t\t{self.dettol.get()}\t\t{self.m_d_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Dettol\t\t{self.dettol.get()}\t\t{self.m_d_p}"
+            )
         if self.newsprin.get() != 0:
             self.txtarea.insert(
                 END,
@@ -783,32 +789,56 @@ class Bill_App:
             )
     # ============= Grocery =============================
         if self.rice.get() != 0:
-            self.txtarea.insert(END, f"\n Rice\t\t{self.rice.get()}\t\t{self.g_r_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Rice\t\t{self.rice.get()}\t\t{self.g_r_p}"
+            )
         if self.food_oil.get() != 0:
             self.txtarea.insert(
                 END,
                 f"\n Food Oil\t\t{self.food_oil.get()}\t\t{self.g_f_o_p}"
             )
         if self.wheat.get() != 0:
-            self.txtarea.insert(END, f"\n Wheat\t\t{self.wheat.get()}\t\t{self.g_w_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Wheat\t\t{self.wheat.get()}\t\t{self.g_w_p}"
+            )
         if self.daal.get() != 0:
-            self.txtarea.insert(END, f"\n Daal\t\t{self.daal.get()}\t\t{self.g_d_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Daal\t\t{self.daal.get()}\t\t{self.g_d_p}"
+            )
         if self.flour.get() != 0:
-            self.txtarea.insert(END, f"\n Flour\t\t{self.flour.get()}\t\t{self.g_f_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Flour\t\t{self.flour.get()}\t\t{self.g_f_p}"
+            )
         if self.maggi.get() != 0:
-            self.txtarea.insert(END, f"\n Maggi\t\t{self.maggi.get()}\t\t{self.g_m_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Maggi\t\t{self.maggi.get()}\t\t{self.g_m_p}"
+            )
         # ================ Cold Drinks ==================
         if self.sprite.get() != 0:
-            self.txtarea.insert(END, f"\n Sprite\t\t{self.sprite.get()}\t\t{self.c_d_s_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Sprite\t\t{self.sprite.get()}\t\t{self.c_d_s_p}"
+            )
         if self.limka.get() != 0:
             self.txtarea.insert(
                 END,
                 f"\n Sanitizer\t\t{self.limka.get()}\t\t{self.c_d_l_p}"
             )
         if self.mazza.get() != 0:
-            self.txtarea.insert(END, f"\n Mazza\t\t{self.mazza.get()}\t\t{self.c_d_m_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Mazza\t\t{self.mazza.get()}\t\t{self.c_d_m_p}"
+            )
         if self.coke.get() != 0:
-            self.txtarea.insert(END, f"\n Dettol\t\t{self.coke.get()}\t\t{self.c_d_c_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Dettol\t\t{self.coke.get()}\t\t{self.c_d_c_p}"
+            )
         if self.fanta.get() != 0:
             self.txtarea.insert(
                 END,
@@ -822,9 +852,15 @@ class Bill_App:
             self.txtarea.insert(END, f"\n--------------------------------")
         # =============== Taxes =========================
         if self.medical_tax.get() != '0.0':
-            self.txtarea.insert(END, f"\n Medical Tax\t\t\t{self.medical_tax.get()}")
+            self.txtarea.insert(
+                END,
+                f"\n Medical Tax\t\t\t{self.medical_tax.get()}"
+            )
         if self.grocery_tax.get() != '0.0':
-            self.txtarea.insert(END, f"\n Grocery Tax\t\t\t{self.grocery_tax.get()}")
+            self.txtarea.insert(
+                END,
+                f"\n Grocery Tax\t\t\t{self.grocery_tax.get()}"
+            )
         if self.cold_drinks_tax.get() != '0.0':
             self.txtarea.insert(
                 END,
@@ -917,4 +953,3 @@ class Bill_App:
 root = Tk()
 obj = Bill_App(root)
 root.mainloop()
-
