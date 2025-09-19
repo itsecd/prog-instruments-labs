@@ -1,7 +1,7 @@
 import datetime
 import json
 import os
-from typing import List, Dict, Optional, Union, Any, Tuple
+from typing import List, Dict, Optional, Any, Tuple
 
 
 class Book:
