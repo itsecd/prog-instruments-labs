@@ -689,7 +689,10 @@ class Bill_App:
         self.m_d_p = self.dettol.get()*30
         self.m_n_p = self.newsprin.get()*5
         self.m_t_g_p = self.thermal_gun.get()*15
-        self.total_medical_price = float(self.m_m_p+self.m_h_g_p+self.m_d_p+self.m_n_p+self.m_t_g_p+self.m_s_p)
+        self.total_medical_price = float(
+            self.m_m_p + self.m_h_g_p
+            + self.m_d_p+self.m_n_p + self.m_t_g_p+self.m_s_p
+        )
 
         self.medical_price.set("Rs. "+str(self.total_medical_price))
         self.c_tax = round((self.total_medical_price*0.05), 2)
@@ -701,7 +704,10 @@ class Bill_App:
         self.g_d_p = self.daal.get()*6
         self.g_f_p = self.flour.get()*8
         self.g_m_p = self.maggi.get()*5
-        self.total_grocery_price = float(self.g_r_p+self.g_f_o_p+self.g_w_p+self.g_d_p+self.g_f_p+self.g_m_p)
+        self.total_grocery_price = float(
+            self.g_r_p + self.g_f_o_p + self.g_w_p
+            + self.g_d_p + self.g_f_p + self.g_m_p
+        )
 
         self.grocery_price.set("Rs. " + str(self.total_grocery_price))
         self.g_tax = round((self.total_grocery_price*5), 2)
@@ -713,13 +719,20 @@ class Bill_App:
         self.c_d_c_p = self.coke.get()*10
         self.c_d_f_p = self.fanta.get()*10
         self.c_m_d = self.mountain_duo.get()*10
-        self.total_cold_drinks_price = float(self.c_d_s_p+self.c_d_l_p+self.c_d_m_p+self.c_d_c_p+self.c_d_f_p+self.c_m_d)
+        self.total_cold_drinks_price = float(
+            self.c_d_s_p + self.c_d_l_p + self.c_d_m_p
+            + self.c_d_c_p + self.c_d_f_p + self.c_m_d
+        )
 
         self.cold_drinks_price.set("Rs. "+str(self.total_cold_drinks_price))
         self.c_d_tax = round((self.total_cold_drinks_price * 0.1), 2)
         self.cold_drinks_tax.set("Rs. "+str(self.c_d_tax))
 
-        self.total_bill = float(self.total_medical_price+self.total_grocery_price+self.total_cold_drinks_price+self.c_tax+self.g_tax+self.c_d_tax)
+        self.total_bill = float(
+            self.total_medical_price + self.total_grocery_price
+            + self.total_cold_drinks_price + self.c_tax
+            + self.g_tax+self.c_d_tax
+        )
 
 # ============= Welcome-Bill ============================
     def welcome_bill(self):
@@ -735,28 +748,47 @@ class Bill_App:
     def bill_area(self):
         if self.c_name.get() == " " or self.c_phone.get() == " ":
             messagebox.showerror("Error", "Customer Details Are Must")
-        elif self.medical_price.get() == "Rs. 0.0" and self.grocery_price.get() == "Rs. 0.0" and self.cold_drinks_price.get()=="Rs. 0.0":
+        elif (
+                self.medical_price.get() == "Rs. 0.0"
+                and self.grocery_price.get() == "Rs. 0.0"
+                and self.cold_drinks_price.get() == "Rs. 0.0"
+        ):
             messagebox.showerror("Error", "No Product Purchased")
         else:
             self.welcome_bill()
     # ============ Medical ==============================
         if self.sanitizer.get() != 0:
-            self.txtarea.insert(END, f"\n Sanitizer\t\t{self.sanitizer.get()}\t\t{self.m_s_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Sanitizer\t\t{self.sanitizer.get()}\t\t{self.m_s_p}"
+            )
         if self.mask.get() != 0:
             self.txtarea.insert(END, f"\n Sanitizer\t\t{self.mask.get()}\t\t{self.m_m_p}")
         if self.hand_gloves.get() != 0:
-            self.txtarea.insert(END, f"\n Hand Gloves\t\t{self.hand_gloves.get()}\t\t{self.m_h_g_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Hand Gloves\t\t{self.hand_gloves.get()}\t\t{self.m_h_g_p}"
+            )
         if self.dettol.get() != 0:
             self.txtarea.insert(END, f"\n Dettol\t\t{self.dettol.get()}\t\t{self.m_d_p}")
         if self.newsprin.get() != 0:
-            self.txtarea.insert(END, f"\n Newsprin\t\t{self.newsprin.get()}\t\t{self.m_n_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Newsprin\t\t{self.newsprin.get()}\t\t{self.m_n_p}"
+            )
         if self.thermal_gun.get() != 0:
-            self.txtarea.insert(END, f"\n Thermal Gun\t\t{self.sanitizer.get()}\t\t{self.m_t_g_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Thermal Gun\t\t{self.sanitizer.get()}\t\t{self.m_t_g_p}"
+            )
     # ============= Grocery =============================
         if self.rice.get() != 0:
             self.txtarea.insert(END, f"\n Rice\t\t{self.rice.get()}\t\t{self.g_r_p}")
         if self.food_oil.get() != 0:
-            self.txtarea.insert(END, f"\n Food Oil\t\t{self.food_oil.get()}\t\t{self.g_f_o_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Food Oil\t\t{self.food_oil.get()}\t\t{self.g_f_o_p}"
+            )
         if self.wheat.get() != 0:
             self.txtarea.insert(END, f"\n Wheat\t\t{self.wheat.get()}\t\t{self.g_w_p}")
         if self.daal.get() != 0:
@@ -769,15 +801,24 @@ class Bill_App:
         if self.sprite.get() != 0:
             self.txtarea.insert(END, f"\n Sprite\t\t{self.sprite.get()}\t\t{self.c_d_s_p}")
         if self.limka.get() != 0:
-            self.txtarea.insert(END, f"\n Sanitizer\t\t{self.limka.get()}\t\t{self.c_d_l_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Sanitizer\t\t{self.limka.get()}\t\t{self.c_d_l_p}"
+            )
         if self.mazza.get() != 0:
             self.txtarea.insert(END, f"\n Mazza\t\t{self.mazza.get()}\t\t{self.c_d_m_p}")
         if self.coke.get() != 0:
             self.txtarea.insert(END, f"\n Dettol\t\t{self.coke.get()}\t\t{self.c_d_c_p}")
         if self.fanta.get() != 0:
-            self.txtarea.insert(END, f"\n Fanta\t\t{self.newsprin.get()}\t\t{self.c_d_f_p}")
+            self.txtarea.insert(
+                END,
+                f"\n Fanta\t\t{self.newsprin.get()}\t\t{self.c_d_f_p}"
+            )
         if self.mountain_duo.get() != 0:
-            self.txtarea.insert(END, f"\n Mountain Duo\t\t{self.sanitizer.get()}\t\t{self.c_m_d}")
+            self.txtarea.insert(
+                END,
+                f"\n Mountain Duo\t\t{self.sanitizer.get()}\t\t{self.c_m_d}"
+            )
             self.txtarea.insert(END, f"\n--------------------------------")
         # =============== Taxes =========================
         if self.medical_tax.get() != '0.0':
@@ -785,7 +826,10 @@ class Bill_App:
         if self.grocery_tax.get() != '0.0':
             self.txtarea.insert(END, f"\n Grocery Tax\t\t\t{self.grocery_tax.get()}")
         if self.cold_drinks_tax.get() != '0.0':
-            self.txtarea.insert(END, f"\n Cold Drinks Tax\t\t\t{self.cold_drinks_tax.get()}")
+            self.txtarea.insert(
+                END,
+                f"\n Cold Drinks Tax\t\t\t{self.cold_drinks_tax.get()}"
+            )
 
         self.txtarea.insert(END, f"\n Total Bil:\t\t\t Rs.{self.total_bill}")
         self.txtarea.insert(END, f"\n--------------------------------")
