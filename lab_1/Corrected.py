@@ -5,7 +5,27 @@ from typing import List, Dict, Optional, Union
 
 
 class Book:
+    """Represents a book in the library system.
+
+    Attributes:
+        title (str): The title of the book.
+        author (str): The author of the book.
+        isbn (str): The ISBN number of the book.
+        year (int): The publication year.
+        pages (int): The number of pages.
+        is_available (bool): Availability status for borrowing.
+    """
+
     def __init__(self, title, author, isbn, year, pages):
+        """Initialize a Book instance.
+
+        Args:
+            title: The title of the book.
+            author: The author of the book.
+            isbn: The ISBN number.
+            year: Publication year.
+            pages: Number of pages.
+        """
         self.title = title
         self.author = author
         self.isbn = isbn
@@ -14,15 +34,44 @@ class Book:
         self.is_available = True
 
     def get_info(self):
+        """Return formatted information about the book.
+
+        Returns:
+            str: Formatted string with book details.
+        """
         return f"{self.title} by {self.author} ({self.year}) - {self.pages} pages"
 
     def __str__(self):
+        """Return string representation of the book.
+
+        Returns:
+            str: Book title, author, and availability status.
+        """
         status = "Available" if self.is_available else "Borrowed"
         return f"{self.title} - {self.author} [{status}]"
 
 
 class Member:
+    """Represents a library member.
+
+    Attributes:
+        member_id (str): Unique identifier for the member.
+        name (str): Member's full name.
+        email (str): Member's email address.
+        phone (str): Member's phone number.
+        borrowed_books (list): List of currently borrowed books.
+        fines (float): Outstanding fines amount.
+    """
+
     def __init__(self, member_id, name, email, phone):
+        """Initialize a Member instance.
+
+        Args:
+            member_id: Unique member identifier.
+            name: Member's full name.
+            email: Member's email address.
+            phone: Member's phone number.
+        """
         self.member_id = member_id
         self.name = name
         self.email = email
@@ -31,24 +80,63 @@ class Member:
         self.fines = 0.0
 
     def add_fine(self, amount):
+        """Add a fine to the member's account.
+
+        Args:
+            amount: The fine amount to add.
+        """
         self.fines += amount
 
     def pay_fine(self, amount):
+        """Process a fine payment.
+
+        Args:
+            amount: The amount to pay towards fines.
+
+        Returns:
+            bool: True if payment was successful, False otherwise.
+        """
         if amount <= self.fines:
             self.fines -= amount
             return True
         return False
 
     def can_borrow(self):
+        """Check if member is eligible to borrow books.
+
+        Returns:
+            bool: True if member can borrow, False otherwise.
+        """
         return len(self.borrowed_books) < 5 and self.fines == 0
 
     def __str__(self):
+        """Return string representation of the member.
+
+        Returns:
+            str: Member details including borrowed books and fines.
+        """
         return (f"Member {self.member_id}: {self.name} "
                 f"({len(self.borrowed_books)} books borrowed, ${self.fines} fines)")
 
 
 class Library:
+    """Represents a library with books, members, and transaction management.
+
+    Attributes:
+        name (str): Name of the library.
+        books (list): Collection of books in the library.
+        members (list): Registered library members.
+        transactions (list): History of library transactions.
+        loan_period (int): Number of days for book loans.
+        daily_fine (float): Daily fine rate for overdue books.
+    """
+
     def __init__(self, name):
+        """Initialize a Library instance.
+
+        Args:
+            name: Name of the library.
+        """
         self.name = name
         self.books = []
         self.members = []
@@ -57,15 +145,36 @@ class Library:
         self.daily_fine = 0.50
 
     def add_book(self, book):
+        """Add a book to the library collection.
+
+        Args:
+            book: Book object to add.
+        """
         self.books.append(book)
 
     def find_book_by_isbn(self, isbn):
+        """Find a book by its ISBN number.
+
+        Args:
+            isbn: ISBN number to search for.
+
+        Returns:
+            Book: Book object if found, None otherwise.
+        """
         for book in self.books:
             if book.isbn == isbn:
                 return book
         return None
 
     def find_book_by_title(self, title):
+        """Find books by title (partial match, case-insensitive).
+
+        Args:
+            title: Title or part of title to search for.
+
+        Returns:
+            list: List of matching Book objects.
+        """
         results = []
         for book in self.books:
             if title.lower() in book.title.lower():
@@ -73,15 +182,37 @@ class Library:
         return results
 
     def register_member(self, member):
+        """Register a new library member.
+
+        Args:
+            member: Member object to register.
+        """
         self.members.append(member)
 
     def find_member_by_id(self, member_id):
+        """Find a member by their ID.
+
+        Args:
+            member_id: Member ID to search for.
+
+        Returns:
+            Member: Member object if found, None otherwise.
+        """
         for member in self.members:
             if member.member_id == member_id:
                 return member
         return None
 
     def borrow_book(self, isbn, member_id):
+        """Process a book borrowing transaction.
+
+        Args:
+            isbn: ISBN of the book to borrow.
+            member_id: ID of the member borrowing the book.
+
+        Returns:
+            tuple: (success: bool, message: str)
+        """
         book = self.find_book_by_isbn(isbn)
         member = self.find_member_by_id(member_id)
 
@@ -114,6 +245,15 @@ class Library:
         return True, success_message
 
     def return_book(self, isbn, member_id):
+        """Process a book return transaction.
+
+        Args:
+            isbn: ISBN of the book being returned.
+            member_id: ID of the member returning the book.
+
+        Returns:
+            tuple: (success: bool, message: str)
+        """
         book = self.find_book_by_isbn(isbn)
         member = self.find_member_by_id(member_id)
 
@@ -157,6 +297,14 @@ class Library:
         return False, "Member did not borrow this book"
 
     def search_books(self, query):
+        """Search books by title, author, or ISBN.
+
+        Args:
+            query: Search term to match against book attributes.
+
+        Returns:
+            list: List of matching Book objects.
+        """
         results = []
         for book in self.books:
             if (query.lower() in book.title.lower() or
@@ -166,6 +314,11 @@ class Library:
         return results
 
     def get_overdue_books(self):
+        """Get all currently overdue books.
+
+        Returns:
+            list: List of dictionaries with overdue book details.
+        """
         overdue = []
         today = datetime.date.today()
 
@@ -182,6 +335,11 @@ class Library:
         return overdue
 
     def save_to_file(self, filename):
+        """Save library data to a JSON file.
+
+        Args:
+            filename: Name of the file to save data to.
+        """
         data = {
             'name': self.name,
             'books': [
@@ -216,6 +374,14 @@ class Library:
             json.dump(data, f, indent=2)
 
     def load_from_file(self, filename):
+        """Load library data from a JSON file.
+
+        Args:
+            filename: Name of the file to load data from.
+
+        Returns:
+            bool: True if loading was successful, False otherwise.
+        """
         if not os.path.exists(filename):
             return False
 
@@ -264,6 +430,7 @@ class Library:
 
 
 def display_menu():
+    """Display the main menu of the library management system."""
     print("\n" + "=" * 50)
     print("LIBRARY MANAGEMENT SYSTEM")
     print("=" * 50)
@@ -283,6 +450,7 @@ def display_menu():
 
 
 def main():
+    """Main function to run the library management system."""
     library = Library("City Central Library")
 
     # Add some sample data
