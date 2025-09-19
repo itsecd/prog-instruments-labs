@@ -1,7 +1,7 @@
 import datetime
 import json
 import os
-from typing import List, Dict, Optional, Union
+from typing import List, Dict, Optional, Union, Any, Tuple
 
 
 class Book:
@@ -16,7 +16,7 @@ class Book:
         is_available (bool): Availability status for borrowing.
     """
 
-    def __init__(self, title, author, isbn, year, pages):
+    def __init__(self, title: str, author: str, isbn: str, year: int, pages: int) -> None:
         """Initialize a Book instance.
 
         Args:
@@ -33,7 +33,7 @@ class Book:
         self.pages = pages
         self.is_available = True
 
-    def get_info(self):
+    def get_info(self) -> str:
         """Return formatted information about the book.
 
         Returns:
@@ -41,7 +41,7 @@ class Book:
         """
         return f"{self.title} by {self.author} ({self.year}) - {self.pages} pages"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of the book.
 
         Returns:
@@ -63,7 +63,7 @@ class Member:
         fines (float): Outstanding fines amount.
     """
 
-    def __init__(self, member_id, name, email, phone):
+    def __init__(self, member_id: str, name: str, email: str, phone: str) -> None:
         """Initialize a Member instance.
 
         Args:
@@ -76,10 +76,10 @@ class Member:
         self.name = name
         self.email = email
         self.phone = phone
-        self.borrowed_books = []
+        self.borrowed_books: List[Dict[str, Any]] = []
         self.fines = 0.0
 
-    def add_fine(self, amount):
+    def add_fine(self, amount: float) -> None:
         """Add a fine to the member's account.
 
         Args:
@@ -87,7 +87,7 @@ class Member:
         """
         self.fines += amount
 
-    def pay_fine(self, amount):
+    def pay_fine(self, amount: float) -> bool:
         """Process a fine payment.
 
         Args:
@@ -101,7 +101,7 @@ class Member:
             return True
         return False
 
-    def can_borrow(self):
+    def can_borrow(self) -> bool:
         """Check if member is eligible to borrow books.
 
         Returns:
@@ -109,7 +109,7 @@ class Member:
         """
         return len(self.borrowed_books) < 5 and self.fines == 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Return string representation of the member.
 
         Returns:
@@ -131,20 +131,20 @@ class Library:
         daily_fine (float): Daily fine rate for overdue books.
     """
 
-    def __init__(self, name):
+    def __init__(self, name: str) -> None:
         """Initialize a Library instance.
 
         Args:
             name: Name of the library.
         """
         self.name = name
-        self.books = []
-        self.members = []
-        self.transactions = []
+        self.books: List[Book] = []
+        self.members: List[Member] = []
+        self.transactions: List[Dict[str, Any]] = []
         self.loan_period = 14
         self.daily_fine = 0.50
 
-    def add_book(self, book):
+    def add_book(self, book: Book) -> None:
         """Add a book to the library collection.
 
         Args:
@@ -152,7 +152,7 @@ class Library:
         """
         self.books.append(book)
 
-    def find_book_by_isbn(self, isbn):
+    def find_book_by_isbn(self, isbn: str) -> Optional[Book]:
         """Find a book by its ISBN number.
 
         Args:
@@ -166,7 +166,7 @@ class Library:
                 return book
         return None
 
-    def find_book_by_title(self, title):
+    def find_book_by_title(self, title: str) -> List[Book]:
         """Find books by title (partial match, case-insensitive).
 
         Args:
@@ -175,13 +175,13 @@ class Library:
         Returns:
             list: List of matching Book objects.
         """
-        results = []
+        results: List[Book] = []
         for book in self.books:
             if title.lower() in book.title.lower():
                 results.append(book)
         return results
 
-    def register_member(self, member):
+    def register_member(self, member: Member) -> None:
         """Register a new library member.
 
         Args:
@@ -189,7 +189,7 @@ class Library:
         """
         self.members.append(member)
 
-    def find_member_by_id(self, member_id):
+    def find_member_by_id(self, member_id: str) -> Optional[Member]:
         """Find a member by their ID.
 
         Args:
@@ -203,7 +203,7 @@ class Library:
                 return member
         return None
 
-    def borrow_book(self, isbn, member_id):
+    def borrow_book(self, isbn: str, member_id: str) -> Tuple[bool, str]:
         """Process a book borrowing transaction.
 
         Args:
@@ -244,7 +244,7 @@ class Library:
         success_message = f"Book borrowed successfully. Due date: {due_date}"
         return True, success_message
 
-    def return_book(self, isbn, member_id):
+    def return_book(self, isbn: str, member_id: str) -> Tuple[bool, str]:
         """Process a book return transaction.
 
         Args:
@@ -296,7 +296,7 @@ class Library:
 
         return False, "Member did not borrow this book"
 
-    def search_books(self, query):
+    def search_books(self, query: str) -> List[Book]:
         """Search books by title, author, or ISBN.
 
         Args:
@@ -305,7 +305,7 @@ class Library:
         Returns:
             list: List of matching Book objects.
         """
-        results = []
+        results: List[Book] = []
         for book in self.books:
             if (query.lower() in book.title.lower() or
                     query.lower() in book.author.lower() or
@@ -313,13 +313,13 @@ class Library:
                 results.append(book)
         return results
 
-    def get_overdue_books(self):
+    def get_overdue_books(self) -> List[Dict[str, Any]]:
         """Get all currently overdue books.
 
         Returns:
             list: List of dictionaries with overdue book details.
         """
-        overdue = []
+        overdue: List[Dict[str, Any]] = []
         today = datetime.date.today()
 
         for member in self.members:
@@ -334,7 +334,7 @@ class Library:
 
         return overdue
 
-    def save_to_file(self, filename):
+    def save_to_file(self, filename: str) -> None:
         """Save library data to a JSON file.
 
         Args:
@@ -373,7 +373,7 @@ class Library:
         with open(filename, 'w') as f:
             json.dump(data, f, indent=2)
 
-    def load_from_file(self, filename):
+    def load_from_file(self, filename: str) -> bool:
         """Load library data from a JSON file.
 
         Args:
@@ -429,7 +429,7 @@ class Library:
         return True
 
 
-def display_menu():
+def display_menu() -> None:
     """Display the main menu of the library management system."""
     print("\n" + "=" * 50)
     print("LIBRARY MANAGEMENT SYSTEM")
@@ -449,7 +449,7 @@ def display_menu():
     print("=" * 50)
 
 
-def main():
+def main() -> None:
     """Main function to run the library management system."""
     library = Library("City Central Library")
 
