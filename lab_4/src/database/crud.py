@@ -71,6 +71,17 @@ def delete_task_by_idx(tg_id: int, idx: int):
         conn.commit()
 
 
+def get_tasks_count(tg_id: int) -> int:
+    with get_connection() as conn:
+        cursor = conn.execute(
+            "SELECT COUNT(*) FROM tasks WHERE user_id = ?",
+            (tg_id, )
+        )
+        row = cursor.fetchone()
+
+    return row[0] if row else 0
+
+
 def get_tasks(tg_id: int) -> list[dict[str, Any]]:
     with get_connection() as conn:
         cursor = conn.execute(
