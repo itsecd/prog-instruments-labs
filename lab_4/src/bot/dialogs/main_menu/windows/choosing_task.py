@@ -6,18 +6,19 @@ from aiogram_dialog.widgets.text import Const, Format
 
 from src.bot.states.main_menu import MainMenuStatesGroup
 from src.database.crud import get_tasks_count, get_user
+from src.utils import goto_state
 from src.config import ui
-
 from ..getters import tasks_getter
 
 
-async def _do_back(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    await dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
-
-
-async def _do_choose(callback: CallbackQuery, button: Button, dialog_manager: DialogManager, item_id: str):
+async def _do_choose(
+    callback: CallbackQuery,
+    button: Button,
+    dialog_manager: DialogManager,
+    item_id: str
+):
     user_id = callback.from_user.id
-    
+
     try:
         tasks_count = get_tasks_count(user_id)
         tasks_reversed = bool(get_user(user_id)["tasks_reversed"])
@@ -50,7 +51,11 @@ window = Window(
         width=1,
         height=5,
     ),
-    Button(Const(ui.buttons.back), id="back", on_click=_do_back),
+    Button(
+        Const(ui.buttons.back),
+        id="back",
+        on_click=goto_state(MainMenuStatesGroup.choosing_action)
+    ),
     state=MainMenuStatesGroup.choosing_task,
     getter=tasks_getter,
 )

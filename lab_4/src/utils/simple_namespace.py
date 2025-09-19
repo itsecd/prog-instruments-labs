@@ -8,5 +8,5 @@ def dict_to_sn(d: dict) -> SimpleNamespace:
             setattr(sn, key, dict_to_sn(value))
         else:
             setattr(sn, key, value)
-    
+
     return sn

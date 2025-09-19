@@ -4,29 +4,30 @@ from src.database.crud import get_tasks, get_user
 from src.utils import limit_string
 
 
-async def tasks_getter(dialog_manager: DialogManager, **kwargs) -> dict[str, list[int, str]]:
+async def tasks_getter(
+    dialog_manager: DialogManager,
+    **kwargs
+) -> dict[str, list[tuple[int, str]]]:
     user_id = dialog_manager.event.from_user.id
     user = get_user(user_id)
     user_tasks = get_tasks(user_id)
 
-    tasks_texts = map(
-        lambda t: t["task"],
-        user_tasks,
-    )
-
+    tasks_texts = [t["task"] for t in user_tasks]
     if user["tasks_reversed"]:
-        tasks_texts = reversed(list(tasks_texts))
+        tasks_texts.reverse()
 
     tasks = list(enumerate(tasks_texts, start=1))
-    tasks_for_buttons = [(i, limit_string(t)) for i, t in tasks]
 
     return {
         "tasks": tasks,
-        "tasks_for_buttons": tasks_for_buttons,
+        "tasks_for_buttons": [(i, limit_string(t)) for i, t in tasks],
     }
 
 
-async def task_getter(dialog_manager: DialogManager, **kwargs) -> dict[str, str] | None:
+async def task_getter(
+    dialog_manager: DialogManager,
+    **kwargs
+) -> dict[str, str] | None:
     user_id = dialog_manager.event.from_user.id
     user_tasks = get_tasks(user_id)
 

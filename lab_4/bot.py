@@ -2,18 +2,16 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
-from aiogram.enums import ParseMode
-from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from aiogram_dialog import setup_dialogs
 
 from src.database.db import init_db
-
 from src.bot.dialogs import DIALOGS
 from src.bot.handlers import ROUTERS
 
 from src.config import config
+
 
 async def main():
     init_db()
@@ -23,12 +21,7 @@ async def main():
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
 
-    bot = Bot(
-        token=config.bot_token,
-        default=DefaultBotProperties(
-            # parse_mode=ParseMode.MARKDOWN_V2,
-        ),
-    )
+    bot = Bot(token=config.bot_token)
 
     dp = Dispatcher(storage=MemoryStorage())
 
@@ -46,8 +39,6 @@ async def main():
 
 
 if __name__ == "__main__":
-    # from src.database.crud import create_user
-    # create_user(1)
     try:
         asyncio.run(main())
     except KeyboardInterrupt:

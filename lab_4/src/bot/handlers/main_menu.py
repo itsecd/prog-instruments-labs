@@ -15,7 +15,10 @@ router = Router()
 
 
 @router.message(Command("start"))
-async def start_message_handler(message: Message, dialog_manager: DialogManager):
+async def start_message_handler(
+    message: Message,
+    dialog_manager: DialogManager
+):
     with suppress(IntegrityError):
         create_user(message.from_user.id)
 
@@ -26,5 +29,8 @@ async def start_message_handler(message: Message, dialog_manager: DialogManager)
 
 
 @router.message(Command("tasks"))
-async def tasks_message_handler(message: Message, dialog_manager: DialogManager):
+async def tasks_message_handler(
+    message: Message,
+    dialog_manager: DialogManager
+):
     await start_message_handler(message, dialog_manager)
