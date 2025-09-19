@@ -5,6 +5,7 @@ from aiogram_dialog.widgets.kbd import Button, ScrollingGroup, Radio
 from aiogram_dialog.widgets.text import Const, Format
 
 from src.bot.states.main_menu import MainMenuStatesGroup
+
 from ..getters import tasks_getter
 
 

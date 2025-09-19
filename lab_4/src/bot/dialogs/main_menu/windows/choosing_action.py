@@ -4,14 +4,14 @@ from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const, List, Format
 
-from ..getters import tasks_getter
 from src.bot.states.main_menu import MainMenuStatesGroup
 from src.database.crud import (
-    get_tasks as get_tasks_from_db,
+    get_tasks,
     set_tasks_reversed,
     get_user,
 )
 
+from ..getters import tasks_getter
 
 async def _do_add(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.switch_to(MainMenuStatesGroup.adding_task)
@@ -27,7 +27,7 @@ async def _do_reverse(callback: CallbackQuery, button: Button, dialog_manager: D
 
 
 async def _do_select(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    if len(get_tasks_from_db(callback.from_user.id)) == 0:
+    if len(get_tasks(callback.from_user.id)) == 0:
         await callback.answer("No tasks!")
         return
 

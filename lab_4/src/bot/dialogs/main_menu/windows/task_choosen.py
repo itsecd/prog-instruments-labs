@@ -5,6 +5,7 @@ from aiogram_dialog.widgets.kbd import Button, Row
 from aiogram_dialog.widgets.text import Const, Format
 
 from src.bot.states.main_menu import MainMenuStatesGroup
+
 from ..getters import task_getter
 
 

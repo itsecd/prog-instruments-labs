@@ -9,11 +9,11 @@ from src.bot.states.main_menu import MainMenuStatesGroup
 from src.database.crud import add_task
 
 
-async def do_back(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
+async def _do_back(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
     await dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
 
 
-async def save_task(message: Message, _, dialog_manager: DialogManager):
+async def _save_task(message: Message, _, dialog_manager: DialogManager):
     task = message.text
 
     add_task(message.from_user.id, task)
@@ -23,7 +23,7 @@ async def save_task(message: Message, _, dialog_manager: DialogManager):
 
 window = Window(
     Const("Enter task:"),
-    MessageInput(save_task),
-    Button(Const("Back"), id="back", on_click=do_back),
+    MessageInput(_save_task),
+    Button(Const("Back"), id="back", on_click=_do_back),
     state=MainMenuStatesGroup.adding_task,
 )
