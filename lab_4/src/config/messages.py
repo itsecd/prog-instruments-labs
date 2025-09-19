@@ -1,14 +1,22 @@
-MESSAGES = {
-    "message.enter_task": "Enter task:",
-    "message.your_tasks": "Your tasks:",
-    
-    "format.tasks": "{item[0]}. {item[1]}",
-    
-    "button.add": "Add",
-    "button.delete": "Delete",
-    "button.edit": "Edit",
-    "button.edit_or_delete": "Edit / Delete",
-    "button.back": "Back",
+from src.utils import dict_to_sn
 
-    "error.something_wrong": "Something went wrong :(",
-}
+
+messages = dict_to_sn({
+    "messages": {
+        "enter_task": "Enter task:",
+        "your_tasks": "Your tasks:",
+    },
+    "formats": {
+        "tasks": "{item[0]}. {item[1]}",
+    },
+    "buttons": {
+        "add": "Add",
+        "delete": "Delete",
+        "edit": "Edit",
+        "edit_or_delete": "Edit / Delete",
+        "back": "Back",
+    },
+    "errors": {
+        "something_wrong": "Something went wrong :(",
+    },
+})
