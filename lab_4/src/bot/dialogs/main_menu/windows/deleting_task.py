@@ -17,17 +17,7 @@ async def _do_back(callback: CallbackQuery, button: Button, dialog_manager: Dial
 async def _do_delete(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
     user_id = dialog_manager.event.from_user.id
 
-    try:
-        user_tasks = get_tasks(callback.from_user.id)
-    except Exception as e:
-        # logging in other lab?
-        await callback.answer(ui.errors.something_wrong)
-        return
-
     task_idx = dialog_manager.dialog_data.get("task_idx")
-    if task_idx is None or task_idx >= len(user_tasks):
-        await callback.answer("No task to delete!")
-        return
 
     try:
         delete_task_by_idx(user_id, task_idx)
