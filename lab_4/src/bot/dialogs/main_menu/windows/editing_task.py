@@ -20,7 +20,14 @@ async def _edit_task(message: Message, _, dialog_manager: DialogManager):
     task = message.text
     task_idx = dialog_manager.dialog_data.get("task_idx")
 
-    update_task_by_idx(user_id, task_idx, task)
+    try:
+        update_task_by_idx(user_id, task_idx, task)
+    except Exception as e:
+        # logging in other lab?
+        await message.answer(ui.messages.something_wrong)
+        await dialog_manager.switch_to(MainMenuStatesGroup.choosing_task)
+        return
+
 
     await dialog_manager.switch_to(MainMenuStatesGroup.choosing_task)
 

@@ -18,7 +18,11 @@ async def _do_back(callback: CallbackQuery, button: Button, dialog_manager: Dial
 async def _save_task(message: Message, _, dialog_manager: DialogManager):
     task = message.text
 
-    add_task(message.from_user.id, task)
+    try:
+        add_task(message.from_user.id, task)
+    except Exception as e:
+        # logging in other labs?
+        await message.answer(ui.errors.something_wrong)
 
     await dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
 

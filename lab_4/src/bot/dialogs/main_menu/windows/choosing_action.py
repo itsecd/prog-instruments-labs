@@ -22,15 +22,28 @@ async def _do_add(callback: CallbackQuery, button: Button, dialog_manager: Dialo
 
 async def _do_reverse(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
     user_id = callback.from_user.id
-    user = get_user(user_id)
-    set_tasks_reversed(user_id, not bool(user["tasks_reversed"]))
 
-    await callback.answer(text="Reversed!")
+    try:
+        user = get_user(user_id)
+        set_tasks_reversed(user_id, not bool(user["tasks_reversed"]))
+    except Exception as e:
+        # logging in other lab?
+        await callback.answer(ui.errors.something_wrong)
+    else:
+        await callback.answer(text="Reversed!")
+    
     await dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
 
 
 async def _do_select(callback: CallbackQuery, button: Button, dialog_manager: DialogManager):
-    if len(get_tasks(callback.from_user.id)) == 0:
+    try:
+        user_tasks = get_tasks(callback.from_user.id)
+    except Exception as e:
+        # logging in other lab?
+        await callback.answer(ui.errors.something_wrong)
+        return
+
+    if len(user_tasks) == 0:
         await callback.answer("No tasks!")
         return
 
