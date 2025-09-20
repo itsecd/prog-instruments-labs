@@ -22,13 +22,12 @@ import logging
 import re
 import time
 import cgi
-from urllib.parse import urlparse, parse_qs, unquote
+from urllib.parse import urlparse, parse_qs
 
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-import requests_html
 from requests_html import HTMLSession
 
 from bs4 import BeautifulSoup
@@ -136,6 +135,7 @@ def add_link(post):  # add link to the top of the post's text
     text = "<a href='" + post["link"] + "'>LINK</a> \n" + post["text"]
     return text
 
+
 # add link to the Facebook post at the bottom of the post
 def add_link2post(post):
     post["link2post"] = handle_link2post(post)
@@ -149,6 +149,7 @@ def add_link2post(post):
 def add_page_name(post):  # add page name in bold to the top of the post
     text = "<b>" + str(post["page_name"]) + "</b>\n" + post["text"]
     return text
+
 
 # used to check if the shown message will be <200 chars in Telegram
 def remove_tags(text):
@@ -174,11 +175,12 @@ def configure_logging(log_config):
     )
     logging.basicConfig(filename=log_config["log_file"], level=numeric_level)
 
+
 # description of the program and command line arguments
 def argument_parser():
     parser = argparse.ArgumentParser(
-        description =
-        "Scraper for Facebook pages that sends posts to telegram channels"
+        description="Scraper for Facebook pages that "
+                    "sends posts to telegram channels"
     )
     parser.add_argument(
         "-ini_file",
@@ -233,6 +235,7 @@ def send_post(post):  # for text posts
         logging.critical("REASON: " + str(r.reason))
         logging.critical("RESPONSE: " + str(r))
     return r.json()["result"]["message_id"]
+
 
 # download and upload photos, used as backup when sending the URL doesn't work
 def send_photo_multipart(post):
@@ -379,6 +382,7 @@ def find_photo(post):
         else:  # handling in case there is no photo in this post
             return None
 
+
 # basically the same as find_photo
 # but with different tags for multiple photo posts
 def find_photos(post):
@@ -406,11 +410,13 @@ def parsing_link(query, FB_link):  # used to get around Facebook's secure link
         link = str(FB_link)
         return link
 
+
 # used to parse a link out of Facebook's secure logout
 def link_parse(FB_link):
     parsed_FB_link = urlparse(FB_link)
     query = parse_qs(parsed_FB_link.query)
     return parsing_link(query, FB_link)
+
 
 # used to find the main link in link posts
 def find_link(post):
@@ -487,6 +493,7 @@ def handle_link2post(post):  # to generate the link to the Facebook post
     except:
         return ""
 
+
 # used to detect and handle the different kinds of posts and contents
 def content(post):
     post["text"] = handle_shares(post)
@@ -529,6 +536,7 @@ def content(post):
         post["text"] = add_page_name(post)
         logging.debug("Sending the post")
         send_post(post)
+
 
 # here it's checked of there are new posts
 def new_posts_handling(posts, last_time, bot, channel_ID, page_name):
