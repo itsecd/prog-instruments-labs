@@ -4,38 +4,38 @@ from random import randint
 
 
 def head(data):
-    print
-    print
+    print()
+    print()
     "=" * 167
-    print
+    print()
     string = "# |" + " " * 8 + data + " " * 8 + "| #"
-    print
+    print()
     string.center(167, "-")
-    print
-    print
+    print()
+    print()
     "=" * 167
-    print
+    print()
 
 
 def menu(data):
-    print
+    print()
     ml = []
     for i in data:
         ml.append(len(i))
     max_len = max(ml)
     for i in data:
         s = i + " " * (max_len - len(i))
-        print
+        print()
         s.center(167)
-    print
+    print()
 
 
 def output(data):
-    print
+    print()
     string = ">" + " " * 5 + data + " " * 5 + "<"
-    print
+    print()
     string.center(167, "-")
-    print
+    print()
 
 
 def maxlenl(text):
@@ -58,7 +58,7 @@ def display(text):
     for i in text:
         s = i.split(":")
         st = s[0] + " " * (maxlenl(text) - len(s[0])) + "    :    " + s[-1] + " " * (maxlenr(text) - len(s[-1]))
-        print
+        print()
         st.center(167)
 
 
@@ -96,7 +96,7 @@ class Students(object):
                 s = pickle.load(f_read)
                 self.Fees_Months = s.Fees_Months + 1
         except EOFError:
-            print
+            print()
 
     def assign_reg_no(self):
         try:
@@ -106,7 +106,7 @@ class Students(object):
                     s = pickle.load(f_read)
                     self.Reg_No = s.Reg_No + 1
             except EOFError:
-                print
+                print()
         except IOError:
             self.Reg_No = 1
 
@@ -198,7 +198,7 @@ class Students(object):
 
 def post_data():
     st = Students()  # Creating object of the main class
-    st.GET_DATA()
+    st.get_data()
     f_append = open("students.tc", "ab")
     pickle.dump(st, f_append)
     output(st.Name + " Registered successfully")
