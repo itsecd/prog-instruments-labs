@@ -62,7 +62,7 @@ def display(l):
         st.center(167)
 
 
-class students(object):
+class Students(object):
     """A class for student's record"""
 
     def __init__(self):  # Initialising instance attributes
