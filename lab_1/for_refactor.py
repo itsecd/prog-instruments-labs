@@ -60,7 +60,7 @@ class ConfigManager:
 
 
 class FileManager:
-    def __init__(self, texts_dir = 'texts', keys_dir = 'keys'):
+    def __init__(self, texts_dir='texts', keys_dir='keys'):
         self._texts_dir = texts_dir
         self._keys_dir = keys_dir
         self.ensure_dirs_exist()
@@ -214,12 +214,24 @@ class HybridCryptoSystem:
 
 
 def parsing():
-    parser = argparse.ArgumentParser(description = 'Гибридная криптосистема RSA + Blowfish, которая обеспечивает безопасную передачу данных через сочетание асимметричного и симметричного шифрования')
+    description = (
+        'Гибридная криптосистема RSA + Blowfish, которая обеспечивает '
+        'безопасную передачу данных через сочетание асимметричного и '
+        'симметричного шифрования'
+    )
+    parser = argparse.ArgumentParser(description=description)
     group = parser.add_mutually_exclusive_group(required = True)
-    group.add_argument('-gen', '--generation', action = 'store_true', help = 'Запускает режим генерации ключей')
-    group.add_argument('-enc', '--encryption', action = 'store_true', help = 'Запускает режим шифрования')
-    group.add_argument('-dec', '--decryption', action = 'store_true', help = 'Запускает режим дешифрования')
-    parser.add_argument('--key-length', type = int, default = 448, help = 'Длина ключа Blowfish (32-448 бит, шаг 8) - только для генерации')
+    group.add_argument('-gen','--generation',action = 'store_true',
+                       help = 'Запускает режим генерации ключей')
+    group.add_argument('-enc','--encryption',action = 'store_true',
+                       help = 'Запускает режим шифрования')
+    group.add_argument('-dec','--decryption',action = 'store_true',
+                       help = 'Запускает режим дешифрования')
+    key_length_help = (
+        'Длина ключа Blowfish (32-448 бит, шаг 8) - только для генерации'
+    )
+    parser.add_argument('--key-length',type = int,default = 448,
+                        help = key_length_help)
     args = parser.parse_args()
     return args
 
