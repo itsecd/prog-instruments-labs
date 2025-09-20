@@ -1,0 +1,14 @@
+{
+    "initial_file": "data/input.txt",
+    "encrypted_file": "data/encrypted.bin",
+    "decrypted_file": "data/decrypted.txt",
+    "symmetric_key": "keys/symmetric_key.bin",
+    "public_key": "keys/public_key.pem",
+    "secret_key": "keys/private_key.pem",
+    "required_keys": {
+        "generate": ["public_key", "secret_key", "symmetric_key"],
+        "encrypt": ["symmetric_key", "secret_key", "initial_file", "encrypted_file"],
+        "decrypt": ["symmetric_key", "secret_key", "encrypted_file", "decrypted_file"]
+    }
+  }
+  
