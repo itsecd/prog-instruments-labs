@@ -37,16 +37,16 @@ from selenium.webdriver.firefox.options import Options
 
 TG_BASE = "https://api.telegram.org/bot{}/"
 # This is used to check the length of messages later
-TAG_RE = re.compile(r'<[^>]+>')
-TIME_regex = re.compile(r"(#)(1[0-9]{9})(#)")
-USERAGENT = {
+TAG_REGEX = re.compile(r'<[^>]+>')
+TIME_REGEX = re.compile(r"(#)(1[0-9]{9})(#)")
+USER_AGENT = {
     "User-Agent": (
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 '
         '(KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
     )
 }
-firefox_opt = Options()
-firefox_opt.headless = True
+FIREFOX_OPTIONS = Options()
+FIREFOX_OPTIONS.headless = True
 
 
 # basic stuff
@@ -62,7 +62,7 @@ def create_session():
 
 def get_url(url):  # get webpages as general files
     with create_session() as session:
-        response = session.get(url, headers=USERAGENT)
+        response = session.get(url, headers=USER_AGENT)
     logging.debug("GET URL:" + url + "\nRESPONSE:" + response.reason)
     return response.content
 
@@ -140,8 +140,7 @@ def add_link(post):  # add link to the top of the post's text
 def add_link2post(post):
     post["link2post"] = handle_link2post(post)
     text = (
-            str(post["text"]) + "\n<a href='" + str(post["link2post"]) +
-            "'>POST</a>"
+        f"{post['text']}\n<a href='{post['link2post']}'>POST</a>"
     )
     return text
 
@@ -153,7 +152,7 @@ def add_page_name(post):  # add page name in bold to the top of the post
 
 # used to check if the shown message will be <200 chars in Telegram
 def remove_tags(text):
-    return TAG_RE.sub('', text)
+    return TAG_REGEX.sub('', text)
 
 
 def config_parser(ini_file):
@@ -166,12 +165,12 @@ def configure_logging(log_config):
     numeric_level = getattr(logging, log_config["debug_level"].upper(), None)
     if not isinstance(numeric_level, int):
         raise ValueError(
-            "Invalid log level in configuration file: " +
-            log_config["debug_level"]
+            f"Invalid log level in configuration file:"
+            f" {log_config['debug_level']}"
         )
     log_config["log_file"] = (
-        log_config["log_file_name"] +
-        get_day(log_config["date_structure"]) + ".log"
+        f"{log_config['log_file_name']}"
+        f"{get_day(log_config['date_structure'])}.log"
     )
     logging.basicConfig(filename=log_config["log_file"], level=numeric_level)
 
@@ -219,14 +218,14 @@ def send_post(post):  # for text posts
         return r
     URL = TG_BASE.format(str(post["BOT"])) + "sendMessage"
     data = {
-        "chat_id": post["channel_ID"],
+        "chat_id": post["channel_id"],
         "text": post["text"],
         "parse_mode": "html",
         "disable_web_page_preview": post.get("no_link")
     }
-    r = requests.get(URL, params=data, headers=USERAGENT)
-    log_message = ("SENDING POST, RESPONSE:" + r.reason +
-                   " STATUS CODE:" + str(r.status_code))
+    r = requests.get(URL, params=data, headers=USER_AGENT)
+    log_message = ("SENDING POST, RESPONSE:" + r.reason
+                   + " STATUS CODE:" + str(r.status_code))
     logging.info(log_message)
     if r.status_code != 200:
         logging.critical("THERE WAS AN ERROR IN A REQUEST IN send_post")
@@ -244,12 +243,12 @@ def send_photo_multipart(post):
     photo = {"photo": open("temp.png", "rb")}
     URL = TG_BASE.format(str(post["BOT"])) + "sendPhoto"
     data = {
-        "chat_id": post["channel_ID"],
+        "chat_id": post["channel_id"],
         "caption": post["text"],
         "parse_mode": "html",
         "reply_to_message_id": post.get("reply_id")
     }
-    r = requests.post(URL, data=data, files=photo, headers=USERAGENT)
+    r = requests.post(URL, data=data, files=photo, headers=USER_AGENT)
     if r.status_code != 200:
         logging.critical("THERE WAS A N ERROR IN A REQUEST "
                          "IN send_photo_multipart")
@@ -268,26 +267,30 @@ def send_photo(post):  # send photo via URL, with the text if <200
         post["text"] = ""
     URL = TG_BASE.format(str(post["BOT"])) + "sendPhoto"
     data = {
-        "chat_id": post["channel_ID"],
+        "chat_id": post["channel_id"],
         "photo": post["photo"],
         "caption": post["text"],
         "parse_mode": "html",
         "reply_to_message_id": post.get("reply_id")
     }
-    r = requests.get(URL, params=data, headers=USERAGENT)
-    log_message = ("SENDING PHOTO, RESPONSE:" + r.reason +
-                   " STATUS CODE:" + str(r.status_code))
+    r = requests.get(URL, params=data, headers=USER_AGENT)
+    log_message = ("SENDING PHOTO, RESPONSE:" + r.reason
+                   + " STATUS CODE:" + str(r.status_code))
     logging.info(log_message)
     # when Facebook links don't work
-    if (r.status_code == 400 and
-        (r.json()["description"] == ("Bad Request: wrong file "
-                                     "identifier/HTTP URL specified") or
-         r.json()["description"] == ("Bad Request: failed to get"
-                                     " HTTP URL content"))):
-        logging.warning("URL: " + str(r.url))
+    if (
+            r.status_code == 400
+            and (
+            r.json()["description"] == "Bad Request: wrong "
+                                       "file identifier/HTTP URL specified"
+            or r.json()["description"] == "Bad Request: failed "
+                                          "to get HTTP URL content"
+            )
+    ):
+        logging.warning("URL: %s", r.url)
         logging.warning("THERE WAS A PROBLEM IN THE REQUEST,"
                         " TRYING TO MULTIPART IT")
-        logging.warning("DATA: " + str(data))
+        logging.warning("DATA: %s", data)
         r = send_photo_multipart(post)
     elif r.status_code != 200:
         logging.critical("THERE WAS AN ERROR IN A REQUEST IN send_photo")
@@ -345,8 +348,8 @@ def handle_shares(post):
         share_area = post["HTML"].select_one("span._1nb_.fwn")
         shared_page_link, shared_page = (share_area.a["href"],
                                          share_area.a.string)
-        link = ("\U0001F4E4 <a href='" + str(shared_page_link) + "'>" +
-                str(shared_page) + "</a>\n")
+        link = ("\U0001F4E4 <a href='" + str(shared_page_link) + "'>"
+                + str(shared_page) + "</a>\n")
         strings = share_area.next_sibling.next_sibling.find_all(
             string=re.compile("[<>&]")
         )
@@ -537,7 +540,7 @@ def content(post):
 
 
 # here it's checked of there are new posts
-def new_posts_handling(posts, last_time, bot, channel_ID, page_name):
+def new_posts_handling(posts, last_time, bot, channel_id, page_name):
     logging.debug("Last valid time: " + str(last_time))
     times = [int(last_time)]
     for element in posts:
@@ -546,12 +549,12 @@ def new_posts_handling(posts, last_time, bot, channel_ID, page_name):
             post = {}
             post["HTML"] = element
             log_message = (
-                "New post with post_time: " + str(post_time) +
-                " for " + str(page_name)
+                "New post with post_time: " + str(post_time)
+                + " for " + str(page_name)
             )
             logging.debug(log_message)
-            post["BOT"], post["channel_ID"], post["page_name"] = (bot,
-                                                                  channel_ID,
+            post["BOT"], post["channel_id"], post["page_name"] = (bot,
+                                                                  channel_id,
                                                                   page_name,
                                                                   )
             content(post)  # the post is handled
@@ -595,7 +598,7 @@ def generate_soup(URL):  # now we use RequestsHTML,
     # body = r.html.find("body",
     # first=True).html
     # and the body of the page is extracetd to be prcessed by BeautifulSoup
-    driver = webdriver.Firefox(options=firefox_opt)
+    driver = webdriver.Firefox(options=FIREFOX_OPTIONS)
     driver.get(URL)
     code = str(driver.page_source)
     driver.quit()
@@ -622,7 +625,7 @@ def update_pages(csv_file, config, ini_file):  # also updates log_file
         data = file.readlines()
     print(str(len(data)))
     for i in range(len(data)):
-        if TIME_regex.search(data[i]):
+        if TIME_REGEX.search(data[i]):
             if int(data[i].strip().strip("#")) > int(last_time):
                 data = data[i + 1::]
                 logging.info("NEW PAGES FOUND:\n" + str(data))
@@ -631,17 +634,17 @@ def update_pages(csv_file, config, ini_file):  # also updates log_file
     new_time = int(last_time)
     j = 0
     for i in range(len(data)):
-        if TIME_regex.search(data[i]):
+        if TIME_REGEX.search(data[i]):
             if int(data[i].strip().strip("#")) > new_time:
                 new_time = int(data[i].strip().strip("#"))
                 if len(data[j + 1:i:]) > 3:
                     added.append(data[j:i:])
                 else:
                     warning_msg = (
-                        "INCORRECTLY FORMATTED DATA IN " +
-                        str(adder_config["new_pages_file"]) +
-                        " AT LINE " +
-                        str(i)
+                        "INCORRECTLY FORMATTED DATA IN "
+                        + str(adder_config["new_pages_file"])
+                        + " AT LINE "
+                        + str(i)
                     )
                     logging.warning(warning_msg)
             j = i
@@ -654,12 +657,12 @@ def update_pages(csv_file, config, ini_file):  # also updates log_file
             page_name = get_page_name(link.strip())
             human_name = page_name + " @ " + channel_name
             line = [
-                    str(human_name),
-                    str(page_name),
-                    str(link.strip()),
-                    "0",
-                    str(channel_id),
-                    ]
+                str(human_name),
+                str(page_name),
+                str(link.strip()),
+                "0",
+                str(channel_id),
+            ]
             lines.append(line)
     with open(csv_file, "a", encoding="utf_8", newline='') as file:
         writer = csv.writer(file, quoting=csv.QUOTE_ALL)
@@ -673,9 +676,9 @@ def main():
     args = argument_parser()  # command line arguments
     config = config_parser(args["ini_file"])
     basic_config, log_config = (
-                                config["BASIC"],
-                                config["LOG"],
-                                )
+        config["BASIC"],
+        config["LOG"],
+    )
     if args["DEBUG_MODE"]:
         log_config["debug_level"] = "DEBUG"
     configure_logging(log_config)
@@ -700,7 +703,7 @@ def main():
 
                 URL = page[2]
                 logging.info("PAGE URL: " + URL)
-                channel_ID = page[4]
+                channel_id = page[4]
                 last_time = page[3]
                 soup = generate_soup(URL)
                 # seems to be hardcoded in FB's HTML code to define posts
@@ -711,7 +714,7 @@ def main():
                     posts,
                     last_time,
                     TOKEN,
-                    channel_ID,
+                    channel_id,
                     page_name,
                 )
                 update_csv(pages, pages_file)
