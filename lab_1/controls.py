@@ -135,7 +135,7 @@ def update(screen, player, bullets, comets, score, stats, stars, addbullets,
         # Проверка цвета жизней
         score.color = (255, 0, 0)
     elif stats.player_left <= 60 and stats.player_left > 30:
-        score.color = (255,165,0)
+        score.color = (255, 165, 0)
     else:
         score.color = (0, 255, 0)
 
@@ -316,7 +316,7 @@ def pause(screen, stats, button, player):
         # Выход в гланое меню
         stats.run_game = "pause"
         stats.pause = False
-        stats.i += 1        
+        stats.i += 1
 
     def runs():
         # Продолжение игры
@@ -338,7 +338,7 @@ def pause(screen, stats, button, player):
                     stats.pause = False
                 if event.key == pygame.K_ESCAPE:
                     stats.pause = False
-        
+
         start_button.draw(W//2, (H//2) - 100, "Продолжить", 65, runs)
         exit_button.draw(W//2, H//2, "Главное меню", 65, exit)
 
