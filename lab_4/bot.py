@@ -14,6 +14,7 @@ from src.config import config
 
 
 async def main():
+    """Programm entry point"""
     init_db()
 
     logging.basicConfig(

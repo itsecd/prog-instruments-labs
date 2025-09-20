@@ -8,6 +8,7 @@ load_dotenv()
 
 @dataclass(frozen=True)
 class Config:
+    """Object for storing config data"""
     bot_token: str
 
 

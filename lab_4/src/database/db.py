@@ -6,12 +6,21 @@ from src.config.paths import paths
 
 
 def get_connection() -> sqlite3.Connection:
+    """
+    Gets connection to sqlite3 db
+
+    Returns:
+        sqlite3.Connection: connection object
+    """
     conn = sqlite3.connect(paths.db_file)
     conn.row_factory = sqlite3.Row
     return conn
 
 
 def init_db():
+    """
+    Inits the database with schema if not exists
+    """
     if not os.path.exists(paths.db_file):
         with suppress(FileExistsError):
             os.makedirs(os.path.dirname(paths.db_file))

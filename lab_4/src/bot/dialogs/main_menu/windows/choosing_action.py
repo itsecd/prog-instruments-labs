@@ -16,6 +16,14 @@ async def _do_reverse(
     button: Button,
     dialog_manager: DialogManager
 ):
+    """
+    Click handler for reversing tasks
+
+    Args:
+        message (Message): input message object
+        button (Button): clicked button object
+        dialog_manager (DialogManager): used dialog manager object
+    """
     user_id = callback.from_user.id
 
     try:

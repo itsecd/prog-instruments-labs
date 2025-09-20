@@ -19,6 +19,7 @@ async def start_message_handler(
     message: Message,
     dialog_manager: DialogManager
 ):
+    """Handler for /start command"""
     with suppress(IntegrityError):
         create_user(message.from_user.id)
 
@@ -33,4 +34,5 @@ async def tasks_message_handler(
     message: Message,
     dialog_manager: DialogManager
 ):
+    """Handler for /tasks command"""
     await start_message_handler(message, dialog_manager)

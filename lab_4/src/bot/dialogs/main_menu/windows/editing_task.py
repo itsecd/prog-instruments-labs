@@ -11,7 +11,19 @@ from src.utils import goto_state
 from src.config import ui
 
 
-async def _edit_task(message: Message, _, dialog_manager: DialogManager):
+async def _edit_task(
+    message: Message,
+    button: Button,
+    dialog_manager: DialogManager
+):
+    """
+    Input message handler for editing a task
+
+    Args:
+        message (Message): input message object
+        button (Button): clicked button object
+        dialog_manager (DialogManager): used dialog manager object
+    """
     user_id = message.from_user.id
     task = message.text
     task_idx = dialog_manager.dialog_data.get("task_idx")

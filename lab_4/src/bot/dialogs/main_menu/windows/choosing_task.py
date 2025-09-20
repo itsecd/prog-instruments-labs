@@ -17,6 +17,14 @@ async def _do_choose(
     dialog_manager: DialogManager,
     item_id: str
 ):
+    """
+    Click handler for choosing a task
+
+    Args:
+        message (Message): input message object
+        button (Button): clicked button object
+        dialog_manager (DialogManager): used dialog manager object
+    """
     user_id = callback.from_user.id
 
     try:

@@ -8,6 +8,16 @@ async def tasks_getter(
     dialog_manager: DialogManager,
     **kwargs
 ) -> dict[str, list[tuple[int, str]]]:
+    """
+    Getter for retrieving all tasks from the database.
+    Needed for dialogs.
+
+    Args:
+        dialog_manager (DialogManager)
+
+    Returns:
+        dict[str, list[tuple[int, str]]]: an object with the received data and keys
+    """
     user_id = dialog_manager.event.from_user.id
     user = get_user(user_id)
     user_tasks = get_tasks(user_id)
@@ -28,6 +38,16 @@ async def task_getter(
     dialog_manager: DialogManager,
     **kwargs
 ) -> dict[str, str] | None:
+    """
+    Getter for retrieving task by its idx from the database.
+    Needed for dialogs.
+
+    Args:
+        dialog_manager (DialogManager)
+
+    Returns:
+        dict[str, str] | None: an object with the received data and keys
+    """
     user_id = dialog_manager.event.from_user.id
     user_tasks = get_tasks(user_id)
 

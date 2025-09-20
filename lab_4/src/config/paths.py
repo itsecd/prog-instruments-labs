@@ -19,6 +19,7 @@ DB_FILE = os.path.join(DATA_DIR, "database.db")
 
 @dataclass(frozen=True)
 class Paths:
+    """Object for storing paths"""
     config_dir: str
     data_dir: str
     db_file: str

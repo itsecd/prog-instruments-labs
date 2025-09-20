@@ -15,6 +15,14 @@ async def _do_delete(
     button: Button,
     dialog_manager: DialogManager
 ):
+    """
+    Click handler for deleting a task
+
+    Args:
+        message (Message): input message object
+        button (Button): clicked button object
+        dialog_manager (DialogManager): used dialog manager object
+    """
     user_id = dialog_manager.event.from_user.id
 
     task_idx = dialog_manager.dialog_data.get("task_idx")
