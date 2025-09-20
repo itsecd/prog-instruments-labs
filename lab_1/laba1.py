@@ -185,8 +185,8 @@ def argument_parser():
     parser.add_argument(
         "-ini_file",
         dest="ini_file",
-        help=("INI file from which all settings are read; "
-             "defaults to ./FB_Bot.ini"),
+        help="INI file from which all settings are read; "
+             "defaults to ./FB_Bot.ini",
         default="./FB_Bot.ini"
     )
     parser.add_argument(
@@ -359,7 +359,7 @@ def handle_shares(post):
         text = str(share_area.next_sibling.next_sibling.get_text())
         text = str(link) + str(text) + "\n \n"
         return str(text)
-    except:
+    except Exception:
         return ""
 
 
@@ -443,7 +443,7 @@ def has_video(post):  # to detect of a post has a Facebook video
     try:
         if split_link2post[4] == "videos":
             return True
-    except:
+    except Exception:
         return False
 
 
@@ -456,8 +456,8 @@ def find_video(post):
     if len(video_areas) != 0 and video_areas is not None:
         for video_area in video_areas:
             try:
-                if (video_area.contents is not None and
-                    video_area.contents[0].name != "span"):
+                if (video_area.contents is not None
+                        and video_area.contents[0].name != "span"):
                     video_link_dict = parse_qs(video_area["href"])
                     if "/video_redirect/?src" in video_link_dict:
                         video_link = video_link_dict["/video_redirect/?src"]
@@ -490,7 +490,7 @@ def handle_link2post(post):  # to generate the link to the Facebook post
         link2post = "https://www.facebook.com" + link2post_area.a["href"]
         logging.info("HANDLING: " + str(link2post))
         return link2post
-    except:
+    except Exception:
         return ""
 
 
@@ -693,17 +693,14 @@ def main():
                 # [0]is HUMAN REDABLE data, [1] is NAME,
                 # [2] is URL, [3] is LAST_TIME and [4] is ID
                 page_name = page[1]
-                logging.info(
-                    "HUMAN DATA: " +
-                    page[0].encode("ascii", "ignore").decode("ascii", "ignore")
-                )
-                logging.info(
-                    "SHOWN ON CHANNEL: " +
-                    page_name.encode("ascii", "ignore").decode(
-                                                              "ascii",
-                                                                "ignore",
-                                                                       )
-                )
+                human_data = page[0].encode(
+                    "ascii", "ignore").decode("ascii", "ignore")
+                logging.info("HUMAN DATA: %s", human_data)
+
+                shown_name = page_name.encode(
+                    "ascii", "ignore").decode("ascii", "ignore")
+                logging.info("SHOWN ON CHANNEL: %s", shown_name)
+
                 URL = page[2]
                 logging.info("PAGE URL: " + URL)
                 channel_ID = page[4]
