@@ -1,8 +1,9 @@
 # Импорт модулей и файлов
-import pygame
 import random
 import time
 import sys
+
+import pygame
 
 from bullets import Bullets
 from comets import Comets
