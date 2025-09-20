@@ -85,7 +85,7 @@ class FileManager:
     def keys_dir(self):
         return self._keys_dir
 
-class RSACipher:
+class RsaCipher:
     def __init__(self, key_size = 2048):
         self.key_size = key_size
 
@@ -188,7 +188,7 @@ class BlowfishCipher:
 class HybridCryptoSystem:
     def __init__(self, symmetric_key_length = 448):
         self.blowfish = BlowfishCipher(symmetric_key_length)
-        self.rsa = RSACipher()
+        self.rsa = RsaCipher()
 
     def generate_keys(self):
         symmetric_key = self.blowfish.generate_key()
@@ -207,7 +207,7 @@ class HybridCryptoSystem:
     def decrypt_file(self, ciphertext, symmetric_key):
         return self.blowfish.decrypt(ciphertext, symmetric_key)
 
-def parsing():
+def parse_arguments():
     description = (
         'Гибридная криптосистема RSA + Blowfish, которая обеспечивает '
         'безопасную передачу данных через сочетание асимметричного и '
@@ -232,7 +232,7 @@ def parsing():
 def main():
     config = ConfigManager()
     file_manager = FileManager()
-    args = parsing()
+    args = parse_arguments()
     crypto = HybridCryptoSystem()
     try:
         if args.generation:
