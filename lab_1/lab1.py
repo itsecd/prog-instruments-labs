@@ -57,8 +57,7 @@ def maxlenr(text):
 def display(text):
     for i in text:
         s = i.split(":")
-        st = s[0] + " " * (maxlenl(text) - len(s[0])) + "    :    " \
-             + s[-1] + " " * (maxlenr(text) - len(s[-1]))
+        st = s[0] + " " * (maxlenl(text) - len(s[0])) + "    :    " + s[-1] + " " * (maxlenr(text) - len(s[-1]))
         print
         st.center(167)
 
