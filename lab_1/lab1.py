@@ -57,7 +57,8 @@ def maxlenr(text):
 def display(text):
     for i in text:
         s = i.split(":")
-        st = s[0] + " " * (maxlenl(text) - len(s[0])) + "    :    " + s[-1] + " " * (maxlenr(text) - len(s[-1]))
+        st = s[0] + " " * (maxlenl(text) - len(s[0])) + "    :    " \
+             + s[-1] + " " * (maxlenr(text) - len(s[-1]))
         print
         st.center(167)
 
@@ -179,7 +180,8 @@ class Students(object):
         l18 = "Height : " + str(self.Height)
         l19 = "Blood Group : " + self.B_Group
         l20 = "Aadhaar number : " + str(self.Aadhaar)
-        display([l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l16, l17, l18, l19, l20])
+        display([l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
+                 l12, l13, l14, l16, l17, l18, l19, l20])
 
     def pay_fees(self):
 
@@ -189,7 +191,8 @@ class Students(object):
         ch = input("Enter '{0}' to confirm and finally pay fees ---> ".format(c_no))
         if ch == c_no:
             self.Fees_Months += fees_month
-            output("Fees deposited successfully of registration number : " + str(self.Reg_No))
+            output("Fees deposited successfully of registration number : "
+                   + str(self.Reg_No))
         else:
             output("Fees Not Deposited")
 
@@ -213,7 +216,8 @@ def show_data():
         output("No more records found")
 
     except IOError:
-        output("School management system not started yet. Please register at least one student to get started")
+        output("School management system not started yet. Please register"
+               " at least one student to get started")
 
 
 def search():
@@ -305,8 +309,13 @@ def search():
 
     while True:
         head("Search Menu")
-        menu(["1. Search by Registration Number", "2. Search by Name", "3. Search by Roll Number",
-              "4. Search by Mobile Number", "5. Search by Aadhaar Number", "6. Search by email", "7. Exit search menu"])
+        menu(["1. Search by Registration Number",
+              "2. Search by Name",
+              "3. Search by Roll Number",
+              "4. Search by Mobile Number",
+              "5. Search by Aadhaar Number",
+              "6. Search by email",
+              "7. Exit search menu"])
         usr_ch = input("Enter your choice [Search Menu] ---> ")
         if usr_ch == 1:
             reg_no = input("Enter registration number of student ---> ")
@@ -370,13 +379,28 @@ def modify_data():
                 while True:
                     head("Data Modification Menu")
                     output("Modifying record of : " + st.Name)
-                    menu(["1. Modify Registration Number", "2. Modify Roll Number", "3. Modify Name",
-                          "4. Modify Father's Name", "5. Modify Mother's Name", "6. Modify Sex",
-                          "7. Modify Date of Birth", "8. Modify Age", "9. Modify Address", "10. Modify Mobile Number",
-                          "11. Modify E-mail", "12. Modify Class", "13. Modify Section", "14. Modify Stream",
-                          "15. Modify Fees", "16. Modify Mode of Convenience",
-                          "17. Modify Number of Months of deposited fees", "18. Modify Weight", "19. Modify Height",
-                          "20. Modify Blood Group", "21. Modify Aadhaar", "22. Modify all records",
+                    menu(["1. Modify Registration Number",
+                          "2. Modify Roll Number",
+                          "3. Modify Name",
+                          "4. Modify Father's Name",
+                          "5. Modify Mother's Name",
+                          "6. Modify Sex",
+                          "7. Modify Date of Birth",
+                          "8. Modify Age",
+                          "9. Modify Address",
+                          "10. Modify Mobile Number",
+                          "11. Modify E-mail",
+                          "12. Modify Class",
+                          "13. Modify Section",
+                          "14. Modify Stream",
+                          "15. Modify Fees",
+                          "16. Modify Mode of Convenience",
+                          "17. Modify Number of Months of deposited fees",
+                          "18. Modify Weight",
+                          "19. Modify Height",
+                          "20. Modify Blood Group",
+                          "21. Modify Aadhaar",
+                          "22. Modify all records",
                           "23. Exit Data Modification Menu and saving changes"])
                     usr_ch = input("Enter your choice [Modification Menu] ---> ")
                     if usr_ch == 1:
@@ -477,7 +501,8 @@ def modify_data():
                         break
                     elif usr_ch == 17:
                         temp_st = st
-                        temp_st.Fees_Months = input("Enter update number of months of fees paid ---> ")
+                        temp_st.Fees_Months = input("Enter update number "
+                                                    "of months of fees paid ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
@@ -527,7 +552,8 @@ def modify_data():
 
 
 def remove_data():
-    reg_no = input("Enter registration number of student to delete its record ---> ")
+    reg_no = input("Enter registration number of student "
+                   "to delete its record ---> ")
     f_read = open("students.tc", "rb")
     f_post = open("students_temp.tc", "ab")
     Flag = False
@@ -552,8 +578,13 @@ def main_menu():
     head("School Management System")
     while True:
         menu(
-            ["1. Register a new student", "2. Read all student's record", "3. Search", "4. Pay Fees", "5. Modify Data",
-             "6. Remove Record", "7. Exit"])
+            ["1. Register a new student",
+             "2. Read all student's record",
+             "3. Search",
+             "4. Pay Fees",
+             "5. Modify Data",
+             "6. Remove Record",
+             "7. Exit"])
         usr_ch = input("Enter your choice [Main Menu] ---> ")
         if usr_ch == 1:
             post_data()
@@ -568,7 +599,7 @@ def main_menu():
         elif usr_ch == 6:
             remove_data()
         elif usr_ch == 7:
-            os._exit(1)
+            os.exit(1)
         else:
             output("Enter valid Input")
 
