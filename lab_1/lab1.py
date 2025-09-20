@@ -183,12 +183,12 @@ class Students(object):
 
     def pay_fees(self):
 
-        Fees_Months = input("Enter no. of months to pay fees ---> ")
-        output("Amount to be paid : " + str(self.Fees * Fees_Months))
+        fees_month = input("Enter no. of months to pay fees ---> ")
+        output("Amount to be paid : " + str(self.Fees * fees_month))
         c_no = randint(1000, 9999)
         ch = input("Enter '{0}' to confirm and fdinally pay fees ---> ".format(c_no))
         if ch == c_no:
-            self.Fees_Months += Fees_Months
+            self.Fees_Months += fees_month
             output("Fees deposited successfully of registration number : " + str(self.Reg_No))
         else:
             output("Fees Not Deposited")
@@ -220,31 +220,31 @@ def search():
     def search_reg_no(reg_no):
 
         f_read = open("students.tc", "rb")
-        Flag = False
+        flag = False
         try:
             while True:
                 st = pickle.load(f_read)
                 if st.Reg_No == reg_no:
-                    Flag = True
+                    flag = True
                     st.PRINT_DATA()
         except EOFError:
-            if not Flag:
+            if not flag:
                 output("Record not found")
-        if Flag:
+        if flag:
             return st.Reg_No
 
     def search_name(name):
 
         f_read = open("students.tc", "rb")
-        Flag = False
+        flag = False
         try:
             while True:
                 st = pickle.load(f_read)
                 if st.Name.lower() == name.lower():
-                    Flag = True
+                    flag = True
                     st.PRINT_DATA()
         except EOFError:
-            if not Flag:
+            if not flag:
                 output("Record not found")
 
     def search_roll_no(roll_no):
