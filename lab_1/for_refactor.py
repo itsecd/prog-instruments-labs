@@ -8,6 +8,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
+
 class ConfigManager:
     _instance = None
 
@@ -57,6 +58,7 @@ class ConfigManager:
         config = self.load_config()
         return config.get(key)
 
+
 class FileManager:
     def __init__(self, texts_dir='texts', keys_dir='keys'):
         self._texts_dir = texts_dir
@@ -84,6 +86,7 @@ class FileManager:
     @property
     def keys_dir(self):
         return self._keys_dir
+
 
 class RsaCipher:
     def __init__(self, key_size = 2048):
@@ -148,6 +151,7 @@ class RsaCipher:
             )
         )
 
+
 class BlowfishCipher:
     def __init__(self, key_length = 448):
         if key_length < 32 or key_length > 448 or key_length % 8 != 0:
@@ -185,6 +189,7 @@ class BlowfishCipher:
         decrypted = unpadder.update(decrypted_padded) + unpadder.finalize()
         return decrypted
 
+
 class HybridCryptoSystem:
     def __init__(self, symmetric_key_length = 448):
         self.blowfish = BlowfishCipher(symmetric_key_length)
@@ -207,6 +212,7 @@ class HybridCryptoSystem:
     def decrypt_file(self, ciphertext, symmetric_key):
         return self.blowfish.decrypt(ciphertext, symmetric_key)
 
+
 def parse_arguments():
     description = (
         'Гибридная криптосистема RSA + Blowfish, которая обеспечивает '
@@ -228,6 +234,7 @@ def parse_arguments():
                         help = key_length_help)
     args = parser.parse_args()
     return args
+
 
 def main():
     config = ConfigManager()
@@ -276,6 +283,7 @@ def main():
     except Exception as e:
         print(f"Произошла ошибка: {e}")
         exit(1)
+
 
 if __name__ == "__main__":
     main()
