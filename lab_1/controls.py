@@ -14,7 +14,7 @@ import button
 from explosion import Explosion
 
 
-pygame.init()# Инициализация pygame
+pygame.init()  # Инициализация pygame
 
 
 def events(screen, player, bullets, comets, stats,
@@ -102,7 +102,7 @@ def update(screen, player, bullets, comets, score, stats, stars, addbullets,
     button.print_text(screen, "Очки:", W//1.125, 19, 38)
     button.print_text(screen, "Бутк:", W/1.12, 99, 38)
 
-    player.draw()    
+    player.draw()
     explosions.draw(screen)
 
     pygame.display.flip()
@@ -152,7 +152,7 @@ def update_bullets(screen, bullets, comets, stats, score, coins, explosions):
     i = random.randint(0, 1)
     collision = pygame.mixer.Sound(
                 "sounds/collision.mp3"
-                )# Звук столкновения пули и кометы
+                )  # Звук столкновения пули и кометы
 
     bullets.update()
     explosions.update()
@@ -203,7 +203,7 @@ def bullets_movement(screen, player, bullets, stats, score):
         new_bullet = Bullets(screen, player, stats)
         bullets.add(new_bullet)
 
-        bul_add = pygame.mixer.Sound("sounds/bullet.mp3")# Звук стрельбы
+        bul_add = pygame.mixer.Sound("sounds/bullet.mp3")  # Звук стрельбы
         bul_add.set_volume(stats.objectsvolume)
         bul_add.play()
 
@@ -250,7 +250,7 @@ def update_comets(screen, comets, player, bullets, stats, score,
 
             collision = pygame.mixer.Sound(
                 "sounds/player.mp3"
-            )# Звук столкновения с игроком
+            )  # Звук столкновения с игроком
             collision.set_volume(stats.objectsvolume)
             collision.play()
 
@@ -264,17 +264,17 @@ def create_comets(screen, group, W):
     rand = random.randint(0, 2)
 
     images = ["comet.png", "comet1.png",
-              "comet2.png", "comet5.png"]# Изображения комет
+              "comet2.png", "comet5.png"]  # Изображения комет
     image = [pygame.image.load("images/comets/" + path).convert_alpha()
              for path in images]
-    img = random.randint(0, len(images) - 1 )
+    img = random.randint(0, len(images) - 1)
 
     speedy = random.uniform(1.1, 1.6)
     speedx = random.uniform(0.25, 0.55)
 
     size = random.uniform(0.6, 1.5)
     deg = random.randint(10, 180)
-    
+
     return Comets(x, screen, group, rand, speedy,
                   speedx, deg, size, image[img])
 
@@ -282,11 +282,11 @@ def create_comets(screen, group, W):
 def player_kill(screen, player, comets, bullets, stats, comets_size, score):
     # Обработка смерти игрока
     update_hard(player, comets_size, stats, score)
-    
+
     if stats.player_left < 1:
         stats.run_game = "end"
         loading(screen, stats)
-    
+
 
 def update_hard(player, comets_size, stats, score):
     # Обработка вычитания жизней от размер кометы
@@ -311,7 +311,7 @@ def pause(screen, stats, button, player):
 
     start_button = button.Button(285, 45, screen)
     exit_button = button.Button(312, 45, screen)
-    
+
     def exit():
         # Выход в гланое меню
         stats.run_game = "pause"
@@ -346,7 +346,7 @@ def pause(screen, stats, button, player):
         pygame.display.update()
 
     if stats.i >= 1:
-        loading(screen, stats)# Вызов функции загрузки меню
+        loading(screen, stats)  # Вызов функции загрузки меню
 
 
 def _stars(screen, stars, W):
@@ -386,7 +386,7 @@ def update_player(screen, player, addbullets, stats, coins, score):
 
             bul_add = pygame.mixer.Sound(
                 "sounds/add_bl.mp3"
-            )# Звук подбора дополнения
+            )  # Звук подбора дополнения
             bul_add.set_volume(stats.objectsvolume)
             bul_add.play()
 
@@ -400,7 +400,7 @@ def update_player(screen, player, addbullets, stats, coins, score):
 
             bytk_add = pygame.mixer.Sound(
                 "sounds/bytk.mp3"
-            )# звук подбора монеты
+            )  # звук подбора монеты
             bytk_add.set_volume(stats.objectsvolume)
             bytk_add.play()
 
@@ -413,7 +413,7 @@ def update_player(screen, player, addbullets, stats, coins, score):
 def loading(screen, stats):
     """Загрузочный экран меню"""
     W, H = screen.get_size()
-    
+
     # Обновление значения бутка
     with open("files/btc.txt", "r") as file:
         coinsread = int(file.read())
@@ -460,4 +460,3 @@ def loading(screen, stats):
 
         pygame.display.update()
         pygame.display.flip()
-
