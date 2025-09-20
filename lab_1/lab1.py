@@ -38,26 +38,26 @@ def output(data):
     print
 
 
-def maxlenl(l):
+def maxlenl(text):
     g = []
-    for i in l:
+    for i in text:
         sp = i.split(":")
         g.append(len(sp[0]))
     return max(g)
 
 
-def maxlenr(l):
+def maxlenr(text):
     g = []
-    for i in l:
+    for i in text:
         sp = i.split(":")
         g.append(len(sp[-1]))
     return max(g)
 
 
-def display(l):
-    for i in l:
+def display(text):
+    for i in text:
         s = i.split(":")
-        st = s[0] + " " * (maxlenl(l) - len(s[0])) + "    :    " + s[-1] + " " * (maxlenr(l) - len(s[-1]))
+        st = s[0] + " " * (maxlenl(text) - len(s[0])) + "    :    " + s[-1] + " " * (maxlenr(text) - len(s[-1]))
         print
         st.center(167)
 
