@@ -8,7 +8,6 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-
 class ConfigManager:
     _instance = None
 
@@ -21,12 +20,12 @@ class ConfigManager:
     def init_config(self):
         self.config_path = 'settings.json'
         self.default_config = {
-            'initial_file':'texts/original.txt',
-            'encrypted_file':'texts/encrypted.bin',
-            'decrypted_file':'texts/decrypted.txt',
-            'symmetric_key':'keys/sym_key.enc',
-            'public_key':'keys/public.pem',
-            'private_key':'keys/private.pem'
+            'initial_file': 'texts/original.txt',
+            'encrypted_file': 'texts/encrypted.bin',
+            'decrypted_file': 'texts/decrypted.txt',
+            'symmetric_key': 'keys/sym_key.enc',
+            'public_key': 'keys/public.pem',
+            'private_key': 'keys/private.pem'
         }
         self.ensure_config_exists()
 
@@ -58,7 +57,6 @@ class ConfigManager:
         config = self.load_config()
         return config.get(key)
 
-
 class FileManager:
     def __init__(self, texts_dir='texts', keys_dir='keys'):
         self._texts_dir = texts_dir
@@ -86,7 +84,6 @@ class FileManager:
     @property
     def keys_dir(self):
         return self._keys_dir
-
 
 class RSACipher:
     def __init__(self, key_size = 2048):
@@ -151,7 +148,6 @@ class RSACipher:
             )
         )
 
-
 class BlowfishCipher:
     def __init__(self, key_length = 448):
         if key_length < 32 or key_length > 448 or key_length % 8 != 0:
@@ -189,7 +185,6 @@ class BlowfishCipher:
         decrypted = unpadder.update(decrypted_padded) + unpadder.finalize()
         return decrypted
 
-
 class HybridCryptoSystem:
     def __init__(self, symmetric_key_length = 448):
         self.blowfish = BlowfishCipher(symmetric_key_length)
@@ -212,7 +207,6 @@ class HybridCryptoSystem:
     def decrypt_file(self, ciphertext, symmetric_key):
         return self.blowfish.decrypt(ciphertext, symmetric_key)
 
-
 def parsing():
     description = (
         'Гибридная криптосистема RSA + Blowfish, которая обеспечивает '
@@ -234,7 +228,6 @@ def parsing():
                         help = key_length_help)
     args = parser.parse_args()
     return args
-
 
 def main():
     config = ConfigManager()
@@ -283,7 +276,6 @@ def main():
     except Exception as e:
         print(f"Произошла ошибка: {e}")
         exit(1)
-
 
 if __name__ == "__main__":
     main()
