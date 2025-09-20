@@ -322,9 +322,7 @@ def handle_text(post):
         useless_texts = text_area.find_all(class_="text_exposed_hide")
         for junk in useless_texts:
             junk.decompose()  # and eleminate
-        wall_text = text_area.find(
-            # still have to find a way to handle Continue reading links
-            class_="text_exposed_link")
+
         strings = text_area.find_all(string=re.compile("[<>&]"))
         for string in strings:
             # here link are recompiled as text so they can be read later and
@@ -674,11 +672,10 @@ def update_pages(csv_file, config, ini_file):  # also updates log_file
 def main():
     args = argument_parser()  # command line arguments
     config = config_parser(args["ini_file"])
-    basic_config, adder_config, log_config = (
-                                              config["BASIC"],
-                                              config["ADDER"],
-                                              config["LOG"],
-                                              )
+    basic_config, log_config = (
+                                config["BASIC"],
+                                config["LOG"],
+                                )
     if args["DEBUG_MODE"]:
         log_config["debug_level"] = "DEBUG"
     configure_logging(log_config)
