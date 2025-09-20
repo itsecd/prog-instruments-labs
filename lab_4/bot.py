@@ -1,5 +1,5 @@
 import asyncio
-import logging
+# import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -17,10 +17,10 @@ async def main():
     """Programm entry point"""
     init_db()
 
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
-    )
+    # logging.basicConfig(
+    #     level=logging.INFO,
+    #     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
+    # )
 
     bot = Bot(token=config.bot_token)
 
@@ -43,4 +43,5 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logging.info("Exit Telegram Bot")
+        # logging.info("Exit Telegram Bot")
+        print("Exit telegram bot")
