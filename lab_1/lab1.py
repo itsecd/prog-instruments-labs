@@ -186,7 +186,7 @@ class Students(object):
         fees_month = input("Enter no. of months to pay fees ---> ")
         output("Amount to be paid : " + str(self.Fees * fees_month))
         c_no = randint(1000, 9999)
-        ch = input("Enter '{0}' to confirm and fdinally pay fees ---> ".format(c_no))
+        ch = input("Enter '{0}' to confirm and finally pay fees ---> ".format(c_no))
         if ch == c_no:
             self.Fees_Months += fees_month
             output("Fees deposited successfully of registration number : " + str(self.Reg_No))
@@ -199,7 +199,7 @@ def post_data():
     st.GET_DATA()
     f_append = open("students.tc", "ab")
     pickle.dump(st, f_append)
-    output(st.Name + " Registered succesfully")
+    output(st.Name + " Registered successfully")
     f_append.close()
 
 
@@ -213,7 +213,7 @@ def show_data():
         output("No more records found")
 
     except IOError:
-        output("School management system not started yet. Please register atleast one student to get started")
+        output("School management system not started yet. Please register at least one student to get started")
 
 
 def search():
@@ -374,7 +374,7 @@ def modify_data():
                           "4. Modify Father's Name", "5. Modify Mother's Name", "6. Modify Sex",
                           "7. Modify Date of Birth", "8. Modify Age", "9. Modify Address", "10. Modify Mobile Number",
                           "11. Modify E-mail", "12. Modify Class", "13. Modify Section", "14. Modify Stream",
-                          "15. Modify Fees", "16. Modify Mode of Convinience",
+                          "15. Modify Fees", "16. Modify Mode of Convenience",
                           "17. Modify Number of Months of deposited fees", "18. Modify Weight", "19. Modify Height",
                           "20. Modify Blood Group", "21. Modify Aadhaar", "22. Modify all records",
                           "23. Exit Data Modification Menu and saving changes"])
@@ -471,7 +471,7 @@ def modify_data():
                         break
                     elif usr_ch == 16:
                         temp_st = st
-                        temp_st.MOC = input("Enter new Mode of Convinience ---> ")
+                        temp_st.MOC = input("Enter new Mode of Convenience ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
@@ -552,7 +552,7 @@ def main_menu():
     head("School Management System")
     while True:
         menu(
-            ["1. Register a new student", "2. Read all stundent's record", "3. Search", "4. Pay Fees", "5. Modify Data",
+            ["1. Register a new student", "2. Read all student's record", "3. Search", "4. Pay Fees", "5. Modify Data",
              "6. Remove Record", "7. Exit"])
         usr_ch = input("Enter your choice [Main Menu] ---> ")
         if usr_ch == 1:
