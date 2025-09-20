@@ -217,14 +217,14 @@ def show_data():
 
 
 def search():
-    def search_reg_no(reg_no):
+    def search_reg_no(regno):
 
         f_read = open("students.tc", "rb")
         flag = False
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.Reg_No == reg_no:
+                if st.Reg_No == regno:
                     flag = True
                     st.PRINT_DATA()
         except EOFError:
@@ -233,70 +233,70 @@ def search():
         if flag:
             return st.Reg_No
 
-    def search_name(name):
+    def search_name(names):
 
         f_read = open("students.tc", "rb")
         flag = False
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.Name.lower() == name.lower():
+                if st.Name.lower() == names.lower():
                     flag = True
                     st.PRINT_DATA()
         except EOFError:
             if not flag:
                 output("Record not found")
 
-    def search_roll_no(roll_no):
+    def search_roll_no(rollno):
 
         f_read = open("students.tc", "rb")
         Flag = False
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.Roll_No == roll_no:
+                if st.Roll_No == rollno:
                     Flag = True
                     st.PRINT_DATA()
         except EOFError:
             if not Flag:
                 output("Record not found")
 
-    def search_mobile_no(mobile_no):
+    def search_mobile_no(mobileno):
 
         f_read = open("students.tc", "rb")
         Flag = False
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.Mobile_No == mobile_no:
+                if st.Mobile_No == mobileno:
                     Flag = True
                     st.PRINT_DATA()
         except EOFError:
             if not Flag:
                 output("Record not found")
 
-    def search_aadhaar(aadhaar):
+    def search_aadhaar(adhar):
 
         f_read = open("students.tc", "rb")
         Flag = False
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.Aadhaar == aadhaar:
+                if st.Aadhaar == adhar:
                     Flag = True
                     st.PRINT_DATA()
         except EOFError:
             if not Flag:
                 output("Record not found")
 
-    def email(email):
+    def email(emails):
 
         f_read = open("students.tc", "rb")
         Flag = False
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.email.lower() == email.lower():
+                if st.email.lower() == emails.lower():
                     Flag = True
                     st.PRINT_DATA()
         except EOFError:
