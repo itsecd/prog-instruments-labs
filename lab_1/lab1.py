@@ -113,11 +113,11 @@ class Students(object):
     def assign_fees(self):  # Assigning Fees
         if self.Class <= 1:
             self.Fees = 3700
-        elif self.Class >= 2 and self.Class <= 6:
+        elif 2 <= self.Class <= 6:
             self.Fees = 5500
-        elif self.Class >= 7 and self.Class <= 10:
+        elif 7 <= self.Class <= 10:
             self.Fees = 6100
-        elif self.Class >= 11 and self.Class <= 12:
+        elif 11 <= self.Class <= 12:
             self.Fees = 6700
         elif self.MOC == 'BUS':
             self.Fees += 1000
