@@ -16,7 +16,9 @@ from explosion import Explosion
 
 pygame.init()# Инициализация pygame
 
-def events(screen, player, bullets, comets, stats, score, button, stars, addbullets):
+
+def events(screen, player, bullets, comets, stats,
+           score, button, stars, addbullets):
     """Обработка действий человека"""
     W, H = screen.get_size()
     pressed = pygame.mouse.get_pressed()
@@ -32,7 +34,7 @@ def events(screen, player, bullets, comets, stats, score, button, stars, addbull
             if event.key == pygame.K_a:
                 player.mleft = True
             if event.key == pygame.K_d:
-                player.mright = True    
+                player.mright = True
             if event.key == pygame.K_SPACE:
                 bullets_movement(screen, player, bullets, stats, score)
             if event.key == pygame.K_ESCAPE:
@@ -63,7 +65,8 @@ def events(screen, player, bullets, comets, stats, score, button, stars, addbull
             create_bullets(screen, addbullets, W)
 
 
-def update(screen, player, bullets, comets, score, stats, stars, addbullets, coins, explosions):
+def update(screen, player, bullets, comets, score, stats, stars, addbullets,
+           coins, explosions):
     """Отображение и обновление движение объектов на экране """
     W, H = screen.get_size()
 
@@ -92,7 +95,9 @@ def update(screen, player, bullets, comets, score, stats, stars, addbullets, coi
     for addbullet in addbullets.sprites():
         addbullet.draw_addbullet()
 
-    screen.blit(image_bullets, (score.screen_rect.right - 40, score.screen_rect.bottom - 55))
+    screen.blit(image_bullets, score.screen_rect.right - 40,
+                score.screen_rect.bottom - 55
+                )
 
     button.print_text(screen, "Очки:", W//1.125, 19, 38)
     button.print_text(screen, "Бутк:", W/1.12, 99, 38)
@@ -104,11 +109,11 @@ def update(screen, player, bullets, comets, score, stats, stars, addbullets, coi
     clock.tick(FPS)
 
     # Другие проверки
-    with open("../../../Users/egolu/OneDrive/Рабочий стол/cosmic chaos/files/hts.txt", "r") as file:
+    with open("files/hts.txt", "r") as file:
         hearts = int(file.read())
         limit_hearts = hearts - 25
 
-    with open("../../../Users/egolu/OneDrive/Рабочий стол/cosmic chaos/files/pl_hd.txt", "r") as file:
+    with open("files/pl_hd.txt", "r") as file:
         hard = int(file.read())
 
     if stats.score % 1000 == 0 and stats.score > 0:
@@ -145,7 +150,9 @@ def update_bullets(screen, bullets, comets, stats, score, coins, explosions):
     """Обновление движение пули"""
     W, H = screen.get_size()
     i = random.randint(0, 1)
-    collision = pygame.mixer.Sound("sounds/collision.mp3")# Звук столкновения пули и кометы
+    collision = pygame.mixer.Sound(
+                "sounds/collision.mp3"
+                )# Звук столкновения пули и кометы
 
     bullets.update()
     explosions.update()
@@ -160,7 +167,8 @@ def update_bullets(screen, bullets, comets, stats, score, coins, explosions):
             x = comet.rect.centerx
             y = comet.rect.centery
 
-            offset = (comet.rect.x - bullet.rect.x, comet.rect.y - bullet.rect.y)
+            offset = (comet.rect.x - bullet.rect.x,
+                      comet.rect.y - bullet.rect.y)
 
             if bullet.mask.overlap_area(comet.mask, offset) > 9.2:
                 collision.set_volume(stats.objectsvolume)
@@ -202,14 +210,17 @@ def bullets_movement(screen, player, bullets, stats, score):
         stats.bullets_volume -= 1
 
 
-def update_comets(screen, comets, player, bullets, stats, score, stars, addbullets, coins, explosions):
+def update_comets(screen, comets, player, bullets, stats, score,
+                  stars, addbullets, coins, explosions):
     """Обновление комет"""
     comets.update()
     stars.update()
 
     # Удаление объектов за пределамми экрана
     for comet in comets.copy():
-        if comet.rect.top >= comet.screen_rect.bottom or comet.rect.right >= comet.screen_rect.right + 110 or comet.rect.left <= comet.screen_rect.left - 150:
+        if (comet.rect.top >= comet.screen_rect.bottom or
+            comet.rect.right >= comet.screen_rect.right + 110 or
+            comet.rect.left <= comet.screen_rect.left - 150):
             comets.remove(comet)
 
     for star in stars.copy():
@@ -237,11 +248,14 @@ def update_comets(screen, comets, player, bullets, stats, score, stars, addbulle
             explosions.add(expl)
             comets.remove(comet)
 
-            collision = pygame.mixer.Sound("sounds/player.mp3")# Звук столкновения с игроком
+            collision = pygame.mixer.Sound(
+                "sounds/player.mp3"
+            )# Звук столкновения с игроком
             collision.set_volume(stats.objectsvolume)
             collision.play()
 
-            player_kill(screen, player, comets, bullets, stats, comets_size, score)\
+            player_kill(screen, player, comets, bullets,
+                        stats, comets_size, score)
 
 
 def create_comets(screen, group, W):
@@ -249,8 +263,10 @@ def create_comets(screen, group, W):
     x = random.randint(0, W)
     rand = random.randint(0, 2)
 
-    images = ["comet.png", "comet1.png", "comet2.png", "comet5.png"]# Изображения комет
-    image = [pygame.image.load("images/comets/" + path).convert_alpha() for path in images]
+    images = ["comet.png", "comet1.png",
+              "comet2.png", "comet5.png"]# Изображения комет
+    image = [pygame.image.load("images/comets/" + path).convert_alpha()
+             for path in images]
     img = random.randint(0, len(images) - 1 )
 
     speedy = random.uniform(1.1, 1.6)
@@ -259,7 +275,8 @@ def create_comets(screen, group, W):
     size = random.uniform(0.6, 1.5)
     deg = random.randint(10, 180)
     
-    return Comets(x, screen, group, rand, speedy, speedx, deg, size, image[img])
+    return Comets(x, screen, group, rand, speedy,
+                  speedx, deg, size, image[img])
 
 
 def player_kill(screen, player, comets, bullets, stats, comets_size, score):
@@ -311,7 +328,7 @@ def pause(screen, stats, button, player):
     player.mright = False
     player.mleft = False
 
-     # Цикл
+    # Цикл
     while stats.pause:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -338,6 +355,7 @@ def _stars(screen, stars, W):
     new_star = Stars(screen, x)
     stars.add(new_star)
 
+
 def create_bullets(screen, addbullets, W):
     """Создание характеристик для доп.пуль"""
     x = random.randint(0, W)
@@ -349,6 +367,7 @@ def create_bullets(screen, addbullets, W):
     new_addbullet = AddBullets(screen, x, speedx, speedy, rand)
     addbullets.add(new_addbullet)
 
+
 def update_player(screen, player, addbullets, stats, coins, score):
     """Создание collision для игрока и дополнений"""
     addbullets.update()
@@ -359,12 +378,15 @@ def update_player(screen, player, addbullets, stats, coins, score):
 
     for addbullet in addbullets:
         # Столкновение с доп.пулями
-        offset = (addbullet.rect.x - player.rect.x, addbullet.rect.y - player.rect.y)
+        offset = (addbullet.rect.x - player.rect.x,
+                  addbullet.rect.y - player.rect.y)
 
         if player.mask.overlap_area(addbullet.mask, offset) > 10:
             stats.bullets_volume += random.randint(10, 30)
 
-            bul_add = pygame.mixer.Sound("sounds/add_bl.mp3")# Звук подбора дополнения
+            bul_add = pygame.mixer.Sound(
+                "sounds/add_bl.mp3"
+            )# Звук подбора дополнения
             bul_add.set_volume(stats.objectsvolume)
             bul_add.play()
 
@@ -376,7 +398,9 @@ def update_player(screen, player, addbullets, stats, coins, score):
 
         if player.mask.overlap_area(coin.mask, offset) > 10:
 
-            bytk_add = pygame.mixer.Sound("sounds/bytk.mp3")# звук подбора монеты
+            bytk_add = pygame.mixer.Sound(
+                "sounds/bytk.mp3"
+            )# звук подбора монеты
             bytk_add.set_volume(stats.objectsvolume)
             bytk_add.play()
 
@@ -391,24 +415,31 @@ def loading(screen, stats):
     W, H = screen.get_size()
     
     # Обновление значения бутка
-    with open("../../../Users/egolu/OneDrive/Рабочий стол/cosmic chaos/files/btc.txt", "r") as file:
+    with open("files/btc.txt", "r") as file:
         coinsread = int(file.read())
-        with open("../../../Users/egolu/OneDrive/Рабочий стол/cosmic chaos/files/btc.txt", "w") as files:
+        with open("files/btc.txt", "w") as files:
             files.write(str(coinsread + stats.coin_check))
             stats.coin_check = 0
 
-    with open("../../../Users/egolu/OneDrive/Рабочий стол/cosmic chaos/files/rd.txt", "r") as file:
+    with open("files/rd.txt", "r") as file:
         record = int(file.read())
         if stats.score > record:
-            with open("../../../Users/egolu/OneDrive/Рабочий стол/cosmic chaos/files/rd.txt", "w") as files:
+            with open("files/rd.txt", "w") as files:
                 files.write(str(stats.score))
 
     # Подсказки    
-    hints = ["Здоровье пополняется каждые 1000 очков.", "Собирайте бутки и покупайте улучшения в магазине.",
-            "Подбирайте магазин, чтобы пополнить патроны", "Скины можно выбрать в магазине.", "Выполняйте цели и получайте новые скины.",
-            "Следите за патронами, не будет их - не будет вас.", "Кометы разные размерами, отнимают разное кол-во здоровья.",
-            "О создании игры, можно посмотреть в вкладке 'Автор.'", "Уничтожайте кометы и получайте бутки.",
-            "Чем больше вы живы, тем больше вы зарабатываете.", "Индикатор жизней: жизни < 60 - оранжевый, жизни < 30 - красный. Следите!!!"]
+    hints = ["Здоровье пополняется каждые 1000 очков.",
+             "Собирайте бутки и покупайте улучшения в магазине.",
+             "Подбирайте магазин, чтобы пополнить патроны",
+             "Скины можно выбрать в магазине.",
+             "Выполняйте цели и получайте новые скины.",
+             "Следите за патронами, не будет их - не будет вас.",
+             "Кометы разные размерами, отнимают разное кол-во здоровья.",
+             "О создании игры, можно посмотреть в вкладке 'Автор.'",
+             "Уничтожайте кометы и получайте бутки.",
+             "Чем больше вы живы, тем больше вы зарабатываете.",
+             "Индикатор жизней: жизни < 60 - оранжевый,\
+              жизни < 30 - красный. Следите!!!"]
 
     text = random.sample(hints, 1)
     x = 0
@@ -429,3 +460,4 @@ def loading(screen, stats):
 
         pygame.display.update()
         pygame.display.flip()
+
