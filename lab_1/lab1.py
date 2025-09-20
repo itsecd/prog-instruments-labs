@@ -88,7 +88,7 @@ class Students(object):
         self.B_Group = None
         self.Aadhaar = None
 
-    def GET_FEES_MONTH(self):
+    def get_fees_month(self):
 
         f_read = open("students.tc", "rb")
         try:
@@ -98,7 +98,7 @@ class Students(object):
         except EOFError:
             print
 
-    def ASSIGN_REG_NO(self):
+    def assign_reg_no(self):
         try:
             f_read = open("students.tc", "rb")
             try:
@@ -110,7 +110,7 @@ class Students(object):
         except IOError:
             self.Reg_No = 1
 
-    def ASSIGN_FEES(self):  # Assigning Fees
+    def assign_fees(self):  # Assigning Fees
         if self.Class <= 1:
             self.Fees = 3700
         elif self.Class >= 2 and self.Class <= 6:
@@ -124,9 +124,9 @@ class Students(object):
         elif self.MOC == 'AUTO':
             self.Fees += 400
 
-    def GET_DATA(self, *modify):  # Requesting data from user
+    def get_data(self, *modify):  # Requesting data from user
         if modify == ():
-            self.ASSIGN_REG_NO()
+            self.assign_reg_no()
             head("Registration Number - {0}".format(self.Reg_No))
         else:
             self.Reg_No = input("Enter New Registration Number ---> ")
@@ -147,13 +147,13 @@ class Students(object):
             self.Stream = 'N/A'
         self.Section = input("Enter Section ---> ")
         self.MOC = input("Enter Mode of Convenience [BUS, AUTO, SELF] ---> ")
-        self.ASSIGN_FEES()
+        self.assign_fees()
         self.Weight = input("Enter your Weight [KG] ---> ")
         self.Height = input("Enter your Height [CM] ---> ")
         self.B_Group = input("Enter your Blood Group ---> ")
         self.Aadhaar = input("Enter Aadhaar number ---> ")
 
-    def PRINT_DATA(self):  # Displaying data to user
+    def print_data(self):  # Displaying data to user
 
         head("Registration Number - {0}".format(self.Reg_No))
         l1 = "Roll Number : " + str(self.Roll_No)
@@ -181,7 +181,7 @@ class Students(object):
         l20 = "Aadhaar number : " + str(self.Aadhaar)
         display([l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l16, l17, l18, l19, l20])
 
-    def PAY_FEES(self):
+    def pay_fees(self):
 
         Fees_Months = input("Enter no. of months to pay fees ---> ")
         output("Amount to be paid : " + str(self.Fees * Fees_Months))
@@ -195,7 +195,7 @@ class Students(object):
 
 
 def post_data():
-    st = students()  # Creating object of the main class
+    st = Students()  # Creating object of the main class
     st.GET_DATA()
     f_append = open("students.tc", "ab")
     pickle.dump(st, f_append)
@@ -289,14 +289,14 @@ def search():
             if not Flag:
                 output("Record not found")
 
-    def Email(email):
+    def email(email):
 
         f_read = open("students.tc", "rb")
         Flag = False
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.Email.lower() == email.lower():
+                if st.email.lower() == email.lower():
                     Flag = True
                     st.PRINT_DATA()
         except EOFError:
@@ -306,7 +306,7 @@ def search():
     while True:
         head("Search Menu")
         menu(["1. Search by Registration Number", "2. Search by Name", "3. Search by Roll Number",
-              "4. Search by Mobile Number", "5. Search by Aadhaar Number", "6. Search by Email", "7. Exit search menu"])
+              "4. Search by Mobile Number", "5. Search by Aadhaar Number", "6. Search by email", "7. Exit search menu"])
         usr_ch = input("Enter your choice [Search Menu] ---> ")
         if usr_ch == 1:
             reg_no = input("Enter registration number of student ---> ")
@@ -324,8 +324,8 @@ def search():
             aadhaar = input("Enter Aadhaar Number of student ---> ")
             search_aadhaar(aadhaar)
         elif usr_ch == 6:
-            email = input("Enter Email of student ---> ")
-            Email(email)
+            email = input("Enter email of student ---> ")
+            email(email)
         elif usr_ch == 7:
             break
 
@@ -335,7 +335,7 @@ def pay_fees():
     f_read = open("students.tc", "rb")
     f_post = open("students_temp.tc", "ab")
     Flag = False
-    temp_st = students()
+    temp_st = Students()
     try:
         while True:
             st = pickle.load(f_read)
@@ -361,7 +361,7 @@ def modify_data():
     f_read = open("students.tc", "rb")
     f_post = open("students_temp.tc", "ab")
     Flag = False
-    temp_st = students()
+    temp_st = Students()
     try:
         while True:
             st = pickle.load(f_read)
@@ -548,7 +548,7 @@ def remove_data():
         os.rename("students_temp.tc", "students.tc")
 
 
-def Main_Menu():
+def main_menu():
     head("School Management System")
     while True:
         menu(
@@ -574,4 +574,4 @@ def Main_Menu():
 
 
 if __name__ == "__main__":
-    Main_Menu()
+    main_menu()
