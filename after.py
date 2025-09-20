@@ -27,8 +27,8 @@ class Bill_App:
         self.sanitizer = IntVar()
         self.mask = IntVar()
         self.hand_gloves = IntVar()
-        self.dettol = IntVar()
-        self.newsprin = IntVar()
+        self.det_tol = IntVar()
+        self.new_sprin = IntVar()
         self.thermal_gun = IntVar()
     # ============ Grocery ==============================
         self.rice = IntVar()
@@ -196,41 +196,41 @@ class Bill_App:
         )
         hand_gloves_txt.grid(row = 2, column = 1, padx = 10, pady = 10)
 
-        dettol_lbl = Label(
+        det_tol_lbl = Label(
             F2,
             text = "Dettol",
             font = ('times new roman', 16, 'bold'),
             bg = "#badc57",
             fg = "black"
         )
-        dettol_lbl.grid(row = 3, column = 0, padx = 10, pady = 10, sticky = 'W')
-        dettol_txt = Entry(
+        det_tol_lbl.grid(row = 3, column = 0, padx = 10, pady = 10, sticky ='W')
+        det_tol_txt = Entry(
             F2,
             width = 10,
-            textvariable = self.dettol,
+            textvariable = self.det_tol,
             font=('times new roman', 16, 'bold'),
             bd = 5,
             relief = GROOVE
         )
-        dettol_txt.grid(row = 3, column = 1, padx = 10, pady = 10)
+        det_tol_txt.grid(row = 3, column = 1, padx = 10, pady = 10)
 
-        newsprin_lbl = Label(
+        new_sprin_lbl = Label(
             F2,
-            text = "Newsprin",
+            text = "New_sprin",
             font = ('times new roman', 16, 'bold'),
             bg = "#badc57",
             fg = "black"
         )
-        newsprin_lbl.grid(row = 4, column = 0, padx = 10, pady = 10, sticky = 'W')
-        newsprin_txt = Entry(
+        new_sprin_lbl.grid(row = 4, column = 0, padx = 10, pady = 10, sticky ='W')
+        new_sprin_txt = Entry(
             F2,
             width = 10,
-            textvariable = self.newsprin,
+            textvariable = self.new_sprin,
             font = ('times new roman', 16, 'bold'),
             bd = 5,
             relief = GROOVE
         )
-        newsprin_txt.grid(row = 4, column = 1, padx = 10, pady = 10)
+        new_sprin_txt.grid(row = 4, column = 1, padx = 10, pady = 10)
 
         thermal_gun_lbl = Label(
             F2,
@@ -507,10 +507,10 @@ class Bill_App:
         )
         bill_title.pack(fill = X)
         scroll_y = Scrollbar(F5, orient = VERTICAL)
-        self.txtarea = Text(F5, yscrollcommand = scroll_y.set)
+        self.txt_area = Text(F5, yscrollcommand = scroll_y.set)
         scroll_y.pack(side = RIGHT, fill = Y)
-        scroll_y.config(command = self.txtarea.yview)
-        self.txtarea.pack(fill = BOTH, expand = 1)
+        scroll_y.config(command = self.txt_area.yview)
+        self.txt_area.pack(fill = BOTH, expand = 1)
 
     # ======================= Button Frame ==============
         F6 = LabelFrame(
@@ -648,7 +648,7 @@ class Bill_App:
         )
         total_btn.grid(row = 0, column = 0, padx = 5, pady = 5)
 
-        generateBill_btn = Button(
+        generate_Bill_btn = Button(
             btn_f,
             command = self.bill_area,
             text = "Generate Bill",
@@ -659,7 +659,7 @@ class Bill_App:
             width = 12,
             font = 'arial 13 bold'
         )
-        generateBill_btn.grid(row = 0, column = 1, padx = 5, pady = 5)
+        generate_Bill_btn.grid(row = 0, column = 1, padx = 5, pady = 5)
 
         clear_btn = Button(
             btn_f,
@@ -693,8 +693,8 @@ class Bill_App:
         self.m_h_g_p = self.hand_gloves.get() * 12
         self.m_s_p = self.sanitizer.get() * 2
         self.m_m_p = self.mask.get() * 5
-        self.m_d_p = self.dettol.get() * 30
-        self.m_n_p = self.newsprin.get() * 5
+        self.m_d_p = self.det_tol.get() * 30
+        self.m_n_p = self.new_sprin.get() * 5
         self.m_t_g_p = self.thermal_gun.get() * 15
         self.total_medical_price = float(
             self.m_m_p + self.m_h_g_p
@@ -743,13 +743,13 @@ class Bill_App:
 
 # ============= Welcome-Bill ============================
     def welcome_bill(self):
-        self.txtarea.delete('1.0', END)
-        self.txtarea.insert(END, "\tWelcome Webcode Retail")
-        self.txtarea.insert(END, f"\n Bill Number:{self.bill_no.get()}")
-        self.txtarea.insert(END, f"\nCustomer Name:{self.c_name.get()}")
-        self.txtarea.insert(END, f"\nPhone Number{self.c_phone.get()}")
-        self.txtarea.insert(END, f"\n================================")
-        self.txtarea.insert(END, f"\nProducts\t\tQTY\t\tPrice")
+        self.txt_area.delete('1.0', END)
+        self.txt_area.insert(END, "\tWelcome Webcode Retail")
+        self.txt_area.insert(END, f"\n Bill Number:{self.bill_no.get()}")
+        self.txt_area.insert(END, f"\nCustomer Name:{self.c_name.get()}")
+        self.txt_area.insert(END, f"\nPhone Number{self.c_phone.get()}")
+        self.txt_area.insert(END, f"\n================================")
+        self.txt_area.insert(END, f"\nProducts\t\tQTY\t\tPrice")
 
 # ======== Bill Area ====================================
     def bill_area(self):
@@ -765,124 +765,124 @@ class Bill_App:
             self.welcome_bill()
     # ============ Medical ==============================
         if self.sanitizer.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Sanitizer\t\t{self.sanitizer.get()}\t\t{self.m_s_p}"
             )
         if self.mask.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Sanitizer\t\t{self.mask.get()}\t\t{self.m_m_p}"
             )
         if self.hand_gloves.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Hand Gloves\t\t{self.hand_gloves.get()}\t\t{self.m_h_g_p}"
             )
-        if self.dettol.get() != 0:
-            self.txtarea.insert(
+        if self.det_tol.get() != 0:
+            self.txt_area.insert(
                 END,
-                f"\n Dettol\t\t{self.dettol.get()}\t\t{self.m_d_p}"
+                f"\n Dettol\t\t{self.det_tol.get()}\t\t{self.m_d_p}"
             )
-        if self.newsprin.get() != 0:
-            self.txtarea.insert(
+        if self.new_sprin.get() != 0:
+            self.txt_area.insert(
                 END,
-                f"\n Newsprin\t\t{self.newsprin.get()}\t\t{self.m_n_p}"
+                f"\n Newsprin\t\t{self.new_sprin.get()}\t\t{self.m_n_p}"
             )
         if self.thermal_gun.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Thermal Gun\t\t{self.sanitizer.get()}\t\t{self.m_t_g_p}"
             )
     # ============= Grocery =============================
         if self.rice.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Rice\t\t{self.rice.get()}\t\t{self.g_r_p}"
             )
         if self.food_oil.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Food Oil\t\t{self.food_oil.get()}\t\t{self.g_f_o_p}"
             )
         if self.wheat.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Wheat\t\t{self.wheat.get()}\t\t{self.g_w_p}"
             )
         if self.daal.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Daal\t\t{self.daal.get()}\t\t{self.g_d_p}"
             )
         if self.flour.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Flour\t\t{self.flour.get()}\t\t{self.g_f_p}"
             )
         if self.maggi.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Maggi\t\t{self.maggi.get()}\t\t{self.g_m_p}"
             )
         # ================ Cold Drinks ==================
         if self.sprite.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Sprite\t\t{self.sprite.get()}\t\t{self.c_d_s_p}"
             )
         if self.limka.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Sanitizer\t\t{self.limka.get()}\t\t{self.c_d_l_p}"
             )
         if self.mazza.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Mazza\t\t{self.mazza.get()}\t\t{self.c_d_m_p}"
             )
         if self.coke.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Dettol\t\t{self.coke.get()}\t\t{self.c_d_c_p}"
             )
         if self.fanta.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
-                f"\n Fanta\t\t{self.newsprin.get()}\t\t{self.c_d_f_p}"
+                f"\n Fanta\t\t{self.new_sprin.get()}\t\t{self.c_d_f_p}"
             )
         if self.mountain_duo.get() != 0:
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Mountain Duo\t\t{self.sanitizer.get()}\t\t{self.c_m_d}"
             )
-            self.txtarea.insert(END, f"\n--------------------------------")
+            self.txt_area.insert(END, f"\n--------------------------------")
         # =============== Taxes =========================
         if self.medical_tax.get() != '0.0':
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Medical Tax\t\t\t{self.medical_tax.get()}"
             )
         if self.grocery_tax.get() != '0.0':
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Grocery Tax\t\t\t{self.grocery_tax.get()}"
             )
         if self.cold_drinks_tax.get() != '0.0':
-            self.txtarea.insert(
+            self.txt_area.insert(
                 END,
                 f"\n Cold Drinks Tax\t\t\t{self.cold_drinks_tax.get()}"
             )
 
-        self.txtarea.insert(END, f"\n Total Bil:\t\t\t Rs.{self.total_bill}")
-        self.txtarea.insert(END, f"\n--------------------------------")
+        self.txt_area.insert(END, f"\n Total Bil:\t\t\t Rs.{self.total_bill}")
+        self.txt_area.insert(END, f"\n--------------------------------")
         self.save_bill()
 
     # ========= Save Bill ===============================
     def save_bill(self):
         op = messagebox.askyesno("Save Bill", "Do you want to save the bill?")
         if op > 0:
-            self.bill_data = self.txtarea.get('1.0', END)
+            self.bill_data = self.txt_area.get('1.0', END)
             f1 = open("bills/" + str(self.bill_no.get()) + ".txt", "w")
             f1.write(self.bill_data)
             f1.close()
@@ -899,9 +899,9 @@ class Bill_App:
         for i in os.listdir("bills/"):
             if i.split('.')[0] == self.search_bill.get():
                 f1 = open(f"bills/{i}", "r")
-                self.txtarea.delete("1.0", END)
+                self.txt_area.delete("1.0", END)
                 for d in f1:
-                    self.txtarea.insert(END, d)
+                    self.txt_area.insert(END, d)
                     f1.close()
                 present = "yes"
         if present == "no":
@@ -914,8 +914,8 @@ class Bill_App:
             self.sanitizer.set(0)
             self.mask.set(0)
             self.hand_gloves.set(0)
-            self.dettol.set(0)
-            self.newsprin.set(0)
+            self.det_tol.set(0)
+            self.new_sprin.set(0)
             self.thermal_gun.set(0)
     # ============ Grocery ==============================
             self.rice.set(0)
