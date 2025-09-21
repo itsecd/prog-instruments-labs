@@ -13,14 +13,18 @@ from src.bot.handlers import ROUTERS
 from src.config import config
 
 
+logger = logging.getLogger(__name__)
+
+
 async def main():
     """Programm entry point"""
-    init_db()
-
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
+
+    logger.info("Database initialization")
+    init_db()
 
     bot = Bot(token=config.bot_token)
 
@@ -43,4 +47,4 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        logging.info("Exit Telegram Bot")
+        logger.info("Exit Telegram Bot")
