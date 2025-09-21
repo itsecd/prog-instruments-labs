@@ -50,26 +50,36 @@ class AccessLogAnalyzer:
         }
 
 
-def analyze_access_log(log_file_path):
-    # Регулярные выражения для обнаружения угроз
-    patterns = {
-        'sql_injection': r'.*?(\%27|\')(?:\s*?(?:union|select|insert|drop|update|delete)|(?:\/\*.*?\*\/)).*?',
-        'xss_attack': r'.*?(<script|javascript:|onerror=).*?',
-        'path_traversal': r'.*?(\.\.\/|\.\.\\).*?',
-        'sensitive_paths': r'.*?(\/admin|\/phpmyadmin|\/wp-login|\.env|\.git).*?',
-        'suspicious_user_agent': r'.*?(nmap|sqlmap|wget|curl|python-requests).*?',
-        'ip_blacklist': r'(?:10\.|192\.168|172\.(?:1[6-9]|2[0-9]|3[0-1]))'  # Пример: внутренние IP
-    }
+def analyze_log(self, log_file_path):
+    """Анализ всего файла лога"""
+    suspicious_servers = defaultdict(list)
+    ip_stats = defaultdict(lambda: {'requests': 0, 'errors': 0, 'threats': 0})
 
-    threats = defaultdict(list)
-
-    with open(log_file_path, 'r') as file:
+    with open(log_file_path, 'r', encoding='utf-8', errors='ignore') as file:
         for line_num, line in enumerate(file, 1):
-            for threat_type, pattern in patterns.items():
-                if re.search(pattern, line, re.IGNORECASE):
-                    threats[threat_type].append((line_num, line.strip()))
+            log_entry = self.parse_log_line(line.strip())
+            if not log_entry:
+                continue
 
-    return threats
+            ip = log_entry['ip']
+            ip_stats[ip]['requests'] += 1
+
+            # Подсчет ошибок
+            if log_entry['status'].startswith('4') or log_entry['status'].startswith('5'):
+                ip_stats[ip]['errors'] += 1
+
+            # Обнаружение угроз
+            threats = self.detect_threats(log_entry)
+            if threats:
+                ip_stats[ip]['threats'] += len(threats)
+                suspicious_servers[ip].append({
+                    'line': line_num,
+                    'threats': threats,
+                    'request': log_entry['request'],
+                    'timestamp': log_entry['timestamp']
+                })
+
+    return suspicious_servers, ip_stats
 
 
 def main():
