@@ -85,58 +85,82 @@ class AccessLogAnalyzer:
 
 
 
-def analyze_log(self, log_file_path):
-    """Анализ всего файла лога"""
-    suspicious_servers = defaultdict(list)
-    ip_stats = defaultdict(lambda: {'requests': 0, 'errors': 0, 'threats': 0})
+    def analyze_log(self, log_file_path):
+        """Анализ всего файла лога"""
+        suspicious_servers = defaultdict(list)
+        ip_stats = defaultdict(lambda: {'requests': 0, 'errors': 0, 'threats': 0})
 
-    with open(log_file_path, 'r', encoding='utf-8', errors='ignore') as file:
-        for line_num, line in enumerate(file, 1):
-            log_entry = self.parse_log_line(line.strip())
-            if not log_entry:
-                continue
+        with open(log_file_path, 'r', encoding='utf-8', errors='ignore') as file:
+            for line_num, line in enumerate(file, 1):
+                log_entry = self.parse_log_line(line.strip())
+                if not log_entry:
+                    continue
 
-            ip = log_entry['ip']
-            ip_stats[ip]['requests'] += 1
+                ip = log_entry['ip']
+                ip_stats[ip]['requests'] += 1
 
-            # Подсчет ошибок
-            if log_entry['status'].startswith('4') or log_entry['status'].startswith('5'):
-                ip_stats[ip]['errors'] += 1
+                # Подсчет ошибок
+                if log_entry['status'].startswith('4') or log_entry['status'].startswith('5'):
+                    ip_stats[ip]['errors'] += 1
 
-            # Обнаружение угроз
-            threats = self.detect_threats(log_entry)
-            if threats:
-                ip_stats[ip]['threats'] += len(threats)
-                suspicious_servers[ip].append({
-                    'line': line_num,
-                    'threats': threats,
-                    'request': log_entry['request'],
-                    'timestamp': log_entry['timestamp']
+                # Обнаружение угроз
+                threats = self.detect_threats(log_entry)
+                if threats:
+                    ip_stats[ip]['threats'] += len(threats)
+                    suspicious_servers[ip].append({
+                        'line': line_num,
+                        'threats': threats,
+                        'request': log_entry['request'],
+                        'timestamp': log_entry['timestamp']
+                    })
+
+        return suspicious_servers, ip_stats
+
+    def generate_report(self, suspicious_servers, ip_stats, output_file):
+        """Генерация отчета в CSV"""
+        with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+            fieldnames = ['IP', 'Total Requests', 'Error Rate', 'Threat Count',
+                          'Threat Types', 'First Detection', 'Last Detection']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+            writer.writeheader()
+            for ip, entries in suspicious_servers.items():
+                threat_types = set()
+                for entry in entries:
+                    threat_types.update(entry['threats'])
+
+                timestamps = [datetime.strptime(entry['timestamp'].split()[0], '%d/%b/%Y:%H:%M:%S')
+                              for entry in entries]
+
+                writer.writerow({
+                    'IP': ip,
+                    'Total Requests': ip_stats[ip]['requests'],
+                    'Error Rate': f"{(ip_stats[ip]['errors'] / ip_stats[ip]['requests']) * 100:.1f}%",
+                    'Threat Count': ip_stats[ip]['threats'],
+                    'Threat Types': ', '.join(threat_types),
+                    'First Detection': min(timestamps).strftime('%Y-%m-%d %H:%M:%S'),
+                    'Last Detection': max(timestamps).strftime('%Y-%m-%d %H:%M:%S')
                 })
 
-    return suspicious_servers, ip_stats
 
 
+    def save_detailed_threats(self, suspicious_servers, output_file):
+        """Сохранение детальной информации об угрозах"""
+        with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+            fieldnames = ['IP', 'Timestamp', 'Threat Type', 'Request', 'User Agent']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-
-
-def save_detailed_threats(self, suspicious_servers, output_file):
-    """Сохранение детальной информации об угрозах"""
-    with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = ['IP', 'Timestamp', 'Threat Type', 'Request', 'User Agent']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-
-        writer.writeheader()
-        for ip, entries in suspicious_servers.items():
-            for entry in entries:
-                for threat in entry['threats']:
-                    writer.writerow({
-                        'IP': ip,
-                        'Timestamp': entry['timestamp'],
-                        'Threat Type': threat,
-                        'Request': entry['request'][:100],  # Ограничение длины
-                        'User Agent': entry.get('user_agent', '')[:100]  # Ограничение длины
-                    })
+            writer.writeheader()
+            for ip, entries in suspicious_servers.items():
+                for entry in entries:
+                    for threat in entry['threats']:
+                        writer.writerow({
+                            'IP': ip,
+                            'Timestamp': entry['timestamp'],
+                            'Threat Type': threat,
+                            'Request': entry['request'][:100],  # Ограничение длины
+                            'User Agent': entry.get('user_agent', '')[:100]  # Ограничение длины
+                        })
 
 
 def main():
