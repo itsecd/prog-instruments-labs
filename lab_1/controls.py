@@ -141,7 +141,7 @@ def update(screen, player, bullets, comets, score, stats, stars, addbullets,
 
 
 def update_menu(screen, stars):
-    # Прорисовка звезд
+    """Прорисовка звезд"""
     for star in stars.sprites():
         star.draw()
 
@@ -280,7 +280,7 @@ def create_comets(screen, group, W):
 
 
 def player_kill(screen, player, comets, bullets, stats, comets_size, score):
-    # Обработка смерти игрока
+    """Обработка смерти игрока"""
     update_hard(player, comets_size, stats, score)
 
     if stats.player_left < 1:
@@ -289,7 +289,7 @@ def player_kill(screen, player, comets, bullets, stats, comets_size, score):
 
 
 def update_hard(player, comets_size, stats, score):
-    # Обработка вычитания жизней от размер кометы
+    """Обработка вычитания жизней от размер кометы"""
     if comets_size >= 0.6 and comets_size < 0.85:
         stats.player_left -= 10
         score.hard -= 15
@@ -305,7 +305,7 @@ def update_hard(player, comets_size, stats, score):
 
 
 def pause(screen, stats, button, player):
-    """ Пауза """
+    """Пауза"""
     W, H = screen.get_size()
     stats.pause = True
 
@@ -350,7 +350,7 @@ def pause(screen, stats, button, player):
 
 
 def _stars(screen, stars, W):
-    # Создание рандомной координаты x для звезд
+    """Создание рандомной координаты x для звезд"""
     x = random.randint(0, W)
     new_star = Stars(screen, x)
     stars.add(new_star)
