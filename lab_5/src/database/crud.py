@@ -1,6 +1,11 @@
 from typing import Any
+import logging
 from .db import get_connection
 
+
+logger = logging.getLogger(__name__)
+def _log_db_query(query: str):
+    logger.debug("DB query: \"%s\"", query)
 
 def create_user(tg_id: int, tasks_reversed: bool = False):
     """
@@ -10,12 +15,15 @@ def create_user(tg_id: int, tasks_reversed: bool = False):
         tg_id (int): telegram user id
         tasks_reversed (bool, optional): order of tasks. Defaults to False.
     """
+    query = "INSERT INTO users (tg_id, tasks_reversed) VALUES (?, ?)"
     with get_connection() as conn:
         conn.execute(
-            "INSERT INTO users (tg_id, tasks_reversed) VALUES (?, ?)",
+            query,
             (tg_id, int(tasks_reversed))
         )
         conn.commit()
+    
+    _log_db_query(query)
 
 
 def set_tasks_reversed(tg_id: int, value: bool):
@@ -26,12 +34,15 @@ def set_tasks_reversed(tg_id: int, value: bool):
         tg_id (int): telegram user id
         value (bool)
     """
+    query = "UPDATE users SET tasks_reversed = ? WHERE tg_id = ?"
     with get_connection() as conn:
         conn.execute(
-            "UPDATE users SET tasks_reversed = ? WHERE tg_id = ?",
+            query,
             (int(value), tg_id)
         )
         conn.commit()
+    
+    _log_db_query(query)
 
 
 def get_user(tg_id: int) -> dict[str, Any] | None:
@@ -44,12 +55,15 @@ def get_user(tg_id: int) -> dict[str, Any] | None:
     Returns:
         dict[str, Any] | None: user data
     """
+    query = "SELECT tg_id, tasks_reversed FROM users WHERE tg_id = ?"
     with get_connection() as conn:
         cursor = conn.execute(
-            "SELECT tg_id, tasks_reversed FROM users WHERE tg_id = ?",
+            query,
             (tg_id, )
         )
         row = cursor.fetchone()
+
+    _log_db_query(query)
 
     return dict(row) if row is not None else None
 
@@ -62,12 +76,15 @@ def add_task(tg_id: int, task: str):
         tg_id (int): telegram user id
         task (str): task text
     """
+    query = "INSERT INTO tasks (user_id, task) VALUES (?, ?)"
     with get_connection() as conn:
         conn.execute(
-            "INSERT INTO tasks (user_id, task) VALUES (?, ?)",
+            query,
             (tg_id, task)
         )
         conn.commit()
+    
+    _log_db_query(query)
 
 
 def get_task_by_idx(tg_id: int, idx: int) -> dict[str, Any] | None:
@@ -81,12 +98,15 @@ def get_task_by_idx(tg_id: int, idx: int) -> dict[str, Any] | None:
     Returns:
         dict[str, Any] | None: task data
     """
+    query = "SELECT * from tasks WHERE user_id = ? ORDER BY id LIMIT 1 OFFSET ?"
     with get_connection() as conn:
         cursor = conn.execute(
-            "SELECT * from tasks WHERE user_id = ? ORDER BY id LIMIT 1 OFFSET ?",
+            query,
             (tg_id, idx, )
         )
         row = cursor.fetchone()
+
+    _log_db_query(query)
 
     return dict(row) if row is not None else None
 
@@ -100,13 +120,16 @@ def update_task_by_idx(tg_id: int, idx: int, new_task: str):
         idx (int): task idx by order
         new_task (str): new task text
     """
+    query = "UPDATE tasks SET task = ? WHERE id = ?"
     task = get_task_by_idx(tg_id, idx)
     with get_connection() as conn:
         conn.execute(
-            "UPDATE tasks SET task = ? WHERE id = ?",
+            query,
             (new_task, task["id"])
         )
         conn.commit()
+    
+    _log_db_query(query)
 
 
 def delete_task_by_idx(tg_id: int, idx: int):
@@ -118,12 +141,15 @@ def delete_task_by_idx(tg_id: int, idx: int):
         idx (int): task idx by order
     """
     task = get_task_by_idx(tg_id, idx)
+    query = "DELETE FROM tasks WHERE id = ?"
     with get_connection() as conn:
         conn.execute(
-            "DELETE FROM tasks WHERE id = ?",
+            query,
             (task["id"], )
         )
         conn.commit()
+    
+    _log_db_query(query)
 
 
 def get_tasks_count(tg_id: int) -> int:
@@ -136,12 +162,15 @@ def get_tasks_count(tg_id: int) -> int:
     Returns:
         int: tasks count
     """
+    query = "SELECT COUNT(*) FROM tasks WHERE user_id = ?"
     with get_connection() as conn:
         cursor = conn.execute(
-            "SELECT COUNT(*) FROM tasks WHERE user_id = ?",
+            query,
             (tg_id, )
         )
         row = cursor.fetchone()
+
+    _log_db_query(query)
 
     return row[0] if row else 0
 
@@ -156,11 +185,14 @@ def get_tasks(tg_id: int) -> list[dict[str, Any]]:
     Returns:
         list[dict[str, Any]]: list of tasks data
     """
+    query = "SELECT * FROM tasks WHERE user_id = ? ORDER BY id"
     with get_connection() as conn:
         cursor = conn.execute(
-            "SELECT * FROM tasks WHERE user_id = ? ORDER BY id",
+            query,
             (tg_id, )
         )
         rows = cursor.fetchall()
+
+    _log_db_query(query)
 
     return [dict(task) for task in rows]
