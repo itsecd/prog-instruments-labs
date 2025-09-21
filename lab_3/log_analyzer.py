@@ -180,14 +180,22 @@ class AccessLogAnalyzer:
 
 
 def main():
-    log_file = 'access.log'
-    results = analyze_log(log_file)
+    analyzer = AccessLogAnalyzer()
 
-    for threat, entries in results.items():
-        print(f"Обнаружена угроза: {threat}")
-        for line_num, line in entries:
-            print(f"Строка {line_num}: {line}")
-        print("-" * 50)
+    # Анализ лог-файла
+    log_file = 'access.log'
+    suspicious_servers, ip_stats = analyzer.analyze_log(log_file)
+
+    # Генерация отчетов
+    analyzer.generate_report(suspicious_servers, ip_stats, 'suspicious_servers_report.csv')
+    analyzer.save_detailed_threats(suspicious_servers, 'detailed_threats_report.csv')
+
+    # Вывод результатов
+    print(f"Проанализировано {len(ip_stats)} уникальных IP-адресов")
+    print(f"Обнаружено {len(suspicious_servers)} подозрительных серверов")
+    print("Отчеты сохранены в файлы:")
+    print("- suspicious_servers_report.csv (основной отчет)")
+    print("- detailed_threats_report.csv (детальная информация об угрозах)")
 
 
 if __name__ == '__main__':
