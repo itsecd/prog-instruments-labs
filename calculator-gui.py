@@ -162,7 +162,8 @@ class Inside:
         self.value2 = self.out_var.get()
         if self.value2 == "":
             messagebox.showerror(
-                "Second Number", "Please Enter Second Number To Perform Calculation"
+                "Second Number",
+                "Please Enter Second Number To Perform Calculation"
             )
         else:
             try:
@@ -378,9 +379,7 @@ class Main(tk.Tk):
         _my_height = 350
         _x = int(_com_width / 2 - _my_width / 2)
         _y = int(_com_height / 2 - _my_height / 2)
-        geo_string = (
-            str(_my_width) + "x" + str(_my_height) + "+" + str(_x) + "+" + str(_y)
-        )
+        geo_string = f"{_my_width}x{_my_height}+{_x}+{_y}"
         self.geometry(geo_string)
         self.resizable(width=False, height=False)
 
