@@ -25,7 +25,14 @@ def analyze_access_log(log_file_path):
 
 
 def main():
+    log_file = 'access.log'
+    results = analyze_access_log(log_file)
 
+    for threat, entries in results.items():
+        print(f"Обнаружена угроза: {threat}")
+        for line_num, line in entries:
+            print(f"Строка {line_num}: {line}")
+        print("-" * 50)
 
 
 if __name__ == '__main__':
