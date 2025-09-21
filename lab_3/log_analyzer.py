@@ -2,6 +2,15 @@ import re
 from collections import defaultdict
 
 
+
+class AccessLogAnalyzer:
+    def __init__(self):
+        # Регулярное выражение для парсинга строк access.log
+        self.log_pattern = re.compile(
+            r'(\d+\.\d+\.\d+\.\d+)\s-\s-\s\[(.*?)\]\s"(.*?)"\s(\d+)\s(\d+)\s"(.*?)"\s"(.*?)"'
+        )
+
+
 def analyze_access_log(log_file_path):
     # Регулярные выражения для обнаружения угроз
     patterns = {
