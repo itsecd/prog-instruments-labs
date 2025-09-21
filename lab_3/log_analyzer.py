@@ -11,6 +11,7 @@ class AccessLogAnalyzer:
         self.log_pattern = re.compile(
             r'(\d+\.\d+\.\d+\.\d+)\s-\s-\s\[(.*?)\]\s"(.*?)"\s(\d+)\s(\d+)\s"(.*?)"\s"(.*?)"'
         )
+
         # Паттерны для обнаружения различных типов атак
         self.patterns = {
             'sql_injection': [
