@@ -9,6 +9,45 @@ class AccessLogAnalyzer:
         self.log_pattern = re.compile(
             r'(\d+\.\d+\.\d+\.\d+)\s-\s-\s\[(.*?)\]\s"(.*?)"\s(\d+)\s(\d+)\s"(.*?)"\s"(.*?)"'
         )
+        # Паттерны для обнаружения различных типов атак
+        self.patterns = {
+            'sql_injection': [
+                r'union\s+select',
+                r'select.*from',
+                r'insert\s+into',
+                r'drop\s+table',
+                r'or\s+1=1',
+                r';\s*(--|#)',
+                r'exec\(|execute\(|xp_cmdshell',
+                r'waitfor\s+delay',
+                r'benchmark\(|sleep\(',
+                r'\b(sqlmap|sqli)\b'
+            ],
+            'xss_attack': [
+                r'<script>',
+                r'javascript:',
+                r'onerror=|onload=|onmouseover=',
+                r'alert\(|confirm\(|prompt\(',
+                r'document\.cookie|window\.location',
+                r'eval\(|setTimeout\(|setInterval\('
+            ],
+            'path_traversal': [
+                r'\.\./|\.\.\\',
+                r'etc/passwd',
+                r'proc/self',
+                r'win\.ini|boot\.ini',
+                r'\.\.%2f|\.\.%5c'
+            ],
+            'suspicious_user_agent': [
+                r'nmap|sqlmap|metasploit',
+                r'nikto|wpscan|dirb',
+                r'hydra|medusa|burpsuite',
+                r'python-requests|curl|wget',
+                r'zgrab|masscan|zmap',
+                r'^$|^-$|unknown|undefined'  # Пустые или неопределенные UA
+            ]
+
+        }
 
 
 def analyze_access_log(log_file_path):
