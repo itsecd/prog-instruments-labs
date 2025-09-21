@@ -50,6 +50,39 @@ class AccessLogAnalyzer:
 
         }
 
+    def parse_log_line(self, line):
+        """Парсинг строки лога с помощью регулярного выражения"""
+        match = self.log_pattern.match(line)
+        if not match:
+            return None
+
+        return {
+            'ip': match.group(1),
+            'timestamp': match.group(2),
+            'request': match.group(3),
+            'status': match.group(4),
+            'size': match.group(5),
+            'referer': match.group(6),
+            'user_agent': match.group(7)
+        }
+
+    def detect_threats(self, log_entry):
+        """Обнаружение угроз в записи лога"""
+        threats = []
+
+        # Проверка всех паттернов
+        for threat_type, patterns in self.patterns.items():
+            for pattern in patterns:
+                # Проверяем URL и User-Agent
+                if re.search(pattern, log_entry['request'], re.IGNORECASE) or \
+                        re.search(pattern, log_entry['user_agent'], re.IGNORECASE) or \
+                        re.search(pattern, log_entry['referer'], re.IGNORECASE):
+                    threats.append(threat_type)
+                    break  # Не проверяем остальные паттерны для этого типа угрозы
+
+        return threats
+
+
 
 def analyze_log(self, log_file_path):
     """Анализ всего файла лога"""
@@ -81,6 +114,9 @@ def analyze_log(self, log_file_path):
                 })
 
     return suspicious_servers, ip_stats
+
+
+
 
 
 def save_detailed_threats(self, suspicious_servers, output_file):
