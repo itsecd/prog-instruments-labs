@@ -369,7 +369,7 @@ class Main(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title("Calculator")
-        self.geometry_settings(
+        self.geometry_settings()
 
     def geometry_settings(self):
         _com_width = self.winfo_screenwidth()
