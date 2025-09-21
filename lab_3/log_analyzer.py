@@ -1,3 +1,4 @@
+import csv
 import re
 from collections import defaultdict
 
@@ -82,9 +83,28 @@ def analyze_log(self, log_file_path):
     return suspicious_servers, ip_stats
 
 
+def save_detailed_threats(self, suspicious_servers, output_file):
+    """Сохранение детальной информации об угрозах"""
+    with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+        fieldnames = ['IP', 'Timestamp', 'Threat Type', 'Request', 'User Agent']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        writer.writeheader()
+        for ip, entries in suspicious_servers.items():
+            for entry in entries:
+                for threat in entry['threats']:
+                    writer.writerow({
+                        'IP': ip,
+                        'Timestamp': entry['timestamp'],
+                        'Threat Type': threat,
+                        'Request': entry['request'][:100],  # Ограничение длины
+                        'User Agent': entry.get('user_agent', '')[:100]  # Ограничение длины
+                    })
+
+
 def main():
     log_file = 'access.log'
-    results = analyze_access_log(log_file)
+    results = analyze_log(log_file)
 
     for threat, entries in results.items():
         print(f"Обнаружена угроза: {threat}")
