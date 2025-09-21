@@ -40,6 +40,22 @@ class AccessLogAnalyzer:
                 r'win\.ini|boot\.ini',
                 r'\.\.%2f|\.\.%5c'
             ],
+            'rce_attack': [
+                r';\s*(bash|sh|cmd|powershell)',
+                r'\|\s*(bash|sh|cmd|powershell)',
+                r'\$\{IFS\}',
+                r'curl\s|wget\s',
+                r'php://input|data://',
+                r'base64_decode|eval\(base64'
+            ],
+            'sensitive_paths': [
+                r'/admin|/wp-admin|/administrator',
+                r'/phpmyadmin|/mysql|/dbadmin',
+                r'\.env|\.git|\.htaccess',
+                r'/backup|/backups|/dump',
+                r'/config|/configuration',
+                r'/login|/signin|/auth'
+            ],
             'suspicious_user_agent': [
                 r'nmap|sqlmap|metasploit',
                 r'nikto|wpscan|dirb',
@@ -47,8 +63,12 @@ class AccessLogAnalyzer:
                 r'python-requests|curl|wget',
                 r'zgrab|masscan|zmap',
                 r'^$|^-$|unknown|undefined'  # Пустые или неопределенные UA
+            ],
+            'scanner_patterns': [
+                r'nessus|acunetix|netsparker',
+                r'appscan|wapiti|openvas',
+                r'nessus|nexpose|qualys'
             ]
-
         }
 
     def parse_log_line(self, line):
@@ -82,8 +102,6 @@ class AccessLogAnalyzer:
                     break  # Не проверяем остальные паттерны для этого типа угрозы
 
         return threats
-
-
 
     def analyze_log(self, log_file_path):
         """Анализ всего файла лога"""
@@ -141,8 +159,6 @@ class AccessLogAnalyzer:
                     'First Detection': min(timestamps).strftime('%Y-%m-%d %H:%M:%S'),
                     'Last Detection': max(timestamps).strftime('%Y-%m-%d %H:%M:%S')
                 })
-
-
 
     def save_detailed_threats(self, suspicious_servers, output_file):
         """Сохранение детальной информации об угрозах"""
