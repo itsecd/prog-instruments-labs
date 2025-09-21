@@ -1,28 +1,22 @@
-# ==================== Libraries ====================
+# Libraries
 import tkinter as tk
 from tkinter import ttk, messagebox
 
-# ===================================================
-# ==================== Classes ======================
+
+# Classes
 
 
 class Inside:
     def __init__(self, parent):
         self.parent = parent
-        # ----- Main Frame -----
         self.cal_frame = ttk.Frame(self.parent)
         self.cal_frame.grid(row=0, column=0)
-        # ----------------------
-        # ----- Variable For Main Output -----
         self.out_var = tk.StringVar()
-        # ----- Operator Chooser -----
         self.opr = tk.StringVar()
-        # ----- Values Holder -----
         self.value1 = tk.StringVar()
         self.value2 = tk.StringVar()
-        # ------------------------------------
-        self.output_box()  # <---------- Output Box Shower
-        self.cal_buttons()  # <---------- Buttons On Calculator
+        self.output_box()
+        self.cal_buttons()
 
     def output_box(self):
         show = ttk.Entry(
@@ -35,7 +29,7 @@ class Inside:
         show.grid(row=0, column=0, sticky=tk.W, ipady=6, ipadx=1, columnspan=4)
         show.focus()
 
-    # ========== * Button Events * ========== < --- Sequence 789456123
+    # Button Events
     def press_7(self):
         current=self.out_var.get()
         if current=="":
@@ -116,7 +110,7 @@ class Inside:
             current += str(0)
             self.out_var.set(current)
 
-    # ========== Operators Button Handling Function ==========
+    # Operators Button Handling Function
     def press_clear(self):
         self.out_var.set("")
 
@@ -163,8 +157,7 @@ class Inside:
             self.out_var.set("")
             self.opr = "/"
 
-    # ==============================================
-    # ========== ***** Equal Button Function ***** ==========
+    # Equal Button Function
     def press_equal(self):
         self.value2 = self.out_var.get()
         if self.value2 == "":
@@ -200,7 +193,6 @@ class Inside:
                 )
 
     def cal_buttons(self):
-        # ===== Row 1 =====
         btn_c = tk.Button(
             self.cal_frame,
             text="Clear",
@@ -241,7 +233,6 @@ class Inside:
             command=self.press_min,
         )
         btn_min.grid(row=1, column=3, sticky=tk.E)
-        # ===== Row 2 =====
         btn_7 = tk.Button(
             self.cal_frame,
             text="7",
@@ -282,7 +273,6 @@ class Inside:
             command=self.press_plus,
         )
         btn_plus.grid(row=2, column=3, sticky=tk.E, rowspan=2)
-        # ===== Row 3 =====
         btn_4 = tk.Button(
             self.cal_frame,
             text="4",
@@ -313,7 +303,6 @@ class Inside:
             command=self.press_6,
         )
         btn_6.grid(row=3, column=2, sticky=tk.E)
-        # ===== Row 4 =====
         btn_1 = tk.Button(
             self.cal_frame,
             text="1",
@@ -354,7 +343,6 @@ class Inside:
             command=self.press_equal,
         )
         btn_equal.grid(row=4, column=3, sticky=tk.E, rowspan=2)
-        # ===== Row 5 =====
         btn_0 = tk.Button(
             self.cal_frame,
             text="0",
@@ -380,12 +368,8 @@ class Inside:
 class Main(tk.Tk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # ----- Title -----
         self.title("Calculator")
-        # -----------------
-        # ----- Geometry Settings -----
-        self.geometry_settings()
-        # -----------------------------
+        self.geometry_settings(
 
     def geometry_settings(self):
         _com_width = self.winfo_screenwidth()
@@ -397,13 +381,10 @@ class Main(tk.Tk):
         geo_string = (
             str(_my_width) + "x" + str(_my_height) + "+" + str(_x) + "+" + str(_y)
         )
-        # ----- Setting Now -----
         self.geometry(geo_string)
         self.resizable(width=False, height=False)
-        # -----------------------
 
 
-# =================== Running The Application =======
 if __name__ == "__main__":
     calculator = Main()
     Inside(calculator)
