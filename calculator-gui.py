@@ -31,80 +31,80 @@ class Inside:
 
     # Button Events
     def press_7(self):
-        current=self.out_var.get()
-        if current=="":
+        current = self.out_var.get()
+        if current == "":
             self.out_var.set(7)
         else:
             current += str(7)
             self.out_var.set(current)
 
     def press_8(self):
-        current=self.out_var.get()
-        if current=="":
+        current = self.out_var.get()
+        if current == "":
             self.out_var.set(8)
         else:
             current += str(8)
             self.out_var.set(current)
 
     def press_9(self):
-        current=self.out_var.get()
-        if current=="":
+        current = self.out_var.get()
+        if current == "":
             self.out_var.set(9)
         else:
             current += str(9)
             self.out_var.set(current)
 
     def press_4(self):
-        current=self.out_var.get()
-        if current=="":
+        current = self.out_var.get()
+        if current == "":
             self.out_var.set(4)
         else:
             current += str(4)
             self.out_var.set(current)
 
     def press_5(self):
-        current=self.out_var.get()
-        if current=="":
+        current = self.out_var.get()
+        if current == "":
             self.out_var.set(5)
         else:
             current += str(5)
             self.out_var.set(current)
 
     def press_6(self):
-        current=self.out_var.get()
-        if current=="":
+        current = self.out_var.get()
+        if current == "":
             self.out_var.set(6)
         else:
             current += str(6)
             self.out_var.set(current)
 
     def press_1(self):
-        current=self.out_var.get()
-        if current=="":
+        current = self.out_var.get()
+        if current == "":
             self.out_var.set(1)
         else:
             current += str(1)
             self.out_var.set(current)
 
     def press_2(self):
-        current=self.out_var.get()
-        if current=="":
+        current = self.out_var.get()
+        if current == "":
             self.out_var.set(2)
         else:
             current += str(2)
             self.out_var.set(current)
 
     def press_3(self):
-        current=self.out_var.get()
-        if current=="":
+        current = self.out_var.get()
+        if current == "":
             self.out_var.set(3)
         else:
             current += str(3)
             self.out_var.set(current)
 
     def press_0(self):
-        current=self.out_var.get()
-        if current=="":
+        current = self.out_var.get()
+        if current == "":
             self.out_var.set(0)
         else:
             current += str(0)
