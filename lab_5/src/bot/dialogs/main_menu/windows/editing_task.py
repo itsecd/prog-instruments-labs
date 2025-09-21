@@ -5,10 +5,15 @@ from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const
 from aiogram_dialog.widgets.input import MessageInput
 
+import logging
+
 from src.bot.states.main_menu import MainMenuStatesGroup
 from src.database.crud import update_task_by_idx
 from src.utils import goto_state
 from src.config import ui
+
+
+logger = logging.getLogger(__name__)
 
 
 async def _edit_task(
@@ -31,10 +36,12 @@ async def _edit_task(
     try:
         update_task_by_idx(user_id, task_idx, task)
     except Exception as e:
-        # logging in other lab?
+        logger.exception("Error while editing a task")
         await message.answer(ui.messages.something_wrong)
         await dialog_manager.switch_to(MainMenuStatesGroup.choosing_task)
         return
+    
+    logger.debug("Task edited for user with id = %d", user_id)
 
     await dialog_manager.switch_to(MainMenuStatesGroup.choosing_task)
 

@@ -4,10 +4,15 @@ from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const, Format
 
+import logging
+
 from src.bot.states.main_menu import MainMenuStatesGroup
 from src.database.crud import delete_task_by_idx
 from src.utils import goto_state
 from src.config import ui
+
+
+logger = logging.getLogger(__name__)
 
 
 async def _do_delete(
@@ -30,10 +35,12 @@ async def _do_delete(
     try:
         delete_task_by_idx(user_id, task_idx)
     except Exception as e:
-        # logging in other lab?
+        logger.exception("Error while deleting a task")
         await callback.answer(ui.errors.something_wrong)
         dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
         return
+    
+    logger.debug("Task deleted for user with id = %d", user_id)
 
     await dialog_manager.switch_to(MainMenuStatesGroup.choosing_task)
 

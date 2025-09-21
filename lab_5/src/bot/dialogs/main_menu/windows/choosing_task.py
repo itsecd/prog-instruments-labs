@@ -4,11 +4,16 @@ from aiogram_dialog import Window, DialogManager
 from aiogram_dialog.widgets.kbd import Button, ScrollingGroup, Radio
 from aiogram_dialog.widgets.text import Const, Format
 
+import logging
+
 from src.bot.states.main_menu import MainMenuStatesGroup
 from src.database.crud import get_tasks_count, get_user
 from src.utils import goto_state
 from src.config import ui
 from ..getters import tasks_getter
+
+
+logger = logging.getLogger(__name__)
 
 
 async def _do_choose(
@@ -31,7 +36,7 @@ async def _do_choose(
         tasks_count = get_tasks_count(user_id)
         tasks_reversed = bool(get_user(user_id)["tasks_reversed"])
     except Exception as e:
-        # logging in other lab?
+        logger.exception("Error while choosing a task")
         callback.answer(ui.errors.something_wrong)
         await dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
         return
@@ -41,6 +46,13 @@ async def _do_choose(
         task_idx = tasks_count - task_idx - 1
 
     dialog_manager.dialog_data["task_idx"] = task_idx
+
+    logger.debug(
+        "Task with idx = %d choosed for user with id = %d",
+        task_idx,
+        user_id,
+    )
+
     await dialog_manager.switch_to(MainMenuStatesGroup.task_choosen)
 
 

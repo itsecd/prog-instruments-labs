@@ -5,10 +5,15 @@ from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 from aiogram_dialog.widgets.text import Const
 
+import logging
+
 from src.bot.states.main_menu import MainMenuStatesGroup
 from src.database.crud import add_task
 from src.utils import goto_state
 from src.config import ui
+
+
+logger = logging.getLogger(__name__)
 
 
 async def _save_task(
@@ -29,8 +34,14 @@ async def _save_task(
     try:
         add_task(message.from_user.id, task)
     except Exception as e:
-        # logging in other labs?
+        logger.exception("Error while saving a task")
         await message.answer(ui.errors.something_wrong)
+    
+    logger.debug(
+        "Task \"%s\" saved for user with id = %d",
+        task,
+        message.from_user.id
+    )
 
     await dialog_manager.switch_to(MainMenuStatesGroup.choosing_action)
 
