@@ -23,6 +23,8 @@ async def main():
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
 
+    logging.info("Program starting")
+
     logger.info("Database initialization")
     init_db()
 
