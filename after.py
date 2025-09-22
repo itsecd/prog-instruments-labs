@@ -3,6 +3,7 @@ import random
 import os
 from tkinter import messagebox
 
+
 # ============ Main =====================================
 
 
@@ -14,681 +15,681 @@ class Bill_App:
         bg_color = "#badc57"
         title = Label(
             self.root,
-            text = "Billing Software",
-            font = ('times new roman', 30, 'bold'),
-            pady = 2,
-            bd = 12,
-            bg = "#badc57",
-            fg = "Black",
-            relief = GROOVE
+            text="Billing Software",
+            font=('times new roman', 30, 'bold'),
+            pady=2,
+            bd=12,
+            bg="#badc57",
+            fg="Black",
+            relief=GROOVE
         )
-        title.pack(fill = X)
-    # ================ Variables =======================
+        title.pack(fill=X)
+        # ================ Variables =======================
         self.sanitizer = IntVar()
         self.mask = IntVar()
         self.hand_gloves = IntVar()
         self.det_tol = IntVar()
         self.new_sprin = IntVar()
         self.thermal_gun = IntVar()
-    # ============ Grocery ==============================
+        # ============ Grocery ==============================
         self.rice = IntVar()
         self.food_oil = IntVar()
         self.wheat = IntVar()
         self.daal = IntVar()
         self.flour = IntVar()
         self.maggi = IntVar()
-    # ============= Cold Drinks =========================
+        # ============= Cold Drinks =========================
         self.sprite = IntVar()
         self.limka = IntVar()
         self.mazza = IntVar()
         self.coke = IntVar()
         self.fanta = IntVar()
         self.mountain_duo = IntVar()
-    # ============== Total product price ================
+        # ============== Total product price ================
         self.medical_price = StringVar()
         self.grocery_price = StringVar()
         self.cold_drinks_price = StringVar()
-    # ============== Customer ===========================
+        # ============== Customer ===========================
         self.c_name = StringVar()
         self.c_phone = StringVar()
         self.bill_no = StringVar()
         x = random.randint(1000, 9999)
         self.bill_no.set(str(x))
         self.search_bill = StringVar()
-    # =============== Tax ===============================
+        # =============== Tax ===============================
         self.medical_tax = StringVar()
         self.grocery_tax = StringVar()
         self.cold_drinks_tax = StringVar()
-    # ============= Customer retail details =============
+        # ============= Customer retail details =============
         F_1 = LabelFrame(
             self.root,
-            text = "Customer Details",
-            font = ('times new roman', 15, 'bold'),
-            bd = 10,
-            fg = "Black",
-            bg = "#badc57"
+            text="Customer Details",
+            font=('times new roman', 15, 'bold'),
+            bd=10,
+            fg="Black",
+            bg="#badc57"
         )
-        F_1.place(x= 0, y = 80, relwidth = 1)
+        F_1.place(x=0, y=80, relwidth=1)
         cname_lbl = Label(
             F_1,
-            text = "Customer Name:",
-            bg = bg_color,
-            font = ('times new roman', 15, 'bold')
+            text="Customer Name:",
+            bg=bg_color,
+            font=('times new roman', 15, 'bold')
         )
-        cname_lbl.grid(row = 0, column = 0, padx = 20, pady = 5)
+        cname_lbl.grid(row=0, column=0, padx=20, pady=5)
         cname_txt = Entry(
             F_1,
-            width = 15,
-            textvariable = self.c_name,
-            font = 'arial 15',
-            bd = 7,
-            relief = GROOVE
+            width=15,
+            textvariable=self.c_name,
+            font='arial 15',
+            bd=7,
+            relief=GROOVE
         )
-        cname_txt.grid(row = 0, column = 1, pady = 5, padx = 10)
+        cname_txt.grid(row=0, column=1, pady=5, padx=10)
 
         cphn_lbl = Label(
             F_1,
-            text = "Customer Phone:",
-            bg = "#badc57",
-            font = ('times new roman', 15, 'bold')
+            text="Customer Phone:",
+            bg="#badc57",
+            font=('times new roman', 15, 'bold')
         )
-        cphn_lbl.grid(row = 0, column = 2, padx = 20, pady = 5)
+        cphn_lbl.grid(row=0, column=2, padx=20, pady=5)
         cphn_txt = Entry(
             F_1,
-            width = 15,
-            textvariable = self.c_phone,
-            font = 'arial 15',
-            bd = 7,
-            relief = GROOVE
+            width=15,
+            textvariable=self.c_phone,
+            font='arial 15',
+            bd=7,
+            relief=GROOVE
         )
-        cphn_txt.grid(row = 0, column = 3, pady = 5, padx = 10)
+        cphn_txt.grid(row=0, column=3, pady=5, padx=10)
 
         c_bill_lbl = Label(
             F_1,
-            text = "Bill Number:",
-            bg = "#badc57",
-            font = ('times new roman', 15, 'bold')
+            text="Bill Number:",
+            bg="#badc57",
+            font=('times new roman', 15, 'bold')
         )
-        c_bill_lbl.grid(row = 0, column = 4, padx = 20, pady = 5)
+        c_bill_lbl.grid(row=0, column=4, padx=20, pady=5)
         c_bill_txt = Entry(
             F_1,
-            width = 15,
-            textvariable = self.search_bill,
-            font = 'arial 15',
-            bd = 7,
-            relief = GROOVE
+            width=15,
+            textvariable=self.search_bill,
+            font='arial 15',
+            bd=7,
+            relief=GROOVE
         )
-        c_bill_txt.grid(row = 0, column = 5, pady = 5, padx = 10)
+        c_bill_txt.grid(row=0, column=5, pady=5, padx=10)
 
         bil_btn = Button(
             F_1,
-            text = "Search",
-            command = self.find_bill,
-            width = 10,
-            bd = 7,
-            font = ('arial', 12, 'bold'),
-            relief = GROOVE
+            text="Search",
+            command=self.find_bill,
+            width=10,
+            bd=7,
+            font=('arial', 12, 'bold'),
+            relief=GROOVE
         )
-        bil_btn.grid(row = 0, column = 6, pady = 5, padx = 10)
+        bil_btn.grid(row=0, column=6, pady=5, padx=10)
 
-    # =================== Medical =======================
+        # =================== Medical =======================
         F_2 = LabelFrame(
             self.root,
-            text = "Medical Purpose",
-            font = ('times new roman', 15, 'bold'),
-            bd = 10,
-            fg = "Black",
-            bg = "#badc57"
+            text="Medical Purpose",
+            font=('times new roman', 15, 'bold'),
+            bd=10,
+            fg="Black",
+            bg="#badc57"
         )
-        F_2.place(x = 5, y = 180, width = 325, height = 380)
+        F_2.place(x=5, y=180, width=325, height=380)
 
         sanitizer_lbl = Label(
             F_2,
-            text = "Sanitizer",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Sanitizer",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        sanitizer_lbl.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = 'W')
+        sanitizer_lbl.grid(row=0, column=0, padx=10, pady=10, sticky='W')
         sanitizer_txt = Entry(
             F_2,
-            width = 10,
-            textvariable = self.sanitizer,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.sanitizer,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        sanitizer_txt.grid(row = 0, column = 1, padx = 10, pady = 10)
+        sanitizer_txt.grid(row=0, column=1, padx=10, pady=10)
 
         mask_lbl = Label(
             F_2,
-            text = "Mask",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Mask",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        mask_lbl.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = 'W')
+        mask_lbl.grid(row=1, column=0, padx=10, pady=10, sticky='W')
         mask_txt = Entry(
             F_2,
-            width = 10,
-            textvariable = self.mask,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.mask,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        mask_txt.grid(row = 1, column = 1, padx = 10, pady = 10)
+        mask_txt.grid(row=1, column=1, padx=10, pady=10)
 
         hand_gloves_lbl = Label(
             F_2,
-            text = "Hand Gloves",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Hand Gloves",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        hand_gloves_lbl.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = 'W')
+        hand_gloves_lbl.grid(row=2, column=0, padx=10, pady=10, sticky='W')
         hand_gloves_txt = Entry(
             F_2,
-            width = 10,
-            textvariable = self.hand_gloves,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.hand_gloves,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        hand_gloves_txt.grid(row = 2, column = 1, padx = 10, pady = 10)
+        hand_gloves_txt.grid(row=2, column=1, padx=10, pady=10)
 
         det_tol_lbl = Label(
             F_2,
-            text = "Dettol",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Dettol",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        det_tol_lbl.grid(row = 3, column = 0, padx = 10, pady = 10, sticky ='W')
+        det_tol_lbl.grid(row=3, column=0, padx=10, pady=10, sticky='W')
         det_tol_txt = Entry(
             F_2,
-            width = 10,
-            textvariable = self.det_tol,
+            width=10,
+            textvariable=self.det_tol,
             font=('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            bd=5,
+            relief=GROOVE
         )
-        det_tol_txt.grid(row = 3, column = 1, padx = 10, pady = 10)
+        det_tol_txt.grid(row=3, column=1, padx=10, pady=10)
 
         new_sprin_lbl = Label(
             F_2,
-            text = "New_sprin",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="New_sprin",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        new_sprin_lbl.grid(row = 4, column = 0, padx = 10, pady = 10, sticky ='W')
+        new_sprin_lbl.grid(row=4, column=0, padx=10, pady=10, sticky='W')
         new_sprin_txt = Entry(
             F_2,
-            width = 10,
-            textvariable = self.new_sprin,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.new_sprin,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        new_sprin_txt.grid(row = 4, column = 1, padx = 10, pady = 10)
+        new_sprin_txt.grid(row=4, column=1, padx=10, pady=10)
 
         thermal_gun_lbl = Label(
             F_2,
-            text = "Thermal Gun",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Thermal Gun",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        thermal_gun_lbl.grid(row = 5, column = 0, padx = 10, pady = 10, sticky = 'W')
+        thermal_gun_lbl.grid(row=5, column=0, padx=10, pady=10, sticky='W')
         thermal_gun_txt = Entry(
             F_2,
-            width = 10,
-            textvariable = self.thermal_gun,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.thermal_gun,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        thermal_gun_txt.grid(row = 5, column = 1, padx = 10, pady = 10)
+        thermal_gun_txt.grid(row=5, column=1, padx=10, pady=10)
 
-    # ========== Grocery Items ==========================
+        # ========== Grocery Items ==========================
         F_3 = LabelFrame(
             self.root,
-            text = "Grocery Items",
-            font = ('times new roman', 15, 'bold'),
-            bd = 10,
-            fg = "Black",
-            bg = "#badc57"
+            text="Grocery Items",
+            font=('times new roman', 15, 'bold'),
+            bd=10,
+            fg="Black",
+            bg="#badc57"
         )
-        F_3.place(x = 340, y = 180, width = 325, height = 380)
+        F_3.place(x=340, y=180, width=325, height=380)
 
         rice_lbl = Label(
             F_3,
-            text = "Rice",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Rice",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        rice_lbl.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = 'W')
+        rice_lbl.grid(row=0, column=0, padx=10, pady=10, sticky='W')
         rice_txt = Entry(
             F_3,
-            width = 10,
-            textvariable = self.rice,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.rice,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        rice_txt.grid(row = 0, column = 1, padx = 10, pady = 10)
+        rice_txt.grid(row=0, column=1, padx=10, pady=10)
 
         food_oil_lbl = Label(
             F_3,
-            text = "Food Oil",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Food Oil",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        food_oil_lbl.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = 'W')
+        food_oil_lbl.grid(row=1, column=0, padx=10, pady=10, sticky='W')
         food_oil_txt = Entry(
             F_3,
-            width = 10,
-            textvariable = self.food_oil,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.food_oil,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        food_oil_txt.grid(row = 1, column = 1, padx = 10, pady = 10)
+        food_oil_txt.grid(row=1, column=1, padx=10, pady=10)
 
         wheat_lbl = Label(
             F_3,
-            text = "Wheat",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Wheat",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        wheat_lbl.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = 'W')
+        wheat_lbl.grid(row=2, column=0, padx=10, pady=10, sticky='W')
         wheat_txt = Entry(
             F_3,
-            width = 10,
-            textvariable = self.wheat,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.wheat,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        wheat_txt.grid(row = 2, column = 1, padx = 10, pady = 10)
+        wheat_txt.grid(row=2, column=1, padx=10, pady=10)
 
         daal_lbl = Label(
             F_3,
-            text = "Daal",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Daal",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        daal_lbl.grid(row = 3, column = 0, padx = 10, pady = 10, sticky = 'W')
+        daal_lbl.grid(row=3, column=0, padx=10, pady=10, sticky='W')
         daal_txt = Entry(
             F_3,
-            width = 10,
-            textvariable = self.daal,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.daal,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        daal_txt.grid(row = 3, column = 1, padx = 10, pady = 10)
+        daal_txt.grid(row=3, column=1, padx=10, pady=10)
 
         flour_lbl = Label(
             F_3,
-            text = "Flour",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Flour",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        flour_lbl.grid(row = 4, column = 0, padx = 10, pady = 10, sticky = 'W')
+        flour_lbl.grid(row=4, column=0, padx=10, pady=10, sticky='W')
         flour_txt = Entry(
             F_3,
-            width = 10,
-            textvariable = self.flour,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.flour,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        flour_txt.grid(row = 4, column = 1, padx = 10, pady = 10)
+        flour_txt.grid(row=4, column=1, padx=10, pady=10)
 
         maggi_lbl = Label(
             F_3,
-            text = "Maggi",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Maggi",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        maggi_lbl.grid(row = 5, column = 0, padx = 10, pady = 10, sticky = 'W')
+        maggi_lbl.grid(row=5, column=0, padx=10, pady=10, sticky='W')
         maggi_txt = Entry(
             F_3,
-            width = 10,
-            textvariable = self.maggi,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.maggi,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        maggi_txt.grid(row = 5, column = 1, padx = 10, pady = 10)
+        maggi_txt.grid(row=5, column=1, padx=10, pady=10)
 
-    # =========== Cold Drinks ===========================
+        # =========== Cold Drinks ===========================
         F_4 = LabelFrame(
             self.root,
-            text = "Cold Drinks",
-            font = ('times new roman', 15, 'bold'),
-            bd = 10,
-            fg = "Black",
-            bg = "#badc57"
+            text="Cold Drinks",
+            font=('times new roman', 15, 'bold'),
+            bd=10,
+            fg="Black",
+            bg="#badc57"
         )
-        F_4.place(x = 670, y = 180, width = 325, height = 380)
+        F_4.place(x=670, y=180, width=325, height=380)
 
         sprite_lbl = Label(
             F_4,
-            text = "Sprite",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Sprite",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        sprite_lbl.grid(row = 0, column = 0, padx = 10, pady = 10, sticky = 'W')
+        sprite_lbl.grid(row=0, column=0, padx=10, pady=10, sticky='W')
 
         sprite_txt = Entry(
             F_4,
-            width = 10,
-            textvariable = self.sprite,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.sprite,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        sprite_txt.grid(row = 0, column = 1, padx = 10, pady = 10)
+        sprite_txt.grid(row=0, column=1, padx=10, pady=10)
 
         limka_lbl = Label(
             F_4,
-            text = "Limka",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Limka",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        limka_lbl.grid(row = 1, column = 0, padx = 10, pady = 10, sticky = 'W')
+        limka_lbl.grid(row=1, column=0, padx=10, pady=10, sticky='W')
 
         limka_txt = Entry(
             F_4,
-            width = 10,
-            textvariable = self.limka,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.limka,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        limka_txt.grid(row = 1, column = 1, padx = 10, pady = 10)
+        limka_txt.grid(row=1, column=1, padx=10, pady=10)
 
         mazza_lbl = Label(
             F_4,
-            text = "Mazza",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Mazza",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        mazza_lbl.grid(row = 2, column = 0, padx = 10, pady = 10, sticky = 'W')
+        mazza_lbl.grid(row=2, column=0, padx=10, pady=10, sticky='W')
 
         wheat_txt = Entry(
             F_4,
-            width = 10,
-            textvariable = self.mazza,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.mazza,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        wheat_txt.grid(row = 2, column = 1, padx = 10, pady = 10)
+        wheat_txt.grid(row=2, column=1, padx=10, pady=10)
 
         coke_lbl = Label(
             F_4,
-            text = "Coke",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Coke",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        coke_lbl.grid(row = 3, column = 0, padx = 10, pady = 10, sticky = 'W')
+        coke_lbl.grid(row=3, column=0, padx=10, pady=10, sticky='W')
 
         coke_txt = Entry(
             F_4,
-            width = 10,
-            textvariable = self.coke,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.coke,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        coke_txt.grid(row = 3, column = 1, padx = 10, pady = 10)
+        coke_txt.grid(row=3, column=1, padx=10, pady=10)
 
         fanta_lbl = Label(
             F_4,
-            text = "Fanta",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Fanta",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        fanta_lbl.grid(row = 4, column = 0, padx = 10, pady = 10, sticky = 'W')
+        fanta_lbl.grid(row=4, column=0, padx=10, pady=10, sticky='W')
 
         fanta_txt = Entry(
             F_4,
-            width = 10,
-            textvariable = self.fanta,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.fanta,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        fanta_txt.grid(row = 4, column = 1, padx = 10, pady = 10)
+        fanta_txt.grid(row=4, column=1, padx=10, pady=10)
 
         mountain_duo_lbl = Label(
             F_4,
-            text = "Mountain Duo",
-            font = ('times new roman', 16, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Mountain Duo",
+            font=('times new roman', 16, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        mountain_duo_lbl.grid(row = 5, column = 0, padx = 10, pady = 10, sticky = 'W')
+        mountain_duo_lbl.grid(row=5, column=0, padx=10, pady=10, sticky='W')
 
         mountain_duo_txt = Entry(
             F_4,
-            width = 10,
-            textvariable = self.mountain_duo,
-            font = ('times new roman', 16, 'bold'),
-            bd = 5,
-            relief = GROOVE
+            width=10,
+            textvariable=self.mountain_duo,
+            font=('times new roman', 16, 'bold'),
+            bd=5,
+            relief=GROOVE
         )
-        mountain_duo_txt.grid(row = 5, column = 1, padx = 10, pady = 10)
+        mountain_duo_txt.grid(row=5, column=1, padx=10, pady=10)
 
         # ================= Bill Area =======================
         F_5 = Frame(self.root, bd=10, relief=GROOVE)
-        F_5.place(x = 1010, y = 180, width = 350, height = 380)
+        F_5.place(x=1010, y=180, width=350, height=380)
 
         bill_title = Label(
             F_5,
-            text = "Bill Area",
-            font = 'arial 15 bold',
-            bd = 7,
-            relief = GROOVE
+            text="Bill Area",
+            font='arial 15 bold',
+            bd=7,
+            relief=GROOVE
         )
-        bill_title.pack(fill = X)
-        scroll_y = Scrollbar(F_5, orient = VERTICAL)
-        self.txt_area = Text(F_5, yscrollcommand = scroll_y.set)
-        scroll_y.pack(side = RIGHT, fill = Y)
-        scroll_y.config(command = self.txt_area.yview)
-        self.txt_area.pack(fill = BOTH, expand = 1)
+        bill_title.pack(fill=X)
+        scroll_y = Scrollbar(F_5, orient=VERTICAL)
+        self.txt_area = Text(F_5, yscrollcommand=scroll_y.set)
+        scroll_y.pack(side=RIGHT, fill=Y)
+        scroll_y.config(command=self.txt_area.yview)
+        self.txt_area.pack(fill=BOTH, expand=1)
 
-    # ======================= Button Frame ==============
+        # ======================= Button Frame ==============
         F_6 = LabelFrame(
             self.root,
-            text = "Bill Area",
-            font = ('times new roman', 14, 'bold'),
-            bd = 10,
-            fg = "Black",
-            bg = "#badc57"
+            text="Bill Area",
+            font=('times new roman', 14, 'bold'),
+            bd=10,
+            fg="Black",
+            bg="#badc57"
         )
-        F_6.place(x = 0, y = 560, relwidth = 1, height = 140)
+        F_6.place(x=0, y=560, relwidth=1, height=140)
 
         m1_lbl = Label(
             F_6,
-            text = "Total Medical Price",
-            font = ('times new roman', 14, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Total Medical Price",
+            font=('times new roman', 14, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        m1_lbl.grid(row = 0, column = 0, padx = 20, pady = 1, sticky = 'W')
+        m1_lbl.grid(row=0, column=0, padx=20, pady=1, sticky='W')
         m1_txt = Entry(
             F_6,
-            width = 18,
-            textvariable = self.medical_price,
-            font = 'arial 10 bold',
-            bd = 7,
-            relief = GROOVE
+            width=18,
+            textvariable=self.medical_price,
+            font='arial 10 bold',
+            bd=7,
+            relief=GROOVE
         )
-        m1_txt.grid(row = 0, column = 1, padx = 18, pady = 1)
+        m1_txt.grid(row=0, column=1, padx=18, pady=1)
 
         m2_lbl = Label(
             F_6,
-            text = "Total Grocery Price",
-            font = ('times new roman', 14, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Total Grocery Price",
+            font=('times new roman', 14, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        m2_lbl.grid(row = 1, column = 0, padx = 20, pady = 1, sticky = 'W')
+        m2_lbl.grid(row=1, column=0, padx=20, pady=1, sticky='W')
         m2_txt = Entry(
             F_6,
-            width = 18,
-            textvariable = self.grocery_price,
-            font = 'arial 10 bold',
-            bd = 7,
-            relief = GROOVE
+            width=18,
+            textvariable=self.grocery_price,
+            font='arial 10 bold',
+            bd=7,
+            relief=GROOVE
         )
-        m2_txt.grid(row = 1, column = 1, padx = 18, pady = 1)
+        m2_txt.grid(row=1, column=1, padx=18, pady=1)
 
         m3_lbl = Label(
             F_6,
-            text = "Total Cold Drinks Price",
-            font = ('times new roman', 14, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Total Cold Drinks Price",
+            font=('times new roman', 14, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        m3_lbl.grid(row = 2, column = 0, padx = 20, pady = 1, sticky = 'W')
+        m3_lbl.grid(row=2, column=0, padx=20, pady=1, sticky='W')
         m3_txt = Entry(
             F_6,
-            width = 18,
-            textvariable = self.cold_drinks_price,
-            font = 'arial 10 bold',
-            bd = 7,
-            relief = GROOVE
+            width=18,
+            textvariable=self.cold_drinks_price,
+            font='arial 10 bold',
+            bd=7,
+            relief=GROOVE
         )
-        m3_txt.grid(row = 2, column = 1, padx = 18, pady = 1)
+        m3_txt.grid(row=2, column=1, padx=18, pady=1)
 
         m4_lbl = Label(
             F_6,
-            text = "Medical Tax",
-            font = ('times new roman', 14, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Medical Tax",
+            font=('times new roman', 14, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        m4_lbl.grid(row = 0, column = 2, padx = 20, pady = 1, sticky = 'W')
+        m4_lbl.grid(row=0, column=2, padx=20, pady=1, sticky='W')
         m4_txt = Entry(
             F_6,
-            width = 18,
-            textvariable = self.medical_tax,
-            font = 'arial 10 bold',
-            bd = 7,
-            relief = GROOVE
+            width=18,
+            textvariable=self.medical_tax,
+            font='arial 10 bold',
+            bd=7,
+            relief=GROOVE
         )
-        m4_txt.grid(row = 0, column = 3, padx = 18, pady = 1)
+        m4_txt.grid(row=0, column=3, padx=18, pady=1)
 
         m5_lbl = Label(
             F_6,
-            text = "Grocery Tax",
-            font = ('times new roman', 14, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Grocery Tax",
+            font=('times new roman', 14, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        m5_lbl.grid(row = 1, column = 2, padx = 20, pady = 1, sticky = 'W')
+        m5_lbl.grid(row=1, column=2, padx=20, pady=1, sticky='W')
         m5_txt = Entry(
             F_6,
-            width = 18,
-            textvariable = self.grocery_tax,
-            font = 'arial 10 bold',
-            bd = 7,
-            relief = GROOVE
+            width=18,
+            textvariable=self.grocery_tax,
+            font='arial 10 bold',
+            bd=7,
+            relief=GROOVE
         )
-        m5_txt.grid(row = 1, column = 3, padx = 18, pady = 1)
+        m5_txt.grid(row=1, column=3, padx=18, pady=1)
 
         m6_lbl = Label(
             F_6,
-            text = "Cold Drinks Tax",
-            font = ('times new roman', 14, 'bold'),
-            bg = "#badc57",
-            fg = "black"
+            text="Cold Drinks Tax",
+            font=('times new roman', 14, 'bold'),
+            bg="#badc57",
+            fg="black"
         )
-        m6_lbl.grid(row = 2, column = 2, padx = 20, pady = 1, sticky = 'W')
+        m6_lbl.grid(row=2, column=2, padx=20, pady=1, sticky='W')
         m6_txt = Entry(
             F_6,
-            width = 18,
-            textvariable = self.cold_drinks_tax,
-            font = 'arial 10 bold',
-            bd = 7,
-            relief = GROOVE
+            width=18,
+            textvariable=self.cold_drinks_tax,
+            font='arial 10 bold',
+            bd=7,
+            relief=GROOVE
         )
-        m6_txt.grid(row = 2, column = 3, padx = 18, pady = 1)
+        m6_txt.grid(row=2, column=3, padx=18, pady=1)
 
-    # ======= Buttons ===================================
-        btn_f = Frame(F_6, bd = 7, relief = GROOVE)
-        btn_f.place(x = 760, width = 580, height = 105)
+        # ======= Buttons ===================================
+        btn_f = Frame(F_6, bd=7, relief=GROOVE)
+        btn_f.place(x=760, width=580, height=105)
 
         total_btn = Button(
             btn_f,
-            command = self.total,
-            text = "Total",
-            bg = "#535C68",
-            bd = 2,
-            fg = "white",
-            pady = 15,
-            width = 12,
-            font = 'arial 13 bold'
+            command=self.total,
+            text="Total",
+            bg="#535C68",
+            bd=2,
+            fg="white",
+            pady=15,
+            width=12,
+            font='arial 13 bold'
         )
-        total_btn.grid(row = 0, column = 0, padx = 5, pady = 5)
+        total_btn.grid(row=0, column=0, padx=5, pady=5)
 
         generate_Bill_btn = Button(
             btn_f,
-            command = self.bill_area,
-            text = "Generate Bill",
-            bd = 2,
-            bg = "#535C68",
-            fg = "white",
-            pady = 12,
-            width = 12,
-            font = 'arial 13 bold'
+            command=self.bill_area,
+            text="Generate Bill",
+            bd=2,
+            bg="#535C68",
+            fg="white",
+            pady=12,
+            width=12,
+            font='arial 13 bold'
         )
-        generate_Bill_btn.grid(row = 0, column = 1, padx = 5, pady = 5)
+        generate_Bill_btn.grid(row=0, column=1, padx=5, pady=5)
 
         clear_btn = Button(
             btn_f,
-            command = self.clear_data,
-            text = "Clear",
-            bg = "#535C68",
-            bd = 2,
-            fg = "white",
-            pady = 15,
-            width = 12,
-            font = 'arial 13 bold'
+            command=self.clear_data,
+            text="Clear",
+            bg="#535C68",
+            bd=2,
+            fg="white",
+            pady=15,
+            width=12,
+            font='arial 13 bold'
         )
-        clear_btn.grid(row = 0, column = 2, padx = 5, pady = 5)
+        clear_btn.grid(row=0, column=2, padx=5, pady=5)
 
         exit_btn = Button(
             btn_f,
-            command = self.exit_app,
-            text = "Exit",
-            bd = 2,
-            bg = "#535C68",
-            fg = "white",
-            pady = 15,
-            width = 12,
-            font = 'arial 13 bold'
+            command=self.exit_app,
+            text="Exit",
+            bd=2,
+            bg="#535C68",
+            fg="white",
+            pady=15,
+            width=12,
+            font='arial 13 bold'
         )
-        exit_btn.grid(row = 0, column = 3, padx = 5, pady = 5)
+        exit_btn.grid(row=0, column=3, padx=5, pady=5)
         self.welcome_bill()
 
-# =============== Total Bill ============================
+    # =============== Total Bill ============================
     def total(self):
         self.m_h_g_p = self.hand_gloves.get() * 12
         self.m_s_p = self.sanitizer.get() * 2
@@ -698,7 +699,7 @@ class Bill_App:
         self.m_t_g_p = self.thermal_gun.get() * 15
         self.total_medical_price = float(
             self.m_m_p + self.m_h_g_p
-            + self.m_d_p + self.m_n_p + self.m_t_g_p+self.m_s_p
+            + self.m_d_p + self.m_n_p + self.m_t_g_p + self.m_s_p
         )
 
         self.medical_price.set("Rs. " + str(self.total_medical_price))
@@ -738,10 +739,10 @@ class Bill_App:
         self.total_bill = float(
             self.total_medical_price + self.total_grocery_price
             + self.total_cold_drinks_price + self.c_tax
-            + self.g_tax+self.c_d_tax
+            + self.g_tax + self.c_d_tax
         )
 
-# ============= Welcome-Bill ============================
+    # ============= Welcome-Bill ============================
     def welcome_bill(self):
         self.txt_area.delete('1.0', END)
         self.txt_area.insert(END, "\tWelcome Webcode Retail")
@@ -751,7 +752,7 @@ class Bill_App:
         self.txt_area.insert(END, f"\n================================")
         self.txt_area.insert(END, f"\nProducts\t\tQTY\t\tPrice")
 
-# ======== Bill Area ====================================
+    # ======== Bill Area ====================================
     def bill_area(self):
         if self.c_name.get() == " " or self.c_phone.get() == " ":
             messagebox.showerror("Error", "Customer Details Are Must")
@@ -763,7 +764,7 @@ class Bill_App:
             messagebox.showerror("Error", "No Product Purchased")
         else:
             self.welcome_bill()
-    # ============ Medical ==============================
+        # ============ Medical ==============================
         if self.sanitizer.get() != 0:
             self.txt_area.insert(
                 END,
@@ -794,7 +795,7 @@ class Bill_App:
                 END,
                 f"\n Thermal Gun\t\t{self.sanitizer.get()}\t\t{self.m_t_g_p}"
             )
-    # ============= Grocery =============================
+        # ============= Grocery =============================
         if self.rice.get() != 0:
             self.txt_area.insert(
                 END,
@@ -917,21 +918,21 @@ class Bill_App:
             self.det_tol.set(0)
             self.new_sprin.set(0)
             self.thermal_gun.set(0)
-    # ============ Grocery ==============================
+            # ============ Grocery ==============================
             self.rice.set(0)
             self.food_oil.set(0)
             self.wheat.set(0)
             self.daal.set(0)
             self.flour.set(0)
             self.maggi.set(0)
-    # ============= Cold Drinks =========================
+            # ============= Cold Drinks =========================
             self.sprite.set(0)
             self.limka.set(0)
             self.mazza.set(0)
             self.coke.set(0)
             self.fanta.set(0)
             self.mountain_duo.set(0)
-    # =================== Taxes =========================
+            # =================== Taxes =========================
             self.medical_price.set("")
             self.grocery_price.set("")
             self.cold_drinks_price.set("")
