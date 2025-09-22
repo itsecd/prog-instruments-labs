@@ -6,9 +6,13 @@ from aiogram_dialog import DialogManager, StartMode
 
 from contextlib import suppress
 from sqlite3 import IntegrityError
+import logging
 
 from src.bot.states.main_menu import MainMenuStatesGroup
 from src.database.crud import create_user
+
+
+logger = logging.getLogger(__name__)
 
 
 router = Router()
@@ -20,6 +24,8 @@ async def start_message_handler(
     dialog_manager: DialogManager
 ):
     """Handler for /start command"""
+    logger.debug("Handler for command /start triggered")
+
     with suppress(IntegrityError):
         create_user(message.from_user.id)
 
@@ -34,5 +40,7 @@ async def tasks_message_handler(
     message: Message,
     dialog_manager: DialogManager
 ):
+    logger.debug("Handler for command /tasks triggered")
+
     """Handler for /tasks command"""
     await start_message_handler(message, dialog_manager)
