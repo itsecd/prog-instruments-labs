@@ -38,9 +38,22 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    data = {
+        "variant": variant,
+        "checksum": checksum
+    }
+    with open("result.json", "w") as f:
+        json.dump(data, f, indent=4)
 
 
 if __name__ == "__main__":
-    print(calculate_checksum([1, 2, 3]))
-    print(calculate_checksum([3, 2, 1]))
+    # Тестирование функций
+    test_checksum = calculate_checksum([1, 2, 3])
+    print(f"Контрольная сумма для [1, 2, 3]: {test_checksum}")
+
+    test_checksum2 = calculate_checksum([3, 2, 1])
+    print(f"Контрольная сумма для [3, 2, 1]: {test_checksum2}")
+
+    # Сериализация результата
+    serialize_result(0, test_checksum)
+    print("Результат записан в result.json")
