@@ -19,11 +19,11 @@ logger = logging.getLogger(__name__)
 async def main():
     """Programm entry point"""
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=config.logging_level,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
 
-    logging.info("Program starting")
+    logger.info("Program starting")
 
     logger.info("Database initialization")
     init_db()
