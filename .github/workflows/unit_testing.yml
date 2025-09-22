@@ -1,4 +1,4 @@
-name: Unit testing for lab 5
+name: Unit testing for lab 6
 
 on:
   pull_request_target:
