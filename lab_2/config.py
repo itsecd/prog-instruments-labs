@@ -1,0 +1,7 @@
+initial_file = "initial.txt"
+encrypted_file = "encrypted.txt"
+decrypted_file = "decrypted.txt"
+symmetric_key = "encrypted_symmetric_key.bin"
+public_key = "public.pem"
+secret_key = "private.pem"
+nonce = "nonce.bin"

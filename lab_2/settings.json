@@ -1,0 +1,9 @@
+{
+  "initial_file": "initial.txt",
+  "encrypted_file": "encrypted.txt",
+  "decrypted_file": "decrypted.txt",
+  "encrypted_symmetric_key_file": "encrypted_symmetric_key.bin",
+  "public_key": "public.pem",
+  "secret_key": "private.pem",
+  "nonce": "nonce.bin"
+}
