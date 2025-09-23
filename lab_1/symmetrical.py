@@ -9,14 +9,14 @@ class Symmetrical:
     """
     @staticmethod
     def generate_key(key_len_bits: int) -> bytes:
-     """
-     Генерирует ключ с заданной длиной
-     :param key_len_bits: длина ключа
-     :return: ключ
-     """
-     if not (40<=key_len_bits <= 128):
-         raise ValueError("Длина ключа должна быть 40-128 бит!")
-     return os.urandom(key_len_bits // 8)
+        """
+        Генерирует ключ с заданной длиной
+        :param key_len_bits: длина ключа
+        :return: ключ
+        """
+        if not (40<=key_len_bits <= 128):
+            raise ValueError("Длина ключа должна быть 40-128 бит!")
+        return os.urandom(key_len_bits // 8)
 
 
 

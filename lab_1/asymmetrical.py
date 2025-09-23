@@ -47,13 +47,13 @@ class Asymmetrical:
             private_key: RSAPrivateKey,
             encrypted_data: bytes
     ) -> bytes:
-     """
-     Дешифрование симметричного ключа с использованием закрытого ключа
-     :param private_key: закрытый ключ
-     :param encrypted_data: зашифрованные данные
-     :return: байтовая строка
-     """
-     return private_key.decrypt(
+        """
+        Дешифрование симметричного ключа с использованием закрытого ключа
+        :param private_key: закрытый ключ
+        :param encrypted_data: зашифрованные данные
+        :return: байтовая строка
+        """
+        return private_key.decrypt(
          encrypted_data,
          padding.OAEP(
              mgf=padding.MGF1(algorithm=hashes.SHA256()),#плохой комментарий

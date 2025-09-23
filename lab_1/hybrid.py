@@ -22,18 +22,18 @@ class Hybrid:
             private_key: RSAPrivateKey,
             encrypted_sym_key: bytes,
             plaintext: str) -> bytes:
-     """
-     Шифрование данных с помощью гибридного шифрования
-     :param private_key: закрытый RSA ключ
-     :param encrypted_sym_key: зашифрованный симметричный ключ
-     :param plaintext: исходный текст для шифрования
-     :return: зашифрованные данные
-     """
+        """
+        Шифрование данных с помощью гибридного шифрования
+        :param private_key: закрытый RSA ключ
+        :param encrypted_sym_key: зашифрованный симметричный ключ
+        :param plaintext: исходный текст для шифрования
+        :return: зашифрованные данные
+        """
 
-     symmetric_key = Asymmetrical.decrypt_by_private_key(
-         private_key, encrypted_sym_key
-     )#плохой комментарий
-     return Symmetrical.encrypt_text(key=symmetric_key, text=plaintext)
+        symmetric_key = Asymmetrical.decrypt_by_private_key(
+            private_key, encrypted_sym_key
+        )#плохой комментарий
+        return Symmetrical.encrypt_text(key=symmetric_key, text=plaintext)
 
 
 
