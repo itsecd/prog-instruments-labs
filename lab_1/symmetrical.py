@@ -14,7 +14,7 @@ class Symmetrical:
         :param key_len_bits: длина ключа
         :return: ключ
         """
-        if not (40<=key_len_bits <= 128):
+        if not (40 <= key_len_bits <= 128):
             raise ValueError("Длина ключа должна быть 40-128 бит!")
         return os.urandom(key_len_bits // 8)
 
@@ -31,7 +31,7 @@ class Symmetrical:
         """
         if not text:
             raise ValueError("Пустой текст для шифрования")
-        if not (5<=len(key) <= 16):
+        if not (5 <= len(key) <= 16):
             raise ValueError(f"Некорректный размер ключа: {len(key)} байт")
 
         bytes = text.encode('utf-8')
@@ -59,7 +59,7 @@ class Symmetrical:
             raise ValueError("Данные слишком короткие для расшифровки")
 
         iv = encrypted_data[:8]#первые 8 байт - вектор инициализации
-        encrypted_text=encrypted_data[8:]#всё что после - зашифрованный текст
+        encrypted_text = encrypted_data[8:]#всё что после - зашифрованный текст
 
         if not (5 <= len(key) <= 16):
             raise ValueError(f"Некорректный размер ключа: {len(key)} байт")
@@ -70,6 +70,6 @@ class Symmetrical:
 
         unpadder = padding.ANSIX923(64).unpadder()
         # Удаление заполнения
-        unpadded_text=unpadder.update(decrypted_padded) + unpadder.finalize()
+        unpadded_text = unpadder.update(decrypted_padded) + unpadder.finalize()
 
         return unpadded_text.decode('UTF-8')

@@ -143,7 +143,7 @@ def main():
                     )
 
                 pr_key = FileHandler.des_pr_key(settings["private_key"])
-                enc_sym_key=FileHandler.des_sym_key(settings["symmetric_key"])
+                enc_sym_key = FileHandler.des_sym_key(settings["sym_key"])
                 enc_data = FileHandler.des_sym_key(settings["encrypted_text"])
 
                 decr_text = Hybrid.decrypt_data(
@@ -162,5 +162,5 @@ def main():
         sys.exit(1)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

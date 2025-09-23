@@ -14,7 +14,7 @@ class Hybrid:
         :return: кортеж из трёх ключей
         """
         private_key, public_key = Asymmetrical.generate_asymmetrical_keys()
-        symmetric_key=Symmetrical.generate_key(key_length)
+        symmetric_key = Symmetrical.generate_key(key_length)
         return private_key, public_key, symmetric_key
 
     @staticmethod
@@ -51,5 +51,5 @@ class Hybrid:
         :param encrypted_data: зашифрованные данные
         :return: расшифрованный текст
         """
-        sk=Asymmetrical.decrypt_by_private_key(priv_key,enc_sym_key)
+        sk = Asymmetrical.decrypt_by_private_key(priv_key,enc_sym_key)
         return Symmetrical.decrypt_text(key=sk, encrypted_data=encrypted_data)
