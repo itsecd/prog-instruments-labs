@@ -52,7 +52,7 @@ class Asymmetrical:
         return private_key.decrypt(
          encrypted_data,
          padding.OAEP(
-             mgf=padding.MGF1(algorithm=hashes.SHA256()),#плохой комментарий
+             mgf=padding.MGF1(algorithm=hashes.SHA256()),  # плохой комментарий
              algorithm=hashes.SHA256(),
              label=None
          )

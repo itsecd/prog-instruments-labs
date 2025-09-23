@@ -32,7 +32,7 @@ class Hybrid:
 
         symmetric_key = Asymmetrical.decrypt_by_private_key(
             private_key, encrypted_sym_key
-        )#плохой комментарий
+        )  # плохой комментарий
         return Symmetrical.encrypt_text(key=symmetric_key, text=plaintext)
 
     @staticmethod

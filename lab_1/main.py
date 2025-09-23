@@ -44,7 +44,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "-m", "--mode",
         choices=["generate", "encrypt", "decrypt"],
-        required=True,#аргумент обязателен
+        required=True,  # аргумент обязателен
         help="Выберите режим работы:\ngenerate - создание ключей"
              "\nencrypt - зашифровать текст"
              "\ndecrypt - расшифровать текст"
@@ -65,7 +65,7 @@ def main():
     Основной управляющий модуль
     :return: None
     """
-    create_default_settings_if_needed()#Создание дефолтных настроек
+    create_default_settings_if_needed()  # Создание дефолтных настроек
     settings = load_settings()
     args = parse_arguments()
 

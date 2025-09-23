@@ -32,13 +32,13 @@ class Symmetrical:
             raise ValueError(f"Некорректный размер ключа: {len(key)} байт")
 
         bytes = text.encode('utf-8')
-        padder = padding.ANSIX923(64).padder()#создаёт паддер с блоком 64 бита
-        padded_text = padder.update(bytes) + padder.final()#данные + заполнение
+        padder = padding.ANSIX923(64).padder()  # создаёт паддер
+        padded_text = padder.update(bytes) + padder.final()  # данные
 
         iv = os.urandom(8)
         #  Создание объекта шифра
         cipher = Cipher(algorithms.CAST5(key), modes.CBC(iv))
-        encryptor = cipher.encryptor()#создает объект-шифратор
+        encryptor = cipher.encryptor()  # создает объект-шифратор
         return iv + encryptor.update(padded_text) + encryptor.finalize()
 
     @staticmethod
@@ -52,14 +52,14 @@ class Symmetrical:
         if len(encrypted_data) < 8:
             raise ValueError("Данные слишком короткие для расшифровки")
 
-        iv = encrypted_data[:8]#первые 8 байт - вектор инициализации
-        encrypted_text = encrypted_data[8:]#всё что после - зашифрованный текст
+        iv = encrypted_data[:8]  # первые 8 байт - вектор инициализации
+        encrypted_text = encrypted_data[8:]  # всё что после - зашифровано
 
         if not (5 <= len(key) <= 16):
             raise ValueError(f"Некорректный размер ключа: {len(key)} байт")
 
-        cipher = Cipher(algorithms.CAST5(key), modes.CBC(iv))#создание шифра
-        decryptor = cipher.decryptor()#создание дешифратора
+        cipher = Cipher(algorithms.CAST5(key), modes.CBC(iv))  # создание шифра
+        decryptor = cipher.decryptor()  # создание дешифратора
         decrypted_padded = decryptor.update(encrypted_text) + decryptor.final()
 
         unpadder = padding.ANSIX923(64).unpadder()
