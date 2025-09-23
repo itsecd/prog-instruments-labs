@@ -1,6 +1,7 @@
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa, padding
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
+from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from typing import Tuple
 
 class Asymmetrical:
@@ -42,7 +43,10 @@ class Asymmetrical:
 
 
     @staticmethod
-    def decrypt_by_private_key(private_key: RSAPrivateKey, encrypted_data: bytes) -> bytes:
+    def decrypt_by_private_key(
+            private_key: RSAPrivateKey,
+            encrypted_data: bytes
+    ) -> bytes:
      """
      Дешифрование симметричного ключа с использованием закрытого ключа
      :param private_key: закрытый ключ

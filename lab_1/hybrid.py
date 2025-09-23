@@ -29,7 +29,10 @@ class Hybrid:
      :param plaintext: исходный текст для шифрования
      :return: зашифрованные данные
      """
-     symmetric_key = Asymmetrical.decrypt_by_private_key(private_key, encrypted_sym_key)#плохой комментарий
+
+     symmetric_key = Asymmetrical.decrypt_by_private_key(
+         private_key, encrypted_sym_key
+     )#плохой комментарий
      return Symmetrical.encrypt_text(key=symmetric_key, text=plaintext)
 
 
@@ -38,15 +41,15 @@ class Hybrid:
 
     @staticmethod
     def decrypt_data(
-            private_key: RSAPrivateKey,
-            encrypted_sym_key: bytes,
+            priv_key: RSAPrivateKey,
+            enc_sym_key: bytes,
             encrypted_data: bytes) -> str:
         """
         Дешифрование данных с помощью гибридного шифрования
-        :param private_key: закрытый RSA ключ
-        :param encrypted_sym_key: зашифрованный симметричный ключ
+        :param priv_key: закрытый RSA ключ
+        :param enc_sym_key: зашифрованный симметричный ключ
         :param encrypted_data: зашифрованные данные
         :return: расшифрованный текст
         """
-        symmetric_key=Asymmetrical.decrypt_by_private_key(private_key, encrypted_sym_key)
-        return Symmetrical.decrypt_text(key=symmetric_key, encrypted_data=encrypted_data)
+        sk=Asymmetrical.decrypt_by_private_key(priv_key,enc_sym_key)
+        return Symmetrical.decrypt_text(key=sk, encrypted_data=encrypted_data)
