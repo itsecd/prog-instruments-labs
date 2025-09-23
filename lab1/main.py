@@ -12,7 +12,6 @@ class TextFileAnalyzer:
         self.analysis_history = []
         self.current_file_path = ""
     
-
     def read_file_content(self, file_path):
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
@@ -351,5 +350,6 @@ def main():
 if __name__ == "__main__":
 
     main()
+
 
 
