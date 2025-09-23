@@ -344,7 +344,7 @@ def main():
             analyzer.save_history_to_json()
         
         elif choice == '5':
-            print ("Выход из программы...")
+            print("Выход из программы...")
             break
         
         else:
@@ -353,6 +353,7 @@ def main():
 if __name__ == "__main__":
 
     main()
+
 
 
 
