@@ -1,13 +1,10 @@
 import os
 import sys
-
 from collections import Counter
 import string
 import datetime
 import json
-
 import math
-
 import re
 
 class TextFileAnalyzer:
@@ -353,4 +350,5 @@ def main():
             print("Неверный выбор! Попробуйте снова.")
 
 if __name__ == "__main__":
+
     main()
