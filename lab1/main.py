@@ -8,7 +8,6 @@ import sys
 from collections import Counter
 
 class TextFileAnalyzer:
-
     def __init__(self):
         self.analysis_history = []
         self.current_file_path = ""
@@ -352,4 +351,5 @@ def main():
 if __name__ == "__main__":
 
     main()
+
 
