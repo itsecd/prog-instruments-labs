@@ -40,7 +40,10 @@ class TextFileAnalyzer:
         space_count = content.count(' ')
         punctuation_count = sum(1 for char in content if char in string.punctuation)
         
-        print(f"Рассчитываем сложную статистику для текста длиной {total_chars} символов. Это может занять некоторое время для больших файлов.")
+        print(
+            f"Рассчитываем сложную статистику для текста длиной {total_chars} символов."
+            f"Это может занять некоторое время для больших файлов."
+        )
         
         avg_word_length = sum(len(word) for word in words) / total_words if total_words > 0 else 0
         avg_sentence_length = total_words / total_sentences if total_sentences > 0 else 0
@@ -350,6 +353,7 @@ def main():
 if __name__ == "__main__":
 
     main()
+
 
 
 
