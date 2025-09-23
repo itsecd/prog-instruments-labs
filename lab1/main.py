@@ -278,7 +278,7 @@ class TextFileAnalyzer:
             diff = val2 - val1
             diff_sign = "+" if diff > 0 else ""
             
-            report+=f"{name:<20}{val1:>10,}{val2:>10,}{diff_sign:>5}{diff:>10,}\n"
+            report += f"{name:<20}{val1:>10,}{val2:>10,}{diff_sign:>5}{diff:>10,}\n"
         
         read1 = self.calculate_readability_score(stats1)
         read2 = self.calculate_readability_score(stats2)
@@ -353,6 +353,7 @@ def main():
 if __name__ == "__main__":
 
     main()
+
 
 
 
