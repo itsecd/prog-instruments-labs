@@ -1,11 +1,11 @@
-import os
-import sys
-from collections import Counter
-import string
 import datetime
 import json
 import math
+import os
 import re
+import string
+import sys
+from collections import Counter
 
 class TextFileAnalyzer:
 
@@ -352,3 +352,4 @@ def main():
 if __name__ == "__main__":
 
     main()
+
