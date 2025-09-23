@@ -35,10 +35,6 @@ class Hybrid:
         )#плохой комментарий
         return Symmetrical.encrypt_text(key=symmetric_key, text=plaintext)
 
-
-
-
-
     @staticmethod
     def decrypt_data(
             priv_key: RSAPrivateKey,

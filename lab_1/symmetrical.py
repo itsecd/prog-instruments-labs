@@ -18,9 +18,6 @@ class Symmetrical:
             raise ValueError("Длина ключа должна быть 40-128 бит!")
         return os.urandom(key_len_bits // 8)
 
-
-
-
     @staticmethod
     def encrypt_text(key: bytes, text: str) -> bytes:
         """
@@ -43,9 +40,6 @@ class Symmetrical:
         cipher = Cipher(algorithms.CAST5(key), modes.CBC(iv))
         encryptor = cipher.encryptor()#создает объект-шифратор
         return iv + encryptor.update(padded_text) + encryptor.finalize()
-
-
-
 
     @staticmethod
     def decrypt_text(key: bytes, encrypted_data: bytes) -> str:
