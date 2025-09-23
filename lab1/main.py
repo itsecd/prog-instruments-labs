@@ -96,7 +96,7 @@ class TextFileAnalyzer:
         avg_sentence_len = stats['avg_sentence_length']
         avg_word_len = stats['avg_word_length']
         
-        readability=206.835 - (1.015 * avg_sentence_len) - (84.6 * avg_word_len)
+        readability = 206.835 - (1.015 * avg_sentence_len) - (84.6 * avg_word_len)
         return round(readability, 2)
 
     def generate_text_complexity_report(self, stats, word_freq, char_freq):
@@ -353,6 +353,7 @@ def main():
 if __name__ == "__main__":
 
     main()
+
 
 
 
