@@ -36,13 +36,19 @@ async def main():
         *ROUTERS,
         *DIALOGS,
     )
+
+    logger.info("Setting up aiogram dialogs for dispatcher...")
     setup_dialogs(dp)
 
+    logger.info("Deleting webhooks")
     await bot.delete_webhook(drop_pending_updates=True)
+    
+    logger.info("Dispatcher starting polling...")
     try:
         await dp.start_polling(bot)
     finally:
         await bot.session.close()
+        logger.info("Bot session closed")
 
 
 if __name__ == "__main__":
