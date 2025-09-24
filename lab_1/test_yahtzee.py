@@ -51,7 +51,7 @@ def test_one_pair():
     assert 10 == Yahtzee.score_pair(5, 3, 3, 3, 5)
     assert 12 == Yahtzee.score_pair(5, 3, 6, 6, 5)
 
-def test_two_Pair():
+def test_two_pair():
     assert 16 == Yahtzee.two_pair(3, 3, 5, 4, 5)
     assert 0 == Yahtzee.two_pair(3, 3, 5, 5, 5)
 
@@ -60,7 +60,7 @@ def test_three_of_a_kind():
     assert 15 == Yahtzee.three_of_a_kind(5, 3, 5, 4, 5)
     assert 0 == Yahtzee.three_of_a_kind(3, 3, 3, 3, 5)
 
-def test_four_of_a_knd():
+def test_four_of_a_kind():
     assert 12 == Yahtzee.four_of_a_kind(3, 3, 3, 3, 5)
     assert 20 == Yahtzee.four_of_a_kind(5, 5, 5, 4, 5)
     assert 0 == Yahtzee.three_of_a_kind(3, 3, 3, 3, 3)
