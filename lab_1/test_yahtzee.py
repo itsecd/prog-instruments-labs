@@ -76,19 +76,19 @@ def test_four_of_a_knd():
         assert 0 == Yahtzee.three_of_a_kind(3,3,3,3,3)
   
 
-def test_smallStraight():
-        assert 15 == Yahtzee.smallStraight(1,2,3,4,5)
-        assert 15 == Yahtzee.smallStraight(2,3,4,5,1)
-        assert 0 == Yahtzee.smallStraight(1,2,2,4,5)
+def test_small_straight():
+        assert 15 == Yahtzee.small_straight(1, 2, 3, 4, 5)
+        assert 15 == Yahtzee.small_straight(2, 3, 4, 5, 1)
+        assert 0 == Yahtzee.small_straight(1, 2, 2, 4, 5)
   
 
-def test_largeStraight():
-        assert 20 == Yahtzee.largeStraight(6,2,3,4,5)
-        assert 20 == Yahtzee.largeStraight(2,3,4,5,6)
-        assert 0 == Yahtzee.largeStraight(1,2,2,4,5)
+def test_large_straight():
+        assert 20 == Yahtzee.large_straight(6, 2, 3, 4, 5)
+        assert 20 == Yahtzee.large_straight(2, 3, 4, 5, 6)
+        assert 0 == Yahtzee.large_straight(1, 2, 2, 4, 5)
   
 
-def test_fullHouse():
-        assert 18 == Yahtzee.fullHouse(6,2,2,2,6)
-        assert 0 == Yahtzee.fullHouse(2,3,4,5,6)
+def test_full_house():
+        assert 18 == Yahtzee.full_house(6, 2, 2, 2, 6)
+        assert 0 == Yahtzee.full_house(2, 3, 4, 5, 6)
    
