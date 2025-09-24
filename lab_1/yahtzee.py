@@ -83,7 +83,6 @@ class Yahtzee:
 
     def fives(self):
         s = 0
-        i = 0
         for i in range(len(self.dice)):
             if self.dice[i] == 5:
                 s = s + 5
@@ -104,7 +103,6 @@ class Yahtzee:
         counts[d3 - 1] += 1
         counts[d4 - 1] += 1
         counts[d5 - 1] += 1
-        at = 0
         for at in range(6):
             if counts[6 - at - 1] == 2:
                 return (6 - at) * 2
@@ -164,11 +162,8 @@ class Yahtzee:
         tallies[d3 - 1] += 1
         tallies[d4 - 1] += 1
         tallies[d5 - 1] += 1
-        if (tallies[0] == 1 and
-                tallies[1] == 1 and
-                tallies[2] == 1 and
-                tallies[3] == 1 and
-                tallies[4] == 1):
+        if (tallies[0] == 1 and tallies[1] == 1 and
+                tallies[2] == 1 and tallies[3] == 1 and tallies[4] == 1):
             return 15
         return 0
 
@@ -180,19 +175,14 @@ class Yahtzee:
         tallies[d3 - 1] += 1
         tallies[d4 - 1] += 1
         tallies[d5 - 1] += 1
-        if (tallies[1] == 1 and
-                tallies[2] == 1 and
-                tallies[3] == 1 and
-                tallies[4] == 1
-                and tallies[5] == 1):
+        if (tallies[1] == 1 and tallies[2] == 1 and
+                tallies[3] == 1 and tallies[4] == 1 and tallies[5] == 1):
             return 20
         return 0
 
     @staticmethod
     def full_house(d1, d2, d3, d4, d5):
-        tallies = []
         _2 = False
-        i = 0
         _2_at = 0
         _3 = False
         _3_at = 0
