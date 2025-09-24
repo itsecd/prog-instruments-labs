@@ -42,7 +42,7 @@ class TextFileAnalyzer:
         
         print(
             f"Рассчитываем сложную статистику для текста длиной {total_chars} символов."
-            f"Это может занять некоторое время для больших файлов."
+            "Это может занять некоторое время для больших файлов."
         )
         
         avg_word_length = sum(len(word) for word in words) / total_words if total_words > 0 else 0
@@ -354,3 +354,4 @@ if __name__ == "__main__":
 
     main()
     
+
