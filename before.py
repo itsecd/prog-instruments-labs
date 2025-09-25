@@ -255,4 +255,98 @@ def process_single_image(args):
     if not args.info:
         processor.save_image(quality=args.quality)
 
+def process_batch(args):
+    input_dir = Path(args.input)
+    if not input_dir.is_dir():
+        print("Error: Input path is not a directory")
+        return
+
+    output_dir = Path(args.output) if args.output else input_dir / 'processed'
+    output_dir.mkdir(exist_ok=True)
+
+    supported_formats = {'.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'}
+    image_files = [
+        f for f in input_dir.iterdir()
+        if f.is_file() and f.suffix.lower() in supported_formats
+    ]
+
+    if not image_files:
+        print("No supported image files found in directory")
+        return
+
+    print(f"Found {len(image_files)} images to process")
+
+    for i, image_file in enumerate(image_files, 1):
+        print(f"Processing {i}/{len(image_files)}: {image_file.name}")
+        output_file = output_dir / image_file.name
+
+        image_args = argparse.Namespace(**vars(args))
+        image_args.input = str(image_file)
+        image_args.output = str(output_file)
+        image_args.info = False
+
+        try:
+            process_single_image(image_args)
+        except Exception as e:
+            print(f"Error processing {image_file.name}: {e}")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Advanced Image Processing Tool'
+    )
+    parser.add_argument('input', help='Input image file or directory')
+    parser.add_argument(
+        '-o', '--output', help='Output image file or directory'
+    )
+
+    parser.add_argument('--resize', help='Resize image (WxH, W, H, or N%)')
+    parser.add_argument(
+        '--rotate', type=float, help='Rotate image by degrees'
+    )
+    parser.add_argument(
+        '--flip', choices=['horizontal', 'vertical'], help='Flip image'
+    )
+    parser.add_argument('--crop', help='Crop image coordinates')
+
+    parser.add_argument(
+        '--grayscale', action='store_true', help='Convert to grayscale'
+    )
+    parser.add_argument('--brightness', type=float, help='Adjust brightness')
+    parser.add_argument('--contrast', type=float, help='Adjust contrast')
+    parser.add_argument('--sharpness', type=float, help='Adjust sharpness')
+
+    parser.add_argument('--blur', type=float, help='Apply blur filter')
+    parser.add_argument(
+        '--sharpen', action='store_true', help='Sharpen filter'
+    )
+    parser.add_argument(
+        '--edge-enhance', action='store_true', help='Edge enhance'
+    )
+
+    parser.add_argument('--watermark', help='Add text watermark')
+    parser.add_argument('--border', help='Add border (thickness,color)')
+    parser.add_argument('--thumbnail', help='Create thumbnail (WxH)')
+
+    parser.add_argument(
+        '--quality', type=int, default=95, help='JPEG quality'
+    )
+    parser.add_argument(
+        '--info', action='store_true', help='Image information'
+    )
+    parser.add_argument(
+        '--batch', action='store_true', help='Batch processing'
+    )
+
+    args = parser.parse_args()
+
+    if args.batch:
+        process_batch(args)
+    else:
+        process_single_image(args)
+
+
+if __name__ == '__main__':
+    main()
+
 
