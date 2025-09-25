@@ -178,3 +178,81 @@ class ImageProcessor:
             'height': self.image.height
         }
         return info
+
+    def print_info(self):
+    info = self.get_image_info()
+    print("\n=== Image Information ===")
+    for key, value in info.items():
+        print(f"{key}: {value}")
+
+
+def process_single_image(args):
+    processor = ImageProcessor(args.input, args.output)
+
+    if args.resize:
+        if 'x' in args.resize:
+            width, height = map(int, args.resize.split('x'))
+            processor.resize(width=width, height=height)
+        elif args.resize.endswith('%'):
+            percentage = int(args.resize[:-1])
+            processor.resize(percentage=percentage)
+        else:
+            width = int(args.resize)
+            processor.resize(width=width)
+
+    if args.rotate:
+        processor.rotate(args.rotate)
+
+    if args.flip == 'horizontal':
+        processor.flip_horizontal()
+    elif args.flip == 'vertical':
+        processor.flip_vertical()
+
+    if args.crop:
+        left, top, right, bottom = map(int, args.crop.split(','))
+        processor.crop(left, top, right, bottom)
+
+    if args.grayscale:
+        processor.convert_to_grayscale()
+
+    if args.brightness:
+        processor.adjust_brightness(args.brightness)
+
+    if args.contrast:
+        processor.adjust_contrast(args.contrast)
+
+    if args.sharpness:
+        processor.adjust_sharpness(args.sharpness)
+
+    if args.blur:
+        processor.apply_blur(args.blur)
+
+    if args.sharpen:
+        processor.apply_sharpen()
+
+    if args.edge_enhance:
+        processor.apply_edge_enhance()
+
+    if args.watermark:
+        processor.add_watermark(args.watermark)
+
+    if args.border:
+        thickness, color = args.border.split(',')
+        thickness = int(thickness)
+        if color.startswith('#'):
+            color = tuple(int(color[i:i+2], 16) for i in (1, 3, 5))
+        else:
+            color = tuple(map(int, color.split(':')))
+        processor.add_border(thickness, color)
+
+    if args.thumbnail:
+        size = tuple(map(int, args.thumbnail.split('x')))
+        processor.create_thumbnail(size)
+
+    if args.info:
+        processor.print_info()
+
+    if not args.info:
+        processor.save_image(quality=args.quality)
+
+
