@@ -155,7 +155,8 @@ class RsaCipher:
 class BlowfishCipher:
     def __init__(self, key_length=448):
         if key_length < 32 or key_length > 448 or key_length % 8 != 0:
-            raise ValueError("Blowfish Ключ должен быть от 32 до 448, делиться на 8")
+            raise ValueError("Blowfish Ключ должен быть от 32"
+                             "до 448, делиться на 8")
         self.key_length = key_length
         self.block_size = 64
 
@@ -246,35 +247,76 @@ def main():
             print("Генерация ключей...")
             crypto = HybridCryptoSystem(args.key_length)
             symmetric_key, private_key, public_key = crypto.generate_keys()
-            crypto.rsa.serialize_private_key(private_key, config.get_setting('private_key'))
-            crypto.rsa.serialize_public_key(public_key, config.get_setting('public_key'))
-            encrypted_key = crypto.encrypt_symmetric_key(symmetric_key, public_key)
-            file_manager.write_file(config.get_setting('symmetric_key'), encrypted_key)
+
+            crypto.rsa.serialize_private_key(
+                private_key,
+                config.get_setting('private_key')
+            )
+            crypto.rsa.serialize_public_key(
+                public_key,
+                config.get_setting('public_key')
+            )
+
+            encrypted_key = crypto.encrypt_symmetric_key(
+                symmetric_key,
+                public_key
+            )
+            file_manager.write_file(
+                config.get_setting('symmetric_key'),
+                encrypted_key
+            )
+
             print("Ключи успешно сгенерированы (в папку keys):")
-            print(f"- Симметричный ключ (зашифрованный): sym_key.enc")
-            print(f"- Открытый ключ RSA: public.pem")
-            print(f"- Закрытый ключ RSA: private.pem")
+            print("- Симметричный ключ (зашифрованный): sym_key.enc")
+            print("- Открытый ключ RSA: public.pem")
+            print("- Закрытый ключ RSA: private.pem")
             print(f"Длина ключа Blowfish: {args.key_length} бит")
 
         elif args.encryption:
             print("Шифрование файла...")
-            private_key = crypto.rsa.load_private_key(config.get_setting('private_key'))
-            encrypted_key = file_manager.read_file(config.get_setting('symmetric_key'))
-            symmetric_key = crypto.decrypt_symmetric_key(encrypted_key, private_key)
-            plaintext = file_manager.read_file(config.get_setting('initial_file'))
+            private_key = crypto.rsa.load_private_key(
+                config.get_setting('private_key')
+            )
+            encrypted_key = file_manager.read_file(
+                config.get_setting('symmetric_key')
+            )
+            symmetric_key = crypto.decrypt_symmetric_key(
+                encrypted_key,
+                private_key
+            )
+            plaintext = file_manager.read_file(
+                config.get_setting('initial_file')
+            )
             ciphertext = crypto.encrypt_file(plaintext, symmetric_key)
-            file_manager.write_file(config.get_setting('encrypted_file'), ciphertext)
-            print(f"Файл успешно зашифрован: {config.get_setting('encrypted_file')}")
+            file_manager.write_file(
+                config.get_setting('encrypted_file'),
+                ciphertext
+            )
+            print(f"Файл успешно зашифрован: "
+                  f"{config.get_setting('encrypted_file')}")
 
         elif args.decryption:
             print("Дешифрование файла...")
-            private_key = crypto.rsa.load_private_key(config.get_setting('private_key'))
-            encrypted_key = file_manager.read_file(config.get_setting('symmetric_key'))
-            symmetric_key = crypto.decrypt_symmetric_key(encrypted_key, private_key)
-            ciphertext = file_manager.read_file(config.get_setting('encrypted_file'))
+            private_key = crypto.rsa.load_private_key(
+                config.get_setting('private_key')
+            )
+            encrypted_key = file_manager.read_file(
+                config.get_setting('symmetric_key')
+            )
+            symmetric_key = crypto.decrypt_symmetric_key(
+                encrypted_key,
+                private_key
+            )
+            ciphertext = file_manager.read_file(
+                config.get_setting('encrypted_file')
+            )
             plaintext = crypto.decrypt_file(ciphertext, symmetric_key)
-            file_manager.write_file(config.get_setting('decrypted_file'), plaintext)
-            print(f"Файл успешно расшифрован: {config.get_setting('decrypted_file')}")
+            file_manager.write_file(
+                config.get_setting('decrypted_file'),
+                plaintext
+            )
+            print(f"Файл успешно расшифрован: "
+                  f"{config.get_setting('decrypted_file')}")
 
     except FileNotFoundError:
         print("Ошибка: файл с текстом не найден")
