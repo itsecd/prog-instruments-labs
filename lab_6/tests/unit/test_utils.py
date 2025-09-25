@@ -1,4 +1,5 @@
-from src.utils import limit_string
+from types import SimpleNamespace
+from src.utils import limit_string, dict_to_sn
 
 
 def test_limit_string():
@@ -8,5 +9,23 @@ def test_limit_string():
 
     actual = limit_string(string, limit)
 
-    assert limit == len(actual)
     assert expected == actual
+
+
+def test_dict_to_sn():
+    dict_ = {
+        "messages": {
+            "cringe": "std::idno",
+            "bad": "PLUWo",
+        },
+    }
+    expected = SimpleNamespace(
+        messages=SimpleNamespace(
+            cringe="std::idno",
+            bad="PLUWo",
+        ),
+    )
+
+    actual = dict_to_sn(dict_)
+
+    assert actual == expected
