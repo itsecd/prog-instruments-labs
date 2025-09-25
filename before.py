@@ -60,3 +60,51 @@ class ImageProcessor:
             (new_width, new_height), Image.Resampling.LANCZOS
         )
         print(f"Resized to: {new_width}x{new_height}")
+        
+     def rotate(self, degrees):
+        self.image = self.image.rotate(degrees, expand=True)
+        print(f"Rotated by {degrees} degrees")
+
+    def flip_horizontal(self):
+        self.image = self.image.transpose(Image.FLIP_LEFT_RIGHT)
+        print("Flipped horizontally")
+
+    def flip_vertical(self):
+        self.image = self.image.transpose(Image.FLIP_TOP_BOTTOM)
+        print("Flipped vertically")
+
+    def crop(self, left, top, right, bottom):
+        self.image = self.image.crop((left, top, right, bottom))
+        print(f"Cropped to: {left},{top}-{right},{bottom}")
+
+    def convert_to_grayscale(self):
+        self.image = self.image.convert('L')
+        print("Converted to grayscale")
+
+    def adjust_brightness(self, factor):
+        enhancer = ImageEnhance.Brightness(self.image)
+        self.image = enhancer.enhance(factor)
+        print(f"Adjusted brightness by factor: {factor}")
+
+    def adjust_contrast(self, factor):
+        enhancer = ImageEnhance.Contrast(self.image)
+        self.image = enhancer.enhance(factor)
+        print(f"Adjusted contrast by factor: {factor}")
+
+    def adjust_sharpness(self, factor):
+        enhancer = ImageEnhance.Sharpness(self.image)
+        self.image = enhancer.enhance(factor)
+        print(f"Adjusted sharpness by factor: {factor}")
+
+    def apply_blur(self, radius=2):
+        self.image = self.image.filter(ImageFilter.GaussianBlur(radius))
+        print(f"Applied blur with radius: {radius}")
+
+    def apply_sharpen(self):
+        self.image = self.image.filter(ImageFilter.SHARPEN)
+        print("Applied sharpen filter")
+
+    def apply_edge_enhance(self):
+        self.image = self.image.filter(ImageFilter.EDGE_ENHANCE)
+        print("Applied edge enhance filter")
+
