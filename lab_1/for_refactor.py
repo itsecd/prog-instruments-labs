@@ -43,8 +43,8 @@ class ConfigManager:
                 self.save_config(existing_config)
 
     def create_directories(self):
-        os.makedirs('texts', exist_ok = True)
-        os.makedirs('keys', exist_ok = True)
+        os.makedirs('texts', exist_ok=True)
+        os.makedirs('keys', exist_ok=True)
 
     def load_config(self):
         with open(self.config_path, 'r') as f:
@@ -52,7 +52,7 @@ class ConfigManager:
 
     def save_config(self, config):
         with open(self.config_path, 'w') as f:
-            json.dump(config, f, indent = 4)
+            json.dump(config, f, indent=4)
 
     def get_setting(self, key):
         config = self.load_config()
@@ -89,14 +89,14 @@ class FileManager:
 
 
 class RsaCipher:
-    def __init__(self, key_size = 2048):
+    def __init__(self, key_size=2048):
         self.key_size = key_size
 
     def generate_keys(self):
         private_key = rsa.generate_private_key(
-            public_exponent = 65537,
-            key_size = self.key_size,
-            backend = default_backend()
+            public_exponent=65537,
+            key_size=self.key_size,
+            backend=default_backend()
         )
         public_key = private_key.public_key()
         return private_key, public_key
@@ -104,40 +104,40 @@ class RsaCipher:
     def serialize_private_key(self, private_key, file_path):
         with open(file_path, 'wb') as f:
             f.write(private_key.private_bytes(
-                encoding = serialization.Encoding.PEM,
-                format = serialization.PrivateFormat.TraditionalOpenSSL,
-                encryption_algorithm = serialization.NoEncryption()
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PrivateFormat.TraditionalOpenSSL,
+                encryption_algorithm=serialization.NoEncryption()
             ))
 
     def serialize_public_key(self, public_key, file_path):
         with open(file_path, 'wb') as f:
             f.write(public_key.public_bytes(
-                encoding = serialization.Encoding.PEM,
-                format = serialization.PublicFormat.SubjectPublicKeyInfo
+                encoding=serialization.Encoding.PEM,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo
             ))
 
     def load_private_key(self, file_path):
         with open(file_path, 'rb') as f:
             return serialization.load_pem_private_key(
                 f.read(),
-                password = None,
-                backend = default_backend()
+                password=None,
+                backend=default_backend()
             )
 
     def load_public_key(self, file_path):
         with open(file_path, 'rb') as f:
             return serialization.load_pem_public_key(
                 f.read(),
-                backend = default_backend()
+                backend=default_backend()
             )
 
     def encrypt(self, plaintext, public_key):
         return public_key.encrypt(
             plaintext,
             asym_padding.OAEP(
-                mgf = asym_padding.MGF1(algorithm = hashes.SHA256()),
-                algorithm = hashes.SHA256(),
-                label = None
+                mgf=asym_padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
             )
         )
 
@@ -145,15 +145,15 @@ class RsaCipher:
         return private_key.decrypt(
             ciphertext,
             asym_padding.OAEP(
-                mgf = asym_padding.MGF1(algorithm = hashes.SHA256()),
-                algorithm = hashes.SHA256(),
-                label = None
+                mgf=asym_padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
             )
         )
 
 
 class BlowfishCipher:
-    def __init__(self, key_length = 448):
+    def __init__(self, key_length=448):
         if key_length < 32 or key_length > 448 or key_length % 8 != 0:
             raise ValueError("Blowfish Ключ должен быть от 32 до 448, делиться на 8")
         self.key_length = key_length
@@ -169,7 +169,7 @@ class BlowfishCipher:
         cipher = Cipher(
             algorithms.Blowfish(key),
             modes.CBC(init_vec),
-            backend = default_backend()
+            backend=default_backend()
         )
         encryptor = cipher.encryptor()
         ciphertext = encryptor.update(padded_data) + encryptor.finalize()
@@ -181,7 +181,7 @@ class BlowfishCipher:
         cipher = Cipher(
             algorithms.Blowfish(key),
             modes.CBC(init_vec),
-            backend = default_backend()
+            backend=default_backend()
         )
         decryptor = cipher.decryptor()
         decrypted_padded = decryptor.update(ciphertext) + decryptor.finalize()
@@ -191,7 +191,7 @@ class BlowfishCipher:
 
 
 class HybridCryptoSystem:
-    def __init__(self, symmetric_key_length = 448):
+    def __init__(self, symmetric_key_length=448):
         self.blowfish = BlowfishCipher(symmetric_key_length)
         self.rsa = RsaCipher()
 
@@ -220,18 +220,18 @@ def parse_arguments():
         'симметричного шифрования'
     )
     parser = argparse.ArgumentParser(description=description)
-    group = parser.add_mutually_exclusive_group(required = True)
-    group.add_argument('-gen','--generation',action = 'store_true',
-                       help = 'Запускает режим генерации ключей')
-    group.add_argument('-enc','--encryption',action = 'store_true',
-                       help = 'Запускает режим шифрования')
-    group.add_argument('-dec','--decryption',action = 'store_true',
-                       help = 'Запускает режим дешифрования')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('-gen', '--generation', action='store_true',
+                       help='Запускает режим генерации ключей')
+    group.add_argument('-enc', '--encryption', action='store_true',
+                       help='Запускает режим шифрования')
+    group.add_argument('-dec', '--decryption', action='store_true',
+                       help='Запускает режим дешифрования')
     key_length_help = (
         'Длина ключа Blowfish (32-448 бит, шаг 8) - только для генерации'
     )
-    parser.add_argument('--key-length',type = int,default = 448,
-                        help = key_length_help)
+    parser.add_argument('--key-length', type=int, default=448,
+                        help=key_length_help)
     args = parser.parse_args()
     return args
 
