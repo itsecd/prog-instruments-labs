@@ -108,3 +108,73 @@ class ImageProcessor:
         self.image = self.image.filter(ImageFilter.EDGE_ENHANCE)
         print("Applied edge enhance filter")
 
+    def add_watermark(self, text, position=(10, 10), font_size=20, opacity=128):
+        watermark = self.image.copy()
+        draw = ImageDraw.Draw(watermark)
+    
+        try:
+            font = ImageFont.truetype("arial.ttf", font_size)
+        except IOError:
+            font = ImageFont.load_default()
+    
+        bbox = draw.textbbox((0, 0), text, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+    
+        if isinstance(position, str):
+            if position == "center":
+                x = (self.image.width - text_width) // 2
+                y = (self.image.height - text_height) // 2
+                position = (x, y)
+            elif position == "bottom-right":
+                x = self.image.width - text_width - 10
+                y = self.image.height - text_height - 10
+                position = (x, y)
+    
+        padding = 5
+        draw.rectangle(
+            [
+                position[0] - padding,
+                position[1] - padding,
+                position[0] + text_width + padding,
+                position[1] + text_height + padding
+            ],
+            fill=(0, 0, 0, opacity // 2)
+        )
+    
+        draw.text(position, text, font=font, fill=(255, 255, 255, opacity))
+    
+        self.image = Image.alpha_composite(
+            self.image.convert('RGBA'), watermark
+        )
+        print(f"Added watermark: '{text}'")
+
+        def add_border(self, thickness=10, color=(255, 255, 255)):
+        if self.image.mode != 'RGB':
+            self.image = self.image.convert('RGB')
+
+        new_width = self.image.width + 2 * thickness
+        new_height = self.image.height + 2 * thickness
+
+        new_image = Image.new('RGB', (new_width, new_height), color)
+        new_image.paste(self.image, (thickness, thickness))
+        self.image = new_image
+        print(f"Added border: {thickness}px {color}")
+
+    def create_thumbnail(self, size=(128, 128)):
+        self.image.thumbnail(size, Image.Resampling.LANCZOS)
+        self.output_path = (
+            self.input_path.parent /
+            f"{self.input_path.stem}_thumb{self.input_path.suffix}"
+        )
+        print(f"Created thumbnail: {size[0]}x{size[1]}")
+
+    def get_image_info(self):
+        info = {
+            'format': self.image.format,
+            'mode': self.image.mode,
+            'size': self.image.size,
+            'width': self.image.width,
+            'height': self.image.height
+        }
+        return info
