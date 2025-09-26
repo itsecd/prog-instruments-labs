@@ -1,8 +1,18 @@
 from pandas import DataFrame
 import re
 
+"""
+модуль для работы с регулярными выражениями
+"""
+
 
 def validate_by_pattern(data: str, pattern: str) -> bool:
+    """
+    Проверяет подходит ли строка под паттерн
+    :param data: строка для проверки
+    :param pattern: паттерн в виде регулярного выражения
+    :return: Подходит или нет
+    """
     sub_pattern = rf'{pattern}'
     if re.fullmatch(sub_pattern, data):
         return True
@@ -10,6 +20,12 @@ def validate_by_pattern(data: str, pattern: str) -> bool:
 
 
 def get_rows_with_mistakes(data_frame: DataFrame, patterns) -> list:
+    """
+    Сравнивает каждое значение (по столбцам) с паттерном(разный для каждого столбца)
+    :param data_frame: датафрейи
+    :param patterns: список паттернов
+    :return: лист с номерами строк с ошибками
+    """
     rows_with_mistakes = []
     patter_index = 0
     for column_name in data_frame:
