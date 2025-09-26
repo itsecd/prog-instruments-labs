@@ -18,3 +18,17 @@ def validate_http_status(http_status: str) -> bool:
     if re.fullmatch(pattern, http_status):
         return True
     return False
+
+
+def validate_inn(inn: str) -> bool:
+    pattern = r'^\d{10}$|^\d{12}$'
+    if re.fullmatch(pattern, inn):
+        return True
+    return False
+
+
+def validate_identifier(identifier: str) -> bool:
+    pattern = r'^\d{2}-\d{2}/\d{2}$'
+    if re.fullmatch(pattern, identifier):
+        return True
+    return False
