@@ -61,3 +61,16 @@ def validate_isbn(isbn: str) -> bool:
         return True
     return False
 
+
+def validate_uuid(uuid: str) -> bool:
+    pattern = r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+    if re.fullmatch(pattern, uuid):
+        return True
+    return False
+
+
+def validate_date(date: str) -> bool:
+    pattern = r'^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$'
+    if re.fullmatch(pattern, date):
+        return True
+    return False
