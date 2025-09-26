@@ -41,3 +41,15 @@ def validate_ipv4(ipv4: str) -> bool:
     return False
 
 
+def validate_latitude(latitude: str) -> bool:
+    pattern = r'^[-+]?([0-8]?[0-9]|90)(\.\d+)?$'
+    if re.fullmatch(pattern, latitude):
+        return True
+    return False
+
+
+def validate_blood_type(blood_type: str) -> bool:
+    pattern = r'^(A|B|AB|O)[+−]\s*$'
+    if re.fullmatch(pattern, blood_type):
+        return True
+    return False
