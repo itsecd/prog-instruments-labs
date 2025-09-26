@@ -17,7 +17,7 @@ def calculate_checksum(row_numbers: List[int]) -> str:
 
     Надеюсь, я расписал это максимально подробно.
     Хотя что-то мне подсказывает, что обязательно найдется человек, у которого с этим возникнут проблемы.
-    Которому я отвечу, что все написано в докстринге ¯\_(ツ)_/¯
+    Которому я отвечу, что все написано в докстринге ¯\\_(ツ)_//¯
 
     :param row_numbers: список целочисленных номеров строк csv-файла, на которых были найдены ошибки валидации
     :return: md5 хеш для проверки через github action
@@ -26,7 +26,7 @@ def calculate_checksum(row_numbers: List[int]) -> str:
     return hashlib.md5(json.dumps(row_numbers).encode('utf-8')).hexdigest()
 
 
-def serialize_result(variant: int, checksum: str) -> None:
+def serialize_result(variant: int, checksum: str, path: str) -> None:
     """
     Метод для сериализации результатов лабораторной пишите сами.
     Вам нужно заполнить данными - номером варианта и контрольной суммой - файл, лежащий в папке с лабораторной.
@@ -37,8 +37,17 @@ def serialize_result(variant: int, checksum: str) -> None:
 
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
+    :param path: путь до json файла с результатами
     """
-    pass
+
+    try:
+        data = {"variant": variant, "checksum": checksum}
+        with open(path, mode="w", encoding="utf-8") as file:
+            return json.dump(data, file)
+    except FileNotFoundError as not_found:
+        raise FileNotFoundError(f"File was not found: {not_found}")
+    except Exception as exc:
+        raise Exception(f"An error occurred when opening the file {exc}")
 
 
 if __name__ == "__main__":
