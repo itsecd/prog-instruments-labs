@@ -53,3 +53,11 @@ def validate_blood_type(blood_type: str) -> bool:
     if re.fullmatch(pattern, blood_type):
         return True
     return False
+
+
+def validate_isbn(isbn: str) -> bool:
+    pattern = r'^((\d{1})-(\d{5})-(\d{3})-(\d{1}))$|^(\d{3})-(\d{1})-(\d{5})-(\d{3})-(\d{1})$'
+    if re.fullmatch(pattern, isbn):
+        return True
+    return False
+
