@@ -32,3 +32,12 @@ def validate_identifier(identifier: str) -> bool:
     if re.fullmatch(pattern, identifier):
         return True
     return False
+
+
+def validate_ipv4(ipv4: str) -> bool:
+    pattern = r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
+    if re.fullmatch(pattern, ipv4):
+        return True
+    return False
+
+
