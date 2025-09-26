@@ -11,3 +11,10 @@ def validata_phone_number(phone_number: str) -> bool:
     if re.fullmatch(pattern, phone_number):
         return True
     return False
+
+
+def validate_http_status(http_status: str) -> bool:
+    pattern = r'^(100|1[0-9][0-9]|2[0-9][0-9]|3[0-9][0-9]|4[0-9][0-9]|5[0-9][0-9])\s+[A-Za-z].+'
+    if re.fullmatch(pattern, http_status):
+        return True
+    return False
