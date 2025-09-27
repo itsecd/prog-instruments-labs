@@ -5,7 +5,7 @@ Created on 2020/6/8 11:26
 @author: phil
 """
 
-# 参考吴恩达老师网易云深度学习课程作业
+from typing import List, Tuple, Optional
 import os
 import numpy as np
 import torch
@@ -18,38 +18,33 @@ from babel.dates import format_date
 from torchtext import data
 import pandas as pd
 from sklearn.model_selection import train_test_split
+
 fake = Faker()
 Faker.seed(12345)
 random.seed(12345)
 
-# Define format of the data we would like to generate
-FORMATS = ['short',
-           'medium',
-           'long',
-           'full',
-           'full',
-           'full',
-           'full',
-           'full',
-           'full',
-           'full',
-           'full',
-           'full',
-           'full',
-           'd MMM YYY',
-           'd MMMM YYY',
-           'dd MMM YYY',
-           'd MMM, YYY',
-           'd MMMM, YYY',
-           'dd, MMM YYY',
-           'd MM YY',
-           'd MMMM YYY',
-           'MMMM d YYY',
-           'MMMM d, YYY',
-           'dd.MM.YY']
+class DateFormats:
+    """Конфигурация форматов дат для генерации данных"""
+    FORMATS = [
+        'short',  # Краткий формат
+        'medium',  # Средний формат
+        'long',  # Длинный формат
+        'full',  # Полный формат (повторяется для баланса)
+        'full',
+        'full',
+        'd MMM YYY',  # День Сокр.Месяц Год
+        'd MMMM YYY',  # День Полн.Месяц Год
+        'dd MMM YYY',  # ДД Сокр.Месяц Год
+        'd MMM, YYY',  # День Сокр.Месяц, Год
+        'd MMMM, YYY',  # День Полн.Месяц, Год
+        'dd, MMM YYY',  # ДД, Сокр.Месяц Год
+        'd MM YY',  # День ММ ГГ
+        'MMMM d YYY',  # Полн.Месяц День Год
+        'MMMM d, YYY',  # Полн.Месяц День, Год
+        'dd.MM.YY'  # ДД.ММ.ГГ
+    ]
 
-# change this if you want it to work with another language
-LOCALES = ['en_US']
+    LOCALES = ['en_US']
 
 
 def load_date():
@@ -119,8 +114,6 @@ def dataset2dataloader(dataset_path, batch_size=10, dataset_size=10, debug=False
         path='', train=train_csv, validation=dev_csv, format='csv', skip_header=True,
         fields=[('source', SOURCE), ('target', TARGET)])
 
-    SOURCE.build_vocab(train)
-    TARGET.build_vocab(train)
 
     train_iter = data.BucketIterator(train, batch_size=batch_size, sort_key=lambda x: len(x.sent), shuffle=False)
     val_iter = data.BucketIterator(val, batch_size=batch_size, sort_key=lambda x: len(x.sent), shuffle=False)
