@@ -5,7 +5,6 @@ Created on 2020/6/8 11:26
 @author: phil
 """
 
-# КОММИТ 3: Добавил импорты для type hints
 from typing import List, Tuple, Optional
 import os
 import numpy as np
@@ -149,10 +148,42 @@ def create_data_fields() -> Tuple[data.Field, data.Field]:
     return source_field, target_field
 
 
-    train_iter = data.BucketIterator(train, batch_size=batch_size, sort_key=lambda x: len(x.sent), shuffle=False)
-    val_iter = data.BucketIterator(val, batch_size=batch_size, sort_key=lambda x: len(x.sent), shuffle=False)
+def dataset2dataloader(dataset_path: str, batch_size: int = 10, dataset_size: int = 10, debug: bool = False):
+    # Подготавливаем файлы данных
+    train_csv, dev_csv = DataPreprocessor.prepare_data_files(
+        dataset_path, dataset_size, debug
+    )
 
-    # 在 test_iter , sort一定要设置成 False, 要不然会被 torchtext 搞乱样本顺序
-    # test_iter = data.Iterator(dataset=test, batch_size=128, train=False, sort=False, device=DEVICE)
+    # Создаем поля данных
+    source_field, target_field = create_data_fields()
 
-    return train_iter, val_iter, SOURCE.vocab, TARGET.vocab
+    # Загружаем датасеты
+    train_dataset, val_dataset = data.TabularDataset.splits(
+        path='',
+        train=train_csv,
+        validation=dev_csv,
+        format='csv',
+        skip_header=True,
+        fields=[('source', source_field), ('target', target_field)]
+    )
+
+    # Строим словари
+    source_field.build_vocab(train_dataset)
+    target_field.build_vocab(train_dataset)
+
+    # Создаем итераторы
+    train_iterator = data.BucketIterator(
+        train_dataset,
+        batch_size=batch_size,
+        sort_key=lambda x: len(x.source),  # Исправил x.sent на x.source
+        shuffle=True  # Изменил на True для лучшего обучения
+    )
+
+    val_iterator = data.BucketIterator(
+        val_dataset,
+        batch_size=batch_size,
+        sort_key=lambda x: len(x.source),  # Исправил x.sent на x.source
+        shuffle=False
+    )
+
+    return train_iterator, val_iterator, source_field.vocab, target_field.vocab
