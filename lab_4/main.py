@@ -87,39 +87,52 @@ def train_model():
     return model, source_vocab, target_vocab, config
 
 
-    def translate(model, sents):
-        X = []
-        for sent in sents:
-            X.append(list(map(lambda x: source_vocab[x], list(sent))) + [source_vocab["<pad>"]] * (Tx - len(sent)))
-        Xoh = torch.from_numpy(np.array(list(map(lambda x: to_categorical(x, num_classes=source_vocab_size), X))))
-        encoder_init_hidden = torch.zeros(1, len(X), hidden_size)
-        preds = model(Xoh, encoder_init_hidden, decoder_input=None, out_word2index=target_vocab.stoi,
-                      out_index2word=target_vocab.itos, max_len=Ty, out_size=target_vocab_size)
-        for gold, pred in zip(sents, preds):
-            print(gold, "-->", "".join(pred))
-
-
-    translate(model, sents)
-
-    """ 不使用 attention
-    dataset_size : 10000
-    loss 940.5139790773392
-    loss 151.68325132876635
-    loss 17.91189043689519
-    loss 8.461621267197188
-    loss 0.4571912245155545
-    loss 4.067497536438168
-    loss 0.02432645454427984
-    loss 0.022933890589229122
-    loss 1.740354736426525
-    loss 2.7019595313686295
-    monday may 7 1983 --> 1983-05-07
-    19 march 1998 --> 1998-03-19
-    18 jul 2008 --> 2008-07-18
-    9/10/70 --> 1970-09-10
-    thursday january 1 1981 --> 1981-01-01
-    thursday january 26 2015 --> 2015-01-26
-    saturday april 18 1990 --> 1990-04-18
-    sunday may 12 1988 --> 1988-05-12
+def translate_dates(model, sentences, source_vocab, target_vocab, config):
     """
+    КОММИТ 1: Вынес логику перевода в отдельную функцию с понятным именем
+    и добавил документацию
+    """
+    encoded_sentences = []
+    for sentence in sentences:
+        # КОММИТ 1: Улучшил читаемость создания encoded последовательности
+        tokens = [source_vocab[char] for char in sentence]
+        padding = [source_vocab["<pad>"]] * (config.MAX_INPUT_LENGTH - len(tokens))
+        encoded_sentences.append(tokens + padding)
 
+    one_hot_encoded = []
+    for encoded_sentence in encoded_sentences:
+        one_hot = to_categorical(encoded_sentence, num_classes=len(source_vocab.stoi))
+        one_hot_encoded.append(one_hot)
+
+    X_one_hot = torch.from_numpy(np.array(one_hot_encoded))
+    encoder_initial_hidden = torch.zeros(1, len(sentences), config.HIDDEN_SIZE)
+
+    predictions = model(
+        X_one_hot,
+        encoder_initial_hidden,
+        decoder_input=None,
+        out_word2index=target_vocab.stoi,
+        out_index2word=target_vocab.itos,
+        max_len=config.MAX_OUTPUT_LENGTH,
+        out_size=len(target_vocab.stoi)
+    )
+
+    for original, predicted in zip(sentences, predictions):
+        print(f"{original} --> {''.join(predicted)}")
+
+
+if __name__ == "__main__":
+    # Тестовые примеры
+    test_sentences = [
+        "monday may 7 1983",
+        "19 march 1998",
+        "18 jul 2008",
+        "9/10/70",
+        "thursday january 1 1981",
+        "thursday january 26 2015",
+        "saturday april 18 1990",
+        "sunday may 12 1988"
+    ]
+
+    trained_model, source_vocab, target_vocab, config = train_model()
+    translate_dates(trained_model, test_sentences, source_vocab, target_vocab, config)
