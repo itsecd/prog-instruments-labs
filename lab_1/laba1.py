@@ -17,21 +17,18 @@
 import argparse
 import configparser
 import csv
+import cgi
 import json
 import logging
 import re
 import time
-import cgi
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import parse_qs, urlparse
 
+from bs4 import BeautifulSoup
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-
 from requests_html import HTMLSession
-
-from bs4 import BeautifulSoup
-
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
@@ -114,14 +111,14 @@ def get_post_time(post):  # find the UNIX time of the post
     return int(post_time)
 
 
-def get_mobile_URL(URL):
-    return URL[:8:] + "m" + URL[11::]
+def get_mobile_url(url):
+    return url[:8:] + "m" + url[11::]
 
 
-def get_page_name(URL):
+def get_page_name(url):
     session = HTMLSession()
-    URL = get_mobile_URL(URL)
-    r = session.get(URL)
+    url = get_mobile_url(url)
+    r = session.get(url)
     name = r.html.find("title", first=True)
     return name.text.replace(" - Post | Facebook", "")
 
@@ -137,8 +134,8 @@ def add_link(post):  # add link to the top of the post's text
 
 
 # add link to the Facebook post at the bottom of the post
-def add_link2post(post):
-    post["link2post"] = handle_link2post(post)
+def add_link_to_post(post):
+    post["link2post"] = handle_link_to_post(post)
     text = (
         f"{post['text']}\n<a href='{post['link2post']}'>POST</a>"
     )
@@ -216,14 +213,14 @@ def send_post(post):  # for text posts
         send_post(post1)
         r = send_post(post2)
         return r
-    URL = TG_BASE.format(str(post["BOT"])) + "sendMessage"
+    url = TG_BASE.format(str(post["BOT"])) + "sendMessage"
     data = {
         "chat_id": post["channel_id"],
         "text": post["text"],
         "parse_mode": "html",
         "disable_web_page_preview": post.get("no_link")
     }
-    r = requests.get(URL, params=data, headers=USER_AGENT)
+    r = requests.get(url, params=data, headers=USER_AGENT)
     log_message = ("SENDING POST, RESPONSE:" + r.reason
                    + " STATUS CODE:" + str(r.status_code))
     logging.info(log_message)
@@ -241,14 +238,14 @@ def send_photo_multipart(post):
     with open("temp.png", "wb") as file:
         file.write(requests.get(post["photo"]).content)
     photo = {"photo": open("temp.png", "rb")}
-    URL = TG_BASE.format(str(post["BOT"])) + "sendPhoto"
+    url = TG_BASE.format(str(post["BOT"])) + "sendPhoto"
     data = {
         "chat_id": post["channel_id"],
         "caption": post["text"],
         "parse_mode": "html",
         "reply_to_message_id": post.get("reply_id")
     }
-    r = requests.post(URL, data=data, files=photo, headers=USER_AGENT)
+    r = requests.post(url, data=data, files=photo, headers=USER_AGENT)
     if r.status_code != 200:
         logging.critical("THERE WAS A N ERROR IN A REQUEST "
                          "IN send_photo_multipart")
@@ -265,7 +262,7 @@ def send_photo(post):  # send photo via URL, with the text if <200
         # so it's sent first and then the photo as a reply to it
         post["reply_id"] = send_post(post)
         post["text"] = ""
-    URL = TG_BASE.format(str(post["BOT"])) + "sendPhoto"
+    url = TG_BASE.format(str(post["BOT"])) + "sendPhoto"
     data = {
         "chat_id": post["channel_id"],
         "photo": post["photo"],
@@ -273,7 +270,7 @@ def send_photo(post):  # send photo via URL, with the text if <200
         "parse_mode": "html",
         "reply_to_message_id": post.get("reply_id")
     }
-    r = requests.get(URL, params=data, headers=USER_AGENT)
+    r = requests.get(url, params=data, headers=USER_AGENT)
     log_message = ("SENDING PHOTO, RESPONSE:" + r.reason
                    + " STATUS CODE:" + str(r.status_code))
     logging.info(log_message)
@@ -402,21 +399,21 @@ def find_photos(post):
         return None
 
 
-def parsing_link(query, FB_link):  # used to get around Facebook's secure link
+def parsing_link(query, fb_link):  # used to get around Facebook's secure link
     try:
         if query["u"] != "":
             link = str(query["u"][0])
             return link
     except KeyError:
-        link = str(FB_link)
+        link = str(fb_link)
         return link
 
 
 # used to parse a link out of Facebook's secure logout
-def link_parse(FB_link):
-    parsed_FB_link = urlparse(FB_link)
+def link_parse(fb_link):
+    parsed_FB_link = urlparse(fb_link)
     query = parse_qs(parsed_FB_link.query)
-    return parsing_link(query, FB_link)
+    return parsing_link(query, fb_link)
 
 
 # used to find the main link in link posts
@@ -424,16 +421,16 @@ def find_link(post):
     # this is for majority of link posts
     link_area = post["HTML"].find("a", class_="_52c6")
     if link_area:
-        FB_link = link_area["href"]
-        link = link_parse(FB_link)
+        fb_link = link_area["href"]
+        link = link_parse(fb_link)
         return link
     else:
         # for Youtube, twitch and other video links detected by FB
         link_area = post["HTML"].find("div", class_="mbs _6m6 _2cnj _5s6c")
         if link_area:
             # facebook hides the shared link with it's own "secure logout"
-            FB_link = link_area.a["href"]
-            link = link_parse(FB_link)
+            fb_link = link_area.a["href"]
+            link = link_parse(fb_link)
             return link
         else:
             return None
@@ -451,7 +448,7 @@ def has_video(post):  # to detect of a post has a Facebook video
 def find_video(post):
     # facebook mobile has plain link to the videos on their servers so
     # i can strip them and use those directly
-    mobile_URL = get_mobile_URL(post["link2post"])
+    mobile_URL = get_mobile_url(post["link2post"])
     soup = BeautifulSoup(get_url(mobile_URL), "html.parser")
     video_areas = soup.find_all("a", target="_blank")
     if len(video_areas) != 0 and video_areas is not None:
@@ -485,7 +482,7 @@ def find_video(post):
     return -1
 
 
-def handle_link2post(post):  # to generate the link to the Facebook post
+def handle_link_to_post(post):  # to generate the link to the Facebook post
     link2post_area = post["HTML"].find("span", class_="fsm fwn fcg")
     try:
         link2post = "https://www.facebook.com" + link2post_area.a["href"]
@@ -499,7 +496,7 @@ def handle_link2post(post):  # to generate the link to the Facebook post
 def content(post):
     post["text"] = handle_shares(post)
     post["text"] = handle_text(post)
-    post["text"] = add_link2post(post)
+    post["text"] = add_link_to_post(post)
     logging.debug("Basic text handled!")
     if find_photo(post):
         post["photo"] = find_photo(post)
@@ -581,7 +578,7 @@ def patch_pyppeteer():
 # return None
 
 
-def generate_soup(URL):  # now we use RequestsHTML,
+def generate_soup(url):  # now we use RequestsHTML,
     # which can compile Javascript and
     # handes session errors better
     # with HTMLSession() as session:
@@ -599,7 +596,7 @@ def generate_soup(URL):  # now we use RequestsHTML,
     # first=True).html
     # and the body of the page is extracetd to be prcessed by BeautifulSoup
     driver = webdriver.Firefox(options=FIREFOX_OPTIONS)
-    driver.get(URL)
+    driver.get(url)
     code = str(driver.page_source)
     driver.quit()
     return BeautifulSoup(code, "html.parser")
@@ -682,9 +679,9 @@ def main():
     if args["DEBUG_MODE"]:
         log_config["debug_level"] = "DEBUG"
     configure_logging(log_config)
-    pages_file, TOKEN = basic_config["pages_file"], basic_config["bot_token"]
+    pages_file, token = basic_config["pages_file"], basic_config["bot_token"]
     logging.info("LOADED FB PAGES FROM FILE: " + pages_file)
-    logging.info("LOADED TOKEN: " + TOKEN)
+    logging.info("LOADED TOKEN: " + token)
     try:
         while True:  # the main loop
             update_pages(pages_file, config, args["ini_file"])
@@ -701,11 +698,11 @@ def main():
                     "ascii", "ignore").decode("ascii", "ignore")
                 logging.info("SHOWN ON CHANNEL: %s", shown_name)
 
-                URL = page[2]
-                logging.info("PAGE URL: " + URL)
+                url = page[2]
+                logging.info("PAGE URL: " + url)
                 channel_id = page[4]
                 last_time = page[3]
-                soup = generate_soup(URL)
+                soup = generate_soup(url)
                 # seems to be hardcoded in FB's HTML code to define posts
                 posts = soup.find_all("div", "_427x")
                 posts.reverse()
@@ -713,7 +710,7 @@ def main():
                 page[3] = new_posts_handling(
                     posts,
                     last_time,
-                    TOKEN,
+                    token,
                     channel_id,
                     page_name,
                 )
