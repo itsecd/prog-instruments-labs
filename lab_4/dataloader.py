@@ -82,40 +82,71 @@ class DateDatasetGenerator:
         return dataset
 
 
-def prepare_data(dataset_path=r"../dataset/date-normalization", dataset_size=10, debug=False):
-    if debug:
-        dataset_size = 10
-        train_file = os.path.join(dataset_path, "train_samll.csv")
-        eval_file = os.path.join(dataset_path, "eval_samll.csv")
-    else:
-        train_file = os.path.join(dataset_path, "train.csv")
-        eval_file = os.path.join(dataset_path, "eval.csv")
-    if not os.path.exists(train_file) and not os.path.exists(train_file):
-        dataset = load_dataset(dataset_size)
-        source, target = zip(*dataset)
-        X_train, X_test, y_train, y_test = train_test_split(source, target, random_state=42, test_size=0.2)
-        train_df = pd.DataFrame()
-        train_df["source"], train_df["target"] = X_train, y_train
-        eval_df = pd.DataFrame()
-        eval_df["source"], eval_df["target"] = X_test, y_test
-        train_df.to_csv(train_file, index=False)
-        eval_df.to_csv(eval_file, index=False)
-    return train_file, eval_file
+class DataPreprocessor:
+    """Класс для подготовки и разделения данных"""
+
+    @staticmethod
+    def prepare_data_files(dataset_path: str, dataset_size: int, debug: bool = False) -> Tuple[str, str]:
+        if debug:
+            dataset_size = 10
+            train_file = os.path.join(dataset_path, "train_small.csv")
+            eval_file = os.path.join(dataset_path, "eval_small.csv")
+        else:
+            train_file = os.path.join(dataset_path, "train.csv")
+            eval_file = os.path.join(dataset_path, "eval.csv")
+
+        # Создаем файлы если они не существуют
+        if not os.path.exists(train_file):
+            dataset = DateDatasetGenerator.generate_dataset(dataset_size)
+            sources, targets = zip(*dataset)
+
+            # Разделяем данные
+            train_sources, eval_sources, train_targets, eval_targets = train_test_split(
+                sources, targets, random_state=42, test_size=0.2
+            )
+
+            # Сохраняем тренировочные данные
+            train_df = pd.DataFrame({
+                "source": train_sources,
+                "target": train_targets
+            })
+            train_df.to_csv(train_file, index=False)
+
+            # Сохраняем валидационные данные
+            eval_df = pd.DataFrame({
+                "source": eval_sources,
+                "target": eval_targets
+            })
+            eval_df.to_csv(eval_file, index=False)
+
+        return train_file, eval_file
 
 
-def dataset2dataloader(dataset_path, batch_size=10, dataset_size=10, debug=False):
-    train_csv, dev_csv = prepare_data(dataset_path, dataset_size=dataset_size, debug=debug)
+def tokenize_text(text: str) -> List[str]:
+    """
+    Простая токенизация посимвольно
+    """
+    return list(text)
 
-    def tokenizer(text):
-        return list(text)
 
-    # 这里只是定义了数据格式
-    SOURCE = data.Field(sequential=True, tokenize=tokenizer, lower=False)
-    # 目标输出前后需加入特殊的标志符
-    TARGET = data.Field(sequential=True, tokenize=tokenizer, lower=False, init_token="<start>", eos_token="<end>")
-    train, val = data.TabularDataset.splits(
-        path='', train=train_csv, validation=dev_csv, format='csv', skip_header=True,
-        fields=[('source', SOURCE), ('target', TARGET)])
+def create_data_fields() -> Tuple[data.Field, data.Field]:
+    source_field = data.Field(
+        sequential=True,
+        tokenize=tokenize_text,
+        lower=False,
+        include_lengths=True  # Добавил для лучшей обработки
+    )
+
+    target_field = data.Field(
+        sequential=True,
+        tokenize=tokenize_text,
+        lower=False,
+        init_token="<start>",
+        eos_token="<end>",
+        include_lengths=True
+    )
+
+    return source_field, target_field
 
 
     train_iter = data.BucketIterator(train, batch_size=batch_size, sort_key=lambda x: len(x.sent), shuffle=False)
