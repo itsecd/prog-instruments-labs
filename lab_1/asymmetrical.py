@@ -4,6 +4,7 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey
 from typing import Tuple
 
+
 class Asymmetrical:
     """
     Класс, который работает с RSA алгоритмом

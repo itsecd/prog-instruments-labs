@@ -3,6 +3,7 @@ import os
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
+
 class Symmetrical:
     """
     Класс для алгоритма шифрования CAST5

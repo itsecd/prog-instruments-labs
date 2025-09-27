@@ -2,6 +2,7 @@ from asymmetrical import Asymmetrical
 from symmetrical import Symmetrical
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 
+
 class Hybrid:
     """
     Класс совмещающий RSA и CAST5 алгоритмы

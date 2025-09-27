@@ -19,6 +19,7 @@ def create_default_settings_if_needed() -> None:
         FileHandler.write_json(SETTINGS_FILE, DEFAULT_SETTINGS)
         print(f"Создан {SETTINGS_FILE} с настройками по умолчанию.")
 
+
 def load_settings() -> dict[str, str]:
     """
     Загружает настройки из JSON файла
@@ -31,6 +32,7 @@ def load_settings() -> dict[str, str]:
         print(f"Ошибка загрузки настроек: {e}")
         print("Используются значения по умолчанию")
         return DEFAULT_SETTINGS
+
 
 def parse_arguments() -> argparse.Namespace:
     """
