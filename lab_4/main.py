@@ -24,56 +24,67 @@ class TrainingConfig:
     MAX_INPUT_LENGTH = 25  # Заменил Tx на понятное имя
     MAX_OUTPUT_LENGTH = 10  # Заменил Ty на понятное имя
 
-    train_iter, val_iter, source_vocab, target_vocab = dataset2dataloader(dataset_path=r"../dataset/date-normalization",
-                                                                          batch_size=batch_size, dataset_size=10000, debug=True)
+
+def train_model():
+    config = TrainingConfig()
+
+    train_iter, val_iter, source_vocab, target_vocab = dataset2dataloader(
+        dataset_path=r"../dataset/date-normalization",
+        batch_size=config.BATCH_SIZE,
+        dataset_size=10000,
+        debug=True
+    )
+
     source_vocab_size = len(source_vocab.stoi)
     target_vocab_size = len(target_vocab.stoi)
 
-    # print(target_vocab.stoi)
+    model = SimpleNMT(
+        in_vocab_size=source_vocab_size,
+        out_vocab_size=target_vocab_size,
+        in_hidden_size=config.HIDDEN_SIZE,
+        out_hidden_size=config.HIDDEN_SIZE,
+        output_size=target_vocab_size,
+        with_attention=True
+    )
 
-    Tx, Ty = 25, 10  # 最大长度
-
-    model = SimpleNMT(in_vocab_size=source_vocab_size, out_vocab_size=target_vocab_size, in_hidden_size=hidden_size,
-                      out_hidden_size=hidden_size, output_size=target_vocab_size, with_attention=True)
-
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    optimizer = optim.Adam(model.parameters(), lr=config.LEARNING_RATE)
     criterion = nn.CrossEntropyLoss()
 
-    embed_layer1 = nn.Embedding(source_vocab_size, source_vocab_size,
-                                _weight=torch.from_numpy(np.eye(source_vocab_size)))
-    embed_layer2 = nn.Embedding(target_vocab_size, target_vocab_size,
-                                _weight=torch.from_numpy(np.eye(target_vocab_size)))
+    source_embedding = nn.Embedding(
+        source_vocab_size, source_vocab_size,
+        _weight=torch.from_numpy(np.eye(source_vocab_size))
+    )
+    target_embedding = nn.Embedding(
+        target_vocab_size, target_vocab_size,
+        _weight=torch.from_numpy(np.eye(target_vocab_size))
+    )
 
     model.train()
-    for ep in range(epoch):
+    for epoch in range(config.EPOCHS):  # Заменил ep на epoch
         epoch_loss = 0
         for batch in train_iter:
             optimizer.zero_grad()
-            Xin, Yin, Yout = batch.source.t().long(), batch.target.t()[:, :-1].long(), batch.target.t()[:, 1:]
-            batch_size = len(Xin)
-            init_hidden = torch.zeros(1, batch_size, hidden_size)
-            # if ep == epoch - 1:
-            #     print(Yout)
-            Xin = embed_layer1(Xin).float()
-            Yin = embed_layer2(Yin).float()
-            logits = model(Xin, init_hidden, Yin)
-            loss = criterion(logits.view(-1, logits.shape[-1]), Yout.flatten())
+
+            encoder_input = batch.source.t().long()
+            decoder_input = batch.target.t()[:, :-1].long()
+            decoder_target = batch.target.t()[:, 1:]
+
+            batch_size = len(encoder_input)
+            initial_hidden = torch.zeros(1, batch_size, config.HIDDEN_SIZE)
+
+            encoder_input_embedded = source_embedding(encoder_input).float()
+            decoder_input_embedded = target_embedding(decoder_input).float()
+
+            logits = model(encoder_input_embedded, initial_hidden, decoder_input_embedded)
+            loss = criterion(logits.view(-1, logits.shape[-1]), decoder_target.flatten())
             epoch_loss += loss.item()
             loss.backward()
             optimizer.step()
 
-    # 测试训练集输出是否正确
-    # for batch in train_iter:
-    #     # print(batch.source.t())
-    #     print(batch.target.t()[:, 1:])
-    # print("finish")
-    # init_hidden = torch.zeros(1, batch_size, hidden_size)
-    # logits = model(Xin, init_hidden, Yin)
-    # print(logits.argmax(-1))
+        if epoch % (config.EPOCHS // 10) == 0:
+            print(f"Epoch {epoch}, Loss: {epoch_loss}")
 
-    sents_for_large = ["monday may 7 1983", "19 march 1998", "18 jul 2008", "9/10/70", "thursday january 1 1981",
-                       "thursday january 26 2015", "saturday april 18 1990", "sunday may 12 1988"]
-    sents = ["monday march 7 1983", "9 may 1998", "thursday january 26 1995", "9/10/70"]
+    return model, source_vocab, target_vocab, config
 
 
     def translate(model, sents):
