@@ -15,11 +15,14 @@ import numpy as np
 from pprint import pprint
 from tqdm import tqdm
 
-if __name__ == "__main__":
-    epoch = 500
-    learning_rate = 0.001
-    hidden_size = 64
-    batch_size = 10
+
+class TrainingConfig:
+    EPOCHS = 500
+    LEARNING_RATE = 0.001
+    HIDDEN_SIZE = 64
+    BATCH_SIZE = 10
+    MAX_INPUT_LENGTH = 25  # Заменил Tx на понятное имя
+    MAX_OUTPUT_LENGTH = 10  # Заменил Ty на понятное имя
 
     train_iter, val_iter, source_vocab, target_vocab = dataset2dataloader(dataset_path=r"../dataset/date-normalization",
                                                                           batch_size=batch_size, dataset_size=10000, debug=True)
@@ -58,8 +61,6 @@ if __name__ == "__main__":
             epoch_loss += loss.item()
             loss.backward()
             optimizer.step()
-        if ep % (epoch // 10) == 0:
-            print("loss", epoch_loss)
 
     # 测试训练集输出是否正确
     # for batch in train_iter:
@@ -111,23 +112,3 @@ if __name__ == "__main__":
     sunday may 12 1988 --> 1988-05-12
     """
 
-    """使用attention
-    loss 870.4544065594673
-    loss 65.41884177550673
-    loss 53.339022306521656
-    loss 0.08635593753569992
-    loss 0.057157438381182146
-    loss 0.0006471980702968949
-    loss 0.09261544834953384
-    loss 0.000922315769471993
-    loss 0.00961817828419953
-    loss 0.06814217135979561
-    monday may 7 1983 --> 1983-05-07
-    19 march 1998 --> 1998-03-19
-    18 jul 2008 --> 2008-07-18
-    9/10/70 --> 1970-09-10
-    thursday january 1 1981 --> 1981-01-01
-    thursday january 26 2015 --> 2015-01-26
-    saturday april 18 1990 --> 1990-04-18
-    sunday may 12 1988 --> 1988-05-12
-    """
