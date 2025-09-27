@@ -5,6 +5,7 @@ Created on 2020/6/8 11:26
 @author: phil
 """
 
+# КОММИТ 3: Добавил импорты для type hints
 from typing import List, Tuple, Optional
 import os
 import numpy as np
@@ -22,6 +23,7 @@ from sklearn.model_selection import train_test_split
 fake = Faker()
 Faker.seed(12345)
 random.seed(12345)
+
 
 class DateFormats:
     """Конфигурация форматов дат для генерации данных"""
@@ -47,36 +49,37 @@ class DateFormats:
     LOCALES = ['en_US']
 
 
-def load_date():
-    """
-        Loads some fake dates
-        :returns: tuple containing human readable string, machine readable string, and date object
-    """
-    dt = fake.date_object()
+class DateDatasetGenerator:
+    """Класс для генерации датасета дат"""
 
-    try:
-        human_readable = format_date(dt, format=random.choice(FORMATS), locale='en_US')
-        human_readable = human_readable.lower()
-        human_readable = human_readable.replace(',', '')
-        machine_readable = dt.isoformat()
-    except AttributeError as e:
-        return None, None, None
+    @staticmethod
+    def generate_single_date() -> Optional[Tuple[str, str]]:
+        """
+        Возвращает кортеж (человекочитаемая дата, машинночитаемая дата)
+        """
+        date_object = fake.date_object()
 
-    return human_readable, machine_readable, dt
+        try:
+            human_readable = format_date(
+                date_object,
+                format=random.choice(DateFormats.FORMATS),
+                locale='en_US'
+            ).lower().replace(',', '')
 
+            machine_readable = date_object.isoformat()
+            return human_readable, machine_readable
 
-def load_dataset(m):
-    """
-        Loads a dataset with m examples and vocabularies
-        :m: the number of examples to generate
-    """
-    dataset = []
-    for _ in tqdm(range(m)):
-        h, m, _ = load_date()
-        if h is not None:
-            dataset.append([h, m])
+        except AttributeError:
+            return None
 
-    return dataset
+    @staticmethod
+    def generate_dataset(num_examples: int) -> List[Tuple[str, str]]:
+        dataset = []
+        for _ in tqdm(range(num_examples), desc="Generating dates"):
+            date_pair = DateDatasetGenerator.generate_single_date()
+            if date_pair is not None:
+                dataset.append(date_pair)
+        return dataset
 
 
 def prepare_data(dataset_path=r"../dataset/date-normalization", dataset_size=10, debug=False):
