@@ -8,48 +8,48 @@ import torch.nn as nn
 import torch
 import numpy as np
 import torch.nn.functional as F
+from typing import Optional, Tuple, List, Dict
 
 
-class EncoderRNN(nn.Module):
-    def __init__(self, vocab_size, hidden_size, dropout=0.5):
-        super(EncoderRNN, self).__init__()
+
+class BaseEncoder(nn.Module):
+    """Базовый класс для энкодеров с общей логикой"""
+
+    def __init__(self, vocab_size: int, hidden_size: int, dropout: float = 0.5):
+        super().__init__()
         self.hidden_size = hidden_size
         self.gru = nn.GRU(vocab_size, hidden_size, dropout=dropout, batch_first=True)
 
-    def forward(self, x, init_hidden):
-        seq_output, last_state = self.gru(x, init_hidden)
-        return seq_output, last_state
+    def forward(self, x: torch.Tensor, initial_hidden: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        sequence_output, last_state = self.gru(x, initial_hidden)
+        return sequence_output, last_state
 
 
-class DecoderRNN(nn.Module):
-    def __init__(self, vocab_size, hidden_size, output_size, dropout=0.5):
-        super(DecoderRNN, self).__init__()
+class EncoderRNN(BaseEncoder):
+    """Энкодер для последовательностей"""
+
+    def __init__(self, vocab_size: int, hidden_size: int, dropout: float = 0.5):
+        super().__init__(vocab_size, hidden_size, dropout)
+
+
+class BaseDecoder(nn.Module):
+    """Базовый класс для декодеров с общей логикой"""
+
+    def __init__(self, vocab_size: int, hidden_size: int, output_size: int, dropout: float = 0.5):
+        super().__init__()
         self.hidden_size = hidden_size
         self.gru = nn.GRU(vocab_size, hidden_size, dropout=dropout, batch_first=True)
-        self.hidden2index = nn.Linear(hidden_size, output_size)
-
-    def forward(self, x, init_state):
-        seq_output, last_state = self.gru(x, init_state)
-        seq_output = self.hidden2index(seq_output)
-        return seq_output, last_state
+        self.hidden_to_output = nn.Linear(hidden_size, output_size)
 
 
-class DecoderAttenRNN(nn.Module):
-    def __init__(self, vocab_size, hidden_size, output_size, dropout=0.5):
-        super(DecoderAttenRNN, self).__init__()
-        self.hidden_size = hidden_size
-        self.gru = nn.GRU(vocab_size, hidden_size, dropout=dropout, batch_first=True)
-        self.hidden2label = nn.Linear(hidden_size, output_size)
-        self.atten_affine = nn.Linear(hidden_size*2, hidden_size)
+class DecoderRNN(BaseDecoder):
+    """Простой декодер без механизма внимания"""
 
-    def get_alpha(self, hi, encoder_output):
-        # hi shape (1, batch_size, hidden_size)
-        # encoder_output (batch, seq_len, hidden_size)
-        hi = hi.permute(1, 2, 0)   # (batch_size, hidden_size, 1)
-        # print(encoder_output.shape, hi.shape)
-        e = torch.bmm(encoder_output, hi).squeeze(2)  # (batch_size, seq_len)
-        e = F.softmax(e, dim=1).unsqueeze(2)       # (batch_size, seq_len, 1)
-        alpha = (e * encoder_output).sum(dim=1)    # (batch_size, hidden_size)
+    def forward(self, x: torch.Tensor, initial_state: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        sequence_output, last_state = self.gru(x, initial_state)
+        output = self.hidden_to_output(sequence_output)
+        return output, last_state
+
 
         return alpha
 
@@ -75,6 +75,7 @@ class SimpleNMT(nn.Module):
         super(SimpleNMT, self).__init__()
         self.with_attention = with_attention
         self.encoder = EncoderRNN(in_vocab_size, in_hidden_size)
+
         if self.with_attention:
             self.decoder = DecoderAttenRNN(out_vocab_size, out_hidden_size, output_size)
         else:
@@ -117,3 +118,8 @@ class SimpleNMT(nn.Module):
                     hi = hdi
                 decoded_sents.append(sent)
             return decoded_sents
+
+            return self.forward_inference(
+                encoder_input, encoder_initial_hidden, out_word2index,
+                out_index2word, max_len, out_size
+            )
