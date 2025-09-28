@@ -646,94 +646,123 @@ def index():
 
 @app.route('/convert', methods=['POST'])
 def convert_file():
+    logger.info("Получен запрос на конвертацию файла")
+
     try:
         if 'file' not in request.files:
+            logger.warning("В запросе отсутствует файл")
             return jsonify({'error': 'No file uploaded'}), 400
-            
+
         file = request.files['file']
         target_format = request.form.get('target_format')
-        
+
         if file.filename == '':
+            logger.warning("Не выбрано имя файла")
             return jsonify({'error': 'No file selected'}), 400
-            
+
         if not allowed_file(file.filename):
+            logger.warning(f"Неподдерживаемый тип файла: {file.filename}")
             return jsonify({'error': 'File type not supported'}), 400
-            
+
         if not target_format:
+            logger.warning("Не указан целевой формат")
             return jsonify({'error': 'Target format not specified'}), 400
-            
-        # Get input format
+
+        # Логируем информацию о файле
         input_format = Path(file.filename).suffix.lower()[1:]
-        
-        # Handle different file types
+
+        # Читаем размер файла для логирования
+        file.seek(0, 2)  # Перемещаемся в конец файла
+        file_size = file.tell()  # Получаем размер
+        file.seek(0)  # Возвращаем указатель в начало
+
+        logger.info(f"Конвертация файла: {file.filename} "
+                    f"(размер: {file_size} байт, "
+                    f"из: {input_format} в: {target_format})")
+
+        # Оригинальный код обработки файла
         file_content = None
         file_obj = None
-        
+
         # Reset file pointer
         file.seek(0)
-        
+
         # Binary formats that need special handling
         binary_formats = ['pdf', 'docx', 'pptx', 'xlsx', 'jpg', 'jpeg', 'png', 'bmp', 'gif']
-        
+
         if input_format in binary_formats:
             file_obj = file
             if input_format == 'xlsx':
                 # Special handling for Excel files
+                logger.debug("Обработка Excel файла")
                 df = pd.read_excel(file)
                 file_content = df.to_csv(index=False)
                 input_format = 'csv'
                 file_obj = None
+                logger.debug(f"Excel конвертирован в CSV: {len(df)} строк")
             else:
                 file_content = ""  # Will be processed using file_obj
+                logger.debug(f"Бинарный файл будет обработан через file_obj: {input_format}")
         else:
             # Text formats
             try:
                 file_content = file.read().decode('utf-8')
+                logger.debug(f"Текстовый файл прочитан: {len(file_content)} символов")
             except UnicodeDecodeError:
+                logger.error("Ошибка декодирования файла - не текстовый формат")
                 return jsonify({'error': 'Unable to decode file. Please ensure it\'s a text file.'}), 400
-            
-        # Perform conversion
+
+        # Выполняем конвертацию
+        logger.debug(f"Начало конвертации {input_format} -> {target_format}")
         converted_content = perform_conversion(file_content, input_format, target_format, file_obj)
-        
-        # Generate output filename
+        logger.debug("Конвертация завершена успешно")
+
+        # Генерируем имя выходного файла
         original_name = Path(file.filename).stem
         output_filename = f"{original_name}.{target_format}"
-        
-        # Save converted file
+
+        # Сохраняем сконвертированный файл
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=f".{target_format}")
-        
-        # Determine if the target format is binary
+
+        # Определяем бинарные форматы
         binary_target_formats = ['xlsx', 'pdf', 'docx', 'pptx', 'jpg', 'jpeg', 'png', 'bmp', 'gif']
-        
-        if target_format in binary_target_formats:
-            temp_file.write(converted_content)
-        else:
-            if isinstance(converted_content, str):
-                temp_file.write(converted_content.encode('utf-8'))
-            else:
-                temp_file.write(converted_content)
-            
-        temp_file.close()
-        
-        # Create preview for text formats
+
+        # Создаем preview для текстовых форматов
         preview = None
         if target_format not in binary_target_formats and isinstance(converted_content, str):
             preview = converted_content[:500] + "..." if len(converted_content) > 500 else converted_content
-        
-        # Generate unique ID for this file
+            logger.debug(f"Создан preview: {len(preview)} символов")
+
+        if target_format in binary_target_formats:
+            temp_file.write(converted_content)
+            logger.debug(f"Сохранен бинарный файл: {temp_file.name}")
+        else:
+            if isinstance(converted_content, str):
+                temp_file.write(converted_content.encode('utf-8'))
+                logger.debug(f"Сохранен текстовый файл: {temp_file.name}, размер: {len(converted_content)} символов")
+            else:
+                temp_file.write(converted_content)
+                logger.debug(f"Сохранен файл: {temp_file.name}, бинарный размер: {len(converted_content)} байт")
+
+        temp_file.close()
+
+        # Генерируем уникальный ID
         import uuid
         file_id = str(uuid.uuid4())
         temp_files[file_id] = temp_file.name
-        
-        # Return success response with download info
+
+        logger.info(f"Конвертация завершена успешно. ID файла: {file_id}, "
+                    f"результирующее имя: {output_filename}")
+
         return jsonify({
             'success': True,
             'filename': output_filename,
             'file_id': file_id,
             'preview': preview
         })
-        
+
     except Exception as e:
+        logger.error(f"Ошибка при конвертации: {str(e)}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 
