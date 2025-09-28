@@ -1,6 +1,7 @@
 import argparse
 
-from filehandler.filehandler import read_data, save_data, read_csv
+from filehandler.filehandler import read_data, read_csv
+from regular_expression.regular_expression import check_validate
 
 
 def get_args():
@@ -12,8 +13,10 @@ def get_args():
 def main():
     try:
         settings = read_data(get_args().settings_file)
-        table = read_csv(settings["csv_file"])
-        print(table)
+        regexp = read_data(settings["regexp"])
+        # table = read_csv(settings["csv_file"])
+        # print(table)
+        print(check_validate("+7-(969)-765-17-05", regexp["telephone"]))
     except Exception as e:
         print(e)
 
