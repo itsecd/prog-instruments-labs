@@ -31,6 +31,9 @@ def main():
         print(f"Blood type: {check_validate("BA+", regexp["blood_type"])}")
         print(f"Blood type: {check_validate("A-", regexp["blood_type"])}")
         print(f"Blood type: {check_validate("O+", regexp["blood_type"])}")
+        print(f"uuid: {check_validate("3a7fb1ca-bdc6-4314-ad9a-6370f7a9657b", regexp["uuid"])}")
+        print(f"Date: {check_validate("2024-06-02", regexp["date"])}")
+        print(f"Date: {check_validate("2024-33-02", regexp["date"])}")
     except Exception as e:
         print(e)
 
