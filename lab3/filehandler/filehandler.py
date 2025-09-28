@@ -48,7 +48,7 @@ def read_csv(directory: str) -> pd.DataFrame:
     """
     try:
         with open(directory, mode="r", encoding="utf-16") as file:
-            return pd.read_csv(file)
+            return pd.read_csv(file, sep=";")
     except FileNotFoundError as fe:
         raise FileNotFoundError(f"File was not found: {fe}")
     except Exception as e:
