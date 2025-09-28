@@ -97,8 +97,15 @@ def allowed_file(filename):
 
 def convert_csv_to_json(csv_content):
     """Convert CSV to JSON"""
-    df = pd.read_csv(StringIO(csv_content))
-    return df.to_json(orient='records', indent=2)
+    logger.debug("Конвертация CSV в JSON")
+    try:
+        df = pd.read_csv(StringIO(csv_content))
+        result = df.to_json(orient='records', indent=2)
+        logger.debug(f"✅ CSV→JSON: обработано {len(df)} строк")
+        return result
+    except Exception as e:
+        logger.error(f"❌ Ошибка конвертации CSV в JSON: {str(e)}")
+        raise
 
 
 def convert_csv_to_xml(csv_content):
