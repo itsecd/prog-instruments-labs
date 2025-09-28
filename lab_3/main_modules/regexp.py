@@ -31,7 +31,7 @@ def get_rows_with_mistakes(data_frame: DataFrame, patterns) -> list:
     for column_name in data_frame:
         for row_index, value in data_frame[column_name].items():
             if not validate_by_pattern(value, patterns[patter_index]):
-                if row_index not in rows_with_mistakes:
+                if not (row_index in rows_with_mistakes):
                     rows_with_mistakes.append(row_index)
         patter_index += 1
     return rows_with_mistakes
