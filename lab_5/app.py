@@ -31,8 +31,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 import sys
 from datetime import datetime
-import os
-
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
@@ -49,14 +47,59 @@ app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB max file size
 # Create upload directory if it doesn't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+
+# Настройка логирования
+def setup_logging():
+    """Настройка системы логирования"""
+    # Создаем папку для логов если ее нет
+    log_dir = 'logs'
+    os.makedirs(log_dir, exist_ok=True)
+
+    # Форматтер для логов
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s - [%(filename)s:%(lineno)d]'
+    )
+
+    # Логгер приложения
+    logger = logging.getLogger('file_converter')
+    logger.setLevel(logging.DEBUG)
+
+    # Файловый обработчик с ротацией
+    file_handler = RotatingFileHandler(
+        f'{log_dir}/converter.log',
+        maxBytes=10 * 1024 * 1024,  # 10MB
+        backupCount=5,
+        encoding='utf-8'
+    )
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+
+    # Консольный обработчик
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(formatter)
+
+    # Добавляем обработчики
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+
+    return logger
+
+
+# Инициализация логгера
+logger = setup_logging()
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 def convert_csv_to_json(csv_content):
     """Convert CSV to JSON"""
     df = pd.read_csv(StringIO(csv_content))
     return df.to_json(orient='records', indent=2)
+
 
 def convert_csv_to_xml(csv_content):
     """Convert CSV to XML"""
@@ -74,6 +117,7 @@ def convert_csv_to_xml(csv_content):
     xml_data.append('</root>')
     return '\n'.join(xml_data)
 
+
 def convert_json_to_csv(json_content):
     """Convert JSON to CSV"""
     data = json.loads(json_content)
@@ -82,6 +126,7 @@ def convert_json_to_csv(json_content):
     else:
         df = pd.DataFrame([data])
     return df.to_csv(index=False)
+
 
 def convert_json_to_xml(json_content):
     """Convert JSON to XML"""
@@ -119,6 +164,7 @@ def convert_json_to_xml(json_content):
     
     return dict_to_xml(data)
 
+
 def convert_csv_to_excel(csv_content):
     """Convert CSV to Excel"""
     df = pd.read_csv(StringIO(csv_content))
@@ -126,6 +172,7 @@ def convert_csv_to_excel(csv_content):
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Sheet1')
     return output.getvalue()
+
 
 def convert_to_txt(content, source_format):
     """Convert various formats to plain text"""
@@ -140,6 +187,7 @@ def convert_to_txt(content, source_format):
         return ET.tostring(root, encoding='unicode')
     else:
         return content
+
 
 def convert_to_pdf(content, source_format):
     """Convert content to PDF"""
@@ -167,6 +215,7 @@ def convert_to_pdf(content, source_format):
     p.save()
     return buffer.getvalue()
 
+
 # Extended conversion functions
 def extract_text_from_pdf(pdf_file):
     """Extract text from PDF file"""
@@ -192,6 +241,7 @@ def extract_text_from_pdf(pdf_file):
             text = f"Error extracting text from PDF: {str(e)}\nFallback error: {str(fallback_error)}"
     return text
 
+
 def extract_text_from_docx(docx_file):
     """Extract text from Word document"""
     doc = Document(docx_file)
@@ -199,6 +249,7 @@ def extract_text_from_docx(docx_file):
     for paragraph in doc.paragraphs:
         text += paragraph.text + "\n"
     return text
+
 
 def extract_text_from_pptx(pptx_file):
     """Extract text from PowerPoint presentation with enhanced content extraction"""
@@ -259,6 +310,7 @@ def extract_text_from_pptx(pptx_file):
     
     return full_text if full_text.strip() else "No extractable text content found in presentation."
 
+
 def convert_text_to_docx(text_content):
     """Convert text to Word document"""
     doc = Document()
@@ -273,6 +325,7 @@ def convert_text_to_docx(text_content):
     buffer = BytesIO()
     doc.save(buffer)
     return buffer.getvalue()
+
 
 def convert_text_to_html(text_content):
     """Convert text to HTML"""
@@ -295,6 +348,7 @@ def convert_text_to_html(text_content):
 </html>"""
     return html
 
+
 def convert_markdown_to_html(md_content):
     """Convert Markdown to HTML"""
     html_content = markdown.markdown(md_content)
@@ -314,6 +368,7 @@ def convert_markdown_to_html(md_content):
 </body>
 </html>"""
 
+
 def convert_image_format(image_file, target_format):
     """Convert image between different formats"""
     img = Image.open(image_file)
@@ -325,6 +380,7 @@ def convert_image_format(image_file, target_format):
     buffer = BytesIO()
     img.save(buffer, format=target_format.upper())
     return buffer.getvalue()
+
 
 def create_pdf_from_text(text_content):
     """Create a formatted PDF from text using ReportLab with better PowerPoint handling"""
@@ -426,6 +482,7 @@ def create_pdf_from_text(text_content):
     # Build the PDF
     doc.build(story)
     return buffer.getvalue()
+
 
 def perform_conversion(file_content, input_format, target_format, file_obj=None):
     """Perform file conversion based on formats"""
@@ -581,9 +638,11 @@ def perform_conversion(file_content, input_format, target_format, file_obj=None)
     except Exception as e:
         raise ValueError(f"Conversion failed: {str(e)}")
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/convert', methods=['POST'])
 def convert_file():
@@ -677,8 +736,10 @@ def convert_file():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 # Store temporary files with unique IDs
 temp_files = {}
+
 
 @app.route('/download/<file_id>/<filename>')
 def download_file(file_id, filename):
@@ -710,6 +771,7 @@ def download_file(file_id, filename):
     except Exception as e:
         app.logger.error(f"Download error: {str(e)}")
         return jsonify({'error': f'Download failed: {str(e)}'}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
