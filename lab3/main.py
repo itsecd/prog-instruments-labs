@@ -23,6 +23,8 @@ def main():
         print(f"INN more than 12 symbols: {check_validate("7334998336009999", regexp["inn"])}")
         print(f"Identifier: {check_validate("62-71/26", regexp["identifier"])}")
         print(f"Identifier: {check_validate("62 71/26", regexp["identifier"])}")
+        print(f"IP_v4: {check_validate("19.121.223.58", regexp["ip_v4"])}")
+        print(f"IP_v4: {check_validate("19.121223.58", regexp["ip_v4"])}")
     except Exception as e:
         print(e)
 
