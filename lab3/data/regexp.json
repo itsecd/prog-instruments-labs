@@ -1,5 +1,6 @@
 {
   "telephone" : "\\+7-\\(\\d{3}\\)-\\d{3}-\\d{2}-\\d{2}",
   "http_status_message" : "\\d{3}\\s\\w+(\\s\\w+)*",
-  "inn" : "\\d{12}"
+  "inn" : "\\d{12}",
+  "identifier": "\\d{2}-\\d{2}/\\d{2}"
 }

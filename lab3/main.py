@@ -21,6 +21,8 @@ def main():
         print(f"HTTP 2nd var: {check_validate("226 IM Used", regexp["http_status_message"])}")
         print(f"INN 12 symbols: {check_validate("733499833600", regexp["inn"])}")
         print(f"INN more than 12 symbols: {check_validate("7334998336009999", regexp["inn"])}")
+        print(f"Identifier: {check_validate("62-71/26", regexp["identifier"])}")
+        print(f"Identifier: {check_validate("62 71/26", regexp["identifier"])}")
     except Exception as e:
         print(e)
 
