@@ -646,26 +646,26 @@ def index():
 
 @app.route('/convert', methods=['POST'])
 def convert_file():
-    logger.info("Получен запрос на конвертацию файла")
+    logger.info("📥 Получен запрос на конвертацию файла")
 
     try:
         if 'file' not in request.files:
-            logger.warning("В запросе отсутствует файл")
+            logger.warning("❌ В запросе отсутствует файл")
             return jsonify({'error': 'No file uploaded'}), 400
 
         file = request.files['file']
         target_format = request.form.get('target_format')
 
         if file.filename == '':
-            logger.warning("Не выбрано имя файла")
+            logger.warning("❌ Не выбрано имя файла")
             return jsonify({'error': 'No file selected'}), 400
 
         if not allowed_file(file.filename):
-            logger.warning(f"Неподдерживаемый тип файла: {file.filename}")
+            logger.warning(f"🚫 Неподдерживаемый тип файла: {file.filename}")
             return jsonify({'error': 'File type not supported'}), 400
 
         if not target_format:
-            logger.warning("Не указан целевой формат")
+            logger.warning("❌ Не указан целевой формат")
             return jsonify({'error': 'Target format not specified'}), 400
 
         # Логируем информацию о файле
@@ -676,7 +676,7 @@ def convert_file():
         file_size = file.tell()  # Получаем размер
         file.seek(0)  # Возвращаем указатель в начало
 
-        logger.info(f"Конвертация файла: {file.filename} "
+        logger.info(f"📄 Конвертация файла: {file.filename} "
                     f"(размер: {file_size} байт, "
                     f"из: {input_format} в: {target_format})")
 
@@ -694,28 +694,28 @@ def convert_file():
             file_obj = file
             if input_format == 'xlsx':
                 # Special handling for Excel files
-                logger.debug("Обработка Excel файла")
+                logger.debug("🔍 Обработка Excel файла")
                 df = pd.read_excel(file)
                 file_content = df.to_csv(index=False)
                 input_format = 'csv'
                 file_obj = None
-                logger.debug(f"Excel конвертирован в CSV: {len(df)} строк")
+                logger.debug(f"📊 Excel конвертирован в CSV: {len(df)} строк")
             else:
                 file_content = ""  # Will be processed using file_obj
-                logger.debug(f"Бинарный файл будет обработан через file_obj: {input_format}")
+                logger.debug(f"🔧 Бинарный файл будет обработан через file_obj: {input_format}")
         else:
             # Text formats
             try:
                 file_content = file.read().decode('utf-8')
-                logger.debug(f"Текстовый файл прочитан: {len(file_content)} символов")
+                logger.debug(f"📝 Текстовый файл прочитан: {len(file_content)} символов")
             except UnicodeDecodeError:
-                logger.error("Ошибка декодирования файла - не текстовый формат")
+                logger.error("❌ Ошибка декодирования файла - не текстовый формат")
                 return jsonify({'error': 'Unable to decode file. Please ensure it\'s a text file.'}), 400
 
         # Выполняем конвертацию
-        logger.debug(f"Начало конвертации {input_format} -> {target_format}")
+        logger.debug(f"🔄 Начало конвертации {input_format} -> {target_format}")
         converted_content = perform_conversion(file_content, input_format, target_format, file_obj)
-        logger.debug("Конвертация завершена успешно")
+        logger.debug("✅ Конвертация завершена успешно")
 
         # Генерируем имя выходного файла
         original_name = Path(file.filename).stem
@@ -731,18 +731,18 @@ def convert_file():
         preview = None
         if target_format not in binary_target_formats and isinstance(converted_content, str):
             preview = converted_content[:500] + "..." if len(converted_content) > 500 else converted_content
-            logger.debug(f"Создан preview: {len(preview)} символов")
+            logger.debug(f"👀 Создан preview: {len(preview)} символов")
 
         if target_format in binary_target_formats:
             temp_file.write(converted_content)
-            logger.debug(f"Сохранен бинарный файл: {temp_file.name}")
+            logger.debug(f"💾 Сохранен бинарный файл: {temp_file.name}")
         else:
             if isinstance(converted_content, str):
                 temp_file.write(converted_content.encode('utf-8'))
-                logger.debug(f"Сохранен текстовый файл: {temp_file.name}, размер: {len(converted_content)} символов")
+                logger.debug(f"💾 Сохранен текстовый файл: {temp_file.name}, размер: {len(converted_content)} символов")
             else:
                 temp_file.write(converted_content)
-                logger.debug(f"Сохранен файл: {temp_file.name}, бинарный размер: {len(converted_content)} байт")
+                logger.debug(f"💾 Сохранен файл: {temp_file.name}, бинарный размер: {len(converted_content)} байт")
 
         temp_file.close()
 
@@ -751,7 +751,7 @@ def convert_file():
         file_id = str(uuid.uuid4())
         temp_files[file_id] = temp_file.name
 
-        logger.info(f"Конвертация завершена успешно. ID файла: {file_id}, "
+        logger.info(f"✅ Конвертация завершена успешно. ID файла: {file_id}, "
                     f"результирующее имя: {output_filename}")
 
         return jsonify({
@@ -762,7 +762,7 @@ def convert_file():
         })
 
     except Exception as e:
-        logger.error(f"Ошибка при конвертации: {str(e)}", exc_info=True)
+        logger.error(f"💥 Ошибка при конвертации: {str(e)}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 
