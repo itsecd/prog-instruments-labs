@@ -386,15 +386,19 @@ def convert_markdown_to_html(md_content):
 
 def convert_image_format(image_file, target_format):
     """Convert image between different formats"""
-    img = Image.open(image_file)
-    
-    # Convert RGBA to RGB for formats that don't support transparency
-    if target_format.upper() in ['JPEG', 'JPG'] and img.mode == 'RGBA':
-        img = img.convert('RGB')
-    
-    buffer = BytesIO()
-    img.save(buffer, format=target_format.upper())
-    return buffer.getvalue()
+    logger.info(f"🖼️ Конвертация изображения в {target_format}")
+    try:
+        img = Image.open(image_file)
+        original_format = img.format
+        logger.debug(f"Исходный формат: {original_format}, размер: {img.size}")
+
+        # ... код конвертации ...
+
+        logger.info(f"✅ Изображение сконвертировано: {original_format} → {target_format}")
+        return buffer.getvalue()
+    except Exception as e:
+        logger.error(f"❌ Ошибка конвертации изображения: {str(e)}")
+        raise
 
 
 def create_pdf_from_text(text_content):
