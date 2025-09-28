@@ -7,7 +7,6 @@ from aiogram_dialog.widgets.text import Const, Format
 import logging
 
 from src.bot.states.main_menu import MainMenuStatesGroup
-from src.database.crud import get_tasks_count, get_user
 from src.utils import goto_state
 from src.config import ui
 from ..getters import tasks_getter
@@ -20,7 +19,7 @@ async def _do_choose(
     callback: CallbackQuery,
     button: Button,
     dialog_manager: DialogManager,
-    item_id: str
+    item_id: str,
 ):
     """
     Click handler for choosing a task
@@ -32,9 +31,11 @@ async def _do_choose(
     """
     user_id = callback.from_user.id
 
+    db = dialog_manager.middleware_data["db"]
+
     try:
-        tasks_count = get_tasks_count(user_id)
-        tasks_reversed = bool(get_user(user_id)["tasks_reversed"])
+        tasks_count = db.get_tasks_count(user_id)
+        tasks_reversed = bool(db.get_user(user_id)["tasks_reversed"])
     except Exception as e:
         logger.exception("Error while choosing a task")
         callback.answer(ui.errors.something_wrong)

@@ -3,40 +3,43 @@ import os
 import sqlite3
 import logging
 
-from src.config.paths import paths
+from .base import BaseDB
+from src.database.crud import DBMixin
 
 
 logger = logging.getLogger(__name__)
 
 
-def get_connection() -> sqlite3.Connection:
-    """
-    Gets connection to sqlite3 db
+class DB(BaseDB, DBMixin):
+    def __init__(self, file_path: str, schema_file: str):
+        """
+        Inits the database with schema if not exists
+        """
+        self.db_file_path = file_path
 
-    Returns:
-        sqlite3.Connection: connection object
-    """
-    conn = sqlite3.connect(paths.db_file)
-    conn.row_factory = sqlite3.Row
-    return conn
+        if not os.path.exists(self.db_file_path):
+            with suppress(FileExistsError):
+                logger.info("Creating a path to a database file (if not exists): %s", self.db_file_path)
+                os.makedirs(os.path.dirname(self.db_file_path))
 
+            conn = self._get_connection()
+            with open(schema_file, "r") as file:
+                conn.executescript(file.read())
+                logger.info("A database file created: %s", self.db_file_path)
 
-def init_db():
-    """
-    Inits the database with schema if not exists
-    """
-    if not os.path.exists(paths.db_file):
-        with suppress(FileExistsError):
-            logger.info("Creating a path to a database file (if not exists): %s", paths.db_file)
-            os.makedirs(os.path.dirname(paths.db_file))
+            conn.commit()
+            conn.close()
+        
+        else:
+            logger.info("Using a database file: %s", self.db_file_path)
 
-        conn = get_connection()
-        with open(paths.schema_file, "r") as file:
-            conn.executescript(file.read())
-            logger.info("A database file created: %s", paths.db_file)
+    def _get_connection(self) -> sqlite3.Connection:
+        """
+        Gets connection to sqlite3 db
 
-        conn.commit()
-        conn.close()
-    
-    else:
-        logger.info("Using a database file: %s", paths.db_file)
+        Returns:
+            sqlite3.Connection: connection object
+        """
+        conn = sqlite3.connect(self.db_file_path)
+        conn.row_factory = sqlite3.Row
+        return conn

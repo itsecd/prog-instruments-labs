@@ -7,7 +7,6 @@ from aiogram_dialog.widgets.text import Const, Format
 import logging
 
 from src.bot.states.main_menu import MainMenuStatesGroup
-from src.database.crud import delete_task_by_idx
 from src.utils import goto_state
 from src.config import ui
 
@@ -18,7 +17,7 @@ logger = logging.getLogger(__name__)
 async def _do_delete(
     callback: CallbackQuery,
     button: Button,
-    dialog_manager: DialogManager
+    dialog_manager: DialogManager,
 ):
     """
     Click handler for deleting a task
@@ -32,8 +31,10 @@ async def _do_delete(
 
     task_idx = dialog_manager.dialog_data.get("task_idx")
 
+    db = dialog_manager.middleware_data["db"]
+
     try:
-        delete_task_by_idx(user_id, task_idx)
+        db.delete_task_by_idx(user_id, task_idx)
     except Exception as e:
         logger.exception("Error while deleting a task")
         await callback.answer(ui.errors.something_wrong)

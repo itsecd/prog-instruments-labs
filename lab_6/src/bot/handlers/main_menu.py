@@ -9,7 +9,7 @@ from sqlite3 import IntegrityError
 import logging
 
 from src.bot.states.main_menu import MainMenuStatesGroup
-from src.database.crud import create_user
+from src.database.db import BaseDB
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,8 @@ router = Router()
 @router.message(Command("start"))
 async def start_message_handler(
     message: Message,
-    dialog_manager: DialogManager
+    dialog_manager: DialogManager,
+    db: BaseDB,
 ):
     """Handler for /start command"""
     logger.debug(
@@ -30,7 +31,7 @@ async def start_message_handler(
     )
 
     with suppress(IntegrityError):
-        create_user(message.from_user.id)
+        db.create_user(message.from_user.id)
 
     await dialog_manager.start(
         MainMenuStatesGroup.choosing_action,

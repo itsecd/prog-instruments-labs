@@ -7,7 +7,6 @@ from aiogram_dialog.widgets.text import Const, List, Format
 import logging
 
 from src.bot.states.main_menu import MainMenuStatesGroup
-from src.database.crud import get_tasks_count, set_tasks_reversed, get_user
 from src.utils import goto_state
 from src.config import ui
 from ..getters import tasks_getter
@@ -19,7 +18,7 @@ logger = logging.getLogger(__name__)
 async def _do_reverse(
     callback: CallbackQuery,
     button: Button,
-    dialog_manager: DialogManager
+    dialog_manager: DialogManager,
 ):
     """
     Click handler for reversing tasks
@@ -31,9 +30,11 @@ async def _do_reverse(
     """
     user_id = callback.from_user.id
 
+    db = dialog_manager.middleware_data["db"]
+
     try:
-        user = get_user(user_id)
-        set_tasks_reversed(user_id, not bool(user["tasks_reversed"]))
+        user = db.get_user(user_id)
+        db.set_tasks_reversed(user_id, not bool(user["tasks_reversed"]))
     except Exception as e:
         logger.exception("Error while reversing tasks")
         await callback.answer(ui.errors.something_wrong)
@@ -48,12 +49,14 @@ async def _do_reverse(
 async def _do_select(
     callback: CallbackQuery,
     button: Button,
-    dialog_manager: DialogManager
+    dialog_manager: DialogManager,
 ):
     user_id = callback.from_user.id
 
+    db = dialog_manager.middleware_data["db"]
+
     try:
-        tasks_count = get_tasks_count(user_id)
+        tasks_count = db.get_tasks_count(user_id)
     except Exception as e:
         logger.exception("Error while selecting tasks")
         await callback.answer(ui.errors.something_wrong)

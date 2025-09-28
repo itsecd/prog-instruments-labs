@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 router = Router()
 
 
-async def honeypot_base_handler(message: Message,):
+async def honeypot_base_handler(message: Message):
     logger.warning(
         "Strange actions from user with id = %d, message = \"%s\"",
         message.from_user.id,

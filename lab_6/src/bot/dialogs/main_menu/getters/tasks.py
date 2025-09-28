@@ -1,6 +1,5 @@
 from aiogram_dialog import DialogManager
 
-from src.database.crud import get_tasks, get_user
 from src.utils import limit_string
 
 
@@ -18,9 +17,11 @@ async def tasks_getter(
     Returns:
         dict[str, list[tuple[int, str]]]: an object with the received data and keys
     """
+    db = dialog_manager.middleware_data["db"]
+
     user_id = dialog_manager.event.from_user.id
-    user = get_user(user_id)
-    user_tasks = get_tasks(user_id)
+    user = db.get_user(user_id)
+    user_tasks = db.get_tasks(user_id)
 
     tasks_texts = [t["task"] for t in user_tasks]
     if user["tasks_reversed"]:
@@ -30,7 +31,7 @@ async def tasks_getter(
 
     return {
         "tasks": tasks,
-        "tasks_for_buttons": [(i, limit_string(t)) for i, t in tasks],
+        "tasks_for_buttons": [(i, t if len(t) < 4 else limit_string(t)) for i, t in tasks],
     }
 
 
@@ -48,8 +49,10 @@ async def task_getter(
     Returns:
         dict[str, str] | None: an object with the received data and keys
     """
+    db = dialog_manager.middleware_data["db"]
+
     user_id = dialog_manager.event.from_user.id
-    user_tasks = get_tasks(user_id)
+    user_tasks = db.get_tasks(user_id)
 
     task_idx = dialog_manager.dialog_data.get("task_idx")
 

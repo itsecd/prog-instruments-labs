@@ -6,11 +6,11 @@ from aiogram.fsm.storage.memory import MemoryStorage
 
 from aiogram_dialog import setup_dialogs
 
-from src.database.db import init_db
+from src.database.db import DB
 from src.bot.dialogs import DIALOGS
 from src.bot.handlers import ROUTERS
 
-from src.config import config
+from src.config import config, paths
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,10 @@ async def main():
     logger.info("Program starting")
 
     logger.info("Database initialization")
-    init_db()
+    db = DB(
+        paths.db_file,
+        paths.schema_file,
+    )
 
     bot = Bot(token=config.bot_token)
 
@@ -36,6 +39,8 @@ async def main():
         *ROUTERS,
         *DIALOGS,
     )
+
+    dp["db"] = db
 
     logger.info("Setting up aiogram dialogs for dispatcher...")
     setup_dialogs(dp)

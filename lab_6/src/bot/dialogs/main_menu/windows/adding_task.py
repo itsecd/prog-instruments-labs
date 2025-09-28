@@ -8,7 +8,6 @@ from aiogram_dialog.widgets.text import Const
 import logging
 
 from src.bot.states.main_menu import MainMenuStatesGroup
-from src.database.crud import add_task
 from src.utils import goto_state
 from src.config import ui
 
@@ -19,7 +18,7 @@ logger = logging.getLogger(__name__)
 async def _save_task(
     message: Message,
     button: Button,
-    dialog_manager: DialogManager
+    dialog_manager: DialogManager,
 ):
     """
     Input message handler for saving a task
@@ -31,9 +30,11 @@ async def _save_task(
     """
     task = message.text
 
+    db = dialog_manager.middleware_data["db"]
+
     try:
-        add_task(message.from_user.id, task)
-    except Exception as e:
+        db.add_task(message.from_user.id, task)
+    except Exception:
         logger.exception("Error while saving a task")
         await message.answer(ui.errors.something_wrong)
     
