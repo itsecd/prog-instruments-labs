@@ -27,6 +27,10 @@ def main():
         print(f"IP_v4: {check_validate("19.121223.58", regexp["ip_v4"])}")
         print(f"Latitude: {check_validate("-8.287791", regexp["latitude"])}")
         print(f"Latitude: {check_validate("-8.287791 сш", regexp["latitude"])}")
+        print(f"Blood type: {check_validate("AB+", regexp["blood_type"])}")
+        print(f"Blood type: {check_validate("BA+", regexp["blood_type"])}")
+        print(f"Blood type: {check_validate("A-", regexp["blood_type"])}")
+        print(f"Blood type: {check_validate("O+", regexp["blood_type"])}")
     except Exception as e:
         print(e)
 
