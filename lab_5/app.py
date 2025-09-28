@@ -841,33 +841,37 @@ temp_files = {}
 
 @app.route('/download/<file_id>/<filename>')
 def download_file(file_id, filename):
+    logger.info(f"📥 Запрос на скачивание файла: {filename} (ID: {file_id})")
+
     try:
-        # Get the file path from our temporary storage
         if file_id not in temp_files:
+            logger.warning(f"🚫 Файл не найден или устарел: {file_id}")
             return jsonify({'error': 'File not found or expired'}), 404
-            
+
         file_path = temp_files[file_id]
-        
-        # Check if file exists
+
         if not os.path.exists(file_path):
+            logger.error(f"🚫 Физический файл отсутствует: {file_path}")
             return jsonify({'error': f'File not found: {file_path}'}), 404
-            
-        # Send file
+
+        file_size = os.path.getsize(file_path)
+        logger.info(f"📤 Отправка файла: {filename} (размер: {file_size} байт)")
+
         response = send_file(file_path, as_attachment=True, download_name=filename)
-        
-        # Clean up after sending
+
         @response.call_on_close
         def cleanup():
             try:
                 os.unlink(file_path)
                 temp_files.pop(file_id, None)
-            except:
-                pass
-                
+                logger.debug(f"🧹 Очистка временного файла: {file_path}")
+            except Exception as e:
+                logger.error(f"❌ Ошибка при очистке файла {file_path}: {str(e)}")
+
         return response
-        
+
     except Exception as e:
-        app.logger.error(f"Download error: {str(e)}")
+        logger.error(f"💥 Ошибка скачивания файла {filename}: {str(e)}", exc_info=True)
         return jsonify({'error': f'Download failed: {str(e)}'}), 500
 
 
