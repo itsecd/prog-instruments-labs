@@ -11,6 +11,12 @@ def limit_string(string: str, limit: int = 20) -> str:
     """
     string_len = len(string)
 
+    if string_len < 4:
+        raise ValueError("String length cannot be < 4")
+    
+    if limit < 3:
+        raise ValueError("Limit cannot be < 4")
+
     if string_len > limit:
         return string[:limit - 3] + "..."
 
