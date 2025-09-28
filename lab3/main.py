@@ -25,6 +25,8 @@ def main():
         print(f"Identifier: {check_validate("62 71/26", regexp["identifier"])}")
         print(f"IP_v4: {check_validate("19.121.223.58", regexp["ip_v4"])}")
         print(f"IP_v4: {check_validate("19.121223.58", regexp["ip_v4"])}")
+        print(f"Latitude: {check_validate("-8.287791", regexp["latitude"])}")
+        print(f"Latitude: {check_validate("-8.287791 сш", regexp["latitude"])}")
     except Exception as e:
         print(e)
 
