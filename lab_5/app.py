@@ -219,16 +219,24 @@ def convert_to_pdf(content, source_format):
 # Extended conversion functions
 def extract_text_from_pdf(pdf_file):
     """Extract text from PDF file"""
+    logger.debug("🔍 Извлечение текста из PDF")
     text = ""
     try:
         with pdfplumber.open(pdf_file) as pdf:
-            for page in pdf.pages:
+            for page_num, page in enumerate(pdf.pages, 1):
                 page_text = page.extract_text()
                 if page_text:
                     text += page_text + "\n"
+                    logger.debug(f"📄 Страница {page_num}: извлечено {len(page_text)} символов")
+                else:
+                    logger.warning(f"⚠️ Страница {page_num}: текст не извлечен")
+
+        logger.info(f"✅ Извлечено {len(text)} символов из PDF")
+        return text
     except Exception as e:
         try:
             # Fallback to PyMuPDF if available
+            logger.error(f"❌ Ошибка извлечения текста из PDF: {str(e)}")
             if fitz:
                 doc = fitz.open(stream=pdf_file.read(), filetype="pdf")
                 for page in doc:
