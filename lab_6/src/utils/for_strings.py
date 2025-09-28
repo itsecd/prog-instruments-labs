@@ -14,7 +14,7 @@ def limit_string(string: str, limit: int = 20) -> str:
     if string_len < 4:
         raise ValueError("String length cannot be < 4")
     
-    if limit < 3:
+    if limit < 4:
         raise ValueError("Limit cannot be < 4")
 
     if string_len > limit:
