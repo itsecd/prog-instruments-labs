@@ -16,9 +16,11 @@ def main():
         regexp = read_data(settings["regexp"])
         # table = read_csv(settings["csv_file"])
         # print(table)
-        print(check_validate("+7-(969)-765-17-05", regexp["telephone"]))
-        print(check_validate("200 OK", regexp["http_status_message"]))
-        print(check_validate("226 IM Used", regexp["http_status_message"]))
+        print(f"Phone number: {check_validate("+7-(969)-765-17-05", regexp["telephone"])}")
+        print(f"HTTP 1st var: {check_validate("200 OK", regexp["http_status_message"])}")
+        print(f"HTTP 2nd var: {check_validate("226 IM Used", regexp["http_status_message"])}")
+        print(f"INN 12 symbols: {check_validate("733499833600", regexp["inn"])}")
+        print(f"INN more than 12 symbols: {check_validate("7334998336009999", regexp["inn"])}")
     except Exception as e:
         print(e)
 
