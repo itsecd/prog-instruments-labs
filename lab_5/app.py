@@ -11,6 +11,7 @@ from reportlab.lib.pagesizes import letter
 from werkzeug.utils import secure_filename
 import os
 import tempfile
+import re
 
 # Extended format support imports
 import PyPDF2
@@ -390,16 +391,29 @@ def convert_image_format(image_file, target_format):
     try:
         img = Image.open(image_file)
         original_format = img.format
-        logger.debug(f"Исходный формат: {original_format}, размер: {img.size}")
+        original_size = img.size
+        logger.debug(f"Исходный формат: {original_format}, размер: {original_size}")
 
-        # ... код конвертации ...
+        # Convert RGBA to RGB for formats that don't support transparency
+        if target_format.upper() in ['JPEG', 'JPG'] and img.mode == 'RGBA':
+            logger.debug("Конвертация RGBA → RGB для JPEG формата")
+            img = img.convert('RGB')
 
-        logger.info(f"✅ Изображение сконвертировано: {original_format} → {target_format}")
+        # Создаем buffer и сохраняем изображение
+        buffer = BytesIO()
+        img.save(buffer, format=target_format.upper())
+
+        # Логируем информацию о результате
+        buffer_size = buffer.getbuffer().nbytes
+        logger.debug(f"Размер сконвертированного изображения: {buffer_size} байт")
+        logger.info(
+            f"✅ Изображение сконвертировано: {original_format} → {target_format}, размер: {original_size} → {buffer_size} байт")
+
         return buffer.getvalue()
-    except Exception as e:
-        logger.error(f"❌ Ошибка конвертации изображения: {str(e)}")
-        raise
 
+    except Exception as e:
+        logger.error(f"❌ Ошибка конвертации изображения {target_format}: {str(e)}", exc_info=True)
+        raise
 
 def create_pdf_from_text(text_content):
     """Create a formatted PDF from text using ReportLab with better PowerPoint handling"""
@@ -503,7 +517,7 @@ def create_pdf_from_text(text_content):
     return buffer.getvalue()
 
 
-def perform_conversion(file_content, input_format, target_format, file_obj=None):
+def perform_conversion(file_content, input_format, target_format, file_obj=None, re=None):
     """Perform file conversion based on formats"""
     logger.debug(f"🛠️ Вызов perform_conversion: {input_format} -> {target_format}")
 
