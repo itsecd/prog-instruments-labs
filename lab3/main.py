@@ -17,6 +17,8 @@ def main():
         # table = read_csv(settings["csv_file"])
         # print(table)
         print(check_validate("+7-(969)-765-17-05", regexp["telephone"]))
+        print(check_validate("200 OK", regexp["http_status_message"]))
+        print(check_validate("226 IM Used", regexp["http_status_message"]))
     except Exception as e:
         print(e)
 
