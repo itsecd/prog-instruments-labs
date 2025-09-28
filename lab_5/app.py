@@ -26,6 +26,14 @@ import markdown
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 
+# Imports for my lab
+import logging
+from logging.handlers import RotatingFileHandler
+import sys
+from datetime import datetime
+import os
+
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 
