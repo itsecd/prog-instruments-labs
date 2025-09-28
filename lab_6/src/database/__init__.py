@@ -1,2 +1,2 @@
 from .db import DB
-from .base import BaseDB
+from .base import BaseDB, BaseDBMixin
