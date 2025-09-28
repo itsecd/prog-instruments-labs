@@ -486,156 +486,225 @@ def create_pdf_from_text(text_content):
 
 def perform_conversion(file_content, input_format, target_format, file_obj=None):
     """Perform file conversion based on formats"""
+    logger.debug(f"🛠️ Вызов perform_conversion: {input_format} -> {target_format}")
+
     try:
+        # Логируем попытку конвертации
+        logger.info(f"🔧 Конвертация: {input_format.upper()} → {target_format.upper()}")
+
+        # Сохраняем результат конвертации
+        converted_content = None
+
         # Data format conversions (CSV, JSON, XML)
         if input_format == 'csv':
             if target_format == 'json':
-                return convert_csv_to_json(file_content)
+                logger.debug("Конвертация CSV → JSON")
+                converted_content = convert_csv_to_json(file_content)
             elif target_format == 'xml':
-                return convert_csv_to_xml(file_content)
+                logger.debug("Конвертация CSV → XML")
+                converted_content = convert_csv_to_xml(file_content)
             elif target_format == 'xlsx':
-                return convert_csv_to_excel(file_content)
+                logger.debug("Конвертация CSV → Excel")
+                converted_content = convert_csv_to_excel(file_content)
             elif target_format == 'txt':
-                return convert_to_txt(file_content, 'csv')
+                logger.debug("Конвертация CSV → TXT")
+                converted_content = convert_to_txt(file_content, 'csv')
             elif target_format == 'pdf':
-                return create_pdf_from_text(file_content)
+                logger.debug("Конвертация CSV → PDF")
+                converted_content = create_pdf_from_text(file_content)
             elif target_format == 'docx':
-                return convert_text_to_docx(file_content)
+                logger.debug("Конвертация CSV → DOCX")
+                converted_content = convert_text_to_docx(file_content)
             elif target_format == 'html':
-                return convert_text_to_html(file_content)
-                
+                logger.debug("Конвертация CSV → HTML")
+                converted_content = convert_text_to_html(file_content)
+
         elif input_format == 'json':
             if target_format == 'csv':
-                return convert_json_to_csv(file_content)
+                logger.debug("Конвертация JSON → CSV")
+                converted_content = convert_json_to_csv(file_content)
             elif target_format == 'xml':
-                return convert_json_to_xml(file_content)
+                logger.debug("Конвертация JSON → XML")
+                converted_content = convert_json_to_xml(file_content)
             elif target_format == 'xlsx':
+                logger.debug("Конвертация JSON → Excel")
                 csv_content = convert_json_to_csv(file_content)
-                return convert_csv_to_excel(csv_content)
+                converted_content = convert_csv_to_excel(csv_content)
             elif target_format == 'txt':
-                return convert_to_txt(file_content, 'json')
+                logger.debug("Конвертация JSON → TXT")
+                converted_content = convert_to_txt(file_content, 'json')
             elif target_format == 'pdf':
+                logger.debug("Конвертация JSON → PDF")
                 text_content = convert_to_txt(file_content, 'json')
-                return create_pdf_from_text(text_content)
+                converted_content = create_pdf_from_text(text_content)
             elif target_format == 'docx':
+                logger.debug("Конвертация JSON → DOCX")
                 text_content = convert_to_txt(file_content, 'json')
-                return convert_text_to_docx(text_content)
+                converted_content = convert_text_to_docx(text_content)
             elif target_format == 'html':
+                logger.debug("Конвертация JSON → HTML")
                 text_content = convert_to_txt(file_content, 'json')
-                return convert_text_to_html(text_content)
-                
+                converted_content = convert_text_to_html(text_content)
+
         elif input_format in ['xml', 'txt']:
             if target_format == 'txt':
-                return convert_to_txt(file_content, input_format)
+                logger.debug(f"Конвертация {input_format.upper()} → TXT")
+                converted_content = convert_to_txt(file_content, input_format)
             elif target_format == 'pdf':
-                return create_pdf_from_text(file_content)
+                logger.debug(f"Конвертация {input_format.upper()} → PDF")
+                converted_content = create_pdf_from_text(file_content)
             elif target_format == 'docx':
-                return convert_text_to_docx(file_content)
+                logger.debug(f"Конвертация {input_format.upper()} → DOCX")
+                converted_content = convert_text_to_docx(file_content)
             elif target_format == 'html':
-                return convert_text_to_html(file_content)
+                logger.debug(f"Конвертация {input_format.upper()} → HTML")
+                converted_content = convert_text_to_html(file_content)
             elif target_format == 'json':
+                logger.debug(f"Конвертация {input_format.upper()} → JSON")
                 # Try to convert text to JSON if it looks like structured data
                 try:
                     data = json.loads(file_content)
-                    return json.dumps(data, indent=2)
+                    converted_content = json.dumps(data, indent=2)
                 except:
                     # Convert to simple JSON structure
-                    return json.dumps({"content": file_content}, indent=2)
-                    
+                    converted_content = json.dumps({"content": file_content}, indent=2)
+
         # Document format conversions (PDF, DOCX, PPTX)
         elif input_format == 'pdf':
+            logger.debug("Обработка PDF файла")
             if file_obj:
                 text_content = extract_text_from_pdf(file_obj)
             else:
                 text_content = file_content
-                
+
+            logger.debug(f"Извлечено {len(text_content)} символов из PDF")
+
             if target_format == 'txt':
-                return text_content
+                logger.debug("Конвертация PDF → TXT")
+                converted_content = text_content
             elif target_format == 'docx':
-                return convert_text_to_docx(text_content)
+                logger.debug("Конвертация PDF → DOCX")
+                converted_content = convert_text_to_docx(text_content)
             elif target_format == 'html':
-                return convert_text_to_html(text_content)
+                logger.debug("Конвертация PDF → HTML")
+                converted_content = convert_text_to_html(text_content)
             elif target_format == 'json':
-                return json.dumps({"extracted_text": text_content}, indent=2)
+                logger.debug("Конвертация PDF → JSON")
+                converted_content = json.dumps({"extracted_text": text_content}, indent=2)
             elif target_format == 'csv':
+                logger.debug("Конвертация PDF → CSV")
                 # Create a simple CSV with the extracted text
-                return f"extracted_text\n{text_content}"
-                
+                converted_content = f"extracted_text\n{text_content}"
+
         elif input_format == 'docx':
+            logger.debug("Обработка DOCX файла")
             if file_obj:
                 text_content = extract_text_from_docx(file_obj)
             else:
                 text_content = file_content
-                
+
+            logger.debug(f"Извлечено {len(text_content)} символов из DOCX")
+
             if target_format == 'txt':
-                return text_content
+                logger.debug("Конвертация DOCX → TXT")
+                converted_content = text_content
             elif target_format == 'pdf':
-                return create_pdf_from_text(text_content)
+                logger.debug("Конвертация DOCX → PDF")
+                converted_content = create_pdf_from_text(text_content)
             elif target_format == 'html':
-                return convert_text_to_html(text_content)
+                logger.debug("Конвертация DOCX → HTML")
+                converted_content = convert_text_to_html(text_content)
             elif target_format == 'json':
-                return json.dumps({"extracted_text": text_content}, indent=2)
+                logger.debug("Конвертация DOCX → JSON")
+                converted_content = json.dumps({"extracted_text": text_content}, indent=2)
             elif target_format == 'csv':
-                return f"extracted_text\n{text_content}"
-                
+                logger.debug("Конвертация DOCX → CSV")
+                converted_content = f"extracted_text\n{text_content}"
+
         elif input_format == 'pptx':
+            logger.debug("Обработка PPTX файла")
             if file_obj:
                 text_content = extract_text_from_pptx(file_obj)
             else:
                 text_content = file_content
-                
+
+            logger.debug(f"Извлечено {len(text_content)} символов из PPTX")
+
             if target_format == 'txt':
-                return text_content
+                logger.debug("Конвертация PPTX → TXT")
+                converted_content = text_content
             elif target_format == 'pdf':
-                return create_pdf_from_text(text_content)
+                logger.debug("Конвертация PPTX → PDF")
+                converted_content = create_pdf_from_text(text_content)
             elif target_format == 'docx':
-                return convert_text_to_docx(text_content)
+                logger.debug("Конвертация PPTX → DOCX")
+                converted_content = convert_text_to_docx(text_content)
             elif target_format == 'html':
-                return convert_text_to_html(text_content)
+                logger.debug("Конвертация PPTX → HTML")
+                converted_content = convert_text_to_html(text_content)
             elif target_format == 'json':
-                return json.dumps({"extracted_text": text_content}, indent=2)
-                
+                logger.debug("Конвертация PPTX → JSON")
+                converted_content = json.dumps({"extracted_text": text_content}, indent=2)
+
         # Markdown conversions
         elif input_format == 'md':
+            logger.debug("Обработка Markdown файла")
             if target_format == 'html':
-                return convert_markdown_to_html(file_content)
+                logger.debug("Конвертация MD → HTML")
+                converted_content = convert_markdown_to_html(file_content)
             elif target_format == 'txt':
-                return file_content
+                logger.debug("Конвертация MD → TXT")
+                converted_content = file_content
             elif target_format == 'pdf':
+                logger.debug("Конвертация MD → PDF")
                 html_content = convert_markdown_to_html(file_content)
                 # For now, convert HTML content as text to PDF
-                return create_pdf_from_text(file_content)
+                converted_content = create_pdf_from_text(file_content)
             elif target_format == 'docx':
-                return convert_text_to_docx(file_content)
-                
+                logger.debug("Конвертация MD → DOCX")
+                converted_content = convert_text_to_docx(file_content)
+
         # HTML conversions
         elif input_format == 'html':
+            logger.debug("Обработка HTML файла")
             if target_format == 'txt':
+                logger.debug("Конвертация HTML → TXT")
                 # Strip HTML tags for text conversion
                 import re
                 clean_text = re.sub('<[^<]+?>', '', file_content)
-                return clean_text
+                converted_content = clean_text
             elif target_format == 'pdf':
+                logger.debug("Конвертация HTML → PDF")
                 clean_text = re.sub('<[^<]+?>', '', file_content)
-                return create_pdf_from_text(clean_text)
+                converted_content = create_pdf_from_text(clean_text)
             elif target_format == 'docx':
+                logger.debug("Конвертация HTML → DOCX")
                 clean_text = re.sub('<[^<]+?>', '', file_content)
-                return convert_text_to_docx(clean_text)
-                
+                converted_content = convert_text_to_docx(clean_text)
+
         # Image format conversions
         elif input_format in ['jpg', 'jpeg', 'png', 'bmp', 'gif']:
+            logger.debug(f"Конвертация изображения {input_format} → {target_format}")
             if target_format in ['jpg', 'jpeg', 'png', 'bmp', 'gif']:
                 if file_obj:
-                    return convert_image_format(file_obj, target_format)
+                    converted_content = convert_image_format(file_obj, target_format)
                 else:
                     raise ValueError("Image file object required for image conversion")
-                    
+
         else:
+            logger.error(f"❌ Неподдерживаемый входной формат: {input_format}")
             raise ValueError(f"Unsupported input format: {input_format}")
-            
-        raise ValueError(f"Conversion from {input_format} to {target_format} is not supported")
-            
+
+        # Проверяем что конвертация прошла успешно
+        if converted_content is None:
+            logger.error(f"❌ Конвертация не выполнена: {input_format} -> {target_format}")
+            raise ValueError(f"Conversion from {input_format} to {target_format} is not supported")
+
+        logger.info(f"✅ Успешная конвертация: {input_format} -> {target_format}")
+        return converted_content
+
     except Exception as e:
+        logger.error(f"❌ Ошибка конвертации {input_format} -> {target_format}: {str(e)}", exc_info=True)
         raise ValueError(f"Conversion failed: {str(e)}")
 
 
