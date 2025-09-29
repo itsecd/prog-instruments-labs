@@ -1,7 +1,7 @@
 import pytest
 from typing import Any
 
-from lab_6.src.database import BaseDB, BaseDBMixin
+from src.database import BaseDB, BaseDBMixin
 
 
 class FakeDBMixin(BaseDBMixin):
