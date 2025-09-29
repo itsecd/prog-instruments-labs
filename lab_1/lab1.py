@@ -4,15 +4,9 @@ from random import randint
 
 
 def head(data):
-    print()
-    print()
     "=" * 167
-    print()
     string = "# |" + " " * 8 + data + " " * 8 + "| #"
-    print()
     string.center(167, "-")
-    print()
-    print()
     "=" * 167
     print()
 
