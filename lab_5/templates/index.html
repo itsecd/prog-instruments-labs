@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Converter - Dark UI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .title {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #5b21b6, #ec4899);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .converter-card {
+            background: rgba(30, 30, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .upload-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.1);
+        }
+
+        .upload-zone.dragover {
+            border-color: #ec4899;
+            background: rgba(236, 72, 153, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #00d4ff;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #e0e0e0;
+        }
+
+        .upload-hint {
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .format-selector {
+            display: none;
+            margin-bottom: 2rem;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        .format-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .format-option {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #e0e0e0;
+        }
+
+        .format-option:hover {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .format-option.selected {
+            border-color: #ec4899;
+            background: rgba(236, 72, 153, 0.2);
+            color: #ec4899;
+        }
+
+        .format-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .convert-btn {
+            background: linear-gradient(135deg, #00d4ff, #5b21b6);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .convert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .convert-btn:active {
+            transform: translateY(0);
+        }
+
+        .convert-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4ff, #ec4899);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .result-section {
+            display: none;
+            margin-top: 2rem;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            width: 100%;
+            text-align: center;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+
+        .file-info {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .file-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-info-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .label {
+            color: #9ca3af;
+        }
+
+        .value {
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+
+        .preview-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .preview-content {
+            background: #000;
+            color: #00ff41;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        .loading-spinner {
+            display: none;
+            margin: 0 auto;
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .converter-card {
+                padding: 1.5rem;
+            }
+            
+            .format-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title"><i class="fas fa-sync-alt"></i> File Converter</h1>
+            <p class="subtitle">Transform your files with style</p>
+        </div>
+
+        <div class="converter-card">
+            <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">Drop your file here or click to browse</div>
+                <div class="upload-hint">Supports CSV, JSON, XML, TXT, XLSX, PDF, DOCX, PPTX, Images, Markdown, HTML</div>
+                <input type="file" id="fileInput" accept=".csv,.json,.xml,.txt,.xlsx,.pdf,.docx,.pptx,.jpg,.jpeg,.png,.bmp,.gif,.md,.html">
+            </div>
+
+            <div id="fileInfo" class="file-info" style="display: none;">
+                <div class="file-info-item">
+                    <span class="label">Filename:</span>
+                    <span class="value" id="fileName"></span>
+                </div>
+                <div class="file-info-item">
+                    <span class="label">Size:</span>
+                    <span class="value" id="fileSize"></span>
+                </div>
+                <div class="file-info-item">
+                    <span class="label">Type:</span>
+                    <span class="value" id="fileType"></span>
+                </div>
+            </div>
+
+            <div id="formatSelector" class="format-selector">
+                <h3 style="margin-bottom: 1rem; color: #e0e0e0;">Choose output format:</h3>
+                <div class="format-grid" id="formatGrid">
+                    <!-- Format options will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <button id="convertBtn" class="convert-btn">
+                <i class="fas fa-magic"></i> Convert File
+            </button>
+
+            <div class="loading-spinner" id="loadingSpinner"></div>
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div id="resultSection" class="result-section">
+                <div id="messageContainer"></div>
+                <div id="previewSection" class="preview-section" style="display: none;">
+                    <h4 style="margin-bottom: 1rem; color: #e0e0e0;">Preview:</h4>
+                    <div id="previewContent" class="preview-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+        let selectedFormat = null;
+
+        const formatIcons = {
+            'csv': 'fas fa-table',
+            'json': 'fas fa-code',
+            'xml': 'fas fa-file-code',
+            'xlsx': 'fas fa-file-excel',
+            'txt': 'fas fa-file-alt',
+            'pdf': 'fas fa-file-pdf',
+            'docx': 'fas fa-file-word',
+            'pptx': 'fas fa-file-powerpoint',
+            'jpg': 'fas fa-image',
+            'jpeg': 'fas fa-image',
+            'png': 'fas fa-image',
+            'bmp': 'fas fa-image',
+            'gif': 'fas fa-image',
+            'md': 'fab fa-markdown',
+            'html': 'fab fa-html5'
+        };
+
+        const formatColors = {
+            'csv': '#10b981',
+            'json': '#f59e0b',
+            'xml': '#8b5cf6',
+            'xlsx': '#059669',
+            'txt': '#6b7280',
+            'pdf': '#dc2626',
+            'docx': '#2563eb',
+            'pptx': '#ea580c',
+            'jpg': '#ec4899',
+            'jpeg': '#ec4899',
+            'png': '#06b6d4',
+            'bmp': '#84cc16',
+            'gif': '#f59e0b',
+            'md': '#000000',
+            'html': '#e34c26'
+        };
+
+        // File input handling
+        const fileInput = document.getElementById('fileInput');
+        const uploadZone = document.querySelector('.upload-zone');
+        const fileInfo = document.getElementById('fileInfo');
+        const formatSelector = document.getElementById('formatSelector');
+        const convertBtn = document.getElementById('convertBtn');
+        const formatGrid = document.getElementById('formatGrid');
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        // Drag and drop functionality
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            selectedFile = file;
+            
+            // Show file info
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('fileType').textContent = file.type || 'Unknown';
+            fileInfo.style.display = 'block';
+
+            // Get file extension
+            const extension = file.name.split('.').pop().toLowerCase();
+            
+            // Show format selector with available formats
+            showFormatSelector(extension);
+            formatSelector.style.display = 'block';
+
+            // Update upload zone
+            uploadZone.innerHTML = `
+                <div class="upload-icon" style="color: #10b981;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="upload-text">File selected: ${file.name}</div>
+                <div class="upload-hint">Click to choose a different file</div>
+            `;
+        }
+
+        function showFormatSelector(currentFormat) {
+            // Define conversion possibilities based on input format
+            const conversionMap = {
+                'csv': ['json', 'xml', 'xlsx', 'txt', 'pdf', 'docx', 'html'],
+                'json': ['csv', 'xml', 'xlsx', 'txt', 'pdf', 'docx', 'html'],
+                'xml': ['txt', 'pdf', 'docx', 'html', 'json'],
+                'txt': ['pdf', 'docx', 'html', 'json'],
+                'xlsx': ['csv', 'json', 'xml', 'txt', 'pdf', 'docx', 'html'],
+                'pdf': ['txt', 'docx', 'html', 'json', 'csv'],
+                'docx': ['txt', 'pdf', 'html', 'json', 'csv'],
+                'pptx': ['txt', 'pdf', 'docx', 'html', 'json'],
+                'md': ['html', 'txt', 'pdf', 'docx'],
+                'html': ['txt', 'pdf', 'docx'],
+                'jpg': ['png', 'bmp', 'gif', 'jpeg'],
+                'jpeg': ['png', 'bmp', 'gif', 'jpg'],
+                'png': ['jpg', 'jpeg', 'bmp', 'gif'],
+                'bmp': ['jpg', 'jpeg', 'png', 'gif'],
+                'gif': ['jpg', 'jpeg', 'png', 'bmp']
+            };
+            
+            const availableFormats = conversionMap[currentFormat] || ['txt', 'pdf'];
+            
+            formatGrid.innerHTML = '';
+            
+            availableFormats.forEach(format => {
+                const formatOption = document.createElement('div');
+                formatOption.className = 'format-option';
+                formatOption.dataset.format = format;
+                formatOption.innerHTML = `
+                    <div class="format-icon">
+                        <i class="${formatIcons[format] || 'fas fa-file'}" style="color: ${formatColors[format] || '#6b7280'};"></i>
+                    </div>
+                    <div>${format.toUpperCase()}</div>
+                `;
+                
+                formatOption.addEventListener('click', () => selectFormat(format, formatOption));
+                formatGrid.appendChild(formatOption);
+            });
+        }
+
+        function selectFormat(format, element) {
+            // Remove previous selection
+            document.querySelectorAll('.format-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Add selection to clicked element
+            element.classList.add('selected');
+            selectedFormat = format;
+            
+            // Show convert button
+            convertBtn.style.display = 'block';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Convert button handler
+        convertBtn.addEventListener('click', convertFile);
+
+        async function convertFile() {
+            if (!selectedFile || !selectedFormat) {
+                showMessage('Please select a file and target format', 'error');
+                return;
+            }
+
+            // Show loading state
+            convertBtn.disabled = true;
+            convertBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Converting...';
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('progressBar').style.display = 'block';
+            
+            // Animate progress bar
+            animateProgress();
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('target_format', selectedFormat);
+
+            try {
+                const response = await fetch('/convert', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('✨ File converted successfully!', 'success');
+                    showDownloadButton(result.filename, result.file_id);
+                    if (result.preview) {
+                        showPreview(result.preview);
+                    }
+                } else {
+                    showMessage(result.error || 'Conversion failed', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error: ' + error.message, 'error');
+            } finally {
+                // Reset button state
+                convertBtn.disabled = false;
+                convertBtn.innerHTML = '<i class="fas fa-magic"></i> Convert File';
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('progressBar').style.display = 'none';
+                document.getElementById('progressFill').style.width = '0%';
+            }
+        }
+
+        function animateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            let width = 0;
+            const interval = setInterval(() => {
+                width += Math.random() * 10;
+                if (width >= 90) {
+                    clearInterval(interval);
+                    width = 90;
+                }
+                progressFill.style.width = width + '%';
+            }, 100);
+        }
+
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('messageContainer');
+            const messageClass = type === 'success' ? 'success-message' : 'error-message';
+            
+            messageContainer.innerHTML = `
+                <div class="${messageClass}">
+                    ${message}
+                </div>
+            `;
+            
+            document.getElementById('resultSection').style.display = 'block';
+        }
+
+        function showDownloadButton(filename, tempPath) {
+            const messageContainer = document.getElementById('messageContainer');
+            console.log('Creating download link:', { filename, tempPath });
+            
+            // Create download link
+            const downloadLink = document.createElement('a');
+            downloadLink.href = `/download/${encodeURIComponent(tempPath)}/${encodeURIComponent(filename)}`;
+            downloadLink.className = 'download-btn';
+            downloadLink.innerHTML = `<i class="fas fa-download"></i> Download ${filename}`;
+            downloadLink.download = filename;
+            
+            // Add click handler for debugging
+            downloadLink.addEventListener('click', function(e) {
+                console.log('Download clicked:', this.href);
+                // Let the browser handle the download
+            });
+            
+            messageContainer.appendChild(downloadLink);
+        }
+
+        function showPreview(content) {
+            const previewSection = document.getElementById('previewSection');
+            const previewContent = document.getElementById('previewContent');
+            
+            previewContent.textContent = content;
+            previewSection.style.display = 'block';
+        }
+
+        // Reset function
+        function resetConverter() {
+            selectedFile = null;
+            selectedFormat = null;
+            fileInfo.style.display = 'none';
+            formatSelector.style.display = 'none';
+            convertBtn.style.display = 'none';
+            document.getElementById('resultSection').style.display = 'none';
+            
+            uploadZone.innerHTML = `
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="upload-text">Drop your file here or click to browse</div>
+                <div class="upload-hint">Supports CSV, JSON, XML, TXT, XLSX files</div>
+            `;
+        }
+
+        // Add reset functionality on clicking the title
+        document.querySelector('.title').addEventListener('click', resetConverter);
+    </script>
+</body>
+</html>
