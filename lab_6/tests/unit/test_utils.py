@@ -25,7 +25,7 @@ def test_limit_string():
         ("bad", 10),
     ],
 )
-def test_limit_string_exception(string: str, limit: int):
+def test_limit_string_raises_if_bad_limit_or_bad_string(string: str, limit: int):
     with pytest.raises(ValueError):
         limit_string(string, limit)
 
