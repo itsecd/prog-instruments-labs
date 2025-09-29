@@ -1,6 +1,6 @@
 import pytest
 from types import SimpleNamespace
-from src.utils import limit_string, dict_to_sn
+from lab_6.src.utils import limit_string, dict_to_sn
 
 
 def test_limit_string():
