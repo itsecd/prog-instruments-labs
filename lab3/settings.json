@@ -1,6 +1,0 @@
-{
-  "csv_file" : "data/30.csv",
-  "regexp" : "data/regexp.json",
-  "variant": "30",
-  "result": "result.json"
-}
