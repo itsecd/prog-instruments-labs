@@ -44,7 +44,7 @@ def serialize_result(variant: int, checksum: str) -> None:
         }
 
     try:
-        with open("result.json", "w", encoding="utf-8") as file:
+        with open("../result.json", "w", encoding="utf-8") as file:
              json.dump(result_data, file)
     except FileNotFoundError as e:
         raise FileNotFoundError(f"Файл не найден: {e}")
