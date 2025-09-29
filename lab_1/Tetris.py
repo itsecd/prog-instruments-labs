@@ -114,6 +114,7 @@ tetris_screen.fill(BLACK)
 
 pygame.display.flip()
 
+
 def make_shape_config():
     for s in range(len(shape_block)): # 7
         for a in range(len(shape_block[s])): # 4
@@ -149,6 +150,7 @@ def draw_tetris_board():
                 draw_tetris_block(x, y, shape_colors[s])
     return
 
+
 def draw_tetris_block(x, y, c):
     # Check range is valid
     if (-1 < x < TETRIS_WIDTH) and (-1 < y < TETRIS_HEIGHT):
@@ -157,6 +159,7 @@ def draw_tetris_block(x, y, c):
         pygame.draw.rect(tetris_screen, c, [px, py, 23, 23], 0)
 
     return
+
 
 def draw_tetris_next(x, y, c):
     # Check range is valid
@@ -167,6 +170,7 @@ def draw_tetris_next(x, y, c):
 
     return
 
+
 def draw_tetris_outline(x, y, c):
     # Check range is valid
     if (-1 < x < TETRIS_WIDTH) and (-1 < y < TETRIS_HEIGHT):
@@ -176,10 +180,12 @@ def draw_tetris_outline(x, y, c):
 
     return
 
+
 def is_conflict(x, y):
     if x < 0 or x >= TETRIS_WIDTH: return -1
     if y < 0 or y >= TETRIS_HEIGHT: return -1
     return tetris_board[x][y]
+
 
 def draw_tetris(x, y, shape, angle):
     global gYmax
@@ -231,6 +237,7 @@ def draw_tetris(x, y, shape, angle):
 
     return
 
+
 def disp_score():
     global gScore, gLines, gLevel
 
@@ -247,6 +254,7 @@ def disp_score():
     tetris_screen.blit(text, [px + 12, py + 28 * 2 + 12])
 
     return
+
 
 def disp_start():
     global gScore, gLines, gLevel
@@ -266,6 +274,7 @@ def disp_start():
     tetris_screen.blit(text, [px + 12, py + 28 * 1 + 12])
 
     return
+
 
 def process_timer(event):
     global gChar, gAngle, gNext
@@ -291,6 +300,7 @@ def process_timer(event):
 
     return
 
+
 # remove one line from top to bottom
 def remove_line(y):
     # pull down lines
@@ -301,6 +311,7 @@ def remove_line(y):
     for bx in range(0, TETRIS_WIDTH):
         tetris_board[bx][0] = -1
     return
+
 
 # Add fallen tetris into board
 def add_tetris(x, y, shape, angle):
@@ -344,6 +355,7 @@ def add_tetris(x, y, shape, angle):
 
     return
 
+
 #shape_char = ["I", "J", "L", "O", "S", "T", "Z"]
 shape_char = ["T", "S", "Z", "J", "L", "I", "O"]
 shape_angle = [0, 90, 180, 270]
@@ -352,6 +364,7 @@ gXpos, gYpos, gYmax = 3, 0, 0
 gScore, gLines, gLevel, gNext = 0, 0, 0, 0
 gGame = False
 gTime = 0
+
 
 def key_down(event):
     global gChar, gAngle
@@ -406,6 +419,7 @@ def key_down(event):
 
     return
 
+
 def new_game():
     global gChar, gAngle, gNext
     global gScore, gLines, gLevel
@@ -437,6 +451,7 @@ def new_game():
 
     return
 
+
 #--------------------------------------------------------------------------
 # Main program
 #--------------------------------------------------------------------------
@@ -467,6 +482,7 @@ def main():
                 process_timer(event)
                 disp_score()
                 pygame.display.flip()
+
 
 # run code
 if __name__ == '__main__':
