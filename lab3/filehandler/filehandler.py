@@ -34,7 +34,7 @@ def save_data(directory: str, data: str | dict) -> None:
     try:
         with open(directory, mode="w", encoding="utf-8") as file:
             if directory.endswith(".json"):
-                json.dump(data, file, ensure_ascii=False, indent=4)
+                json.dump(data, file)
             else:
                 file.write(data)
     except Exception as e:
