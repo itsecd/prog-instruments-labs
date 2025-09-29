@@ -33,14 +33,14 @@ TETRIS_WIDTH = 10
 TETRIS_HEIGHT = 24
 
 # Board Map area [TETRIS_WIDTH][TETRIS_HEIGHT] Max
-tetrisBoard = [[0] * TETRIS_HEIGHT for i in range(TETRIS_WIDTH)]
+tetris_board = [[0] * TETRIS_HEIGHT for i in range(TETRIS_WIDTH)]
 
 # Play Surface
 init_status = pygame.init()
 pygame.display.set_caption("Tetris")
 
 TETRIS_WINDOW = width, height = TETRIS_WIDTH * TETRIS_SIZE * 2,  TETRIS_HEIGHT * TETRIS_SIZE + 64
-TetrisScreen = pygame.display.set_mode(TETRIS_WINDOW)
+tetris_screen = pygame.display.set_mode(TETRIS_WINDOW)
 
 # Define Color
 RED = pygame.Color(255, 0, 0)
@@ -51,8 +51,8 @@ GRAY = pygame.Color(211, 211, 211)
 WHITE = pygame.Color(255, 255, 255)
 DARKGRAY = pygame.Color(128, 128, 128)
 
-shapeChar = ["I", "J", "L", "O", "S", "T", "Z"]
-shapeColors = [
+shape_char = ["I", "J", "L", "O", "S", "T", "Z"]
+shape_colors = [
     (0,   255, 255), # I, Cyan
     (0,   0,   255), # J, Blue
     (255, 165, 0  ), # L, Orange
@@ -61,8 +61,8 @@ shapeColors = [
     (255, 0,   255), # T, Purple\
     (255, 0,   0  ), # Z, Red
 ]
-shapeAngle = [0, 90, 180, 270]
-shapeBlock = [
+shape_angle = [0, 90, 180, 270]
+shape_block = [
     [ # I
         [[0,0],[1,0],[2,0],[3,0]],
         [[2,0],[2,1],[2,2],[2,3]],
@@ -107,27 +107,27 @@ shapeBlock = [
     ]
 ]
 
-shapeConfig = [[0, 0, 0, 0] * 4 for i in range(7)] #[7][4][0,1,2,3]
+shape_config = [[0, 0, 0, 0] * 4 for i in range(7)] #[7][4][0,1,2,3]
 
 # Draw Screen
-TetrisScreen.fill(BLACK)
+tetris_screen.fill(BLACK)
 
 pygame.display.flip()
 
 def make_shape_config():
-    for s in range(len(shapeBlock)): # 7
-        for a in range(len(shapeBlock[s])): # 4
+    for s in range(len(shape_block)): # 7
+        for a in range(len(shape_block[s])): # 4
             f, w, h = 3, 0, 0
-            for i in range(len(shapeBlock[s][a])): #4
-                x, y = shapeBlock[s][a][i]
+            for i in range(len(shape_block[s][a])): #4
+                x, y = shape_block[s][a][i]
                 if f > x: f = x
                 if w < x: w = x
                 if h < y: h = y
                 #print("[{}, {}],".format(x, y), end="")
             w = w + 1 - f
             h = h + 1
-            shapeConfig[s][a] = [f, w, h]
-            #print(" = ", shapeConfig[s][a])
+            shape_config[s][a] = [f, w, h]
+            #print(" = ", shape_config[s][a])
     return
 
 
@@ -135,18 +135,18 @@ def draw_tetris_board():
     for y in range(TETRIS_HEIGHT + 1):
         px = 16 + TETRIS_SIZE * TETRIS_WIDTH
         py = 16 + TETRIS_SIZE * y
-        pygame.draw.line(TetrisScreen, DARKGRAY, [16, py], [px, py], 1)
+        pygame.draw.line(tetris_screen, DARKGRAY, [16, py], [px, py], 1)
 
     for x in range(TETRIS_WIDTH + 1):
         px = 16 + TETRIS_SIZE * x
         py = 16 + TETRIS_SIZE * TETRIS_HEIGHT
-        pygame.draw.line(TetrisScreen, DARKGRAY, [px, 16], [px, py], 1)
+        pygame.draw.line(tetris_screen, DARKGRAY, [px, 16], [px, py], 1)
 
     for y in range(TETRIS_HEIGHT):
         for x in range(TETRIS_WIDTH):
-            s = tetrisBoard[x][y]
+            s = tetris_board[x][y]
             if s >= 0:
-                draw_tetris_block(x, y, shapeColors[s])
+                draw_tetris_block(x, y, shape_colors[s])
     return
 
 def draw_tetris_block(x, y, c):
@@ -154,7 +154,7 @@ def draw_tetris_block(x, y, c):
     if (-1 < x < TETRIS_WIDTH) and (-1 < y < TETRIS_HEIGHT):
         px = 17 + TETRIS_SIZE * x
         py = 17 + TETRIS_SIZE * y
-        pygame.draw.rect(TetrisScreen, c, [px, py, 23, 23], 0)
+        pygame.draw.rect(tetris_screen, c, [px, py, 23, 23], 0)
 
     return
 
@@ -163,7 +163,7 @@ def draw_tetris_next(x, y, c):
     if (-1 < x < 20) and (-1 < y < TETRIS_HEIGHT):
         px = 17 + TETRIS_SIZE * x
         py = 17 + TETRIS_SIZE * y
-        pygame.draw.rect(TetrisScreen, c, [px, py, 23, 23], 0)
+        pygame.draw.rect(tetris_screen, c, [px, py, 23, 23], 0)
 
     return
 
@@ -172,14 +172,14 @@ def draw_tetris_outline(x, y, c):
     if (-1 < x < TETRIS_WIDTH) and (-1 < y < TETRIS_HEIGHT):
         px = 17 + TETRIS_SIZE * x
         py = 17 + TETRIS_SIZE * y
-        pygame.draw.rect(TetrisScreen, c, [px, py, 23, 23], 1)
+        pygame.draw.rect(tetris_screen, c, [px, py, 23, 23], 1)
 
     return
 
 def is_conflict(x, y):
     if x < 0 or x >= TETRIS_WIDTH: return -1
     if y < 0 or y >= TETRIS_HEIGHT: return -1
-    return tetrisBoard[x][y]
+    return tetris_board[x][y]
 
 def draw_tetris(x, y, shape, angle):
     global gYmax
@@ -188,8 +188,8 @@ def draw_tetris(x, y, shape, angle):
     draw_tetris_board()
 
     # select current brick
-    b = shapeBlock[shape][angle]
-    f, w, h = shapeConfig[shape][angle]
+    b = shape_block[shape][angle]
+    f, w, h = shape_config[shape][angle]
 
     # check fallen tetris conflict
     for i in range(len(b)):
@@ -202,7 +202,7 @@ def draw_tetris(x, y, shape, angle):
     # drawing fallen tetris
     for i in range(len(b)):
         nx, ny = b[i]
-        draw_tetris_block(x + nx, y + ny, shapeColors[shape])
+        draw_tetris_block(x + nx, y + ny, shape_colors[shape])
 
     # drawing fallen tetris
     for by in range(y, TETRIS_HEIGHT - h + 1):
@@ -218,16 +218,16 @@ def draw_tetris(x, y, shape, angle):
 
     for i in range(len(b)):
         nx, ny = b[i]
-        draw_tetris_outline(x + nx, gYmax + ny, shapeColors[shape])
+        draw_tetris_outline(x + nx, gYmax + ny, shape_colors[shape])
 
     # select preview brick
-    b = shapeBlock[gNext][0]
-    f, w, h = shapeConfig[gNext][0]
+    b = shape_block[gNext][0]
+    f, w, h = shape_config[gNext][0]
 
     # drawing preview tetris
     for i in range(len(b)):
         nx, ny = b[i]
-        draw_tetris_next(13 + nx, 0 + ny, shapeColors[gNext])
+        draw_tetris_next(13 + nx, 0 + ny, shape_colors[gNext])
 
     return
 
@@ -236,15 +236,15 @@ def disp_score():
 
     px = 17 + TETRIS_SIZE * 11
     py = 17 + TETRIS_SIZE * 20
-    pygame.draw.rect(TetrisScreen, BLUE, [px, py, 24 * 7, 24 * 4], 1)
+    pygame.draw.rect(tetris_screen, BLUE, [px, py, 24 * 7, 24 * 4], 1)
 
     font = pygame.font.Font(None, 30)
     text = font.render("Lines " + str(gLines), True, WHITE)
-    TetrisScreen.blit(text, [px + 12, py + 28 * 0 + 12])
+    tetris_screen.blit(text, [px + 12, py + 28 * 0 + 12])
     text = font.render("Level " + str(gLevel), True, WHITE)
-    TetrisScreen.blit(text, [px + 12, py + 28 * 1 + 12])
+    tetris_screen.blit(text, [px + 12, py + 28 * 1 + 12])
     text = font.render("Score " + str(gScore), True, WHITE)
-    TetrisScreen.blit(text, [px + 12, py + 28 * 2 + 12])
+    tetris_screen.blit(text, [px + 12, py + 28 * 2 + 12])
 
     return
 
@@ -253,7 +253,7 @@ def disp_start():
 
     px = 17 + TETRIS_SIZE * 2
     py = 17 + TETRIS_SIZE * 10
-    pygame.draw.rect(TetrisScreen, BLUE, [px, py, 24 * 15, 24 * 3], 0)
+    pygame.draw.rect(tetris_screen, BLUE, [px, py, 24 * 15, 24 * 3], 0)
 
     font = pygame.font.Font(None, 30)
     if not gGame:
@@ -261,9 +261,9 @@ def disp_start():
     else:
         text = font.render("Game Over!", True, WHITE)
 
-    TetrisScreen.blit(text, [px + 12, py + 28 * 0 + 12])
+    tetris_screen.blit(text, [px + 12, py + 28 * 0 + 12])
     text = font.render("Press 'N' key to start new game!", True, WHITE)
-    TetrisScreen.blit(text, [px + 12, py + 28 * 1 + 12])
+    tetris_screen.blit(text, [px + 12, py + 28 * 1 + 12])
 
     return
 
@@ -277,15 +277,15 @@ def process_timer(event):
 
     gYpos = gYpos + 1
 
-    f, w, h = shapeConfig[gChar][gAngle]
+    f, w, h = shape_config[gChar][gAngle]
 
     if gYpos >= gYmax:
         add_tetris(gXpos, gYpos, gChar, gAngle)
         gXpos, gYpos, gAngle = 3, 0, 0
         gChar = gNext
-        gNext = random.randint(0, len(shapeChar) - 1)
+        gNext = random.randint(0, len(shape_char) - 1)
 
-    TetrisScreen.fill(BLACK)
+    tetris_screen.fill(BLACK)
     draw_tetris(gXpos, gYpos, gChar, gAngle)
     pygame.display.flip()
 
@@ -296,10 +296,10 @@ def remove_line(y):
     # pull down lines
     for by in range(y, 0, -1):
         for bx in range(0, TETRIS_WIDTH):
-            tetrisBoard[bx][by] = tetrisBoard[bx][by - 1]
+            tetris_board[bx][by] = tetris_board[bx][by - 1]
     # erase top line
     for bx in range(0, TETRIS_WIDTH):
-        tetrisBoard[bx][0] = -1
+        tetris_board[bx][0] = -1
     return
 
 # Add fallen tetris into board
@@ -307,18 +307,18 @@ def add_tetris(x, y, shape, angle):
     global gScore, gLines, gLevel, gTime
     scores = [0, 40, 100, 300, 120]
 
-    b = shapeBlock[shape][angle]
+    b = shape_block[shape][angle]
 
     for i in range(len(b)):
         nx, ny = b[i]
-        tetrisBoard[x + nx][y + ny] = shape
+        tetris_board[x + nx][y + ny] = shape
 
     # check if line is full
     cLines = gLines
     for by in range(TETRIS_HEIGHT - 1, 0, -1):
         full = True
         for bx in range(0, TETRIS_WIDTH):
-            if tetrisBoard[bx][by] == -1:
+            if tetris_board[bx][by] == -1:
                 full = False
                 break
         # flash effect should be add
@@ -344,9 +344,9 @@ def add_tetris(x, y, shape, angle):
 
     return
 
-#shapeChar = ["I", "J", "L", "O", "S", "T", "Z"]
-shapeChar = ["T", "S", "Z", "J", "L", "I", "O"]
-shapeAngle = [0, 90, 180, 270]
+#shape_char = ["I", "J", "L", "O", "S", "T", "Z"]
+shape_char = ["T", "S", "Z", "J", "L", "I", "O"]
+shape_angle = [0, 90, 180, 270]
 gChar, gAngle = 0, 0
 gXpos, gYpos, gYmax = 3, 0, 0
 gScore, gLines, gLevel, gNext = 0, 0, 0, 0
@@ -366,17 +366,17 @@ def key_down(event):
         return
 
     if event.key == pygame.K_RETURN:
-        if (gChar + 1) < len(shapeChar):
+        if (gChar + 1) < len(shape_char):
             gChar += 1
         else:
             gChar = 0
     elif event.key == pygame.K_UP:
-        if (gAngle + 1) < len(shapeAngle):
+        if (gAngle + 1) < len(shape_angle):
             gAngle += 1
         else:
             gAngle = 0
         # Get new shape
-        f, w, h = shapeConfig[gChar][gAngle]
+        f, w, h = shape_config[gChar][gAngle]
         # Adjust left side
         if gXpos < 0: gXpos = 0
         # Adjust right side
@@ -391,17 +391,17 @@ def key_down(event):
         process_timer(event)
 
     elif event.key == pygame.K_LEFT:
-        #shape = shapeBlock[gChar][gAngle]
-        f, w, h = shapeConfig[gChar][gAngle]
+        #shape = shape_block[gChar][gAngle]
+        f, w, h = shape_config[gChar][gAngle]
         #print(f, w, h)
         if gXpos > (-f): gXpos -= 1
 
     elif event.key == pygame.K_RIGHT:
-        f, w, h = shapeConfig[gChar][gAngle]
+        f, w, h = shape_config[gChar][gAngle]
         if gXpos < (TETRIS_WIDTH - (w + f)): gXpos += 1
 
 
-    TetrisScreen.fill(BLACK)
+    tetris_screen.fill(BLACK)
     draw_tetris(gXpos, gYpos, gChar, gAngle)
 
     return
@@ -418,13 +418,13 @@ def new_game():
     gAngle = 0
 
     if not gGame:
-        gChar = random.randint(0, len(shapeChar) - 1)
-        gNext = random.randint(0, len(shapeChar) - 1)
+        gChar = random.randint(0, len(shape_char) - 1)
+        gNext = random.randint(0, len(shape_char) - 1)
 
     # Clean up Tetris board
     for y in range(TETRIS_HEIGHT):
         for x in range(TETRIS_WIDTH):
-            tetrisBoard[x][y] = -1
+            tetris_board[x][y] = -1
 
     draw_tetris(gXpos, gYpos, gChar, gAngle)
     disp_score()
@@ -441,7 +441,7 @@ def new_game():
 # Main program
 #--------------------------------------------------------------------------
 def main():
-    global shapeChar, shapeAngle
+    global shape_char, shape_angle
     global gChar, gAngle
     global gXpos, gYpos
 
