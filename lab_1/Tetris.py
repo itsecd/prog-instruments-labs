@@ -39,7 +39,10 @@ tetris_board = [[0] * TETRIS_HEIGHT for i in range(TETRIS_WIDTH)]
 init_status = pygame.init()
 pygame.display.set_caption("Tetris")
 
-TETRIS_WINDOW = width, height = TETRIS_WIDTH * TETRIS_SIZE * 2,  TETRIS_HEIGHT * TETRIS_SIZE + 64
+TETRIS_WINDOW = width, height = (
+    TETRIS_WIDTH * TETRIS_SIZE * 2,
+    TETRIS_HEIGHT * TETRIS_SIZE + 64,
+)
 tetris_screen = pygame.display.set_mode(TETRIS_WINDOW)
 
 # Define Color
