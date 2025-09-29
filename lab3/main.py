@@ -6,6 +6,10 @@ from regular_expression.regular_expression import find_invalid_rows
 
 
 def get_args():
+    """
+    The function parses directory to settings json file from terminal
+    :return: directory to settings json file
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("settings_file", type=str, help="directory to settings file")
     return parser.parse_args()
