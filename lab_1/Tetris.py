@@ -61,7 +61,7 @@ shape_colors = [
     (255, 165, 0  ), # L, Orange
     (255, 255, 0  ), # O, Yellow
     (0,   255, 0  ), # S, Green
-    (255, 0,   255), # T, Purple\
+    (255, 0,   255), # T, Purple
     (255, 0,   0  ), # Z, Red
 ]
 shape_angle = [0, 90, 180, 270]
@@ -110,7 +110,7 @@ shape_block = [
     ]
 ]
 
-shape_config = [[0, 0, 0, 0] * 4 for i in range(7)] #[7][4][0,1,2,3]
+shape_config = [[0, 0, 0, 0] * 4 for i in range(7)] # [7][4][0,1,2,3]
 
 # Draw Screen
 tetris_screen.fill(BLACK)
@@ -122,16 +122,16 @@ def make_shape_config():
     for s in range(len(shape_block)): # 7
         for a in range(len(shape_block[s])): # 4
             f, w, h = 3, 0, 0
-            for i in range(len(shape_block[s][a])): #4
+            for i in range(len(shape_block[s][a])): # 4
                 x, y = shape_block[s][a][i]
                 if f > x: f = x
                 if w < x: w = x
                 if h < y: h = y
-                #print("[{}, {}],".format(x, y), end="")
+                # print("[{}, {}],".format(x, y), end="")
             w = w + 1 - f
             h = h + 1
             shape_config[s][a] = [f, w, h]
-            #print(" = ", shape_config[s][a])
+            # print(" = ", shape_config[s][a])
     return
 
 
@@ -337,10 +337,10 @@ def add_tetris(x, y, shape, angle):
                 break
         # flash effect should be add
         if full:
-            #print("Full ", by)
+            # print("Full ", by)
             remove_line(by)
             gLines += 1
-            #gScore += 10
+            # gScore += 10
 
     # Calc score
     cLines = gLines - cLines
@@ -359,7 +359,7 @@ def add_tetris(x, y, shape, angle):
     return
 
 
-#shape_char = ["I", "J", "L", "O", "S", "T", "Z"]
+# shape_char = ["I", "J", "L", "O", "S", "T", "Z"]
 shape_char = ["T", "S", "Z", "J", "L", "I", "O"]
 shape_angle = [0, 90, 180, 270]
 gChar, gAngle = 0, 0
@@ -407,9 +407,9 @@ def key_down(event):
         process_timer(event)
 
     elif event.key == pygame.K_LEFT:
-        #shape = shape_block[gChar][gAngle]
+        # shape = shape_block[gChar][gAngle]
         f, w, h = shape_config[gChar][gAngle]
-        #print(f, w, h)
+        # print(f, w, h)
         if gXpos > (-f): gXpos -= 1
 
     elif event.key == pygame.K_RIGHT:
@@ -467,7 +467,7 @@ def main():
     new_game()
     disp_start()
 
-    #pygame.time.set_timer(pygame.USEREVENT, 500)
+    # pygame.time.set_timer(pygame.USEREVENT, 500)
 
     # main game loop
     while True:
