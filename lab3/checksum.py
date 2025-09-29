@@ -25,7 +25,7 @@ def calculate_checksum(row_numbers: List[int]) -> str:
     :return: md5 хеш для проверки через github action
     """
     row_numbers.sort()
-    return hashlib.md5(json.dumps(row_numbers).encode('utf-8')).hexdigest()
+    return hashlib.md5(json.dumps(row_numbers).encode("utf-8")).hexdigest()
 
 
 def serialize_result(variant: int, checksum: str, directory: str) -> None:
@@ -41,12 +41,10 @@ def serialize_result(variant: int, checksum: str, directory: str) -> None:
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     :param directory: путь до файла с результами (result.json)
     """
-    save_data(directory, {
-        "variant": variant,
-        "checksum": checksum,
-    })
-
-
-if __name__ == "__main__":
-    print(calculate_checksum([1, 2, 3]))
-    print(calculate_checksum([3, 2, 1]))
+    save_data(
+        directory,
+        {
+            "variant": variant,
+            "checksum": checksum,
+        },
+    )

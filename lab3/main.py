@@ -18,7 +18,7 @@ def main():
         table = read_csv(settings["csv_file"])
         indexes = find_invalid_rows(table, regexp)
         checksum = calculate_checksum(list(indexes))
-        serialize_result(settings["variant"],checksum, settings["result"])
+        serialize_result(settings["variant"], checksum, settings["result"])
     except Exception as e:
         print(e)
 
