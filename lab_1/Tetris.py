@@ -28,19 +28,19 @@ class Rect:
 #
 # Init global variables
 #
-TetrisSize = 24
-TetrisWidth = 10
-TetrisHeight = 24
+TETRIS_SIZE = 24
+TETRIS_WIDTH = 10
+TETRIS_HEIGHT = 24
 
-# Board Map area [TetrisWidth][TetrisHeight] Max
-tetrisBoard = [[0] * TetrisHeight for i in range(TetrisWidth)]
+# Board Map area [TETRIS_WIDTH][TETRIS_HEIGHT] Max
+tetrisBoard = [[0] * TETRIS_HEIGHT for i in range(TETRIS_WIDTH)]
 
 # Play Surface
 init_status = pygame.init()
 pygame.display.set_caption("Tetris")
 
-TetrisWindow = width, height = TetrisWidth * TetrisSize * 2,  TetrisHeight * TetrisSize + 64
-TetrisScreen = pygame.display.set_mode(TetrisWindow)
+TETRIS_WINDOW = width, height = TETRIS_WIDTH * TETRIS_SIZE * 2,  TETRIS_HEIGHT * TETRIS_SIZE + 64
+TetrisScreen = pygame.display.set_mode(TETRIS_WINDOW)
 
 # Define Color
 RED = pygame.Color(255, 0, 0)
@@ -132,18 +132,18 @@ def make_shape_config():
 
 
 def draw_tetris_board():
-    for y in range(TetrisHeight + 1):
-        px = 16 + TetrisSize * TetrisWidth
-        py = 16 + TetrisSize * y
+    for y in range(TETRIS_HEIGHT + 1):
+        px = 16 + TETRIS_SIZE * TETRIS_WIDTH
+        py = 16 + TETRIS_SIZE * y
         pygame.draw.line(TetrisScreen, DARKGRAY, [16, py], [px, py], 1)
 
-    for x in range(TetrisWidth + 1):
-        px = 16 + TetrisSize * x
-        py = 16 + TetrisSize * TetrisHeight
+    for x in range(TETRIS_WIDTH + 1):
+        px = 16 + TETRIS_SIZE * x
+        py = 16 + TETRIS_SIZE * TETRIS_HEIGHT
         pygame.draw.line(TetrisScreen, DARKGRAY, [px, 16], [px, py], 1)
 
-    for y in range(TetrisHeight):
-        for x in range(TetrisWidth):
+    for y in range(TETRIS_HEIGHT):
+        for x in range(TETRIS_WIDTH):
             s = tetrisBoard[x][y]
             if s >= 0:
                 draw_tetris_block(x, y, shapeColors[s])
@@ -151,34 +151,34 @@ def draw_tetris_board():
 
 def draw_tetris_block(x, y, c):
     # Check range is valid
-    if (-1 < x < TetrisWidth) and (-1 < y < TetrisHeight):
-        px = 17 + TetrisSize * x
-        py = 17 + TetrisSize * y
+    if (-1 < x < TETRIS_WIDTH) and (-1 < y < TETRIS_HEIGHT):
+        px = 17 + TETRIS_SIZE * x
+        py = 17 + TETRIS_SIZE * y
         pygame.draw.rect(TetrisScreen, c, [px, py, 23, 23], 0)
 
     return
 
 def draw_tetris_next(x, y, c):
     # Check range is valid
-    if (-1 < x < 20) and (-1 < y < TetrisHeight):
-        px = 17 + TetrisSize * x
-        py = 17 + TetrisSize * y
+    if (-1 < x < 20) and (-1 < y < TETRIS_HEIGHT):
+        px = 17 + TETRIS_SIZE * x
+        py = 17 + TETRIS_SIZE * y
         pygame.draw.rect(TetrisScreen, c, [px, py, 23, 23], 0)
 
     return
 
 def draw_tetris_outline(x, y, c):
     # Check range is valid
-    if (-1 < x < TetrisWidth) and (-1 < y < TetrisHeight):
-        px = 17 + TetrisSize * x
-        py = 17 + TetrisSize * y
+    if (-1 < x < TETRIS_WIDTH) and (-1 < y < TETRIS_HEIGHT):
+        px = 17 + TETRIS_SIZE * x
+        py = 17 + TETRIS_SIZE * y
         pygame.draw.rect(TetrisScreen, c, [px, py, 23, 23], 1)
 
     return
 
 def is_conflict(x, y):
-    if x < 0 or x >= TetrisWidth: return -1
-    if y < 0 or y >= TetrisHeight: return -1
+    if x < 0 or x >= TETRIS_WIDTH: return -1
+    if y < 0 or y >= TETRIS_HEIGHT: return -1
     return tetrisBoard[x][y]
 
 def draw_tetris(x, y, shape, angle):
@@ -205,7 +205,7 @@ def draw_tetris(x, y, shape, angle):
         draw_tetris_block(x + nx, y + ny, shapeColors[shape])
 
     # drawing fallen tetris
-    for by in range(y, TetrisHeight - h + 1):
+    for by in range(y, TETRIS_HEIGHT - h + 1):
         conflict = False
         for i in range(len(b)):
             nx, ny = b[i]
@@ -234,8 +234,8 @@ def draw_tetris(x, y, shape, angle):
 def disp_score():
     global gScore, gLines, gLevel
 
-    px = 17 + TetrisSize * 11
-    py = 17 + TetrisSize * 20
+    px = 17 + TETRIS_SIZE * 11
+    py = 17 + TETRIS_SIZE * 20
     pygame.draw.rect(TetrisScreen, BLUE, [px, py, 24 * 7, 24 * 4], 1)
 
     font = pygame.font.Font(None, 30)
@@ -251,8 +251,8 @@ def disp_score():
 def disp_start():
     global gScore, gLines, gLevel
 
-    px = 17 + TetrisSize * 2
-    py = 17 + TetrisSize * 10
+    px = 17 + TETRIS_SIZE * 2
+    py = 17 + TETRIS_SIZE * 10
     pygame.draw.rect(TetrisScreen, BLUE, [px, py, 24 * 15, 24 * 3], 0)
 
     font = pygame.font.Font(None, 30)
@@ -295,10 +295,10 @@ def process_timer(event):
 def remove_line(y):
     # pull down lines
     for by in range(y, 0, -1):
-        for bx in range(0, TetrisWidth):
+        for bx in range(0, TETRIS_WIDTH):
             tetrisBoard[bx][by] = tetrisBoard[bx][by - 1]
     # erase top line
-    for bx in range(0, TetrisWidth):
+    for bx in range(0, TETRIS_WIDTH):
         tetrisBoard[bx][0] = -1
     return
 
@@ -315,9 +315,9 @@ def add_tetris(x, y, shape, angle):
 
     # check if line is full
     cLines = gLines
-    for by in range(TetrisHeight - 1, 0, -1):
+    for by in range(TETRIS_HEIGHT - 1, 0, -1):
         full = True
-        for bx in range(0, TetrisWidth):
+        for bx in range(0, TETRIS_WIDTH):
             if tetrisBoard[bx][by] == -1:
                 full = False
                 break
@@ -380,8 +380,8 @@ def key_down(event):
         # Adjust left side
         if gXpos < 0: gXpos = 0
         # Adjust right side
-        if gXpos > (TetrisWidth - (w + f)):
-            gXpos = TetrisWidth - (w + f)
+        if gXpos > (TETRIS_WIDTH - (w + f)):
+            gXpos = TETRIS_WIDTH - (w + f)
 
     elif event.key == pygame.K_DOWN:
         process_timer(event)
@@ -398,7 +398,7 @@ def key_down(event):
 
     elif event.key == pygame.K_RIGHT:
         f, w, h = shapeConfig[gChar][gAngle]
-        if gXpos < (TetrisWidth - (w + f)): gXpos += 1
+        if gXpos < (TETRIS_WIDTH - (w + f)): gXpos += 1
 
 
     TetrisScreen.fill(BLACK)
@@ -422,8 +422,8 @@ def new_game():
         gNext = random.randint(0, len(shapeChar) - 1)
 
     # Clean up Tetris board
-    for y in range(TetrisHeight):
-        for x in range(TetrisWidth):
+    for y in range(TETRIS_HEIGHT):
+        for x in range(TETRIS_WIDTH):
             tetrisBoard[x][y] = -1
 
     draw_tetris(gXpos, gYpos, gChar, gAngle)
