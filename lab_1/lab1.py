@@ -66,27 +66,27 @@ class Students(object):
     """A class for student's record"""
 
     def __init__(self):  # Initialising instance attributes
-        self.Reg_No = 1
-        self.Roll_No = None
-        self.Name = None
-        self.Father_Name = None
-        self.Mother_Name = None
-        self.Sex = None
-        self.DOB = None
-        self.Age = None
-        self.Address = None
-        self.Mobile_No = None
-        self.Email = None
+        self.reg_no = 1
+        self.roll_no = None
+        self.name = None
+        self.father_name = None
+        self.mother_name = None
+        self.sex = None
+        self.dob = None
+        self.age = None
+        self.address = None
+        self.mobile_no = None
+        self.email = None
         self.Class = None
-        self.Section = None
-        self.Stream = None
-        self.Fees = None
-        self.MOC = None
-        self.Fees_Months = 0
-        self.Weight = None
-        self.Height = None
-        self.B_Group = None
-        self.Aadhaar = None
+        self.section = None
+        self.stream = None
+        self.fees = None
+        self.moc = None
+        self.fees_months = 0
+        self.weight = None
+        self.height = None
+        self.b_group = None
+        self.aadhaar = None
 
     def get_fees_month(self):
 
@@ -94,7 +94,7 @@ class Students(object):
         try:
             while True:
                 s = pickle.load(f_read)
-                self.Fees_Months = s.Fees_Months + 1
+                self.fees_months = s.fees_months + 1
         except EOFError:
             print()
 
@@ -104,94 +104,94 @@ class Students(object):
             try:
                 while True:
                     s = pickle.load(f_read)
-                    self.Reg_No = s.Reg_No + 1
+                    self.reg_no = s.reg_no + 1
             except EOFError:
                 print()
         except IOError:
-            self.Reg_No = 1
+            self.reg_no = 1
 
     def assign_fees(self):  # Assigning Fees
         if self.Class <= 1:
-            self.Fees = 3700
+            self.fees = 3700
         elif 2 <= self.Class <= 6:
-            self.Fees = 5500
+            self.fees = 5500
         elif 7 <= self.Class <= 10:
-            self.Fees = 6100
+            self.fees = 6100
         elif 11 <= self.Class <= 12:
-            self.Fees = 6700
-        elif self.MOC == 'BUS':
-            self.Fees += 1000
-        elif self.MOC == 'AUTO':
-            self.Fees += 400
+            self.fees = 6700
+        elif self.moc == 'BUS':
+            self.fees += 1000
+        elif self.moc == 'AUTO':
+            self.fees += 400
 
     def get_data(self, *modify):  # Requesting data from user
         if modify == ():
             self.assign_reg_no()
-            head("Registration Number - {0}".format(self.Reg_No))
+            head("Registration Number - {0}".format(self.reg_no))
         else:
-            self.Reg_No = input("Enter New Registration Number ---> ")
-        self.Roll_No = input("Enter Roll Number ---> ")
-        self.Name = input("Enter Student's Name ---> ")
-        self.Father_Name = input("Enter Father's Name ---> ")
-        self.Mother_Name = input("Enter Mother's Name ---> ")
-        self.Sex = input("Enter Sex [M/F] ---> ")
-        self.DOB = input("Enter Date of Birth [DDMMYYYY] ---> ")
-        self.Age = input("Enter Age ---> ")
-        self.Address = input("Enter your address ---> ")
-        self.Mobile_No = input("Enter Mobile Number ---> ")
-        self.Email = input("Enter E-mail ---> ")
+            self.reg_no = input("Enter New Registration Number ---> ")
+        self.roll_no = input("Enter Roll Number ---> ")
+        self.name = input("Enter Student's Name ---> ")
+        self.father_name = input("Enter Father's Name ---> ")
+        self.mother_name = input("Enter Mother's Name ---> ")
+        self.sex = input("Enter Sex [M/F] ---> ")
+        self.dob = input("Enter Date of Birth [DDMMYYYY] ---> ")
+        self.age = input("Enter Age ---> ")
+        self.address = input("Enter your address ---> ")
+        self.mobile_no = input("Enter Mobile Number ---> ")
+        self.email = input("Enter E-mail ---> ")
         self.Class = input("Enter Class ---> ")
         if self.Class in [11, 12]:
-            self.Stream = input("Enter your stream [PMC, PBC, COMM, HUM] ---> ")
+            self.stream = input("Enter your stream [PMC, PBC, COMM, HUM] ---> ")
         else:
-            self.Stream = 'N/A'
-        self.Section = input("Enter Section ---> ")
-        self.MOC = input("Enter Mode of Convenience [BUS, AUTO, SELF] ---> ")
+            self.stream = 'N/A'
+        self.section = input("Enter Section ---> ")
+        self.moc = input("Enter Mode of Convenience [BUS, AUTO, SELF] ---> ")
         self.assign_fees()
-        self.Weight = input("Enter your Weight [KG] ---> ")
-        self.Height = input("Enter your Height [CM] ---> ")
-        self.B_Group = input("Enter your Blood Group ---> ")
-        self.Aadhaar = input("Enter Aadhaar number ---> ")
+        self.weight = input("Enter your Weight [KG] ---> ")
+        self.height = input("Enter your Height [CM] ---> ")
+        self.b_group = input("Enter your Blood Group ---> ")
+        self.aadhaar = input("Enter Aadhaar number ---> ")
 
     def print_data(self):  # Displaying data to user
 
-        head("Registration Number - {0}".format(self.Reg_No))
-        l1 = "Roll Number : " + str(self.Roll_No)
-        l2 = "Name : " + self.Name
-        l3 = "Father's Name : " + self.Father_Name
-        l4 = "Mother's Name : " + self.Mother_Name
-        l5 = "Sex : " + self.Sex
-        l6 = "Date of Birth : " + str(self.DOB)
-        l7 = "Age : " + self.Age
-        l8 = "Address : " + self.Address
-        l9 = "Mobile Number : " + str(self.Mobile_No)
-        l10 = "E-mail : " + self.Email
+        head("Registration Number - {0}".format(self.reg_no))
+        l1 = "Roll Number : " + str(self.roll_no)
+        l2 = "Name : " + self.name
+        l3 = "Father's Name : " + self.father_name
+        l4 = "Mother's Name : " + self.mother_name
+        l5 = "Sex : " + self.sex
+        l6 = "Date of Birth : " + str(self.dob)
+        l7 = "Age : " + self.age
+        l8 = "Address : " + self.address
+        l9 = "Mobile Number : " + str(self.mobile_no)
+        l10 = "E-mail : " + self.email
         l11 = "Class : " + str(self.Class)
-        l12 = "Section : " + self.Section
+        l12 = "Section : " + self.section
         if self.Class in [11, 12]:
-            l13 = "Stream : " + self.Stream
+            l13 = "Stream : " + self.stream
         else:
             l13 = "Stream : " + "N/A"
-        l14 = "Mode of  Convenience : " + self.MOC
-        l15 = "Fees applicable : " + str(self.Fees)
-        l16 = "Fees paid of months : " + str(self.Fees_Months)
-        l17 = "Weight : " + str(self.Weight)
-        l18 = "Height : " + str(self.Height)
-        l19 = "Blood Group : " + self.B_Group
-        l20 = "Aadhaar number : " + str(self.Aadhaar)
+        l14 = "Mode of  Convenience : " + self.moc
+        l15 = "Fees applicable : " + str(self.fees)
+        l16 = "Fees paid of months : " + str(self.fees_months)
+        l17 = "Weight : " + str(self.weight)
+        l18 = "Height : " + str(self.height)
+        l19 = "Blood Group : " + self.b_group
+        l20 = "Aadhaar number : " + str(self.aadhaar)
         display([l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
                  l12, l13, l14, l16, l17, l18, l19, l20])
 
     def pay_fees(self):
 
         fees_month = input("Enter no. of months to pay fees ---> ")
-        output("Amount to be paid : " + str(self.Fees * fees_month))
+        output("Amount to be paid : " + str(self.fees * fees_month))
         c_no = randint(1000, 9999)
         ch = input("Enter '{0}' to confirm and finally pay fees ---> ".format(c_no))
         if ch == c_no:
-            self.Fees_Months += fees_month
+            self.fees_months += fees_month
             output("Fees deposited successfully of registration number : "
-                   + str(self.Reg_No))
+                   + str(self.reg_no))
         else:
             output("Fees Not Deposited")
 
@@ -201,7 +201,7 @@ def post_data():
     st.get_data()
     f_append = open("students.tc", "ab")
     pickle.dump(st, f_append)
-    output(st.Name + " Registered successfully")
+    output(st.name + " Registered successfully")
     f_append.close()
 
 
@@ -220,21 +220,21 @@ def show_data():
 
 
 def search():
-    def search_reg_no(regno):
+    def search_reg_no(reg_no):
 
         f_read = open("students.tc", "rb")
         flag = False
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.Reg_No == regno:
+                if st.Reg_No == reg_no:
                     flag = True
                     st.PRINT_DATA()
         except EOFError:
             if not flag:
                 output("Record not found")
         if flag:
-            return st.Reg_No
+            return st.reg_no
 
     def search_name(names):
 
@@ -250,28 +250,28 @@ def search():
             if not flag:
                 output("Record not found")
 
-    def search_roll_no(rollno):
+    def search_roll_no(roll_no):
 
         f_read = open("students.tc", "rb")
         Flag = False
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.Roll_No == rollno:
+                if st.Roll_No == roll_no:
                     Flag = True
                     st.PRINT_DATA()
         except EOFError:
             if not Flag:
                 output("Record not found")
 
-    def search_mobile_no(mobileno):
+    def search_mobile_no(mobile_no):
 
         f_read = open("students.tc", "rb")
         Flag = False
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.Mobile_No == mobileno:
+                if st.mobile_no == mobile_no:
                     Flag = True
                     st.PRINT_DATA()
         except EOFError:
@@ -285,7 +285,7 @@ def search():
         try:
             while True:
                 st = pickle.load(f_read)
-                if st.Aadhaar == adhar:
+                if st.aadhaar == adhar:
                     Flag = True
                     st.PRINT_DATA()
         except EOFError:
@@ -422,49 +422,49 @@ def modify_data():
                         break
                     elif usr_ch == 4:
                         temp_st = st
-                        temp_st.Father_Name = input("Enter new Father's Name ---> ")
+                        temp_st.father_name = input("Enter new Father's Name ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 5:
                         temp_st = st
-                        temp_st.Mother_Name = input("Enter new Mother's Name ---> ")
+                        temp_st.mother_name = input("Enter new Mother's Name ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 6:
                         temp_st = st
-                        temp_st.Sex = input("Enter new SEX [M/F] ---> ")
+                        temp_st.sex = input("Enter new SEX [M/F] ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 7:
                         temp_st = st
-                        temp_st.DOB = input("Enter new Date of Birth [DDMMYYYY] ---> ")
+                        temp_st.dob = input("Enter new Date of Birth [DDMMYYYY] ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 8:
                         temp_st = st
-                        temp_st.Age = input("Enter new Age ---> ")
+                        temp_st.age = input("Enter new Age ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 9:
                         temp_st = st
-                        temp_st.Address = input("Enter new Address ---> ")
+                        temp_st.address = input("Enter new Address ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 10:
                         temp_st = st
-                        temp_st.Mobile_No = input("Enter new Mobile Number ---> ")
+                        temp_st.mobile_no = input("Enter new Mobile Number ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 11:
                         temp_st = st
-                        temp_st.Email = input("Enter new E-Mail ---> ")
+                        temp_st.email = input("Enter new E-Mail ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
@@ -476,56 +476,56 @@ def modify_data():
                         break
                     elif usr_ch == 13:
                         temp_st = st
-                        temp_st.Section = input("Enter new Section ---> ")
+                        temp_st.section = input("Enter new Section ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 14:
                         temp_st = st
-                        temp_st.Stream = input("Enter new stream ---> ")
+                        temp_st.stream = input("Enter new stream ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 15:
                         temp_st = st
-                        temp_st.Fees = input("Enter new Fees ---> ")
+                        temp_st.fees = input("Enter new Fees ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 16:
                         temp_st = st
-                        temp_st.MOC = input("Enter new Mode of Convenience ---> ")
+                        temp_st.moc = input("Enter new Mode of Convenience ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 17:
                         temp_st = st
-                        temp_st.Fees_Months = input("Enter update number "
+                        temp_st.fees_months = input("Enter update number "
                                                     "of months of fees paid ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 18:
                         temp_st = st
-                        temp_st.Weight = input("Enter new Weight ---> ")
+                        temp_st.weight = input("Enter new Weight ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 19:
                         temp_st = st
-                        temp_st.Height = input("Enter new Height ---> ")
+                        temp_st.height = input("Enter new Height ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 20:
                         temp_st = st
-                        temp_st.B_Group = input("Enter new Blood Group ---> ")
+                        temp_st.b_group = input("Enter new Blood Group ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
                     elif usr_ch == 21:
                         temp_st = st
-                        temp_st.Aadhaar = input("Enter new Aadhaar ---> ")
+                        temp_st.aadhaar = input("Enter new Aadhaar ---> ")
                         pickle.dump(temp_st, f_post)
                         output("Record Modified successfully")
                         break
