@@ -114,7 +114,7 @@ TetrisScreen.fill(BLACK)
 
 pygame.display.flip()
 
-def makeShapeConfig():
+def make_shape_config():
     for s in range(len(shapeBlock)): # 7
         for a in range(len(shapeBlock[s])): # 4
             f, w, h = 3, 0, 0
@@ -131,7 +131,7 @@ def makeShapeConfig():
     return
 
 
-def drawTetrisBoard():
+def draw_tetris_board():
     for y in range(TetrisHeight + 1):
         px = 16 + TetrisSize * TetrisWidth
         py = 16 + TetrisSize * y
@@ -146,10 +146,10 @@ def drawTetrisBoard():
         for x in range(TetrisWidth):
             s = tetrisBoard[x][y]
             if s >= 0:
-                drawTetrisBlock(x, y, shapeColors[s])
+                draw_tetris_block(x, y, shapeColors[s])
     return
 
-def drawTetrisBlock(x, y, c):
+def draw_tetris_block(x, y, c):
     # Check range is valid
     if (-1 < x < TetrisWidth) and (-1 < y < TetrisHeight):
         px = 17 + TetrisSize * x
@@ -158,7 +158,7 @@ def drawTetrisBlock(x, y, c):
 
     return
 
-def drawTetrisNext(x, y, c):
+def draw_tetris_next(x, y, c):
     # Check range is valid
     if (-1 < x < 20) and (-1 < y < TetrisHeight):
         px = 17 + TetrisSize * x
@@ -167,7 +167,7 @@ def drawTetrisNext(x, y, c):
 
     return
 
-def drawTetrisOutline(x, y, c):
+def draw_tetris_outline(x, y, c):
     # Check range is valid
     if (-1 < x < TetrisWidth) and (-1 < y < TetrisHeight):
         px = 17 + TetrisSize * x
@@ -176,16 +176,16 @@ def drawTetrisOutline(x, y, c):
 
     return
 
-def isConflict(x, y):
+def is_conflict(x, y):
     if x < 0 or x >= TetrisWidth: return -1
     if y < 0 or y >= TetrisHeight: return -1
     return tetrisBoard[x][y]
 
-def drawTetris(x, y, shape, angle):
+def draw_tetris(x, y, shape, angle):
     global gYmax
     global gGame
 
-    drawTetrisBoard()
+    draw_tetris_board()
 
     # select current brick
     b = shapeBlock[shape][angle]
@@ -194,22 +194,22 @@ def drawTetris(x, y, shape, angle):
     # check fallen tetris conflict
     for i in range(len(b)):
         nx, ny = b[i]
-        if isConflict(x + nx, y + ny) != -1:
-            dispStart()
+        if is_conflict(x + nx, y + ny) != -1:
+            disp_start()
             gGame = False
             return
 
     # drawing fallen tetris
     for i in range(len(b)):
         nx, ny = b[i]
-        drawTetrisBlock(x + nx, y + ny, shapeColors[shape])
+        draw_tetris_block(x + nx, y + ny, shapeColors[shape])
 
     # drawing fallen tetris
     for by in range(y, TetrisHeight - h + 1):
         conflict = False
         for i in range(len(b)):
             nx, ny = b[i]
-            if isConflict(x + nx, by + ny) != -1:
+            if is_conflict(x + nx, by + ny) != -1:
                 conflict = True
                 gYmax = by - 1
                 break
@@ -218,7 +218,7 @@ def drawTetris(x, y, shape, angle):
 
     for i in range(len(b)):
         nx, ny = b[i]
-        drawTetrisOutline(x + nx, gYmax + ny, shapeColors[shape])
+        draw_tetris_outline(x + nx, gYmax + ny, shapeColors[shape])
 
     # select preview brick
     b = shapeBlock[gNext][0]
@@ -227,11 +227,11 @@ def drawTetris(x, y, shape, angle):
     # drawing preview tetris
     for i in range(len(b)):
         nx, ny = b[i]
-        drawTetrisNext(13 + nx, 0 + ny, shapeColors[gNext])
+        draw_tetris_next(13 + nx, 0 + ny, shapeColors[gNext])
 
     return
 
-def dispScore():
+def disp_score():
     global gScore, gLines, gLevel
 
     px = 17 + TetrisSize * 11
@@ -248,7 +248,7 @@ def dispScore():
 
     return
 
-def dispStart():
+def disp_start():
     global gScore, gLines, gLevel
 
     px = 17 + TetrisSize * 2
@@ -267,7 +267,7 @@ def dispStart():
 
     return
 
-def processTimer(event):
+def process_timer(event):
     global gChar, gAngle, gNext
     global gXpos, gYpos
     global gYmax
@@ -280,19 +280,19 @@ def processTimer(event):
     f, w, h = shapeConfig[gChar][gAngle]
 
     if gYpos >= gYmax:
-        addTetris(gXpos, gYpos, gChar, gAngle)
+        add_tetris(gXpos, gYpos, gChar, gAngle)
         gXpos, gYpos, gAngle = 3, 0, 0
         gChar = gNext
         gNext = random.randint(0, len(shapeChar) - 1)
 
     TetrisScreen.fill(BLACK)
-    drawTetris(gXpos, gYpos, gChar, gAngle)
+    draw_tetris(gXpos, gYpos, gChar, gAngle)
     pygame.display.flip()
 
     return
 
 # remove one line from top to bottom
-def removeLine(y):
+def remove_line(y):
     # pull down lines
     for by in range(y, 0, -1):
         for bx in range(0, TetrisWidth):
@@ -303,7 +303,7 @@ def removeLine(y):
     return
 
 # Add fallen tetris into board
-def addTetris(x, y, shape, angle):
+def add_tetris(x, y, shape, angle):
     global gScore, gLines, gLevel, gTime
     scores = [0, 40, 100, 300, 120]
 
@@ -324,7 +324,7 @@ def addTetris(x, y, shape, angle):
         # flash effect should be add
         if full:
             #print("Full ", by)
-            removeLine(by)
+            remove_line(by)
             gLines += 1
             #gScore += 10
 
@@ -353,7 +353,7 @@ gScore, gLines, gLevel, gNext = 0, 0, 0, 0
 gGame = False
 gTime = 0
 
-def keyDown(event):
+def key_down(event):
     global gChar, gAngle
     global gXpos, gYpos
     global gGame
@@ -362,7 +362,7 @@ def keyDown(event):
         if event.key == pygame.K_n:
             print("gGame is False, Space pressed!")
             gGame = True
-            newGame()
+            new_game()
         return
 
     if event.key == pygame.K_RETURN:
@@ -384,11 +384,11 @@ def keyDown(event):
             gXpos = TetrisWidth - (w + f)
 
     elif event.key == pygame.K_DOWN:
-        processTimer(event)
+        process_timer(event)
 
     elif event.key == pygame.K_SPACE:
         gYpos = gYmax - 1
-        processTimer(event)
+        process_timer(event)
 
     elif event.key == pygame.K_LEFT:
         #shape = shapeBlock[gChar][gAngle]
@@ -402,11 +402,11 @@ def keyDown(event):
 
 
     TetrisScreen.fill(BLACK)
-    drawTetris(gXpos, gYpos, gChar, gAngle)
+    draw_tetris(gXpos, gYpos, gChar, gAngle)
 
     return
 
-def newGame():
+def new_game():
     global gChar, gAngle, gNext
     global gScore, gLines, gLevel
     global gGame, gTime
@@ -426,8 +426,8 @@ def newGame():
         for x in range(TetrisWidth):
             tetrisBoard[x][y] = -1
 
-    drawTetris(gXpos, gYpos, gChar, gAngle)
-    dispScore()
+    draw_tetris(gXpos, gYpos, gChar, gAngle)
+    disp_score()
     pygame.display.flip()
 
     gTime = gLevel if gLevel < 50 else 50
@@ -445,9 +445,9 @@ def main():
     global gChar, gAngle
     global gXpos, gYpos
 
-    makeShapeConfig()
-    newGame()
-    dispStart()
+    make_shape_config()
+    new_game()
+    disp_start()
 
     #pygame.time.set_timer(pygame.USEREVENT, 500)
 
@@ -460,12 +460,12 @@ def main():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                keyDown(event)
-                dispScore()
+                key_down(event)
+                disp_score()
                 pygame.display.flip()
             elif event.type == pygame.USEREVENT:
-                processTimer(event)
-                dispScore()
+                process_timer(event)
+                disp_score()
                 pygame.display.flip()
 
 # run code
