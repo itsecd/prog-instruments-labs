@@ -1,9 +1,10 @@
 import json
+from typing import Any
 
 import pandas as pd
 
 
-def read_data(directory: str) -> str | dict[str, str]:
+def read_data(directory: str) -> str | dict[str, Any]:
     """
     The function reads data from json and txt file
     :param directory: path to file
