@@ -54,8 +54,8 @@ GRAY = pygame.Color(211, 211, 211)
 WHITE = pygame.Color(255, 255, 255)
 DARKGRAY = pygame.Color(128, 128, 128)
 
-shape_char = ["I", "J", "L", "O", "S", "T", "Z"]
-shape_colors = [
+SHAPE_CHAR = ["I", "J", "L", "O", "S", "T", "Z"]
+SHAPE_COLORS = [
     (0,   255, 255), # I, Cyan
     (0,   0,   255), # J, Blue
     (255, 165, 0  ), # L, Orange
@@ -64,8 +64,8 @@ shape_colors = [
     (255, 0,   255), # T, Purple
     (255, 0,   0  ), # Z, Red
 ]
-shape_angle = [0, 90, 180, 270]
-shape_block = [
+SHAPE_ANGLE = [0, 90, 180, 270]
+SHAPE_BLOCK = [
     [  # I
         [[0, 0], [1, 0], [2, 0], [3, 0]],
         [[2, 0], [2, 1], [2, 2], [2, 3]],
@@ -110,7 +110,7 @@ shape_block = [
     ]
 ]
 
-shape_config = [[0, 0, 0, 0] * 4 for i in range(7)] # [7][4][0,1,2,3]
+SHAPE_CONFIG = [[0, 0, 0, 0] * 4 for i in range(7)] # [7][4][0,1,2,3]
 
 # Draw Screen
 tetris_screen.fill(BLACK)
@@ -118,20 +118,20 @@ tetris_screen.fill(BLACK)
 pygame.display.flip()
 
 
-def make_shape_config():
-    for s in range(len(shape_block)): # 7
-        for a in range(len(shape_block[s])): # 4
+def make_SHAPE_CONFIG():
+    for s in range(len(SHAPE_BLOCK)): # 7
+        for a in range(len(SHAPE_BLOCK[s])): # 4
             f, w, h = 3, 0, 0
-            for i in range(len(shape_block[s][a])): # 4
-                x, y = shape_block[s][a][i]
+            for i in range(len(SHAPE_BLOCK[s][a])): # 4
+                x, y = SHAPE_BLOCK[s][a][i]
                 if f > x: f = x
                 if w < x: w = x
                 if h < y: h = y
                 # print("[{}, {}],".format(x, y), end="")
             w = w + 1 - f
             h = h + 1
-            shape_config[s][a] = [f, w, h]
-            # print(" = ", shape_config[s][a])
+            SHAPE_CONFIG[s][a] = [f, w, h]
+            # print(" = ", SHAPE_CONFIG[s][a])
     return
 
 
@@ -150,7 +150,7 @@ def draw_tetris_board():
         for x in range(TETRIS_WIDTH):
             s = tetris_board[x][y]
             if s >= 0:
-                draw_tetris_block(x, y, shape_colors[s])
+                draw_tetris_block(x, y, SHAPE_COLORS[s])
     return
 
 
@@ -197,8 +197,8 @@ def draw_tetris(x, y, shape, angle):
     draw_tetris_board()
 
     # select current brick
-    b = shape_block[shape][angle]
-    f, w, h = shape_config[shape][angle]
+    b = SHAPE_BLOCK[shape][angle]
+    f, w, h = SHAPE_CONFIG[shape][angle]
 
     # check fallen tetris conflict
     for i in range(len(b)):
@@ -211,7 +211,7 @@ def draw_tetris(x, y, shape, angle):
     # drawing fallen tetris
     for i in range(len(b)):
         nx, ny = b[i]
-        draw_tetris_block(x + nx, y + ny, shape_colors[shape])
+        draw_tetris_block(x + nx, y + ny, SHAPE_COLORS[shape])
 
     # drawing fallen tetris
     for by in range(y, TETRIS_HEIGHT - h + 1):
@@ -227,16 +227,16 @@ def draw_tetris(x, y, shape, angle):
 
     for i in range(len(b)):
         nx, ny = b[i]
-        draw_tetris_outline(x + nx, g_ymax + ny, shape_colors[shape])
+        draw_tetris_outline(x + nx, g_ymax + ny, SHAPE_COLORS[shape])
 
     # select preview brick
-    b = shape_block[g_next][0]
-    f, w, h = shape_config[g_next][0]
+    b = SHAPE_BLOCK[g_next][0]
+    f, w, h = SHAPE_CONFIG[g_next][0]
 
     # drawing preview tetris
     for i in range(len(b)):
         nx, ny = b[i]
-        draw_tetris_next(13 + nx, 0 + ny, shape_colors[g_next])
+        draw_tetris_next(13 + nx, 0 + ny, SHAPE_COLORS[g_next])
 
     return
 
@@ -289,13 +289,13 @@ def process_timer(event):
 
     g_ypos = g_ypos + 1
 
-    f, w, h = shape_config[g_char][g_angle]
+    f, w, h = SHAPE_CONFIG[g_char][g_angle]
 
     if g_ypos >= g_ymax:
         add_tetris(g_xpos, g_ypos, g_char, g_angle)
         g_xpos, g_ypos, g_angle = 3, 0, 0
         g_char = g_next
-        g_next = random.randint(0, len(shape_char) - 1)
+        g_next = random.randint(0, len(SHAPE_CHAR) - 1)
 
     tetris_screen.fill(BLACK)
     draw_tetris(g_xpos, g_ypos, g_char, g_angle)
@@ -321,7 +321,7 @@ def add_tetris(x, y, shape, angle):
     global g_score, g_lines, g_level, g_time
     scores = [0, 40, 100, 300, 120]
 
-    b = shape_block[shape][angle]
+    b = SHAPE_BLOCK[shape][angle]
 
     for i in range(len(b)):
         nx, ny = b[i]
@@ -359,9 +359,9 @@ def add_tetris(x, y, shape, angle):
     return
 
 
-# shape_char = ["I", "J", "L", "O", "S", "T", "Z"]
-shape_char = ["T", "S", "Z", "J", "L", "I", "O"]
-shape_angle = [0, 90, 180, 270]
+# SHAPE_CHAR = ["I", "J", "L", "O", "S", "T", "Z"]
+SHAPE_CHAR = ["T", "S", "Z", "J", "L", "I", "O"]
+SHAPE_ANGLE = [0, 90, 180, 270]
 g_char, g_angle = 0, 0
 g_xpos, g_ypos, g_ymax = 3, 0, 0
 g_score, g_lines, g_level, g_next = 0, 0, 0, 0
@@ -382,17 +382,17 @@ def key_down(event):
         return
 
     if event.key == pygame.K_RETURN:
-        if (g_char + 1) < len(shape_char):
+        if (g_char + 1) < len(SHAPE_CHAR):
             g_char += 1
         else:
             g_char = 0
     elif event.key == pygame.K_UP:
-        if (g_angle + 1) < len(shape_angle):
+        if (g_angle + 1) < len(SHAPE_ANGLE):
             g_angle += 1
         else:
             g_angle = 0
         # Get new shape
-        f, w, h = shape_config[g_char][g_angle]
+        f, w, h = SHAPE_CONFIG[g_char][g_angle]
         # Adjust left side
         if g_xpos < 0: g_xpos = 0
         # Adjust right side
@@ -407,13 +407,13 @@ def key_down(event):
         process_timer(event)
 
     elif event.key == pygame.K_LEFT:
-        # shape = shape_block[g_char][g_angle]
-        f, w, h = shape_config[g_char][g_angle]
+        # shape = SHAPE_BLOCK[g_char][g_angle]
+        f, w, h = SHAPE_CONFIG[g_char][g_angle]
         # print(f, w, h)
         if g_xpos > (-f): g_xpos -= 1
 
     elif event.key == pygame.K_RIGHT:
-        f, w, h = shape_config[g_char][g_angle]
+        f, w, h = SHAPE_CONFIG[g_char][g_angle]
         if g_xpos < (TETRIS_WIDTH - (w + f)): g_xpos += 1
 
 
@@ -435,8 +435,8 @@ def new_game():
     g_angle = 0
 
     if not g_game:
-        g_char = random.randint(0, len(shape_char) - 1)
-        g_next = random.randint(0, len(shape_char) - 1)
+        g_char = random.randint(0, len(SHAPE_CHAR) - 1)
+        g_next = random.randint(0, len(SHAPE_CHAR) - 1)
 
     # Clean up Tetris board
     for y in range(TETRIS_HEIGHT):
@@ -459,11 +459,11 @@ def new_game():
 # Main program
 #--------------------------------------------------------------------------
 def main():
-    global shape_char, shape_angle
+    global SHAPE_CHAR, SHAPE_ANGLE
     global g_char, g_angle
     global g_xpos, g_ypos
 
-    make_shape_config()
+    make_SHAPE_CONFIG()
     new_game()
     disp_start()
 
