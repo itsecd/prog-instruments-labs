@@ -153,7 +153,7 @@ def draw_tetris_board():
 
 
 def draw_tetris_block(x, y, c):
-    # Check range is valid
+    """Check range is valid"""
     if (-1 < x < TETRIS_WIDTH) and (-1 < y < TETRIS_HEIGHT):
         px = 17 + TETRIS_SIZE * x
         py = 17 + TETRIS_SIZE * y
@@ -163,7 +163,7 @@ def draw_tetris_block(x, y, c):
 
 
 def draw_tetris_next(x, y, c):
-    # Check range is valid
+    """Check range is valid"""
     if (-1 < x < 20) and (-1 < y < TETRIS_HEIGHT):
         px = 17 + TETRIS_SIZE * x
         py = 17 + TETRIS_SIZE * y
@@ -173,7 +173,7 @@ def draw_tetris_next(x, y, c):
 
 
 def draw_tetris_outline(x, y, c):
-    # Check range is valid
+    """Check range is valid"""
     if (-1 < x < TETRIS_WIDTH) and (-1 < y < TETRIS_HEIGHT):
         px = 17 + TETRIS_SIZE * x
         py = 17 + TETRIS_SIZE * y
@@ -302,8 +302,8 @@ def process_timer(event):
     return
 
 
-# remove one line from top to bottom
 def remove_line(y):
+    """remove one line from top to bottom"""
     # pull down lines
     for by in range(y, 0, -1):
         for bx in range(0, TETRIS_WIDTH):
@@ -314,8 +314,8 @@ def remove_line(y):
     return
 
 
-# Add fallen tetris into board
 def add_tetris(x, y, shape, angle):
+    """Add fallen tetris into board"""
     global g_score, g_lines, g_level, g_time
     scores = [0, 40, 100, 300, 120]
 
