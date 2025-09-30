@@ -1,0 +1,6 @@
+{
+    "variant": 48,
+    "input_file": "48.csv",
+    "parser": "parser.json",
+    "result": "result.json" 
+}

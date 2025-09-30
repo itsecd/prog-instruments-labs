@@ -26,21 +26,12 @@ def calculate_checksum(row_numbers: List[int]) -> str:
     return hashlib.md5(json.dumps(row_numbers).encode('utf-8')).hexdigest()
 
 
-def serialize_result(variant: int, checksum: str) -> None:
-    """
-    Метод для сериализации результатов лабораторной пишите сами.
-    Вам нужно заполнить данными - номером варианта и контрольной суммой - файл, лежащий в папке с лабораторной.
-    Файл называется, очевидно, result.json.
+def serialize_result(variant: int, checksum: str, filename: str = "settings.json") -> None:
+    result = {
+        "variant": variant,
+        "checksum": checksum
+    }
 
-    ВНИМАНИЕ, ВАЖНО! На json натравлен github action, который проверяет корректность выполнения лабораторной.
-    Так что не перемещайте, не переименовывайте и не изменяйте его структуру, если планируете успешно сдать лабу.
+    with open(filename, 'w', encoding = 'utf-8') as file:
+        json.dump(result, file, ensure_ascii = False, indent = 2)
 
-    :param variant: номер вашего варианта
-    :param checksum: контрольная сумма, вычисленная через calculate_checksum()
-    """
-    pass
-
-
-if __name__ == "__main__":
-    print(calculate_checksum([1, 2, 3]))
-    print(calculate_checksum([3, 2, 1]))
