@@ -127,11 +127,9 @@ def make_SHAPE_CONFIG():
                 if f > x: f = x
                 if w < x: w = x
                 if h < y: h = y
-                # print("[{}, {}],".format(x, y), end="")
             w = w + 1 - f
             h = h + 1
             SHAPE_CONFIG[s][a] = [f, w, h]
-            # print(" = ", SHAPE_CONFIG[s][a])
     return
 
 
@@ -359,7 +357,6 @@ def add_tetris(x, y, shape, angle):
     return
 
 
-# SHAPE_CHAR = ["I", "J", "L", "O", "S", "T", "Z"]
 SHAPE_CHAR = ["T", "S", "Z", "J", "L", "I", "O"]
 SHAPE_ANGLE = [0, 90, 180, 270]
 g_char, g_angle = 0, 0
