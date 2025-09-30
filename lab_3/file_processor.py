@@ -1,32 +1,31 @@
+import csv
 import json
 import re
-import pandas as pd
+
 
 from checksum import calculate_checksum, serialize_result
 
 
 class FileProcessor:
-    def __init__(self, settings_path: str = "settings.json"):
+    def __init__(self):
         """
         Class initialization
         """
-        with open(settings_path, 'r', encoding = 'utf-8') as file:
+        with open("settings.json", 'r', encoding = 'utf-8') as file:
             self.settings = json.load(file)
         
-        with open(self.settings['parser'], 'r', encoding = 'utf-8') as file:
+        with open("parser.json", 'r', encoding = 'utf-8') as file:
             self.parsers = json.load(file)
 
-        self.variant = self.settings['variant']
-        self.csv_path = self.settings['input_file']
 
-
-    def load_data(self) -> pd.DataFrame:
+    def load_data(self) -> list[dict[str, str]]:
         """
         Load data from CSV-FILE
-        :return: DataFrame
+        :return: list of dict-s where every one is CSV-string
         """
         try:
-            return pd.read_csv(self.csv_path)
+            with open(self.settings['input_file'], 'r', encoding='utf-8') as file:
+                return list(csv.DictReader(file))
         except Exception as e:
             raise RuntimeError(f"Error while loading CSV-file {e}")
         
@@ -38,64 +37,35 @@ class FileProcessor:
         :param pattern: regular expression
         :return: validation flag
         """
-        if pd.isna(value):
+        if not value:
             return False
 
-        try:
-            return bool(re.match(pattern, str(value)))
-        except Exception:
-            return False
+        return bool(re.match(pattern, str(value)))
         
 
-    def validate_data(self, df: pd.DataFrame) -> list[int]:
+    def validate_data(self, row: dict[str, str]) -> bool:
         """
-        Data validation
-        :param df: DataFrame
-        :return: Indices of invalid srtings
+        Data validation(rows)
+        :param row: dict with data
+        :return: flag if all of raws are valid
         """
-        invalid_indices = []
+        for field, pattern in self.parsers.items():
+            if not self.validate_field(row.get(field), pattern):
+                return False
         
-        for idx, row in df.iterrows():
-            is_valid = True
-            for col, pattern in self.parsers.items():
-                if col in df.columns:
-                    if not self.validate_field(row[col], pattern):
-                        is_valid = False
-                        break
-            
-            if not is_valid:
-                invalid_indices.append(idx)
-        
-        return invalid_indices
+        return True
     
 
-    def process_data(self) -> None:
-        """Основной процесс обработки данных"""
-        print(f"Обработка данных для варианта {self.variant}")
-        print(f"CSV файл: {self.csv_path}")
-        
-        df = self.load_data()
-        if df.empty:
-            print("Не удалось загрузить данные")
-            return
-        
-        print(f"Загружено строк: {len(df)}")
-        print(f"Столбцы: {list(df.columns)}")
-        
-        invalid_indices = self.validate_data(df)
-        print(f"Найдено невалидных строк: {len(invalid_indices)}")
-        
+    def process(self) -> None:
+        """
+        Data processing
+        """
+        data = self.load_data()
+
+        invalid_indices = []
+        for i, row in enumerate(data):
+            if not self.validate_data(row):
+                invalid_indices.append(i)
+
         checksum = calculate_checksum(invalid_indices)
-        print(f"Контрольная сумма: {checksum}")
-        
-        serialize_result(self.variant, checksum, self.settings['result'])
-        print(f"Результат сохранен в {self.settings['result']}")
-
-
-def main():
-    """Основная функция"""
-    validator = FileProcessor()
-    validator.process_data()
-
-if __name__ == "__main__":
-    main()
+        serialize_result(self.settings['variant'], checksum, self.settings['result'])
