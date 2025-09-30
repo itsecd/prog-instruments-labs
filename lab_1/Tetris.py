@@ -21,7 +21,7 @@ class Rect:
         self.bottom = y + h
 
     def contains(self, x, y):
-        # Return true if a point is inside the rectangle.
+        """Return true if a point is inside the rectangle."""
         return (self.left <= x <= self.right and
                 self.top <= y <= self.bottom)
 
@@ -450,40 +450,3 @@ def new_game():
     pygame.time.set_timer(pygame.USEREVENT, g_time)
 
     return
-
-
-#--------------------------------------------------------------------------
-# Main program
-#--------------------------------------------------------------------------
-def main():
-    global SHAPE_CHAR, SHAPE_ANGLE
-    global g_char, g_angle
-    global g_xpos, g_ypos
-
-    make_SHAPE_CONFIG()
-    new_game()
-    disp_start()
-
-    # pygame.time.set_timer(pygame.USEREVENT, 500)
-
-    # main game loop
-    while True:
-
-        # Get Keyboard
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                key_down(event)
-                disp_score()
-                pygame.display.flip()
-            elif event.type == pygame.USEREVENT:
-                process_timer(event)
-                disp_score()
-                pygame.display.flip()
-
-
-# run code
-if __name__ == '__main__':
-    main()
