@@ -5,9 +5,9 @@ import csv
 
 def load_csv(path):
     """
-    Загружает CSV и возвращает список словарей
-    :param path: путь к csv файлу
-    :return: list[dict]
+    Loads a csv file
+    :param path: path to csv file
+    :return: list
     """
     try:
         with open(path, "r", encoding="utf-16", newline="") as f:
