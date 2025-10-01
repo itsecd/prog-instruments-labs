@@ -1,6 +1,6 @@
 {
-    "variant": 55,
-    "input_file": "55.csv",
-    "result_file": "result.json",
-    "regular_file": "patterns.json"
+  "variant": 55,
+  "input_file": "55.csv",
+  "regex_file": "patterns.json",
+  "result_file": "result.json"
 }

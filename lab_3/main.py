@@ -7,7 +7,7 @@ from checksum import calculate_checksum, serialize_result
 def main():
     settings = load_json("settings.json")
 
-    regexps = load_json(settings["regular_file"])
+    regexps = load_json(settings["regex_file"])
 
     rows = load_csv(settings["input_file"])
 
