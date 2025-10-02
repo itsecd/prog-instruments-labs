@@ -1,0 +1,6 @@
+{
+  "var": 41,
+  "input_csv": "41.csv",
+  "regular_expressions": "regular_expressions.json",
+  "result_json": "result.json"
+}
