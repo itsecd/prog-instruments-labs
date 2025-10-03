@@ -1,37 +1,12 @@
-from config import suits, values, ranks, START_MESSAGE, BLACKJACK_STR
-import random
+from config import values, START_MESSAGE, BLACKJACK_STR
+from Deck import Deck
+
 
 # setting values of global variables
 
 chips = 100
 game_num = 0
 game_on = True
-
-
-class Card:
-    def __init__(self, suit, rank):
-        self.suit = suit
-        self.rank = rank
-        self.value = values[rank]
-
-    def __str__(self):
-        return self.rank + " of " + self.suit
-
-
-class Deck:
-    def __init__(self):
-        self.all_cards = []
-        for suit in suits:
-            for rank in ranks:
-                # This assumes the Card class has already been defined!
-                self.all_cards.append(Card(suit, rank))
-
-    def shuffle(self):
-        random.shuffle(self.all_cards)
-
-    def deal_one(self):
-        # we remove one card from the list of all_cards
-        return self.all_cards.pop()
 
 
 def check_ace(card):
