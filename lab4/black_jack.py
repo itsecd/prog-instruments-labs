@@ -38,8 +38,19 @@ class black_jack:
 
         print(START_MESSAGE)
 
-    def start(self):
+    def __make_bet(self):
+        while True:
+            bet = int(input("\nEnter the amount of chips you want to bet:"))
+            if bet > self._chips:
+                print("You dont have enough chips.")
+                print("Enter a valid amount. \n")
+            elif bet <= 0:  # To prevent betting a negative value
+                print("Invalid Bet")
+            else:
+                self._chips -= bet
+                return bet
 
+    def start(self):
         self.print_start_message()
 
         while self._game_on:
@@ -51,16 +62,7 @@ class black_jack:
                 print(f"\nGame Round number : {self._game_num}")
                 print(f"Chips remaining = {self._chips}")
 
-                while True:
-                    bet = int(input("\nEnter the amount of chips you want to bet:"))
-                    if bet > self._chips:
-                        print("You dont have enough chips.")
-                        print("Enter a valid amount. \n")
-                    elif bet <= 0:  # To prevent betting a negative value
-                        print("Invalid Bet")
-                    else:
-                        self._chips -= bet
-                        break
+                bet = self.__make_bet()
 
                 player_table_cards = []  # cards on table will be replaced each round
                 dealer_table_cards = []
