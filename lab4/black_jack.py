@@ -67,6 +67,46 @@ class black_jack:
 
         return player_table_cards, dealer_table_cards
 
+
+    def __compute_sum(self, table_cards: list):
+        sum_cards_val = 0
+        for i in table_cards:
+            sum_cards_val += i.value
+        return sum_cards_val
+
+    def __hit_or_stand(self, player_table_cards: list, new_deck: Deck) -> int:
+        player_cards_val = 0
+        while player_cards_val < 21:
+            hit_or_stand = input("Do you want to hit or stand? :").lower()
+
+            if hit_or_stand == "hit":
+                player_table_cards.append(new_deck.deal_one())
+                check_ace(player_table_cards[-1])
+
+                print(f"\nThe player hits card : {player_table_cards[-1]}")
+
+                print("\nPlayer's hand :")
+                # using list comprehension to print cards on table
+                [print(i) for i in player_table_cards]
+                print()
+
+                player_cards_val = self.__compute_sum(player_table_cards)
+
+            elif hit_or_stand == "stand":
+                player_cards_val = self.__compute_sum(player_table_cards)
+
+                print("\nPlayer has decided to stand.")
+
+                print("\nPlayer's hand:")
+                [print(i) for i in player_table_cards]
+                print()
+                return player_cards_val
+
+            else:
+                print("Enter a valid option. \n")
+                continue
+        return player_cards_val
+
     def start(self):
         self.print_start_message()
 
@@ -83,58 +123,9 @@ class black_jack:
 
                 player_table_cards, dealer_table_cards = self.__start_deal(new_deck)
 
+                player_cards_val = self.__hit_or_stand(player_table_cards, new_deck)
 
 
-                while True:
-                    hit_or_stand = input("Do you want to hit or stand? :").lower()
-
-                    if hit_or_stand == "hit":
-                        player_table_cards.append(new_deck.deal_one())
-                        check_ace(player_table_cards[-1])
-
-                        print(f"\nThe player hits card : {player_table_cards[-1]}")
-
-                        print("\nPlayer's hand :")
-                        # using list comprehension to print cards on table
-                        [print(i) for i in player_table_cards]
-                        print()
-
-                        player_cards_val = 0
-
-                        for i in player_table_cards:
-                            player_cards_val += i.value
-
-                        if player_cards_val == 21:
-                            print("You got a blackjack!")
-                            break
-
-                        elif player_cards_val < 21:  # looping the options again
-                            continue
-
-                        else:
-                            print("YOU BUSTED!")
-                            break
-
-                    elif hit_or_stand == "stand":
-                        player_cards_val = 0
-                        for i in player_table_cards:
-                            player_cards_val += i.value
-
-                        print("\nPlayer has decided to stand.")
-
-                        print("\nPlayer's hand:")
-                        [print(i) for i in player_table_cards]
-                        print()
-
-                        if player_cards_val == 21:
-                            print("Player got a blackjack!")
-                            break
-
-                        break
-
-                    else:
-                        print("Enter a valid option. \n")
-                        continue
 
                 # variable that stores how many times dealer hits before its cards value is more than equal to 17
                 no_of_hits = 0
