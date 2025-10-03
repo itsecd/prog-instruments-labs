@@ -50,6 +50,23 @@ class black_jack:
                 self._chips -= bet
                 return bet
 
+    def __start_deal(self, new_deck: Deck):
+        player_table_cards = []  # cards on table will be replaced each round
+        dealer_table_cards = []
+        # using list comprehension to distribute 2 cards
+        [player_table_cards.append(new_deck.deal_one()) for i in range(2)]
+        # to both user and dealer(computer)
+        [dealer_table_cards.append(new_deck.deal_one()) for i in range(2)]
+
+        print(f"\nPlayer cards are {player_table_cards[0]} and {player_table_cards[1]}")
+        print(f"Dealer cards are {dealer_table_cards[0]} and Hidden.")
+
+        # checking both the cards given to the user for being ace
+        check_ace(player_table_cards[0])
+        check_ace(player_table_cards[1])
+
+        return player_table_cards, dealer_table_cards
+
     def start(self):
         self.print_start_message()
 
@@ -64,20 +81,9 @@ class black_jack:
 
                 bet = self.__make_bet()
 
-                player_table_cards = []  # cards on table will be replaced each round
-                dealer_table_cards = []
+                player_table_cards, dealer_table_cards = self.__start_deal(new_deck)
 
-                # using list comprehension to distribute 2 cards
-                [player_table_cards.append(new_deck.deal_one()) for i in range(2)]
-                # to both user and dealer(computer)
-                [dealer_table_cards.append(new_deck.deal_one()) for i in range(2)]
 
-                print(f"\nPlayer cards are {player_table_cards[0]} and {player_table_cards[1]}")
-                print(f"Dealer cards are {dealer_table_cards[0]} and Hidden.")
-
-                # checking both the cards given to the user for being ace
-                check_ace(player_table_cards[0])
-                check_ace(player_table_cards[1])
 
                 while True:
                     hit_or_stand = input("Do you want to hit or stand? :").lower()
