@@ -27,7 +27,7 @@ class Player:
         if bet > self.chips:
             raise ValueError("Not enough chips")
         self.chips -= bet
-        return  bet
+        return bet
 
     def win(self, winnings: int):
         self.chips += winnings

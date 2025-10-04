@@ -5,10 +5,12 @@ from Player import Player, Dealer
 
 class BlackJack2:
 
+
     def __init__(self):
         self.player = Player("Player", 100)
         self.dealer = Dealer("Dealer", 10000)
         self.game_num = 0
+        self.DEALER_OPTIMAL_SUM = 17
 
     def start_round(self, bet: int):
         self.game_num += 1
@@ -25,6 +27,14 @@ class BlackJack2:
 
         return bet_amount
 
+    def player_hit(self):
+        card = self.deck.deal_one()
+        self.player.add_card(card)
+        return card
+
+    def dealer_paly(self):
+        while self.dealer.should_hit() < self.DEALER_OPTIMAL_SUM:
+            self.dealer.add_card(self.deck.deal_one())
 
 
 
