@@ -56,4 +56,4 @@ def write_json(file_path: str, data: dict, encoding: str = 'utf-8') -> None:
     except Exception as e:
         raise Exception(f"Ошибка записи JSON файла {file_path}: {e}")
     except FileNotFoundError as e:
-        raise Exception(f"Путь не найден: {file_path} → {e}")
+        raise Exception(f"Путь не найден: {file_path}: {e}")
