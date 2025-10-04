@@ -20,8 +20,11 @@ class DataProcessor:
                         print(f"Processed item {index}: {transformed}")
                     else:
                         print(f"Invalid item at index {index}: {item}")
-        except:
-            print(f"Error loading data")
+        except FileNotFoundError:
+            print(f"File not found: {file_path}")
+            return []
+        except Exception as e:
+            print(f"Unexpected error loading data: {e}")
             return []
         return data_list
     def _validate_item(self, item: Dict) -> bool:
@@ -259,8 +262,11 @@ class DatabaseHandler:
             self.connection_time= datetime.datetime.now()
             print("Connection established successfully")
             return True
-        except:
-            print(f"Connection failed:")
+        except ConnectionError as e:
+            print(f"Connection error: {e}")
+            return False
+        except Exception as e:
+            print(f"Unexpected error: {e}")
             return False
 
     def execute_query(self, query: str,
@@ -319,8 +325,11 @@ class DatabaseHandler:
         try:
             print("Testing database connection...")
             return self.connect() and self.disconnect()
+        except ConnectionError as e:
+            print(f"Connection test failed: {e}")
+            return False
         except Exception as e:
-            print({e})
+            print(f"Unexpected error during connection test: {e}")
             return False
 
 def generate_report(data: List[Dict],
@@ -372,8 +381,10 @@ def generate_report(data: List[Dict],
             with open(output_file, 'w', encoding='utf-8') as f:
                 f.write(report_text)
             print(f"Report saved to {output_file}")
-        except:
-            print(f"Error saving report: ")
+        except FileNotFoundError:
+            print(f"Directory not found: {os.path.dirname(output_file)}")
+        except Exception as e:
+            print(f"Unexpected error saving report: {e}")
 
     return report_text
 
