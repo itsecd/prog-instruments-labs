@@ -91,6 +91,7 @@ class black_jack:
                 print()
 
                 player_cards_val = self.__compute_sum(player_table_cards)
+                continue
 
             elif hit_or_stand == "stand":
                 player_cards_val = self.__compute_sum(player_table_cards)
@@ -107,119 +108,124 @@ class black_jack:
                 continue
         return player_cards_val
 
+    def __dealer_logic(self, dealer_table_cards: list, new_deck: Deck):
+        no_of_hits = 0
+        dealer_cards_val = 0
+        while dealer_cards_val < 21:
+
+            dealer_cards_val = self.__compute_sum(dealer_table_cards)
+
+            if dealer_cards_val < 17:
+                no_of_hits += 1
+                dealer_table_cards.append(new_deck.deal_one())
+                continue
+
+            elif 17 <= dealer_cards_val < 21:
+                print(f"The Dealer has hit {no_of_hits} times.")
+                print("\nDealer's hand :")
+                [print(i) for i in dealer_table_cards]
+                return dealer_cards_val, no_of_hits
+
+            elif dealer_cards_val == 21:
+                print(f"The Dealer has hit {no_of_hits} times.")
+                print("The Dealer got a blackjack!")
+                print("\nDealer's hand :")
+                [print(i) for i in dealer_table_cards]
+                return dealer_cards_val, no_of_hits
+        return dealer_cards_val, no_of_hits
+
+    def __summing_up(self, player_cards_val: int, dealer_cards_val: int, bet: int, no_of_hits: int, dealer_table_cards: list):
+        if dealer_cards_val > 21:
+            # checking if player has also busted or not. If player busts , dealer's bust doesn't count.
+            if not (player_cards_val > 21):
+                print(f"The Dealer has hit {no_of_hits} times.")
+                print("The Dealer busted!")
+                print("\nDealer's hand :")
+                [print(i) for i in dealer_table_cards]
+
+
+            # checking for busts first
+        if player_cards_val > 21:
+            print(
+                "\nSince the Player busted , the round is lost.\nPlayer lost the bet money"
+            )
+
+        elif dealer_cards_val > 21:
+            print(
+                "\n Since the Dealer busted , Player won the round! \nPlayer got twice the money bet."
+            )
+            self._chips += bet * 2
+
+            # checking for player's blackjack then
+        elif player_cards_val == 21:
+            print("\nPlayer won with a blackjack! \nPlayer got thrice the money bet.")
+            self._chips += bet * 3
+
+            # checking whose value is closer to 21
+        elif 21 - player_cards_val > 21 - dealer_cards_val:
+            print("\nDealer won the round. \nPlayer lost the bet money")
+
+        elif 21 - dealer_cards_val > 21 - player_cards_val:
+            print("\nPlayer won the round. \nPlayer got twice the money bet.")
+            self._chips += bet * 2
+
+            # last situation can only be a tie
+        else:
+            print("\nIt's a tie. \nBet money was returned.")
+            self._chips += bet
+
+
     def start(self):
-        self.print_start_message()
+            self.print_start_message()
 
-        while self._game_on:
-            try:
-                new_deck = Deck()  # new deck will be created and shuffled each round
-                new_deck.shuffle()
+            while self._game_on:
+                try:
+                    new_deck = Deck()  # new deck will be created and shuffled each round
+                    new_deck.shuffle()
 
-                self._game_num += 1
-                print(f"\nGame Round number : {self._game_num}")
-                print(f"Chips remaining = {self._chips}")
+                    self._game_num += 1
+                    print(f"\nGame Round number : {self._game_num}")
+                    print(f"Chips remaining = {self._chips}")
 
-                bet = self.__make_bet()
+                    bet = self.__make_bet()
 
-                player_table_cards, dealer_table_cards = self.__start_deal(new_deck)
+                    player_table_cards, dealer_table_cards = self.__start_deal(new_deck)
 
-                player_cards_val = self.__hit_or_stand(player_table_cards, new_deck)
+                    player_cards_val = self.__hit_or_stand(player_table_cards, new_deck)
 
 
 
-                # variable that stores how many times dealer hits before its cards value is more than equal to 17
-                no_of_hits = 0
-
-                while True:
+                    # variable that stores how many times dealer hits before its cards value is more than equal to 17
+                    no_of_hits = 0
                     dealer_cards_val = 0
+                    dealer_cards_val, no_of_hits = self.__dealer_logic(dealer_table_cards, new_deck)
 
-                    for i in dealer_table_cards:  # updating value of dealer's cards
-                        dealer_cards_val += i.value
+                    self.__summing_up(player_cards_val, dealer_cards_val, bet, no_of_hits, dealer_table_cards)
 
-                    if dealer_cards_val < 17:
-                        no_of_hits += 1
-                        dealer_table_cards.append(new_deck.deal_one())
-                        continue
-
-                    elif 17 <= dealer_cards_val < 21:
-                        print(f"The Dealer has hit {no_of_hits} times.")
-                        print("\nDealer's hand :")
-                        [print(i) for i in dealer_table_cards]
+                    if self._chips == 0:
+                        print("\nYou are out of chips , Game over.")
                         break
-
-                    elif dealer_cards_val == 21:
-                        print(f"The Dealer has hit {no_of_hits} times.")
-                        print("The Dealer got a blackjack!")
-                        print("\nDealer's hand :")
-                        [print(i) for i in dealer_table_cards]
-                        break
-
-                    elif dealer_cards_val > 21:
-                        # checking if player has also busted or not. If player busts , dealer's bust doesn't count.
-                        if not (player_cards_val > 21):
-                            print(f"The Dealer has hit {no_of_hits} times.")
-                            print("The Dealer busted!")
-                            print("\nDealer's hand :")
-                            [print(i) for i in dealer_table_cards]
-                            break
-
-                        else:
-                            break
-
-                # checking for busts first
-                if player_cards_val > 21:
-                    print(
-                        "\nSince the Player busted , the round is lost.\nPlayer lost the bet money"
-                    )
-
-                elif dealer_cards_val > 21:
-                    print(
-                        "\n Since the Dealer busted , Player won the round! \nPlayer got twice the money bet."
-                    )
-                    self._chips += bet * 2
-
-                # checking for player's blackjack then
-                elif player_cards_val == 21:
-                    print("\nPlayer won with a blackjack! \nPlayer got thrice the money bet.")
-                    self._chips += bet * 3
-
-                # checking whose value is closer to 21
-                elif 21 - player_cards_val > 21 - dealer_cards_val:
-                    print("\nDealer won the round. \nPlayer lost the bet money")
-
-                elif 21 - dealer_cards_val > 21 - player_cards_val:
-                    print("\nPlayer won the round. \nPlayer got twice the money bet.")
-                    self._chips += bet * 2
-
-                # last situation can only be a tie
-                else:
-                    print("\nIt's a tie. \nBet money was returned.")
-                    self._chips += bet
-
-                if self._chips == 0:
-                    print("\nYou are out of chips , Game over.")
-                    break
-
-                else:
-                    cont = input("Do you want to continue? (y/n) :")
-                    check = cont.upper()  ###So a capital or lowercase value can be entered
-
-                    if check == "Y":
-                        print("\n" * 100)
-
-                        print(BLACKJACK_STR)
-
-                        continue
 
                     else:
-                        print(f"\nTotal amount of chips left with the player = {self._chips}")
-                        print(input("Press Enter to exit the terminal..."))
-                        break
+                        cont = input("Do you want to continue? (y/n) :")
+                        check = cont.upper()  ###So a capital or lowercase value can be entered
 
-            except Exception as error:
-                print(f"Following error occurred : {error} \nPlease try again.")
-                self._game_num -= 1  # round with error won't be counted
-                continue
+                        if check == "Y":
+                            print("\n" * 100)
+
+                            print(BLACKJACK_STR)
+
+                            continue
+
+                        else:
+                            print(f"\nTotal amount of chips left with the player = {self._chips}")
+                            print(input("Press Enter to exit the terminal..."))
+                            break
+                except Exception as error:
+                    print(f"Following error occurred : {error} \nPlease try again.")
+                    self._game_num -= 1  # round with error won't be counted
+                    continue
+
 
 
 
