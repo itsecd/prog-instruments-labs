@@ -10,7 +10,20 @@ class BlackJack2:
         self.dealer = Dealer("Dealer", 10000)
         self.game_num = 0
 
-    
+    def start_round(self, bet: int):
+        self.game_num += 1
+        self.player.reset_hand()
+        self.dealer.reset_hand()
+        self.deck = Deck()
+        self.deck.shuffle()
+
+        bet_amount = self.player.make_bet(bet)
+
+        for _ in range(2):
+            self.player.add_card(self.deck.deal_one())
+            self.dealer.add_card(self.deck.deal_one())
+
+        return bet_amount
 
 
 
