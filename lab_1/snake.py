@@ -1,5 +1,8 @@
-# Coded and designed by Fasal
-import sys, os, pygame, random, math
+import math
+import pygame
+import sys
+import random
+
 
 pygame.init()
 pygame.display.set_caption("$nAke bRo color fUll--FASAL ")
