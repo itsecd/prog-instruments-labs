@@ -22,7 +22,7 @@ def read_csv(file_path: str, encoding: str = 'utf-16', delimiter: str = ';') -> 
         raise Exception(f"Ошибка при чтении CSV файла: {e}")
 
 
-def read_json(file_path: str, encoding: str = 'utf-16') -> dict:
+def read_json(file_path: str, encoding: str = 'utf-8') -> dict:
     """
     Чтение данных из JSON файла
     :param file_path: Путь к файлу
@@ -40,3 +40,20 @@ def read_json(file_path: str, encoding: str = 'utf-16') -> dict:
         raise ValueError(f"Ошибка кодировки в файле {file_path}.")
     except Exception as e:
         raise Exception(f"Ошибка при чтении JSON файла {file_path}: {e}")
+
+
+def write_json(file_path: str, data: dict, encoding: str = 'utf-8') -> None:
+    """
+    Запись данных в JSON файл
+    :param file_path: Путь к файлу для записи
+    :param data: Данные для записи
+    :param encoding: Кодировка файла
+    :return: None
+    """
+    try:
+        with open(file_path, 'w', encoding=encoding) as file:
+            json.dump(data, file, ensure_ascii=False, indent=2)
+    except Exception as e:
+        raise Exception(f"Ошибка записи JSON файла {file_path}: {e}")
+    except FileNotFoundError as e:
+        raise Exception(f"Путь не найден: {file_path} → {e}")
