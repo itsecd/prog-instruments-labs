@@ -8,21 +8,18 @@ def check_ace(card):
     """
     if card.rank == "Ace":
         while True:
-            ace_val = int(
-                input("\nWhat value do you want to consider for Ace (1/11)? :")
-            )
+            try:
+                ace_val = int(input("\nWhat value do you want to consider for Ace (1/11)? :"))
+                match ace_val:
+                    case 1:
+                        values["Ace"] = 1
+                        break
+                    case 11:
+                        values["Ace"] = 11
+                        break
+            except Exception as exp:
+                print("Input a integer: 1 or 11")
 
-            if ace_val == 1:
-                values["Ace"] = 1
-
-                break
-            elif ace_val == 11:
-                values["Ace"] = 11
-
-                break
-            else:
-                print("choose valid value.")
-                continue # это тут не нужно
 
 
 class BlackJack:
@@ -78,34 +75,34 @@ class BlackJack:
         player_cards_val = 0
         while player_cards_val < 21:
             hit_or_stand = input("Do you want to hit or stand? :").lower()
+            match hit_or_stand:
+                case "hit":
+                    player_table_cards.append(new_deck.deal_one())
+                    check_ace(player_table_cards[-1])
 
-            if hit_or_stand == "hit":
-                player_table_cards.append(new_deck.deal_one())
-                check_ace(player_table_cards[-1])
+                    print(f"\nThe player hits card : {player_table_cards[-1]}")
 
-                print(f"\nThe player hits card : {player_table_cards[-1]}")
+                    print("\nPlayer's hand :")
+                    # using list comprehension to print cards on table
+                    [print(i) for i in player_table_cards]
+                    print()
 
-                print("\nPlayer's hand :")
-                # using list comprehension to print cards on table
-                [print(i) for i in player_table_cards]
-                print()
+                    player_cards_val = self.__compute_sum(player_table_cards)
+                    continue
 
-                player_cards_val = self.__compute_sum(player_table_cards)
-                continue
+                case "stand":
+                    player_cards_val = self.__compute_sum(player_table_cards)
 
-            elif hit_or_stand == "stand":
-                player_cards_val = self.__compute_sum(player_table_cards)
+                    print("\nPlayer has decided to stand.")
 
-                print("\nPlayer has decided to stand.")
+                    print("\nPlayer's hand:")
+                    [print(i) for i in player_table_cards]
+                    print()
+                    return player_cards_val
 
-                print("\nPlayer's hand:")
-                [print(i) for i in player_table_cards]
-                print()
-                return player_cards_val
-
-            else:
-                print("Enter a valid option. \n")
-                continue
+                case _:
+                    print("Enter a valid option. \n")
+                    continue
         return player_cards_val
 
     def __dealer_logic(self, dealer_table_cards: list, new_deck: Deck):
@@ -175,24 +172,24 @@ class BlackJack:
             self._chips += bet
 
     def __restart_game(self):
-        if self._chips == 0:
-            print("\nYou are out of chips , Game over.")
-            self._game_on = False
-
-        else:
-            cont = input("Do you want to continue? (y/n) :")
-            check = cont.upper()  ###So a capital or lowercase value can be entered
-
-            if check == "Y":
-                print("\n" * 100)
-
-                print(BLACKJACK_STR)
-
-
-            else:
-                print(f"\nTotal amount of chips left with the player = {self._chips}")
-                print(input("Press Enter to exit the terminal..."))
+        match self._chips:
+            case 0:
+                print("\nYou are out of chips , Game over.")
                 self._game_on = False
+
+            case _:
+                cont = input("Do you want to continue? (y/n) :")
+                check = cont.upper()  ###So a capital or lowercase value can be entered
+                match check:
+                    case "Y":
+                        print("\n" * 100)
+
+                        print(BLACKJACK_STR)
+
+                    case _:
+                        print(f"\nTotal amount of chips left with the player = {self._chips}")
+                        print(input("Press Enter to exit the terminal..."))
+                        self._game_on = False
 
     def start(self):
             self.print_start_message()

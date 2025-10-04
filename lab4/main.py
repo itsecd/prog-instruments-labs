@@ -1,4 +1,4 @@
-from blackjack import BlackJack
+from BlackJack import BlackJack
 
 
 def main():
