@@ -1,6 +1,7 @@
 '''A well-structured CRM application.'''
 import os
 import sys
+from abc import ABC, abstractmethod
 from typing import List, Dict
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
@@ -82,23 +83,41 @@ class Lead:
         return mrr * 12
 
 
-class Customer:
-    company_size = ''
-    lead = Lead()
-    company_website = ''
+class Lead:
+    def __init__(self):
+        self.touchpoints = []
+        self.company_size = ''
+        self._company_website = ''
+        self.days_since_last_post = 0
+        self.discount = 1
+        self.priority = 0
 
-    def __init__(self, lead):
-        # One class uses the internal fields and methods of another class.
+    def get_lead_score(self) -> int:
+        """Calculate lead score based on activity."""
+        return 1 if self.days_since_last_post < 5 else 0
+
+    def get_lifetime_value(self, product) -> float:
+        """Calculate lifetime value for a product."""
+        return product.base_price() * self.discount * 12
+
+
+class Customer:
+    def __init__(self, lead: Lead):
         self.company_size = lead.company_size
         self.company_website = lead._company_website
         self.lead = lead
+        self.stage = 'customer'
 
 
-# 3.3 Replace complex expressions with inner function calls
 class CRMImportEntry:
-    '''Entry imported from our legacy CRM.'''
-    def __init__(self):
-        imported_data = {
+    """Entry imported from our legacy CRM."""
+
+    def __init__(self, imported_data=None):
+        self.imported_data = imported_data or self._get_default_data()
+        self._process_imported_data()
+
+    def _get_default_data(self) -> dict:
+        return {
             'name': {
                 'first': 'John',
                 'last': 'Smith'
@@ -107,72 +126,105 @@ class CRMImportEntry:
             'deals': [13435, 33456]
         }
 
-        def get_name_from_import(data):
-            if 'name' in data:
-                return data['name']
-            else:
-                print('Name not found.')
-                return dict(first='', last='')
+    def _process_imported_data(self):
+        """Process imported data into object attributes."""
+        name_data = self._get_name_from_import()
+        self.first_name = name_data.get('first', '')
+        self.last_name = name_data.get('last', '')
+        self.num_deals = len(self.imported_data.get('deals', []))
 
-        self.first_name = get_name_from_import(imported_data).get('first', '')
-        self.last_name = get_name_from_import(imported_data).get('last', '')
-        self.num_deals = len(imported_data.get('deals', []))
-
-
-def convert_lead(lead):
-    if lead.company_size == 'smb':
-        send_smb_funnel()
-    elif lead.company_size == 'mid_market':
-        send_mid_market_funnel()
-    elif lead.company_size == 'enterprise':
-        log_manual_sales_follow_up()
-    else:
-        print('Wrong lead company type!')
+    def _get_name_from_import(self) -> dict:
+        """Extract name data from imported data."""
+        if 'name' in self.imported_data:
+            return self.imported_data['name']
+        else:
+            print('Name not found.')
+            return {'first': '', 'last': ''}
 
 
-def send_smb_funnel(services=''):
-    client = services.email.client('transactional', region='eu-ireland')
-    response = client.send_email(
-        destination='test@gmail.com',
-        message={
-            'body': {'Text': {'Hello small business!'}},
-            'subject': {'Text': {'Buy our stuff!'}}
-        },
-        source='refactoring@course.com'
-    )
-    print(response)
+class NotificationService(ABC):
+    """Abstract base class for notification services."""
+
+    @abstractmethod
+    def send_notification(self, destination: str, message: dict,
+                          source: str) -> dict:
+        pass
 
 
-def send_mid_market_funnel(services=''):
-    client = services.email.client('transactional', region='eu-ireland')
-    response = client.send_email(
-        destination='test@gmail.com',
-        message={
-            'body': {'Text': {'Hello medium sized business!'}},
-            'subject': {'Text': {'Buy our stuff!'}}
-        },
-        source='refactoring@course.com'
-    )
-    print(response)
+class EmailNotificationService(NotificationService):
+    """Email implementation of notification service."""
+
+    def __init__(self, services, region='eu-ireland'):
+        self.client = services.email.client('transactional', region=region)
+
+    def send_notification(self, destination: str, message: dict,
+                          source: str) -> dict:
+        return self.client.send_email(
+            destination=destination,
+            message=message,
+            source=source
+        )
 
 
-def log_manual_sales_follow_up(services=''):
-    client = services.email.client('transactional', region='eu-ireland')
-    response = client.send_email(
-        destination='internal.sales@course.com',
-        message={
-            'body': {'Text': {'Go say hello to this business!'}},
-            'subject': {'Text': {'Buy our stuff!'}}
-        },
-        source='refactoring@course.com'
-    )
-    print(response)
+class LeadConverter:
+    """Handles lead conversion based on company size."""
+
+    def __init__(self, notification_service: NotificationService):
+        self.notification_service = notification_service
+
+    def convert_lead(self, lead: Lead):
+        """Convert lead based on company size."""
+        conversion_strategies = {
+            'smb': self._send_smb_funnel,
+            'mid_market': self._send_mid_market_funnel,
+            'enterprise': self._log_manual_sales_follow_up
+        }
+
+        strategy = conversion_strategies.get(lead.company_size)
+        if strategy:
+            strategy()
+        else:
+            print('Wrong lead company type!')
+
+    def _send_smb_funnel(self):
+        self._send_email(
+            destination='test@gmail.com',
+            body='Hello small business!',
+            subject='Buy our stuff!'
+        )
+
+    def _send_mid_market_funnel(self):
+        self._send_email(
+            destination='test@gmail.com',
+            body='Hello medium sized business!',
+            subject='Buy our stuff!'
+        )
+
+    def _log_manual_sales_follow_up(self):
+        self._send_email(
+            destination='internal.sales@course.com',
+            body='Go say hello to this business!',
+            subject='Buy our stuff!'
+        )
+
+    def _send_email(self, destination: str, body: str, subject: str):
+        message = {
+            'body': {'Text': body},
+            'subject': {'Text': subject}
+        }
+        response = self.notification_service.send_notification(
+            destination=destination,
+            message=message,
+            source='refactoring@course.com'
+        )
+        print(response)
 
 
-# 3.4
-def prioritize_lead(lead):
-    is_right_size = (lead.company_size > 100) and (lead.company_size < 100000)
+def prioritize_lead(lead: Lead):
+    """Prioritize lead based on criteria."""
+    is_right_size = 100 < lead.company_size < 100000
     is_dotcom = lead.company_website.endswith('.com')
     is_new_lead = len(lead.touchpoints) == 0
-    if is_right_size and is_dotcom and is_new_lead:
+
+    if all([is_right_size, is_dotcom, is_new_lead]):
         lead.priority = 100
