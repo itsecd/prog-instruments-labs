@@ -1,6 +1,7 @@
 '''A well-structured CRM application.'''
 import os
 import sys
+from abc import ABC, abstractmethod
 from typing import List, Dict
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
@@ -122,60 +123,89 @@ class CRMImportEntry:
             return {'first': '', 'last': ''}
 
 
-def convert_lead(lead):
-    if lead.company_size == 'smb':
-        send_smb_funnel()
-    elif lead.company_size == 'mid_market':
-        send_mid_market_funnel()
-    elif lead.company_size == 'enterprise':
-        log_manual_sales_follow_up()
-    else:
-        print('Wrong lead company type!')
+class NotificationService(ABC):
+    """Abstract base class for notification services."""
+
+    @abstractmethod
+    def send_notification(self, destination: str, message: dict,
+                          source: str) -> dict:
+        pass
 
 
-def send_smb_funnel(services=''):
-    client = services.email.client('transactional', region='eu-ireland')
-    response = client.send_email(
-        destination='test@gmail.com',
-        message={
-            'body': {'Text': {'Hello small business!'}},
-            'subject': {'Text': {'Buy our stuff!'}}
-        },
-        source='refactoring@course.com'
-    )
-    print(response)
+class EmailNotificationService(NotificationService):
+    """Email implementation of notification service."""
+
+    def __init__(self, services, region='eu-ireland'):
+        self.client = services.email.client('transactional', region=region)
+
+    def send_notification(self, destination: str, message: dict,
+                          source: str) -> dict:
+        return self.client.send_email(
+            destination=destination,
+            message=message,
+            source=source
+        )
 
 
-def send_mid_market_funnel(services=''):
-    client = services.email.client('transactional', region='eu-ireland')
-    response = client.send_email(
-        destination='test@gmail.com',
-        message={
-            'body': {'Text': {'Hello medium sized business!'}},
-            'subject': {'Text': {'Buy our stuff!'}}
-        },
-        source='refactoring@course.com'
-    )
-    print(response)
+class LeadConverter:
+    """Handles lead conversion based on company size."""
+
+    def __init__(self, notification_service: NotificationService):
+        self.notification_service = notification_service
+
+    def convert_lead(self, lead: Lead):
+        """Convert lead based on company size."""
+        conversion_strategies = {
+            'smb': self._send_smb_funnel,
+            'mid_market': self._send_mid_market_funnel,
+            'enterprise': self._log_manual_sales_follow_up
+        }
+
+        strategy = conversion_strategies.get(lead.company_size)
+        if strategy:
+            strategy()
+        else:
+            print('Wrong lead company type!')
+
+    def _send_smb_funnel(self):
+        self._send_email(
+            destination='test@gmail.com',
+            body='Hello small business!',
+            subject='Buy our stuff!'
+        )
+
+    def _send_mid_market_funnel(self):
+        self._send_email(
+            destination='test@gmail.com',
+            body='Hello medium sized business!',
+            subject='Buy our stuff!'
+        )
+
+    def _log_manual_sales_follow_up(self):
+        self._send_email(
+            destination='internal.sales@course.com',
+            body='Go say hello to this business!',
+            subject='Buy our stuff!'
+        )
+
+    def _send_email(self, destination: str, body: str, subject: str):
+        message = {
+            'body': {'Text': body},
+            'subject': {'Text': subject}
+        }
+        response = self.notification_service.send_notification(
+            destination=destination,
+            message=message,
+            source='refactoring@course.com'
+        )
+        print(response)
 
 
-def log_manual_sales_follow_up(services=''):
-    client = services.email.client('transactional', region='eu-ireland')
-    response = client.send_email(
-        destination='internal.sales@course.com',
-        message={
-            'body': {'Text': {'Go say hello to this business!'}},
-            'subject': {'Text': {'Buy our stuff!'}}
-        },
-        source='refactoring@course.com'
-    )
-    print(response)
-
-
-# 3.4
-def prioritize_lead(lead):
-    is_right_size = (lead.company_size > 100) and (lead.company_size < 100000)
+def prioritize_lead(lead: Lead):
+    """Prioritize lead based on criteria."""
+    is_right_size = 100 < lead.company_size < 100000
     is_dotcom = lead.company_website.endswith('.com')
     is_new_lead = len(lead.touchpoints) == 0
-    if is_right_size and is_dotcom and is_new_lead:
+
+    if all([is_right_size, is_dotcom, is_new_lead]):
         lead.priority = 100
