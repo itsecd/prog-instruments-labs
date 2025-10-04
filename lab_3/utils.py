@@ -24,9 +24,7 @@ def check_value(matrix: list, row: int, column: int, pattern: str) -> bool:
     :param pattern: Шаблон, по которому сверяют ячейку
     :return: Валидна ячейка или нет
     """
-    value = str(matrix[row][column])
-    if column == 6:
-        value = value.replace('−', '-').replace('–', '-')
+    value = str(matrix[row][column]).strip()
     return bool(re.match(pattern, value))
 
 
@@ -38,10 +36,9 @@ def find_invalid_rows_in_table(matrix: list, patterns: list) -> list[int]:
     :return: Массив номеров невалидных строк
     """
     invalid_rows = []
-    if len(matrix) >= 1:
-        for i in range(0, len(matrix)):
-            for j in range(0, len(matrix[0])):
-                if not check_value(matrix, i, j, patterns[j]):
-                    invalid_rows.append(i)
-                    break
+    for i in range(0, len(matrix)):
+        for j in range(0, len(matrix[i])):
+            if not check_value(matrix, i, j, patterns[j]):
+                invalid_rows.append(i)
+                break
     return invalid_rows
