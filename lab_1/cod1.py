@@ -8,12 +8,12 @@ import time
 from typing import Any, Dict, List, Optional, Tuple
 
 
-
 class DataProcessor:
     def __init__(self, data_source: str):
         self.data_source = data_source
         self.processed_data = []
         self._cache = {}
+
     def load_data(self, file_path: str) -> List[Dict]:
         data_list = []
         try:
@@ -33,6 +33,7 @@ class DataProcessor:
             print(f"Unexpected error loading data: {e}")
             return []
         return data_list
+
     def _validate_item(self, item: Dict) -> bool:
         if not item or not isinstance(item, dict):
             return False
@@ -45,6 +46,7 @@ class DataProcessor:
         except (ValueError, TypeError):
             return False
         return True
+
     def _transform_item(self, item: Dict, index: int) -> Dict:
         transformed = {}
         transformed['identifier'] = str(item['id'])
@@ -54,7 +56,7 @@ class DataProcessor:
 
         if 'timestamp' in item:
             try:
-                timestamp_format='%Y-%m-%d %H:%M:%S'
+                timestamp_format = '%Y-%m-%d %H:%M:%S'
                 transformed['time'] = datetime.datetime.strptime(
                     item['timestamp'], timestamp_format
                 )
@@ -65,6 +67,7 @@ class DataProcessor:
             transformed['category'] = item['category'].upper()
 
         return transformed
+
     def batch_process(self, items: List[Dict]) -> List[Dict]:
         processed_items = []
         for i, item in enumerate(items):
@@ -76,6 +79,7 @@ class DataProcessor:
     def clear_cache(self):
         self._cache = {}
         print("Cache cleared")
+
     def get_stats(self) -> Dict:
         return {
             'processed_count': len(self.processed_data),
@@ -83,10 +87,12 @@ class DataProcessor:
             'data_source': self.data_source
         }
 
+
 class Calculator:
     def __init__(self, precision: int = 2):
         self.precision = precision
         self._calculation_history = []
+
     def CalculateAverage(self, numbers: List[float]) -> float:
         if not numbers:
             self._add_to_history('average', numbers, 0.0)
@@ -106,7 +112,7 @@ class Calculator:
         variance = 0.0
         for num in numbers:
             variance += (num - avg) ** 2
-        result=math.sqrt(variance / (len(numbers) - 1))
+        result = math.sqrt(variance / (len(numbers) - 1))
         self._add_to_history('std_dev', numbers, result)
         return round(result, self.precision)
 
@@ -124,6 +130,7 @@ class Calculator:
         result = (round(min_val, self.precision), round(max_val, self.precision))
         self._add_to_history('extremes', numbers, result)
         return result
+
     def calculate_median(self, numbers: List[float]) -> float:
         if not numbers:
             return 0.0
@@ -152,11 +159,14 @@ class Calculator:
             'result': result
         }
         self._calculation_history.append(entry)
+
     def get_history(self) -> List[Dict]:
         return self._calculation_history.copy()
+
     def clear_history(self):
         self._calculation_history = []
         print("Calculation history cleared")
+
     def get_statistics_summary(self, numbers: List[float]) -> Dict:
         return {
             'average': self.CalculateAverage(numbers),
@@ -168,10 +178,9 @@ class Calculator:
         }
 
 
-
 def process_user_input(input_string: str,
-                      validation_rules: Optional[Dict] = None
-                      ) -> Dict[str, Any]:
+                       validation_rules: Optional[Dict] = None
+                       ) -> Dict[str, Any]:
     result = {'success': False, 'data': None, 'error': None, 'warnings': []}
 
     if not input_string or len(input_string.strip()) == 0:
@@ -211,18 +220,22 @@ def process_user_input(input_string: str,
 
     return result
 
+
 def validate_email(email: str) -> bool:
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return bool(re.match(pattern, email))
+
 
 def validate_phone(phone: str) -> bool:
     pattern = r'^\+?[1-9]\d{1,14}$'
     return bool(re.match(pattern, phone))
 
+
 def sanitize_input(input_string: str) -> str:
     sanitized = input_string.strip()
     sanitized = sanitized.replace('\0', '').replace('\r', '').replace('\n', '')
     return sanitized
+
 
 def format_output(data: Any, format_type: str = 'string') -> str:
     if format_type == 'json':
@@ -233,6 +246,7 @@ def format_output(data: Any, format_type: str = 'string') -> str:
         return str(data)
     else:
         return str(data)
+
 
 class DatabaseHandler:
     def __init__(
@@ -321,6 +335,7 @@ class DatabaseHandler:
             'connection_time': self.connection_time,
             'is_connected': self.is_connected
         }
+
     def batch_execute(self, queries: List[str]) -> List[List[Dict]]:
         results = []
         for query in queries:
@@ -338,9 +353,10 @@ class DatabaseHandler:
             print(f"Unexpected error during connection test: {e}")
             return False
 
+
 def generate_report(data: List[Dict],
-                   output_file: Optional[str] = None,
-                   include_details: bool = False) -> str:
+                    output_file: Optional[str] = None,
+                    include_details: bool = False) -> str:
     if not data:
         return "No data to generate report"
 
@@ -374,7 +390,7 @@ def generate_report(data: List[Dict],
             report_lines.append(
                 f"{i + 1}. ID: {item.get('identifier', 'N/A')}, "
                 f"Value: {item.get('numeric_value', 'N/A')}"
-                )
+            )
         if len(data) > 5:
             report_lines.append(f"... and {len(data) - 5} more items")
 
@@ -393,6 +409,7 @@ def generate_report(data: List[Dict],
             print(f"Unexpected error saving report: {e}")
 
     return report_text
+
 
 def create_sample_data(count: int = 15) -> List[Dict]:
     sample_data = []
@@ -456,6 +473,7 @@ def demonstrate_features():
         os.remove('temp_data.json')
 
     print("\nApplication finished successfully")
+
 
 if __name__ == "__main__":
     demonstrate_features()
