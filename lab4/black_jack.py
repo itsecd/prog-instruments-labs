@@ -174,6 +174,25 @@ class black_jack:
             print("\nIt's a tie. \nBet money was returned.")
             self._chips += bet
 
+    def __restart_game(self):
+        if self._chips == 0:
+            print("\nYou are out of chips , Game over.")
+            self._game_on = False
+
+        else:
+            cont = input("Do you want to continue? (y/n) :")
+            check = cont.upper()  ###So a capital or lowercase value can be entered
+
+            if check == "Y":
+                print("\n" * 100)
+
+                print(BLACKJACK_STR)
+
+
+            else:
+                print(f"\nTotal amount of chips left with the player = {self._chips}")
+                print(input("Press Enter to exit the terminal..."))
+                self._game_on = False
 
     def start(self):
             self.print_start_message()
@@ -196,31 +215,11 @@ class black_jack:
 
 
                     # variable that stores how many times dealer hits before its cards value is more than equal to 17
-                    no_of_hits = 0
-                    dealer_cards_val = 0
                     dealer_cards_val, no_of_hits = self.__dealer_logic(dealer_table_cards, new_deck)
 
                     self.__summing_up(player_cards_val, dealer_cards_val, bet, no_of_hits, dealer_table_cards)
 
-                    if self._chips == 0:
-                        print("\nYou are out of chips , Game over.")
-                        break
-
-                    else:
-                        cont = input("Do you want to continue? (y/n) :")
-                        check = cont.upper()  ###So a capital or lowercase value can be entered
-
-                        if check == "Y":
-                            print("\n" * 100)
-
-                            print(BLACKJACK_STR)
-
-                            continue
-
-                        else:
-                            print(f"\nTotal amount of chips left with the player = {self._chips}")
-                            print(input("Press Enter to exit the terminal..."))
-                            break
+                    self.__restart_game()
                 except Exception as error:
                     print(f"Following error occurred : {error} \nPlease try again.")
                     self._game_num -= 1  # round with error won't be counted
