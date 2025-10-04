@@ -1,5 +1,22 @@
 from config import START_MESSAGE, BLACKJACK_STR
 from Deck import Deck
+from Player import Player, Dealer
+
+
+class BlackJack2:
+
+    def __init__(self):
+        self.player = Player("Player", 100)
+        self.dealer = Dealer("Dealer", 10000)
+        self.game_num = 0
+
+    
+
+
+
+
+
+
 
 
 def check_ace(card):
