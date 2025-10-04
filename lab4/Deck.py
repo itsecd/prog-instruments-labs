@@ -20,12 +20,12 @@ class Card:
 
 
 class Deck:
-    def __init__(self):
-        self.all_cards = []
-        for suit in suits:
-            for rank in ranks:
-                # This assumes the Card class has already been defined!
-                self.all_cards.append(Card(suit, rank))
+    suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
+    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
+    
+    def __init__(self, suit, rank):
+        self.all_cards = [Card(suit, rank) for suit in suits for rank in ranks]
+        self.shuffle()
 
     def shuffle(self):
         random.shuffle(self.all_cards)

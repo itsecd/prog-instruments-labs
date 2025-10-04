@@ -1,4 +1,4 @@
-from config import values, START_MESSAGE, BLACKJACK_STR
+from config import START_MESSAGE, BLACKJACK_STR
 from Deck import Deck
 
 
