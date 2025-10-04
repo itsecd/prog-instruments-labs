@@ -16,6 +16,19 @@ KEY = {"UP": 1, "DOWN": 2, "LEFT": 3, "RIGHT": 4}
 background_color = pygame.Color(0, 255, 255)
 black = pygame.Color(0, 255, 255)
 
+# Screen initialization
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.HWSURFACE)
+
+# Resources
+score_font = pygame.font.Font(None, 38)
+score_numb_font = pygame.font.Font(None, 28)
+game_over_font = pygame.font.Font(None, 46)
+play_again_font = score_numb_font
+score_msg = score_font.render("Score:", 1, pygame.Color("red"))
+score_msg_size = score_font.size("Score")
+
+# Clock
+game_clock = pygame.time.Clock()
 
 class Apple:
     def __init__(self, x, y, state):
@@ -259,23 +272,6 @@ def main():
     pygame.display.set_caption("$nAke bRo color fUll--FASAL ")
     pygame.font.init()
     random.seed()
-
-    global screen, game_clock, score_font, score_numb_font
-    global game_over_font, play_again_font, score_msg, score_msg_size
-
-    # Screen initialization
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.HWSURFACE)
-
-    # Resources
-    score_font = pygame.font.Font(None, 38)
-    score_numb_font = pygame.font.Font(None, 28)
-    game_over_font = pygame.font.Font(None, 46)
-    play_again_font = score_numb_font
-    score_msg = score_font.render("Score:", 1, pygame.Color("red"))
-    score_msg_size = score_font.size("Score")
-
-    # Clock
-    game_clock = pygame.time.Clock()
 
     # Game variables
     score = 0
