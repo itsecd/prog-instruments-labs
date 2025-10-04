@@ -4,11 +4,6 @@ import sys
 import random
 
 
-pygame.init()
-pygame.display.set_caption("$nAke bRo color fUll--FASAL ")
-pygame.font.init()
-random.seed()
-
 # global
 SPEED = 0.36
 SNAKE_SIZE = 9
@@ -18,41 +13,8 @@ SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
 FPS = 25
 KEY = {"UP": 1, "DOWN": 2, "LEFT": 3, "RIGHT": 4}
-# Screen initialization
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.HWSURFACE)
-
-# Resources
-score_font = pygame.font.Font(None, 38)
-score_numb_font = pygame.font.Font(None, 28)
-game_over_font = pygame.font.Font(None, 46)
-play_again_font = score_numb_font
-score_msg = score_font.render("Score:", 1, pygame.Color("red"))
-score_msg_size = score_font.size("Score")
-
-# pygame coloration for aqua
 background_color = pygame.Color(0, 255, 255)
 black = pygame.Color(0, 255, 255)
-
-# Clock
-game_clock = pygame.time.Clock()
-
-
-def check_collision(pos_a, size_a, pos_b, size_b):
-    # size_a size of a | size_b size of B
-    if (pos_a.x < pos_b.x + size_b and pos_a.x + size_a > pos_b.x and pos_a.y < pos_b.y + size_b and pos_a.y + size_a > pos_b.y):
-        return True
-    return False
-
-
-def check_limits(entity):
-    if (entity.x > SCREEN_WIDTH):
-        entity.x = SNAKE_SIZE
-    if (entity.x < 0):
-        entity.x = SCREEN_WIDTH - SNAKE_SIZE
-    if (entity.y > SCREEN_HEIGHT):
-        entity.y = SNAKE_SIZE
-    if (entity.y < 0):
-        entity.y = SCREEN_HEIGHT - SNAKE_SIZE
 
 
 class Apple:
@@ -239,6 +201,22 @@ def respawn_apples(apples, quantity, sx, sy):
         counter += 1
 
 
+def check_collision(pos_a, size_a, pos_b, size_b):
+    # size_a size of a | size_b size of B
+    if (pos_a.x < pos_b.x + size_b and pos_a.x + size_a > pos_b.x and pos_a.y < pos_b.y + size_b and pos_a.y + size_a > pos_b.y):
+        return True
+    return False
+
+def check_limits(entity):
+    if (entity.x > SCREEN_WIDTH):
+        entity.x = SNAKE_SIZE
+    if (entity.x < 0):
+        entity.x = SCREEN_WIDTH - SNAKE_SIZE
+    if (entity.y > SCREEN_HEIGHT):
+        entity.y = SNAKE_SIZE
+    if (entity.y < 0):
+        entity.y = SCREEN_HEIGHT - SNAKE_SIZE
+
 def end_game():
     message = game_over_font.render("Game Over", 1, pygame.Color("white"))
     message_play_again = play_again_font.render("Play Again? Y/N", 1, pygame.Color("green"))
@@ -277,6 +255,29 @@ def exit_screen():
 
 
 def main():
+    pygame.init()
+    pygame.display.set_caption("$nAke bRo color fUll--FASAL ")
+    pygame.font.init()
+    random.seed()
+
+    global screen, game_clock, score_font, score_numb_font
+    global game_over_font, play_again_font, score_msg, score_msg_size
+
+    # Screen initialization
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.HWSURFACE)
+
+    # Resources
+    score_font = pygame.font.Font(None, 38)
+    score_numb_font = pygame.font.Font(None, 28)
+    game_over_font = pygame.font.Font(None, 46)
+    play_again_font = score_numb_font
+    score_msg = score_font.render("Score:", 1, pygame.Color("red"))
+    score_msg_size = score_font.size("Score")
+
+    # Clock
+    game_clock = pygame.time.Clock()
+
+    # Game variables
     score = 0
 
     # Snake initialization
