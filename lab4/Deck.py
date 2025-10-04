@@ -7,7 +7,13 @@ class Card:
     def __init__(self, suit, rank):
         self.suit = suit
         self.rank = rank
-        self.value = values[rank]
+
+    def value(self):
+        if self.rank in ["Jack", "Queen", "King"]:
+            return 10
+        if self.rank == "Ace":
+            return 11
+        return int(self.rank)
 
     def __str__(self):
         return self.rank + " of " + self.suit
