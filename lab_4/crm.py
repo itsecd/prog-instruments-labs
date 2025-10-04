@@ -63,25 +63,6 @@ def import_leads(leads_file: str) -> List[Dict]:
 
     return processed_leads
 
-class Lead:
-    touchpoints = []
-    company_size = ''
-    _company_website = ''
-    days_since_last_post = 0
-    discount = 1
-
-    def get_lead_score(self):
-        return 1 if self.is_active() else 0
-
-    # 3.2: a method that should be merged into get_lead_score
-    def is_active(self):
-        return self.days_since_last_post < 5
-
-    # 3.2: mrr should be inlined to the return statement
-    def get_lifetime_value(self, product):
-        mrr = product.base_price() * self.discount
-        return mrr * 12
-
 
 class Lead:
     def __init__(self):
