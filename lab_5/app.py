@@ -102,10 +102,10 @@ def convert_csv_to_json(csv_content):
     try:
         df = pd.read_csv(StringIO(csv_content))
         result = df.to_json(orient='records', indent=2)
-        logger.debug(f"✅ CSV→JSON: обработано {len(df)} строк")
+        logger.debug("✅ CSV→JSON: обработано %d строк", len(df))
         return result
     except Exception as e:
-        logger.error(f"❌ Ошибка конвертации CSV в JSON: {str(e)}")
+        logger.error("❌ Ошибка конвертации CSV в JSON: %s", str(e))
         raise
 
 
@@ -235,9 +235,9 @@ def extract_text_from_pdf(pdf_file):
                 page_text = page.extract_text()
                 if page_text:
                     text += page_text + "\n"
-                    logger.debug(f"📄 Страница {page_num}: извлечено {len(page_text)} символов")
+                    logger.debug("📄 Страница %d: извлечено %d символов", page_num, len(page_text))
                 else:
-                    logger.warning(f"⚠️ Страница {page_num}: текст не извлечен")
+                    logger.warning("⚠️ Страница %d: текст не извлечен", page_num)
 
         logger.info(f"✅ Извлечено {len(text)} символов из PDF")
         return text
@@ -387,12 +387,12 @@ def convert_markdown_to_html(md_content):
 
 def convert_image_format(image_file, target_format):
     """Convert image between different formats"""
-    logger.info(f"🖼️ Конвертация изображения в {target_format}")
+    logger.info("🖼️ Конвертация изображения в %s", target_format)
     try:
         img = Image.open(image_file)
         original_format = img.format
         original_size = img.size
-        logger.debug(f"Исходный формат: {original_format}, размер: {original_size}")
+        logger.debug("Исходный формат: %s, размер: %s", original_format, original_size)
 
         # Convert RGBA to RGB for formats that don't support transparency
         if target_format.upper() in ['JPEG', 'JPG'] and img.mode == 'RGBA':
@@ -406,8 +406,8 @@ def convert_image_format(image_file, target_format):
         # Логируем информацию о результате
         buffer_size = buffer.getbuffer().nbytes
         logger.debug(f"Размер сконвертированного изображения: {buffer_size} байт")
-        logger.info(
-            f"✅ Изображение сконвертировано: {original_format} → {target_format}, размер: {original_size} → {buffer_size} байт")
+        logger.info("✅ Изображение сконвертировано: %s → %s, размер: %s → %d байт",
+                    original_format, target_format, original_size, buffer_size)
 
         return buffer.getvalue()
 
@@ -519,11 +519,11 @@ def create_pdf_from_text(text_content):
 
 def perform_conversion(file_content, input_format, target_format, file_obj=None, re=None):
     """Perform file conversion based on formats"""
-    logger.debug(f"🛠️ Вызов perform_conversion: {input_format} -> {target_format}")
+    logger.debug("🛠️ Вызов perform_conversion: %s -> %s", input_format, target_format)
 
     try:
         # Логируем попытку конвертации
-        logger.info(f"🔧 Конвертация: {input_format.upper()} → {target_format.upper()}")
+        logger.info("🔧 Конвертация: %s → %s", input_format.upper(), target_format.upper())
 
         # Сохраняем результат конвертации
         converted_content = None
