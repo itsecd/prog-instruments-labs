@@ -34,12 +34,12 @@ background_color = pygame.Color(0, 255, 255)
 black = pygame.Color(0, 255, 255)
 
 # Clock
-gameClock = pygame.time.Clock()
+game_clock = pygame.time.Clock()
 
 
-def check_collision(posA, As, posB, Bs):
-    # As size of a | Bs size of B
-    if (posA.x < posB.x + Bs and posA.x + As > posB.x and posA.y < posB.y + Bs and posA.y + As > posB.y):
+def check_collision(pos_a, size_a, pos_b, size_b):
+    # size_a size of a | size_b size of B
+    if (pos_a.x < pos_b.x + size_b and pos_a.x + size_a > pos_b.x and pos_a.y < pos_b.y + size_b and pos_a.y + size_a > pos_b.y):
         return True
     return False
 
@@ -83,10 +83,10 @@ class Snake:
 
         self.stack.append(self)
 
-        blackBox = Segment(self.x, self.y + SEPARATION)
-        blackBox.direction = KEY["UP"]
-        blackBox.color = "NULL"
-        self.stack.append(blackBox)
+        black_box = Segment(self.x, self.y + SEPARATION)
+        black_box.direction = KEY["UP"]
+        black_box.color = "NULL"
+        self.stack.append(black_box)
 
     def move(self):
         last_element = len(self.stack) - 1
@@ -117,24 +117,24 @@ class Snake:
         last_element = len(self.stack) - 1
         self.stack[last_element].direction = self.stack[last_element].direction
         if (self.stack[last_element].direction == KEY["UP"]):
-            newSegment = Segment(self.stack[last_element].x, self.stack[last_element].y - SNAKE_SIZE)
-            blackBox = Segment(newSegment.x, newSegment.y - SEPARATION)
+            new_segment = Segment(self.stack[last_element].x, self.stack[last_element].y - SNAKE_SIZE)
+            black_box = Segment(new_segment.x, new_segment.y - SEPARATION)
 
         elif (self.stack[last_element].direction == KEY["DOWN"]):
-            newSegment = Segment(self.stack[last_element].x, self.stack[last_element].y + SNAKE_SIZE)
-            blackBox = Segment(newSegment.x, newSegment.y + SEPARATION)
+            new_segment = Segment(self.stack[last_element].x, self.stack[last_element].y + SNAKE_SIZE)
+            black_box = Segment(new_segment.x, new_segment.y + SEPARATION)
 
         elif (self.stack[last_element].direction == KEY["LEFT"]):
-            newSegment = Segment(self.stack[last_element].x - SNAKE_SIZE, self.stack[last_element].y)
-            blackBox = Segment(newSegment.x - SEPARATION, newSegment.y)
+            new_segment = Segment(self.stack[last_element].x - SNAKE_SIZE, self.stack[last_element].y)
+            black_box = Segment(new_segment.x - SEPARATION, new_segment.y)
 
         elif (self.stack[last_element].direction == KEY["RIGHT"]):
-            newSegment = Segment(self.stack[last_element].x + SNAKE_SIZE, self.stack[last_element].y)
-            blackBox = Segment(newSegment.x + SEPARATION, newSegment.y)
+            new_segment = Segment(self.stack[last_element].x + SNAKE_SIZE, self.stack[last_element].y)
+            black_box = Segment(new_segment.x + SEPARATION, new_segment.y)
 
-        blackBox.color = "NULL"
-        self.stack.append(newSegment)
-        self.stack.append(blackBox)
+        black_box.color = "NULL"
+        self.stack.append(new_segment)
+        self.stack.append(black_box)
 
     def iterate_segments(self, delta):
         pass
@@ -217,8 +217,8 @@ def respawn_apple(apples, index, sx, sy):
         y = SCREEN_HEIGHT / 2 + radius * math.sin(angle)
         if (x == sx and y == sy):
             continue
-    newApple = Apple(x, y, 1)
-    apples[index] = newApple
+    new_apple = Apple(x, y, 1)
+    apples[index] = new_apple
 
 
 def respawn_apples(apples, quantity, sx, sy):
@@ -248,14 +248,14 @@ def end_game():
     pygame.display.flip()
     pygame.display.update()
 
-    myKey = get_key()
-    while (myKey != "exit"):
-        if (myKey == "yes"):
+    my_key = get_key()
+    while (my_key != "exit"):
+        if (my_key == "yes"):
             main()
-        elif (myKey == "no"):
+        elif (my_key == "no"):
             break
-        myKey = get_key()
-        gameClock.tick(FPS)
+        my_key = get_key()
+        game_clock.tick(FPS)
     sys.exit()
 
 
@@ -280,65 +280,65 @@ def main():
     score = 0
 
     # Snake initialization
-    mySnake = Snake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    mySnake.set_direction(KEY["UP"])
-    mySnake.move()
+    my_snake = Snake(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    my_snake.set_direction(KEY["UP"])
+    my_snake.move()
     start_segments = 3
     while (start_segments > 0):
-        mySnake.grow()
-        mySnake.move()
+        my_snake.grow()
+        my_snake.move()
         start_segments -= 1
 
     # Apples
     max_apples = 1
     eaten_apple = False
     apples = [Apple(random.randint(60, SCREEN_WIDTH), random.randint(60, SCREEN_HEIGHT), 1)]
-    respawn_apples(apples, max_apples, mySnake.x, mySnake.y)
+    respawn_apples(apples, max_apples, my_snake.x, my_snake.y)
 
-    startTime = pygame.time.get_ticks()
+    start_time = pygame.time.get_ticks()
     endgame = 0
 
     while (endgame != 1):
-        gameClock.tick(FPS)
+        game_clock.tick(FPS)
 
         # Input
-        keyPress = get_key()
-        if keyPress == "exit":
+        key_press = get_key()
+        if key_press == "exit":
             endgame = 1
 
         # Collision check
-        check_limits(mySnake)
-        if (mySnake.check_crash() == True):
+        check_limits(my_snake)
+        if (my_snake.check_crash() == True):
             end_game()
 
-        for myApple in apples:
-            if (myApple.state == 1):
-                if (check_collision(mySnake.get_head(), SNAKE_SIZE, myApple, APPLE_SIZE) == True):
-                    mySnake.grow()
-                    myApple.state = 0
+        for my_apple in apples:
+            if (my_apple.state == 1):
+                if (check_collision(my_snake.get_head(), SNAKE_SIZE, my_apple, APPLE_SIZE) == True):
+                    my_snake.grow()
+                    my_apple.state = 0
                     score += 5
                     eaten_apple = True
 
         # Position Update
-        if (keyPress):
-            mySnake.set_direction(keyPress)
-        mySnake.move()
+        if (key_press):
+            my_snake.set_direction(key_press)
+        my_snake.move()
 
         # Respawning apples
         if (eaten_apple == True):
             eaten_apple = False
-            respawn_apple(apples, 0, mySnake.get_head().x, mySnake.get_head().y)
+            respawn_apple(apples, 0, my_snake.get_head().x, my_snake.get_head().y)
 
         # Drawing
         screen.fill(background_color)
-        for myApple in apples:
-            if (myApple.state == 1):
-                myApple.draw(screen)
+        for my_apple in apples:
+            if (my_apple.state == 1):
+                my_apple.draw(screen)
 
-        mySnake.draw(screen)
+        my_snake.draw(screen)
         draw_score(score)
-        gameTime = pygame.time.get_ticks() - startTime
-        draw_game_time(gameTime)
+        game_time = pygame.time.get_ticks() - start_time
+        draw_game_time(game_time)
 
         pygame.display.flip()
         pygame.display.update()
