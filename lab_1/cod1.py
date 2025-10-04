@@ -11,17 +11,17 @@ from typing import Any, Dict, List, Optional, Tuple
 
 class DataProcessor:
     def __init__(self, data_source: str):
-        self.data_source=data_source
-        self.processed_data= []
-        self._cache={}
+        self.data_source = data_source
+        self.processed_data = []
+        self._cache = {}
     def load_data(self, file_path: str) -> List[Dict]:
-        data_list=[]
+        data_list = []
         try:
             with open(file_path, 'r') as f:
-                raw_data= json.load(f)
+                raw_data = json.load(f)
                 for index, item in enumerate(raw_data):
                     if self._validate_item(item):
-                        transformed=self._transform_item(item, index)
+                        transformed = self._transform_item(item, index)
                         data_list.append(transformed)
                         print(f"Processed item {index}: {transformed}")
                     else:
@@ -46,16 +46,16 @@ class DataProcessor:
             return False
         return True
     def _transform_item(self, item: Dict, index: int) -> Dict:
-        transformed={}
-        transformed['identifier'] =str(item['id'])
-        transformed['numeric_value']=float(item['value'])
-        transformed['processing_index']= index
-        transformed['processed_at']=datetime.datetime.now()
+        transformed = {}
+        transformed['identifier'] = str(item['id'])
+        transformed['numeric_value'] = float(item['value'])
+        transformed['processing_index'] = index
+        transformed['processed_at'] = datetime.datetime.now()
 
         if 'timestamp' in item:
             try:
                 timestamp_format='%Y-%m-%d %H:%M:%S'
-                transformed['time']=datetime.datetime.strptime(
+                transformed['time'] = datetime.datetime.strptime(
                     item['timestamp'], timestamp_format
                 )
             except ValueError:
@@ -84,17 +84,17 @@ class DataProcessor:
         }
 
 class Calculator:
-    def __init__(self, precision: int =2):
-        self.precision= precision
-        self._calculation_history= []
+    def __init__(self, precision: int = 2):
+        self.precision = precision
+        self._calculation_history = []
     def CalculateAverage(self, numbers: List[float]) -> float:
         if not numbers:
             self._add_to_history('average', numbers, 0.0)
             return 0.0
-        total=0.0
+        total = 0.0
         for n in numbers:
             total += n
-        result =total / len(numbers)
+        result = total / len(numbers)
         self._add_to_history('average', numbers, result)
         return round(result, self.precision)
 
@@ -102,8 +102,8 @@ class Calculator:
         if len(numbers) < 2:
             self._add_to_history('std_dev', numbers, 0.0)
             return 0.0
-        avg=self.CalculateAverage(numbers)
-        variance=0.0
+        avg = self.CalculateAverage(numbers)
+        variance = 0.0
         for num in numbers:
             variance += (num - avg) ** 2
         result=math.sqrt(variance / (len(numbers) - 1))
@@ -114,33 +114,33 @@ class Calculator:
         if not numbers:
             self._add_to_history('extremes', numbers, (0.0, 0.0))
             return (0.0, 0.0)
-        min_val=numbers[0]
-        max_val= numbers[0]
+        min_val = numbers[0]
+        max_val = numbers[0]
         for num in numbers[1:]:
             if num < min_val:
-                min_val =num
+                min_val = num
             if num > max_val:
-                max_val =num
-        result=(round(min_val, self.precision), round(max_val, self.precision))
+                max_val = num
+        result = (round(min_val, self.precision), round(max_val, self.precision))
         self._add_to_history('extremes', numbers, result)
         return result
     def calculate_median(self, numbers: List[float]) -> float:
         if not numbers:
             return 0.0
-        sorted_numbers=sorted(numbers)
-        n =len(sorted_numbers)
-        if n % 2== 1:
-            result =sorted_numbers[n // 2]
+        sorted_numbers = sorted(numbers)
+        n = len(sorted_numbers)
+        if n % 2 == 1:
+            result = sorted_numbers[n // 2]
         else:
-            result=(sorted_numbers[n // 2 - 1] + sorted_numbers[n // 2]) / 2
+            result = (sorted_numbers[n // 2 - 1] + sorted_numbers[n // 2]) / 2
         self._add_to_history('median', numbers, result)
         return round(result, self.precision)
 
     def calculate_range(self, numbers: List[float]) -> float:
         if not numbers:
             return 0.0
-        min_val, max_val=self.find_extremes(numbers)
-        result =max_val - min_val
+        min_val, max_val = self.find_extremes(numbers)
+        result = max_val - min_val
         self._add_to_history('range', numbers, result)
         return round(result, self.precision)
 
@@ -263,9 +263,9 @@ class DatabaseHandler:
             port = self.connection_params['port']
             print(f"Connecting to {host}:{port}")
             time.sleep(0.1)
-            self.is_connected=True
-            self.connection ="mock_connection_object"
-            self.connection_time= datetime.datetime.now()
+            self.is_connected = True
+            self.connection = "mock_connection_object"
+            self.connection_time = datetime.datetime.now()
             print("Connection established successfully")
             return True
         except ConnectionError as e:
@@ -380,7 +380,7 @@ def generate_report(data: List[Dict],
 
     report_lines.append("=" * 60)
 
-    report_text="\n".join(report_lines)
+    report_text = "\n".join(report_lines)
 
     if output_file:
         try:
