@@ -13,8 +13,7 @@ SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
 FPS = 25
 KEY = {"UP": 1, "DOWN": 2, "LEFT": 3, "RIGHT": 4}
-background_color = pygame.Color(0, 255, 255)
-black = pygame.Color(0, 255, 255)
+BACKGROUND_COLOR = pygame.Color(0, 255, 255)
 
 # Screen initialization
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.HWSURFACE)
@@ -327,7 +326,7 @@ def main():
             respawn_apple(apples, 0, my_snake.get_head().x, my_snake.get_head().y)
 
         # Drawing
-        screen.fill(background_color)
+        screen.fill(BACKGROUND_COLOR)
         for my_apple in apples:
             if (my_apple.state == 1):
                 my_apple.draw(screen)
