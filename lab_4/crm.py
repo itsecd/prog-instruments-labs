@@ -1,56 +1,66 @@
-'''A badly written, example CRM app.'''
-import itertools
+'''A well-structured CRM application.'''
 import os
 import sys
-
+from typing import List, Dict
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 
 
-def read_this_file(filename):  # unneeded
-    with open(filename, 'rb') as f:
-        return f.readlines()
+class LeadProcessor:
+    """Handles lead processing operations."""
+
+    @staticmethod
+    def clean_field(value: str, field_type: str) -> str:
+        """Clean field based on its type."""
+        cleaners = {
+            'name': lambda x: x.replace(' ', ''),
+            'twitter': lambda x: x.replace('@', ''),
+            'website': lambda x: x.replace('https://', ''),
+            'email': lambda x: x.lower()
+        }
+        return cleaners.get(field_type, lambda x: x)(value)
+
+    @staticmethod
+    def detect_email_provider(email: str) -> str:
+        """Detect email provider and return appropriate message."""
+        if 'gmail' in email:
+            return 'Importing gmail'
+        elif 'hotmail' in email:
+            return 'Importing hotmail'
+        else:
+            return 'Custom mail server.'
 
 
-# split this up in 3.1
-def import_leads(leads_file):  # function that is too long
-    '''Import file, process leads, enrich leads, return processed_leads'''
+def import_leads(leads_file: str) -> List[Dict]:
+    """Import and process leads from file."""
     processed_leads = []
 
     try:
-        with open(leads_file, 'rb') as f:
-            leads = f.readlines()
+        with open(leads_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                lead_data = line.strip().split()
+                if not lead_data:
+                    continue
 
-            for lead in leads:
-                processed_lead = {}
-                processed_lead['first_name'] = lead.split()[0]
-                processed_lead['last_name'] = lead.split()[0]
-                processed_lead['email'] = lead.split()[0]
-                processed_lead['company'] = lead.split()[0]
-                processed_lead['twitter'] = lead.split()[0]
-                processed_lead['website'] = lead.split()[0]
+                processed_lead = {
+                    'first_name': LeadProcessor.clean_field(lead_data[0], 'name'),
+                    'last_name': lead_data[0].lower() if len(lead_data) > 0 else '',
+                    'email': lead_data[0] if len(lead_data) > 0 else '',
+                    'company': lead_data[0] if len(lead_data) > 0 else '',
+                    'twitter': LeadProcessor.clean_field(lead_data[0], 'twitter'),
+                    'website': LeadProcessor.clean_field(lead_data[0], 'website')
+                }
+
+                # Process email provider
+                email_msg = LeadProcessor.detect_email_provider(processed_lead['email'])
+                print(email_msg)
+
                 processed_leads.append(processed_lead)
 
-            for p_lead in processed_leads:
-                p_lead['first_name'] = p_lead['first_name'].replace(' ', '')
-                p_lead['last_name'] = p_lead['last_name'].lower()
-
-                if 'gmail' in p_lead['email']:
-                    print('Importing gmail')
-                elif 'hotmail' in p_lead['email']:
-                    print('Importing hotmail')
-                else:
-                    print('Custom mail server.')
-
-                p_lead['company'] = p_lead['company']
-                p_lead['twitter'] = p_lead['twitter'].replace('@', '')
-                p_lead['website'] = p_lead['website'].replace('https://', '')
-
-    except OSError:
-        print('Cannot open file')
+    except (OSError, IOError) as e:
+        print(f'Cannot open file {leads_file}: {e}')
 
     return processed_leads
-
 
 class Lead:
     touchpoints = []
