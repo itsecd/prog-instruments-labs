@@ -1,7 +1,9 @@
 from Deck import Deck, Card
 
+
 class Player:
-    def __init__(self, chips):
+    def __init__(self, name, chips):
+        self.name = name
         self.chips = chips
         self.hand = []
 
@@ -32,4 +34,10 @@ class Player:
 
     def __str__(self):
         cards = ", ".join(str(card) for card in self.hand)
-        return f"Player`s hand: {cards}"
+        return f"{self.name} hand: {cards}"
+
+
+class Dealer(Player):
+
+    def should_hit(self):
+        return self.hand_value()
