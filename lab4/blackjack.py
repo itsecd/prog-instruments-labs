@@ -25,7 +25,7 @@ def check_ace(card):
                 continue # это тут не нужно
 
 
-class black_jack:
+class BlackJack:
     def __init__(self):
         self._chips = 100
         self._game_num = 0

@@ -1,8 +1,8 @@
-from black_jack import black_jack
+from blackjack import BlackJack
 
 
 def main():
-    game = black_jack()
+    game = BlackJack()
     game.start()
 
 
