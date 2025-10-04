@@ -21,14 +21,14 @@ def check_ace(card):
                 print("Input a integer: 1 or 11")
 
 
-
 class BlackJack:
     def __init__(self):
         self._chips = 100
         self._game_num = 0
         self._game_on = True
 
-    def print_start_message(self):
+    @staticmethod
+    def __print_start_message():
         print("\n" * 100)
 
         print(BLACKJACK_STR)
@@ -64,13 +64,18 @@ class BlackJack:
 
         return player_table_cards, dealer_table_cards
 
-
-    def __compute_sum(self, table_cards: list):
+    @staticmethod
+    def __compute_sum(table_cards: list):
         sum_cards_val = 0
         for i in table_cards:
             sum_cards_val += i.value
         return sum_cards_val
 
+    def __print_hand(self, table_cards: list, hand_owner: str):
+        print(F"\n{hand_owner}'s hand :")
+        # using list comprehension to print cards on table
+        [print(i) for i in table_cards]
+        print()
     def __hit_or_stand(self, player_table_cards: list, new_deck: Deck) -> int:
         player_cards_val = 0
         while player_cards_val < 21:
@@ -82,10 +87,7 @@ class BlackJack:
 
                     print(f"\nThe player hits card : {player_table_cards[-1]}")
 
-                    print("\nPlayer's hand :")
-                    # using list comprehension to print cards on table
-                    [print(i) for i in player_table_cards]
-                    print()
+                    self.__print_hand(player_table_cards, "Player")
 
                     player_cards_val = self.__compute_sum(player_table_cards)
                     continue
@@ -95,9 +97,7 @@ class BlackJack:
 
                     print("\nPlayer has decided to stand.")
 
-                    print("\nPlayer's hand:")
-                    [print(i) for i in player_table_cards]
-                    print()
+                    self.__print_hand(player_table_cards, "Player")
                     return player_cards_val
 
                 case _:
@@ -119,15 +119,13 @@ class BlackJack:
 
             elif 17 <= dealer_cards_val < 21:
                 print(f"The Dealer has hit {no_of_hits} times.")
-                print("\nDealer's hand :")
-                [print(i) for i in dealer_table_cards]
+                self.__print_hand(dealer_table_cards, "Dealer")
                 return dealer_cards_val, no_of_hits
 
             elif dealer_cards_val == 21:
                 print(f"The Dealer has hit {no_of_hits} times.")
                 print("The Dealer got a blackjack!")
-                print("\nDealer's hand :")
-                [print(i) for i in dealer_table_cards]
+                self.__print_hand(dealer_table_cards, "Dealer")
                 return dealer_cards_val, no_of_hits
         return dealer_cards_val, no_of_hits
 
@@ -137,8 +135,7 @@ class BlackJack:
             if not (player_cards_val > 21):
                 print(f"The Dealer has hit {no_of_hits} times.")
                 print("The Dealer busted!")
-                print("\nDealer's hand :")
-                [print(i) for i in dealer_table_cards]
+                self.__print_hand(dealer_table_cards, "Dealer")
 
 
             # checking for busts first
@@ -192,7 +189,7 @@ class BlackJack:
                         self._game_on = False
 
     def start(self):
-            self.print_start_message()
+            BlackJack.__print_start_message()
 
             while self._game_on:
                 try:
