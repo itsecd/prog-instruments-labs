@@ -8,7 +8,7 @@ class DataProcessor:
         self.data_source=data_source
         self.processed_data= []
         self._cache={}
-    def loaddata(self, file_path: str) -> List[Dict]:
+    def load_data(self, file_path: str) -> List[Dict]:
         data_list=[]
         try:
             with open(file_path, 'r') as f:
@@ -27,7 +27,7 @@ class DataProcessor:
             print(f"Unexpected error loading data: {e}")
             return []
         return data_list
-    def validateitem(self, item: Dict) -> bool:
+    def _validate_item(self, item: Dict) -> bool:
         if not item or not isinstance(item, dict):
             return False
         if 'id' not in item or not isinstance(item['id'], (int, str)):
@@ -39,7 +39,7 @@ class DataProcessor:
         except (ValueError, TypeError):
             return False
         return True
-    def transformitem(self, item: Dict, index: int) -> Dict:
+    def _transform_item(self, item: Dict, index: int) -> Dict:
         transformed={}
         transformed['identifier'] =str(item['id'])
         transformed['numeric_value']=float(item['value'])
@@ -56,7 +56,7 @@ class DataProcessor:
             transformed['category'] = item['category'].upper()
 
         return transformed
-    def batchprocess(self, items: List[Dict]) -> List[Dict]:
+    def batch_process(self, items: List[Dict]) -> List[Dict]:
         processed_items=[]
         for i, item in enumerate(items):
             if self._validate_item(item):
@@ -64,10 +64,10 @@ class DataProcessor:
                 processed_items.append(processed)
         return processed_items
 
-    def clearcache(self):
+    def clear_cache(self):
         self._cache={}
         print("Cache cleared")
-    def getstats(self) -> Dict:
+    def get_stats(self) -> Dict:
         return {
             'processed_count': len(self.processed_data),
             'cache_size': len(self._cache),
@@ -78,7 +78,7 @@ class Calculator:
     def __init__(self, precision: int =2):
         self.precision= precision
         self._calculation_history= []
-    def CalculateAverage(self, numbers: List[float]) -> float:
+    def calculate_average(self, numbers: List[float]) -> float:
         if not numbers:
             self._add_to_history('average', numbers, 0.0)
             return 0.0
@@ -89,11 +89,11 @@ class Calculator:
         self._add_to_history('average', numbers, result)
         return round(result, self.precision)
 
-    def calculatestandarddeviation(self, numbers: List[float]) -> float:
+    def calculate_standard_deviation(self, numbers: List[float]) -> float:
         if len(numbers) < 2:
             self._add_to_history('std_dev', numbers, 0.0)
             return 0.0
-        avg=self.CalculateAverage(numbers)
+        avg=self.calculate_average(numbers)
         variance=0.0
         for num in numbers:
             variance += (num - avg) ** 2
@@ -101,7 +101,7 @@ class Calculator:
         self._add_to_history('std_dev', numbers, result)
         return round(result, self.precision)
 
-    def findextremes(self, numbers: List[float]) -> Tuple[float, float]:
+    def find_extremes(self, numbers: List[float]) -> Tuple[float, float]:
         if not numbers:
             self._add_to_history('extremes', numbers, (0.0, 0.0))
             return (0.0, 0.0)
@@ -115,7 +115,7 @@ class Calculator:
         result=(round(min_val, self.precision), round(max_val, self.precision))
         self._add_to_history('extremes', numbers, result)
         return result
-    def calculatemedian(self, numbers: List[float]) -> float:
+    def calculate_median(self, numbers: List[float]) -> float:
         if not numbers:
             return 0.0
         sorted_numbers=sorted(numbers)
@@ -127,7 +127,7 @@ class Calculator:
         self._add_to_history('median', numbers, result)
         return round(result, self.precision)
 
-    def calculaterange(self, numbers: List[float]) -> float:
+    def calculate_range(self, numbers: List[float]) -> float:
         if not numbers:
             return 0.0
         min_val, max_val=self.find_extremes(numbers)
@@ -135,7 +135,7 @@ class Calculator:
         self._add_to_history('range', numbers, result)
         return round(result, self.precision)
 
-    def addtohistory(self, operation: str, data: List[float], result: Any):
+    def _add_to_history(self, operation: str, data: List[float], result: Any):
         entry = {
             'timestamp': datetime.datetime.now(),
             'operation': operation,
@@ -143,14 +143,14 @@ class Calculator:
             'result': result
         }
         self._calculation_history.append(entry)
-    def gethistory(self) -> List[Dict]:
+    def get_history(self) -> List[Dict]:
         return self._calculation_history.copy()
-    def clearhistory(self):
+    def clear_history(self):
         self._calculation_history = []
         print("Calculation history cleared")
-    def getstatisticssummary(self, numbers: List[float]) -> Dict:
+    def get_statistics_summary(self, numbers: List[float]) -> Dict:
         return {
-            'average': self.CalculateAverage(numbers),
+            'average': self.calculate_average(numbers),
             'std_dev': self.calculate_standard_deviation(numbers),
             'min': self.find_extremes(numbers)[0],
             'max': self.find_extremes(numbers)[1],
@@ -160,7 +160,7 @@ class Calculator:
 
 
 
-def processuserinput(input_string: str, validation_rules: Optional[Dict] = None) -> Dict[str, Any]:
+def process_user_input(input_string: str, validation_rules: Optional[Dict] = None) -> Dict[str, Any]:
     result = {'success': False, 'data': None, 'error': None, 'warnings': []}
 
     if not input_string or len(input_string.strip()) == 0:
@@ -194,18 +194,18 @@ def processuserinput(input_string: str, validation_rules: Optional[Dict] = None)
 
     return result
 
-def validateemail(email: str) -> bool:
+def validate_email(email: str) -> bool:
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return bool(re.match(pattern, email))
 
-def validatephone(phone: str) -> bool:
+def validate_phone(phone: str) -> bool:
     pattern = r'^\+?[1-9]\d{1,14}$'
     return bool(re.match(pattern, phone))
 
-def sanitizeinput(input_string: str) -> str:
+def sanitize_input(input_string: str) -> str:
     return input_string.strip().replace('\0', '').replace('\r', '').replace('\n', '')
 
-def formatoutput(data: Any, format_type: str = 'string') -> str:
+def format_output(data: Any, format_type: str = 'string') -> str:
     if format_type == 'json':
         return json.dumps(data, indent=2, default=str)
     elif format_type == 'csv':
@@ -247,7 +247,7 @@ class DatabaseHandler:
             print(f"Unexpected error: {e}")
             return False
 
-    def executequery(self, query: str, params: Optional[Tuple] = None) -> List[Dict]:
+    def execute_query(self, query: str, params: Optional[Tuple] = None) -> List[Dict]:
         if not self.is_connected:
             print("Not connected to database")
             return []
@@ -281,19 +281,19 @@ class DatabaseHandler:
             connection_duration = datetime.datetime.now() - self.connection_time
             print(f"Connection duration: {connection_duration}")
 
-    def getstats(self) -> Dict:
+    def get_stats(self) -> Dict:
         return {
             'query_count': self.query_count,
             'connection_time': self.connection_time,
             'is_connected': self.is_connected
         }
-    def batchexecute(self, queries: List[str]) -> List[List[Dict]]:
+    def batch_execute(self, queries: List[str]) -> List[List[Dict]]:
         results = []
         for query in queries:
             results.append(self.execute_query(query))
         return results
 
-    def testconnection(self) -> bool:
+    def test_connection(self) -> bool:
         try:
             print("Testing database connection...")
             return self.connect() and self.disconnect()
@@ -304,7 +304,7 @@ class DatabaseHandler:
             print(f"Unexpected error during connection test: {e}")
             return False
 
-def generatereport(data: List[Dict], output_file: Optional[str] = None, include_details: bool = False) -> str:
+def generate_report(data: List[Dict], output_file: Optional[str] = None, include_details: bool = False) -> str:
     if not data:
         return "No data to generate report"
 
@@ -314,7 +314,7 @@ def generatereport(data: List[Dict], output_file: Optional[str] = None, include_
     if not values:
         return "No numeric values found"
 
-    avg = calc.CalculateAverage(values)
+    avg = calc.calculate_average(values)
     std_dev = calc.calculate_standard_deviation(values)
     min_val, max_val = calc.find_extremes(values)
 
@@ -356,7 +356,7 @@ def generatereport(data: List[Dict], output_file: Optional[str] = None, include_
 
     return report_text
 
-def createsampledata(count: int = 15) -> List[Dict]:
+def create_sample_data(count: int = 15) -> List[Dict]:
     sample_data = []
     categories = ['A', 'B', 'C', 'D']
 
@@ -372,20 +372,20 @@ def createsampledata(count: int = 15) -> List[Dict]:
     return sample_data
 
 
-def demonstratefeatures():
+def demonstrate_features():
     print("=== DEMONSTRATION OF FEATURES ===")
 
-    sample_data = createsampledata()
+    sample_data = create_sample_data()
     print(f"Created {len(sample_data)} sample data items")
 
     with open('temp_data.json', 'w') as f:
         json.dump(sample_data, f)
 
     processor = DataProcessor('file')
-    data = processor.loaddata('temp_data.json')
+    data = processor.load_data('temp_data.json')
 
     if data:
-        report = generatereport(data, 'report.txt', include_details=True)
+        report = generate_report(data, 'report.txt', include_details=True)
         print("\nGenerated Report:")
         print(report)
     else:
@@ -395,22 +395,22 @@ def demonstratefeatures():
     test_numbers = [10.5, 20.3, 15.7, 25.1, 18.9]
 
     print(f"\nCalculator demo with numbers: {test_numbers}")
-    print(f"Average: {calc.CalculateAverage(test_numbers)}")
-    print(f"Std Dev: {calc.calculatestandarddeviation(test_numbers)}")
+    print(f"Average: {calc.calculate_average(test_numbers)}")
+    print(f"Std Dev: {calc.calculate_standard_deviation(test_numbers)}")
     print(f"Min/Max: {calc.find_extremes(test_numbers)}")
 
     print("\n=== USER INPUT PROCESSING ===")
     test_inputs = ['123', 'hello world', 'test@example.com', '123abc']
 
     for input_str in test_inputs:
-        result = processuserinput(input_str)
+        result = process_user_input(input_str)
         status = "✓" if result['success'] else "✗"
         print(f"{status} Input: '{input_str}' -> {result}")
 
     print("\n=== DATABASE OPERATIONS ===")
     db_handler = DatabaseHandler('localhost', 5432, 'mydb', 'user', 'password')
     if db_handler.connect():
-        results = db_handler.executequery("SELECT * FROM users WHERE age > %s", (25,))
+        results = db_handler.execute_query("SELECT * FROM users WHERE age > %s", (25,))
         print(f"Query results: {len(results)} users found")
         db_handler.disconnect()
 
@@ -420,4 +420,4 @@ def demonstratefeatures():
     print("\nApplication finished successfully")
 
 if __name__ == "__main__":
-    demonstratefeatures()
+    demonstrate_features()
