@@ -1,0 +1,6 @@
+{
+    "variant": 51,
+    "input_file":"51.csv",
+    "result_file":"result.json",
+    "regular_file":"regular.json"
+}
