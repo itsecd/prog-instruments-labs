@@ -40,3 +40,20 @@ def sample_json_content():
 def sample_xml_content():
     """Фикстура с примером XML контента"""
     return '<?xml version="1.0"?><root><name>John</name><age>30</age></root>'
+
+
+@pytest.fixture
+def mock_pdf_file():
+    """Фикстура мока PDF файла"""
+    mock_file = MagicMock()
+    mock_file.read.return_value = b"%PDF-1.4 fake PDF content"
+    mock_file.seek.return_value = None
+    return mock_file
+
+
+@pytest.fixture
+def mock_image_file():
+    """Фикстура мока изображения"""
+    mock_file = MagicMock()
+    mock_file.read.return_value = b"fake image content"
+    return mock_file
