@@ -16,6 +16,7 @@ import re
 # Extended format support imports
 import PyPDF2
 from docx import Document
+
 try:
     import pymupdf as fitz
 except ImportError:
@@ -39,7 +40,7 @@ app.secret_key = 'your_secret_key_here'
 # Configure upload settings
 UPLOAD_FOLDER = 'temp_uploads'
 ALLOWED_EXTENSIONS = {
-    'csv', 'json', 'xml', 'txt', 'xlsx', 'pdf', 'docx', 'pptx', 
+    'csv', 'json', 'xml', 'txt', 'xlsx', 'pdf', 'docx', 'pptx',
     'jpg', 'jpeg', 'png', 'bmp', 'gif', 'md', 'html'
 }
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -93,7 +94,7 @@ logger = setup_logging()
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def convert_csv_to_json(csv_content):
@@ -102,10 +103,10 @@ def convert_csv_to_json(csv_content):
     try:
         df = pd.read_csv(StringIO(csv_content))
         result = df.to_json(orient='records', indent=2)
-        logger.debug(f"✅ CSV→JSON: обработано {len(df)} строк")
+        logger.debug("✅ CSV→JSON: обработано %d строк", len(df))
         return result
     except Exception as e:
-        logger.error(f"❌ Ошибка конвертации CSV в JSON: {str(e)}")
+        logger.error("❌ Ошибка конвертации CSV в JSON: %s", str(e))
         raise
 
 
@@ -115,13 +116,13 @@ def convert_csv_to_xml(csv_content):
     xml_data = []
     xml_data.append('<?xml version="1.0" encoding="UTF-8"?>')
     xml_data.append('<root>')
-    
+
     for _, row in df.iterrows():
         xml_data.append('  <record>')
         for col in df.columns:
             xml_data.append(f'    <{col}>{row[col]}</{col}>')
         xml_data.append('  </record>')
-    
+
     xml_data.append('</root>')
     return '\n'.join(xml_data)
 
@@ -139,10 +140,10 @@ def convert_json_to_csv(json_content):
 def convert_json_to_xml(json_content):
     """Convert JSON to XML"""
     data = json.loads(json_content)
-    
+
     def dict_to_xml(d, root_name="root"):
         root = ET.Element(root_name)
-        
+
         def add_to_xml(parent, key, value):
             if isinstance(value, dict):
                 child = ET.SubElement(parent, key)
@@ -160,16 +161,16 @@ def convert_json_to_xml(json_content):
             else:
                 child = ET.SubElement(parent, key)
                 child.text = str(value)
-        
+
         if isinstance(data, list):
             for item in data:
                 add_to_xml(root, "item", item)
         else:
             for key, value in data.items():
                 add_to_xml(root, key, value)
-        
+
         return ET.tostring(root, encoding='unicode')
-    
+
     return dict_to_xml(data)
 
 
@@ -200,26 +201,26 @@ def convert_to_txt(content, source_format):
 def convert_to_pdf(content, source_format):
     """Convert content to PDF"""
     text_content = convert_to_txt(content, source_format)
-    
+
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
-    
+
     lines = text_content.split('\n')
     y_position = height - 50
     line_height = 12
-    
+
     for line in lines:
         if y_position < 50:
             p.showPage()
             y_position = height - 50
-        
+
         if len(line) > 100:
             line = line[:97] + "..."
-        
+
         p.drawString(50, y_position, line)
         y_position -= line_height
-    
+
     p.save()
     return buffer.getvalue()
 
@@ -235,9 +236,11 @@ def extract_text_from_pdf(pdf_file):
                 page_text = page.extract_text()
                 if page_text:
                     text += page_text + "\n"
-                    logger.debug(f"📄 Страница {page_num}: извлечено {len(page_text)} символов")
+                    logger.debug("📄 Страница %d: извлечено %d символов",
+                                 page_num, len(page_text))
                 else:
-                    logger.warning(f"⚠️ Страница {page_num}: текст не извлечен")
+                    logger.warning("⚠️ Страница %d: текст не извлечен",
+                                   page_num)
 
         logger.info(f"✅ Извлечено {len(text)} символов из PDF")
         return text
@@ -254,7 +257,8 @@ def extract_text_from_pdf(pdf_file):
                 raise Exception("PDF text extraction failed and PyMuPDF not available")
         except Exception as fallback_error:
             # Last resort: return error message
-            text = f"Error extracting text from PDF: {str(e)}\nFallback error: {str(fallback_error)}"
+            text = (f"Error extracting text from PDF:"
+                    f" {str(e)}\nFallback error: {str(fallback_error)}")
     return text
 
 
@@ -272,18 +276,18 @@ def extract_text_from_pptx(pptx_file):
     prs = Presentation(pptx_file)
     full_text = ""
     slide_number = 0
-    
+
     for slide in prs.slides:
         slide_number += 1
-        slide_text = f"\n{'='*50}\nSLIDE {slide_number}\n{'='*50}\n\n"
-        
+        slide_text = f"\n{'=' * 50}\nSLIDE {slide_number}\n{'=' * 50}\n\n"
+
         # Extract text from all shapes
         for shape in slide.shapes:
             try:
                 # Text in text boxes and shapes
                 if hasattr(shape, "text") and shape.text.strip():
                     slide_text += shape.text.strip() + "\n\n"
-                
+
                 # Text in tables
                 elif shape.has_table:
                     table = shape.table
@@ -297,17 +301,17 @@ def extract_text_from_pptx(pptx_file):
                         if row_text:
                             slide_text += " | ".join(row_text) + "\n"
                     slide_text += "\n"
-                
+
                 # Text in grouped shapes
                 elif hasattr(shape, 'shapes'):
                     for sub_shape in shape.shapes:
                         if hasattr(sub_shape, "text") and sub_shape.text.strip():
                             slide_text += sub_shape.text.strip() + "\n"
-                
+
             except Exception as e:
                 # Continue processing other shapes if one fails
                 continue
-        
+
         # Extract notes if present
         try:
             if slide.notes_slide and slide.notes_slide.notes_text_frame:
@@ -316,28 +320,31 @@ def extract_text_from_pptx(pptx_file):
                     slide_text += f"\n[SLIDE NOTES]\n{notes_text}\n\n"
         except:
             pass
-        
+
         # Only add slide if it has content
-        if slide_text.strip() != f"\n{'='*50}\nSLIDE {slide_number}\n{'='*50}\n\n":
+        if slide_text.strip() != f"\n{'=' * 50}\nSLIDE {slide_number}\n{'=' * 50}\n\n":
             full_text += slide_text
         else:
             # Add placeholder for slides with no extractable text
-            full_text += f"\n{'='*50}\nSLIDE {slide_number}\n{'='*50}\n\n[Slide contains visual content that cannot be extracted as text]\n\n"
-    
-    return full_text if full_text.strip() else "No extractable text content found in presentation."
+            full_text += (f"\n{'=' * 50}\nSLIDE {slide_number}\n{'=' * 50}\n\n"
+                          f"[Slide contains visual content that cannot"
+                          f" be extracted as text]\n\n")
+
+    return full_text if full_text.strip() \
+        else "No extractable text content found in presentation."
 
 
 def convert_text_to_docx(text_content):
     """Convert text to Word document"""
     doc = Document()
-    
+
     # Split text into paragraphs
     paragraphs = text_content.split('\n\n')
-    
+
     for para_text in paragraphs:
         if para_text.strip():
             doc.add_paragraph(para_text.strip())
-    
+
     buffer = BytesIO()
     doc.save(buffer)
     return buffer.getvalue()
@@ -387,12 +394,14 @@ def convert_markdown_to_html(md_content):
 
 def convert_image_format(image_file, target_format):
     """Convert image between different formats"""
-    logger.info(f"🖼️ Конвертация изображения в {target_format}")
+    logger.info("🖼️ Конвертация изображения в %s",
+                target_format)
     try:
         img = Image.open(image_file)
         original_format = img.format
         original_size = img.size
-        logger.debug(f"Исходный формат: {original_format}, размер: {original_size}")
+        logger.debug("Исходный формат: %s, размер: %s",
+                     original_format, original_size)
 
         # Convert RGBA to RGB for formats that don't support transparency
         if target_format.upper() in ['JPEG', 'JPG'] and img.mode == 'RGBA':
@@ -406,26 +415,28 @@ def convert_image_format(image_file, target_format):
         # Логируем информацию о результате
         buffer_size = buffer.getbuffer().nbytes
         logger.debug(f"Размер сконвертированного изображения: {buffer_size} байт")
-        logger.info(
-            f"✅ Изображение сконвертировано: {original_format} → {target_format}, размер: {original_size} → {buffer_size} байт")
+        logger.info("✅ Изображение сконвертировано: %s → %s, размер: %s → %d байт",
+                    original_format, target_format, original_size, buffer_size)
 
         return buffer.getvalue()
 
     except Exception as e:
-        logger.error(f"❌ Ошибка конвертации изображения {target_format}: {str(e)}", exc_info=True)
+        logger.error(f"❌ Ошибка конвертации изображения"
+                     f" {target_format}: {str(e)}", exc_info=True)
         raise
+
 
 def create_pdf_from_text(text_content):
     """Create a formatted PDF from text using ReportLab with better PowerPoint handling"""
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.enums import TA_CENTER, TA_LEFT
     from reportlab.platypus import PageBreak
-    
+
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     styles = getSampleStyleSheet()
     story = []
-    
+
     # Create custom styles
     slide_title_style = ParagraphStyle(
         'SlideTitle',
@@ -435,28 +446,28 @@ def create_pdf_from_text(text_content):
         alignment=TA_CENTER,
         textColor='#0066cc'
     )
-    
+
     # Check if this looks like PowerPoint content (has slide markers)
     if 'SLIDE ' in text_content and '=' in text_content:
         # Handle PowerPoint-style content
-        slides = text_content.split('\n' + '='*50)
-        
+        slides = text_content.split('\n' + '=' * 50)
+
         for i, slide_content in enumerate(slides):
             if slide_content.strip():
                 # Clean up slide content
                 slide_content = slide_content.strip()
-                
+
                 # Extract slide title/number
                 lines = slide_content.split('\n')
                 slide_title = None
                 content_lines = []
-                
+
                 for line in lines:
                     if line.startswith('SLIDE '):
                         slide_title = line
                     elif line.strip() and not line.startswith('='):
                         content_lines.append(line)
-                
+
                 # Add slide title
                 if slide_title:
                     if i > 0:  # Add page break before new slides (except first)
@@ -464,7 +475,7 @@ def create_pdf_from_text(text_content):
                     title_para = Paragraph(slide_title, slide_title_style)
                     story.append(title_para)
                     story.append(Spacer(1, 20))
-                
+
                 # Add slide content
                 for line in content_lines:
                     if line.strip():
@@ -479,20 +490,20 @@ def create_pdf_from_text(text_content):
                             para = Paragraph(line.replace('|', ' | '), styles['Code'])
                         else:
                             para = Paragraph(line, styles['Normal'])
-                        
+
                         story.append(para)
                         story.append(Spacer(1, 8))
     else:
         # Handle regular text content
         paragraphs = text_content.split('\n\n')
-        
+
         for para_text in paragraphs:
             if para_text.strip():
                 # Split very long paragraphs
                 if len(para_text) > 1000:
                     sentences = para_text.split('. ')
                     current_para = ""
-                    
+
                     for sentence in sentences:
                         if len(current_para + sentence) > 800:
                             if current_para:
@@ -502,7 +513,7 @@ def create_pdf_from_text(text_content):
                             current_para = sentence + '. '
                         else:
                             current_para += sentence + '. '
-                    
+
                     if current_para.strip():
                         para = Paragraph(current_para.strip(), styles['Normal'])
                         story.append(para)
@@ -511,7 +522,7 @@ def create_pdf_from_text(text_content):
                     para = Paragraph(para_text.strip(), styles['Normal'])
                     story.append(para)
                     story.append(Spacer(1, 12))
-    
+
     # Build the PDF
     doc.build(story)
     return buffer.getvalue()
@@ -519,11 +530,12 @@ def create_pdf_from_text(text_content):
 
 def perform_conversion(file_content, input_format, target_format, file_obj=None, re=None):
     """Perform file conversion based on formats"""
-    logger.debug(f"🛠️ Вызов perform_conversion: {input_format} -> {target_format}")
+    logger.debug("🛠️ Вызов perform_conversion: %s -> %s", input_format, target_format)
 
     try:
         # Логируем попытку конвертации
-        logger.info(f"🔧 Конвертация: {input_format.upper()} → {target_format.upper()}")
+        logger.info("🔧 Конвертация: %s → %s",
+                    input_format.upper(), target_format.upper())
 
         # Сохраняем результат конвертации
         converted_content = None
@@ -730,14 +742,17 @@ def perform_conversion(file_content, input_format, target_format, file_obj=None,
 
         # Проверяем что конвертация прошла успешно
         if converted_content is None:
-            logger.error(f"❌ Конвертация не выполнена: {input_format} -> {target_format}")
-            raise ValueError(f"Conversion from {input_format} to {target_format} is not supported")
+            logger.error(f"❌ Конвертация не выполнена:"
+                         f" {input_format} -> {target_format}")
+            raise ValueError(f"Conversion from {input_format}"
+                             f" to {target_format} is not supported")
 
         logger.info(f"✅ Успешная конвертация: {input_format} -> {target_format}")
         return converted_content
 
     except Exception as e:
-        logger.error(f"❌ Ошибка конвертации {input_format} -> {target_format}: {str(e)}", exc_info=True)
+        logger.error(f"❌ Ошибка конвертации {input_format}"
+                     f" -> {target_format}: {str(e)}", exc_info=True)
         raise ValueError(f"Conversion failed: {str(e)}")
 
 
@@ -748,46 +763,47 @@ def index():
 
 @app.route('/convert', methods=['POST'])
 def convert_file():
-    logger.info("📥 Получен запрос на конвертацию файла")
+    # Логируем информацию о запросе
+    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    user_agent = request.headers.get('User-Agent', 'Unknown')
+    content_type = request.content_type
+
+    logger.info("📥 Получен запрос на конвертацию файла - IP:"
+                " %s, Method: %s, Content-Type: %s",
+                client_ip, request.method, content_type)
+    logger.debug("User-Agent: %s", user_agent)
 
     try:
         if 'file' not in request.files:
-            logger.warning("❌ В запросе отсутствует файл")
+            logger.warning("❌ В запросе отсутствует файл - IP: %s", client_ip)
             return jsonify({'error': 'No file uploaded'}), 400
 
         file = request.files['file']
         target_format = request.form.get('target_format')
 
         if file.filename == '':
-            logger.warning("❌ Не выбрано имя файла")
+            logger.warning("❌ Не выбрано имя файла - IP: %s", client_ip)
             return jsonify({'error': 'No file selected'}), 400
 
         if not allowed_file(file.filename):
-            logger.warning(f"🚫 Неподдерживаемый тип файла: {file.filename}")
+            logger.warning("🚫 Неподдерживаемый тип файла: %s - IP: %s",
+                           file.filename, client_ip)
             return jsonify({'error': 'File type not supported'}), 400
 
         if not target_format:
-            logger.warning("❌ Не указан целевой формат")
+            logger.warning("❌ Не указан целевой формат - IP: %s", client_ip)
             return jsonify({'error': 'Target format not specified'}), 400
 
         # Логируем информацию о файле
         input_format = Path(file.filename).suffix.lower()[1:]
 
         # Читаем размер файла для логирования
-        file.seek(0, 2)  # Перемещаемся в конец файла
-        file_size = file.tell()  # Получаем размер
-        file.seek(0)  # Возвращаем указатель в начало
-
-        logger.info(f"📄 Конвертация файла: {file.filename} "
-                    f"(размер: {file_size} байт, "
-                    f"из: {input_format} в: {target_format})")
-
-        # Оригинальный код обработки файла
-        file_content = None
-        file_obj = None
-
-        # Reset file pointer
+        file.seek(0, 2)
+        file_size = file.tell()
         file.seek(0)
+
+        logger.info("📄 Конвертация файла: %s (размер: %d байт, из: %s в: %s) - IP: %s",
+                    file.filename, file_size, input_format, target_format, client_ip)
 
         # Binary formats that need special handling
         binary_formats = ['pdf', 'docx', 'pptx', 'xlsx', 'jpg', 'jpeg', 'png', 'bmp', 'gif']
@@ -864,7 +880,9 @@ def convert_file():
         })
 
     except Exception as e:
-        logger.error(f"💥 Ошибка при конвертации: {str(e)}", exc_info=True)
+        logger.error("💥 Ошибка при конвертации: %s - IP: %s", str(e),
+                     client_ip, exc_info=True)
+
         return jsonify({'error': str(e)}), 500
 
 
@@ -874,21 +892,26 @@ temp_files = {}
 
 @app.route('/download/<file_id>/<filename>')
 def download_file(file_id, filename):
-    logger.info(f"📥 Запрос на скачивание файла: {filename} (ID: {file_id})")
+    # Логируем информацию о запросе скачивания
+    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+
+    logger.info("📥 Запрос на скачивание файла: %s (ID: %s) - IP: %s",
+                filename, file_id, client_ip)
 
     try:
         if file_id not in temp_files:
-            logger.warning(f"🚫 Файл не найден или устарел: {file_id}")
+            logger.warning("🚫 Файл не найден или устарел: %s - IP: %s", file_id, client_ip)
             return jsonify({'error': 'File not found or expired'}), 404
 
         file_path = temp_files[file_id]
 
         if not os.path.exists(file_path):
-            logger.error(f"🚫 Физический файл отсутствует: {file_path}")
+            logger.error("🚫 Физический файл отсутствует: %s - IP: %s", file_path, client_ip)
             return jsonify({'error': f'File not found: {file_path}'}), 404
 
         file_size = os.path.getsize(file_path)
-        logger.info(f"📤 Отправка файла: {filename} (размер: {file_size} байт)")
+        logger.info("📤 Отправка файла: %s (размер: %d байт) - IP: %s",
+                    filename, file_size, client_ip)
 
         response = send_file(file_path, as_attachment=True, download_name=filename)
 
@@ -897,15 +920,29 @@ def download_file(file_id, filename):
             try:
                 os.unlink(file_path)
                 temp_files.pop(file_id, None)
-                logger.debug(f"🧹 Очистка временного файла: {file_path}")
+                logger.debug("🧹 Очистка временного файла: %s - IP: %s", file_path, client_ip)
             except Exception as e:
-                logger.error(f"❌ Ошибка при очистке файла {file_path}: {str(e)}")
+                logger.error("❌ Ошибка при очистке файла %s: %s - IP: %s",
+                             file_path, str(e), client_ip)
 
         return response
 
     except Exception as e:
-        logger.error(f"💥 Ошибка скачивания файла {filename}: {str(e)}", exc_info=True)
+        logger.error("💥 Ошибка скачивания файла %s: %s - IP: %s",
+                     filename, str(e), client_ip, exc_info=True)
         return jsonify({'error': f'Download failed: {str(e)}'}), 500
+
+
+@app.before_request
+def log_request_info():
+    if request.path == '/convert' and request.method == 'POST':
+        # Для convert уже есть детальное логирование, пропускаем
+        return
+
+    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    logger.info("🌐 Входящий запрос: %s %s - IP: %s - User-Agent: %s",
+                request.method, request.path, client_ip,
+                request.headers.get('User-Agent', 'Unknown'))
 
 
 if __name__ == '__main__':
