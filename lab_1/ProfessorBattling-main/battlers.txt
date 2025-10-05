@@ -1,0 +1,7 @@
+BtNumber /  Battler Name /  HP / AT / DF / SP / Typings     /  Moves   /
+ 1       /  Dr.Ford      / 300 / 80 / 50 / 35 / pf-dc       / 10 - 5  - 9  - 6  /
+ 2       /  Ben          / 250 / 95 / 50 / 15 / pf          / 6  - 8  - 0  - 5  /
+ 3       /  Jackson      / 250 / 50 / 30 / 70 / pf          / 11 - 8  - 7  - 3  /
+ 4       /  Markley      / 400 / 35 / 50 / 35 / pf-wd       / 11 - 9  - 5  - 8  /
+ 5       /  Student A    / 350 / 50 / 85 / 25 / st          / 1  - 4  - 2  - 0  /
+ 6       /  Student B    / 450 / 75 / 30 / 25 / st          / 3  - 2  - 0  - 11 /

@@ -1,0 +1,13 @@
+  Move Num  /      Move Name     / DMG / ACC / Effective-Against-Type /  Not-Affective-Against-Type  /   Status-To-Oponent   / Status-To-Self / Description                                                  /
+  0         / Punch              / 50  / 95  /          ?             /             ?                /        df|-10         /      ?|?       / Issue_a_mighty_punch_to_the_face!                            /
+  1         / Cheat              / 250 / 15  /          pf            /             st               /         ?|?           /     hp|25      / Try_to_sneak_yourself_some health,_just_dont_get_caught!     /
+  2         / Study              / 0   / 75  /          ?             /             ?                /         ?|?           /     hp|100     / Study!_Rejuvinate_your_Health!                               /
+  3         / Hack               / 75  / 50  /          wd            /             ?                /        df|-30         /      ?|?       / Hack_someones_social_media._They'll_have_a_fun day           /
+  4         / No_Comments        / 25  / 100 /          pf            /             st               /        sp|-10         /      ?|?       / What_does_this_do_again?                                     /
+  5         / F                  / 25  / 85  /          st            /             pf               /        at|-10         /      ?|?       / BOOM!_Failure                                                /
+  6         / Homework           / 40  / 90  /          st            /             pf               /        sp|-10         /      ?|?       / Want_to_slow_them_down?_Give_them_homework                   /
+  7         / Cancel_Class       / 0   / 100 /          ?             /             ?                /        hp|-10         /     hp|100     / Take_a_break_for_yourself!                                   /
+  8         / Group_Project!     / 35  / 80  /          st            /             pf               /         ?|?           /      ?|?       / Nothing_worse_than_one_student_doing_all_the_work            /
+  9         / Critque            / 50  / 80  /          pf            /             dc               /         ?|?           /      ?|?       / You_should_do_this_better                                    /
+ 10         / Im_the_Boss        / 60  / 65  /          pf            /             st               /         ?|?           /      ?|?       / You_are_literally_their_boss                                 /
+ 11         / Java_is_Javascript / 200 / 10  /          st            /             wd               /        at|-20         /      ?|?       / I_mean_aren't_they_right?                                    /
