@@ -235,9 +235,11 @@ def extract_text_from_pdf(pdf_file):
                 page_text = page.extract_text()
                 if page_text:
                     text += page_text + "\n"
-                    logger.debug("📄 Страница %d: извлечено %d символов", page_num, len(page_text))
+                    logger.debug("📄 Страница %d: извлечено %d символов",
+                                 page_num, len(page_text))
                 else:
-                    logger.warning("⚠️ Страница %d: текст не извлечен", page_num)
+                    logger.warning("⚠️ Страница %d: текст не извлечен",
+                                   page_num)
 
         logger.info(f"✅ Извлечено {len(text)} символов из PDF")
         return text
@@ -254,7 +256,8 @@ def extract_text_from_pdf(pdf_file):
                 raise Exception("PDF text extraction failed and PyMuPDF not available")
         except Exception as fallback_error:
             # Last resort: return error message
-            text = f"Error extracting text from PDF: {str(e)}\nFallback error: {str(fallback_error)}"
+            text = (f"Error extracting text from PDF:"
+                    f" {str(e)}\nFallback error: {str(fallback_error)}")
     return text
 
 
@@ -322,9 +325,12 @@ def extract_text_from_pptx(pptx_file):
             full_text += slide_text
         else:
             # Add placeholder for slides with no extractable text
-            full_text += f"\n{'='*50}\nSLIDE {slide_number}\n{'='*50}\n\n[Slide contains visual content that cannot be extracted as text]\n\n"
+            full_text += (f"\n{'='*50}\nSLIDE {slide_number}\n{'='*50}\n\n"
+                          f"[Slide contains visual content that cannot"
+                          f" be extracted as text]\n\n")
     
-    return full_text if full_text.strip() else "No extractable text content found in presentation."
+    return full_text if full_text.strip() \
+        else "No extractable text content found in presentation."
 
 
 def convert_text_to_docx(text_content):
@@ -387,12 +393,14 @@ def convert_markdown_to_html(md_content):
 
 def convert_image_format(image_file, target_format):
     """Convert image between different formats"""
-    logger.info("🖼️ Конвертация изображения в %s", target_format)
+    logger.info("🖼️ Конвертация изображения в %s",
+                target_format)
     try:
         img = Image.open(image_file)
         original_format = img.format
         original_size = img.size
-        logger.debug("Исходный формат: %s, размер: %s", original_format, original_size)
+        logger.debug("Исходный формат: %s, размер: %s",
+                     original_format, original_size)
 
         # Convert RGBA to RGB for formats that don't support transparency
         if target_format.upper() in ['JPEG', 'JPG'] and img.mode == 'RGBA':
@@ -412,7 +420,8 @@ def convert_image_format(image_file, target_format):
         return buffer.getvalue()
 
     except Exception as e:
-        logger.error(f"❌ Ошибка конвертации изображения {target_format}: {str(e)}", exc_info=True)
+        logger.error(f"❌ Ошибка конвертации изображения"
+                     f" {target_format}: {str(e)}", exc_info=True)
         raise
 
 def create_pdf_from_text(text_content):
@@ -523,7 +532,8 @@ def perform_conversion(file_content, input_format, target_format, file_obj=None,
 
     try:
         # Логируем попытку конвертации
-        logger.info("🔧 Конвертация: %s → %s", input_format.upper(), target_format.upper())
+        logger.info("🔧 Конвертация: %s → %s",
+                    input_format.upper(), target_format.upper())
 
         # Сохраняем результат конвертации
         converted_content = None
@@ -730,14 +740,17 @@ def perform_conversion(file_content, input_format, target_format, file_obj=None,
 
         # Проверяем что конвертация прошла успешно
         if converted_content is None:
-            logger.error(f"❌ Конвертация не выполнена: {input_format} -> {target_format}")
-            raise ValueError(f"Conversion from {input_format} to {target_format} is not supported")
+            logger.error(f"❌ Конвертация не выполнена:"
+                         f" {input_format} -> {target_format}")
+            raise ValueError(f"Conversion from {input_format}"
+                             f" to {target_format} is not supported")
 
         logger.info(f"✅ Успешная конвертация: {input_format} -> {target_format}")
         return converted_content
 
     except Exception as e:
-        logger.error(f"❌ Ошибка конвертации {input_format} -> {target_format}: {str(e)}", exc_info=True)
+        logger.error(f"❌ Ошибка конвертации {input_format}"
+                     f" -> {target_format}: {str(e)}", exc_info=True)
         raise ValueError(f"Conversion failed: {str(e)}")
 
 
@@ -748,46 +761,47 @@ def index():
 
 @app.route('/convert', methods=['POST'])
 def convert_file():
-    logger.info("📥 Получен запрос на конвертацию файла")
+    # Логируем информацию о запросе
+    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    user_agent = request.headers.get('User-Agent', 'Unknown')
+    content_type = request.content_type
+
+    logger.info("📥 Получен запрос на конвертацию файла - IP:"
+                " %s, Method: %s, Content-Type: %s",
+                client_ip, request.method, content_type)
+    logger.debug("User-Agent: %s", user_agent)
 
     try:
         if 'file' not in request.files:
-            logger.warning("❌ В запросе отсутствует файл")
+            logger.warning("❌ В запросе отсутствует файл - IP: %s", client_ip)
             return jsonify({'error': 'No file uploaded'}), 400
 
         file = request.files['file']
         target_format = request.form.get('target_format')
 
         if file.filename == '':
-            logger.warning("❌ Не выбрано имя файла")
+            logger.warning("❌ Не выбрано имя файла - IP: %s", client_ip)
             return jsonify({'error': 'No file selected'}), 400
 
         if not allowed_file(file.filename):
-            logger.warning(f"🚫 Неподдерживаемый тип файла: {file.filename}")
+            logger.warning("🚫 Неподдерживаемый тип файла: %s - IP: %s",
+                           file.filename, client_ip)
             return jsonify({'error': 'File type not supported'}), 400
 
         if not target_format:
-            logger.warning("❌ Не указан целевой формат")
+            logger.warning("❌ Не указан целевой формат - IP: %s", client_ip)
             return jsonify({'error': 'Target format not specified'}), 400
 
         # Логируем информацию о файле
         input_format = Path(file.filename).suffix.lower()[1:]
 
         # Читаем размер файла для логирования
-        file.seek(0, 2)  # Перемещаемся в конец файла
-        file_size = file.tell()  # Получаем размер
-        file.seek(0)  # Возвращаем указатель в начало
-
-        logger.info(f"📄 Конвертация файла: {file.filename} "
-                    f"(размер: {file_size} байт, "
-                    f"из: {input_format} в: {target_format})")
-
-        # Оригинальный код обработки файла
-        file_content = None
-        file_obj = None
-
-        # Reset file pointer
+        file.seek(0, 2)
+        file_size = file.tell()
         file.seek(0)
+
+        logger.info("📄 Конвертация файла: %s (размер: %d байт, из: %s в: %s) - IP: %s",
+                    file.filename, file_size, input_format, target_format, client_ip)
 
         # Binary formats that need special handling
         binary_formats = ['pdf', 'docx', 'pptx', 'xlsx', 'jpg', 'jpeg', 'png', 'bmp', 'gif']
@@ -864,7 +878,9 @@ def convert_file():
         })
 
     except Exception as e:
-        logger.error(f"💥 Ошибка при конвертации: {str(e)}", exc_info=True)
+        logger.error("💥 Ошибка при конвертации: %s - IP: %s", str(e),
+                     client_ip, exc_info=True)
+
         return jsonify({'error': str(e)}), 500
 
 
