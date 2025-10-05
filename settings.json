@@ -1,5 +1,6 @@
 {
   "variant": 27,
   "csv_filename": "27.csv",
+  "regular_expressions": "regular_expressions.json",
   "result_filename": "result.json"
 }
