@@ -3,8 +3,7 @@ from Deck import Deck
 from Player import Player, Dealer
 
 
-class BlackJack2:
-
+class BlackJack:
 
     def __init__(self):
         self.player = Player("Player", 100)

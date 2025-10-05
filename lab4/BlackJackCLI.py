@@ -1,10 +1,10 @@
-from BlackJack import BlackJack2
+from BlackJack import BlackJack
 from  config import BLACKJACK_STR, START_MESSAGE
 
 
 class BlackJackCLI:
     def __init__(self):
-        self.game = BlackJack2()
+        self.game = BlackJack()
 
     def play(self):
         print(BLACKJACK_STR)
