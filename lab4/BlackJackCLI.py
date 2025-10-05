@@ -3,10 +3,16 @@ from  config import BLACKJACK_STR, START_MESSAGE
 
 
 class BlackJackCLI:
+    """
+    Класс реализующий логику игры БлэкДжек через ввод через командную строку
+    """
     def __init__(self):
         self.game = BlackJack()
 
     def play(self):
+        """
+        Метод запускающий игру
+        """
         print(BLACKJACK_STR)
         print(START_MESSAGE)
 

@@ -2,11 +2,17 @@ import random
 
 
 class Card:
+    """
+    Класс реализующий карту
+    """
     def __init__(self, suit, rank):
         self.suit = suit
         self.rank = rank
 
     def value(self):
+        """
+        Метод определяет значение карты
+        """
         if self.rank in ["Jack", "Queen", "King"]:
             return 10
         if self.rank == "Ace":
@@ -18,6 +24,9 @@ class Card:
 
 
 class Deck:
+    """
+    Класс реализующий колоду
+    """
     suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
 
@@ -26,9 +35,15 @@ class Deck:
         self.shuffle()
 
     def shuffle(self):
+        """
+        Метод перемешки колоды
+        """
         random.shuffle(self.all_cards)
 
     def deal_one(self):
+        """
+        Метод выдачи одной карты
+        """
         if not self.all_cards:
             raise ValueError("Deck is empty")
         return self.all_cards.pop()
