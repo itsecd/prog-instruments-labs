@@ -1,7 +1,7 @@
 import os
 import random
 
-class battler:
+class Battler:
     btNum = 0
     name = ''
     #STATS
@@ -73,7 +73,7 @@ class battler:
 
         print(displayHP)
         print(f"HP:{displayNumHP}  AT:{self.at:.2f}  DF:{self.df:.2f}  SP:{self.sp:.2f}")
-class move:
+class Move:
     number = 0      #Identifer of Move
     name = ''
     dmg = 0         #dmg is how much the move does damage wise
