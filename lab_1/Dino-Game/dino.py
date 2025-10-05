@@ -1,6 +1,6 @@
 import os
-import pygame
 import random
+import pygame
 from pygame import RLEACCEL
 
 # Инициализация Pygame
@@ -32,10 +32,10 @@ checkPoint_sound = pygame.mixer.Sound('resources/checkPoint.wav')
 # Загрузка изображения с возможностью изменения размера
 def load_image(
     name,
-    sx=-1,
-    sy=-1,
-    colorkey=None,
-    ):
+    sx = -1,
+    sy = -1,
+    colorkey = None,
+   ):
 
     fullname = os.path.join('resources', name)
     img = pygame.image.load(fullname)
@@ -58,7 +58,7 @@ def load_sprite_sheet(
         scx = -1,
         scy = -1,
         c_key = None,
-        ):
+       ):
     fullname = os.path.join('resources', s_name)
     sh = pygame.image.load(fullname)
     sh = sh.convert()
@@ -72,7 +72,7 @@ def load_sprite_sheet(
 
     for i in range(0, namey):
         for j in range(0, namex):
-            rect = pygame.Rect((j*sx,i*sy,sx,sy))
+            rect = pygame.Rect((j * sx, i * sy, sx, sy))
             img = pygame.Surface(rect.size)
             img = img.convert()
             img.blit(sh, (0, 0), rect)
@@ -120,7 +120,7 @@ def extractDigits(num):
         return d
 
 class Dino():
-    def __init__(self, sx=-1, sy=-1):
+    def __init__(self, sx = -1, sy = -1):
         self.imgs, self.rect = load_sprite_sheet('dino.png', 5, 1, sx, sy, -1)
         self.imgs1, self.rect1 = load_sprite_sheet('dino_ducking.png', 2, 1, 59, sy, -1)
         self.rect.bottom = int(0.98 * height_screen)
@@ -133,7 +133,7 @@ class Dino():
         self.dead = False
         self.ducking = False
         self.blinking = False
-        self.movement = [0,0]
+        self.movement = [0, 0]
         self.jumpSpeed = 11.5
 
         self.stand_position_width = self.rect.width
@@ -156,17 +156,17 @@ class Dino():
         elif self.blinking:
             if self.index == 0:
                 if self.counter % 400 == 399:
-                    self.index = (self.index + 1)%2
+                    self.index = (self.index + 1) % 2
             else:
                 if self.counter % 20 == 19:
-                    self.index = (self.index + 1)%2
+                    self.index = (self.index + 1) % 2 
 
         elif self.ducking:
             if self.counter % 5 == 0:
-                self.index = (self.index + 1)%2
+                self.index = (self.index + 1) % 2
         else:
             if self.counter % 5 == 0:
-                self.index = (self.index + 1)%2 + 2
+                self.index = (self.index + 1) % 2 + 2
 
         if self.dead:
            self.index = 4
@@ -190,13 +190,13 @@ class Dino():
         self.counter = (self.counter + 1)
 
 class Cactus(pygame.sprite.Sprite):
-    def __init__(self, speed=5, sx=-1, sy=-1):
+    def __init__(self, speed = 5, sx = -1, sy = -1):
         pygame.sprite.Sprite.__init__(self,self.containers)
         self.imgs, self.rect = load_sprite_sheet('cactus-small.png', 3, 1, sx, sy, -1)
         self.rect.bottom = int(0.98 * height_screen)
         self.rect.left = width_screen + self.rect.width
         self.image = self.imgs[random.randrange(0, 3)]
-        self.movement = [-1*speed,0]
+        self.movement = [-1 * speed, 0]
 
     def draw(self):
         screen_layout_display.blit(self.image, self.rect)
@@ -208,8 +208,8 @@ class Cactus(pygame.sprite.Sprite):
             self.kill()
 
 class birds(pygame.sprite.Sprite):
-    def __init__(self, speed=5, sx=-1, sy=-1):
-        pygame.sprite.Sprite.__init__(self,self.containers)
+    def __init__(self, speed = 5, sx = -1, sy = -1):
+        pygame.sprite.Sprite.__init__(self, self.containers)
         self.imgs, self.rect = load_sprite_sheet('birds.png', 2, 1, sx, sy, -1)
         self.birds_height = [height_screen * 0.82, height_screen * 0.75, height_screen * 0.60]
         self.rect.centery = self.birds_height[random.randrange(0, 3)]
@@ -224,7 +224,7 @@ class birds(pygame.sprite.Sprite):
 
     def update(self):
         if self.counter % 10 == 0:
-            self.index = (self.index+1)%2
+            self.index = (self.index + 1) % 2
         self.image = self.imgs[self.index]
         self.rect = self.rect.move(self.movement)
         self.counter = (self.counter + 1)
@@ -233,7 +233,7 @@ class birds(pygame.sprite.Sprite):
 
 
 class Ground():
-    def __init__(self,speed=-5):
+    def __init__(self,speed = -5):
         self.image,self.rect = load_image('ground.png', -1, -1, -1)
         self.image1,self.rect1 = load_image('ground.png', -1, -1, -1)
         self.rect.bottom = height_screen
@@ -256,13 +256,13 @@ class Ground():
             self.rect1.left = self.rect.right
 
 class Cloud(pygame.sprite.Sprite):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self,self.containers)
-        self.image,self.rect = load_image('cloud.png', int(90*30/42), 30, -1)
+        self.image,self.rect = load_image('cloud.png', int(90 * 30 / 42), 30, -1)
         self.speed = 1
         self.rect.left = x
         self.rect.top = y
-        self.movement = [-1*self.speed, 0]
+        self.movement = [-1 * self.speed, 0]
 
     def draw(self):
         screen_layout_display.blit(self.image, self.rect)
@@ -273,10 +273,10 @@ class Cloud(pygame.sprite.Sprite):
             self.kill()
 
 class Scoreboard():
-    def __init__(self, x=-1, y=-1):
+    def __init__(self, x = -1, y = -1):
         self.score = 0
         self.scre_img, self.screrect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11 * 6 / 5), -1)
-        self.image = pygame.Surface((55,int(11*6/5)))
+        self.image = pygame.Surface((55, int(11 * 6 / 5)))
         self.rect = self.image.get_rect()
         if x == -1:
             self.rect.left = width_screen * 0.89
@@ -323,7 +323,7 @@ def introduction_screen():
                     if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                         ado_dino.jumping = True
                         ado_dino.blinking = False
-                        ado_dino.movement[1] = -1*ado_dino.jumpSpeed
+                        ado_dino.movement[1] = -1 * ado_dino.jumpSpeed
 
         ado_dino.update()
 
@@ -347,7 +347,7 @@ def gameplay():
     g_Over = False
     g_exit = False
     gamer_Dino = Dino(44, 47)
-    new_grnd = Ground(-1*gp)
+    new_grnd = Ground(-1 * gp)
     score_boards = Scoreboard()
     highScore = Scoreboard(width_screen * 0.78)
     counter = 0
@@ -365,7 +365,7 @@ def gameplay():
     gmo_image,gmo_rect = load_image('game_over.png', 190, 11, -1)
 
     t_images,t_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11*6/5), -1)
-    ado_image = pygame.Surface((22, int(11*6/5)))
+    ado_image = pygame.Surface((22, int(11 * 6 / 5)))
     ado_rect = ado_image.get_rect()
     ado_image.fill(bg_color)
     ado_image.blit(t_images[10], t_rect)
@@ -394,7 +394,7 @@ def gameplay():
                                 gamer_Dino.jumping = True
                                 if pygame.mixer.get_init() != None:
                                     jump_sound.play()
-                                gamer_Dino.movement[1] = -1*gamer_Dino.jumpSpeed
+                                gamer_Dino.movement[1] = -1 * gamer_Dino.jumpSpeed
 
                         if event.key == pygame.K_DOWN:
                             if not (gamer_Dino.jumping and gamer_Dino.dead):
@@ -411,7 +411,7 @@ def gameplay():
                         die_sound.play()
 
             for p in smallBird:
-                p.movement[0] = -1*gp
+                p.movement[0] = -1 * gp
                 if pygame.sprite.collide_mask(gamer_Dino, p):
                     gamer_Dino.dead = True
                     if pygame.mixer.get_init() != None:
@@ -423,13 +423,13 @@ def gameplay():
                     last_end_obs.add(Cactus(gp, 40, 40))
                 else:
                     for l in last_end_obs:
-                        if l.rect.right < width_screen*0.7 and random.randrange(0, 50) == 10:
+                        if l.rect.right < width_screen * 0.7 and random.randrange(0, 50) == 10:
                             last_end_obs.empty()
                             last_end_obs.add(Cactus(gp, 40, 40))
 
             if len(smallBird) == 0 and random.randrange(0, 200) == 10 and counter > 500:
                 for l in last_end_obs:
-                    if l.rect.right < width_screen*0.8:
+                    if l.rect.right < width_screen * 0.8:
                         last_end_obs.empty()
                         last_end_obs.add(birds(gp, 46, 40))
 
