@@ -64,45 +64,45 @@ class Snake:
 
     def move(self):
         last_element = len(self.stack) - 1
-        while (last_element != 0):
+        while last_element != 0:
             self.stack[last_element].direction = self.stack[last_element - 1].direction
             self.stack[last_element].x = self.stack[last_element - 1].x
             self.stack[last_element].y = self.stack[last_element - 1].y
             last_element -= 1
-        if (len(self.stack) < 2):
+        if len(self.stack) < 2:
             last_segment = self
         else:
             last_segment = self.stack.pop(last_element)
         last_segment.direction = self.stack[0].direction
-        if (self.stack[0].direction == KEY["UP"]):
+        if self.stack[0].direction == KEY["UP"]:
             last_segment.y = self.stack[0].y - (SPEED * FPS)
-        elif (self.stack[0].direction == KEY["DOWN"]):
+        elif self.stack[0].direction == KEY["DOWN"]:
             last_segment.y = self.stack[0].y + (SPEED * FPS)
-        elif (self.stack[0].direction == KEY["LEFT"]):
+        elif self.stack[0].direction == KEY["LEFT"]:
             last_segment.x = self.stack[0].x - (SPEED * FPS)
-        elif (self.stack[0].direction == KEY["RIGHT"]):
+        elif self.stack[0].direction == KEY["RIGHT"]:
             last_segment.x = self.stack[0].x + (SPEED * FPS)
         self.stack.insert(0, last_segment)
 
     def get_head(self):
-        return (self.stack[0])
+        return self.stack[0]
 
     def grow(self):
         last_element = len(self.stack) - 1
         self.stack[last_element].direction = self.stack[last_element].direction
-        if (self.stack[last_element].direction == KEY["UP"]):
+        if self.stack[last_element].direction == KEY["UP"]:
             new_segment = Segment(self.stack[last_element].x, self.stack[last_element].y - SNAKE_SIZE)
             black_box = Segment(new_segment.x, new_segment.y - SEPARATION)
 
-        elif (self.stack[last_element].direction == KEY["DOWN"]):
+        elif self.stack[last_element].direction == KEY["DOWN"]:
             new_segment = Segment(self.stack[last_element].x, self.stack[last_element].y + SNAKE_SIZE)
             black_box = Segment(new_segment.x, new_segment.y + SEPARATION)
 
-        elif (self.stack[last_element].direction == KEY["LEFT"]):
+        elif self.stack[last_element].direction == KEY["LEFT"]:
             new_segment = Segment(self.stack[last_element].x - SNAKE_SIZE, self.stack[last_element].y)
             black_box = Segment(new_segment.x - SEPARATION, new_segment.y)
 
-        elif (self.stack[last_element].direction == KEY["RIGHT"]):
+        elif self.stack[last_element].direction == KEY["RIGHT"]:
             new_segment = Segment(self.stack[last_element].x + SNAKE_SIZE, self.stack[last_element].y)
             black_box = Segment(new_segment.x + SEPARATION, new_segment.y)
 
@@ -141,7 +141,7 @@ class Snake:
 
     def check_crash(self):
         counter = 1
-        while (counter < len(self.stack) - 1):
+        while counter < len(self.stack) - 1:
             if (check_collision(self.stack[0], SNAKE_SIZE, self.stack[counter], SNAKE_SIZE) and self.stack[
                 counter].color != "NULL"):
                 return True
@@ -152,8 +152,8 @@ class Snake:
         pygame.draw.rect(screen, pygame.color.Color("yellow"),
                          (self.stack[0].x, self.stack[0].y, SNAKE_SIZE, SNAKE_SIZE), 0)
         counter = 1
-        while (counter < len(self.stack)):
-            if (self.stack[counter].color == "NULL"):
+        while counter < len(self.stack):
+            if self.stack[counter].color == "NULL":
                 counter += 1
                 continue
             pygame.draw.rect(screen, pygame.color.Color("white"),
@@ -185,11 +185,11 @@ def get_key():
 def respawn_apple(apples, index, sx, sy):
     radius = math.sqrt((SCREEN_WIDTH / 2 * SCREEN_WIDTH / 2 + SCREEN_HEIGHT / 2 * SCREEN_HEIGHT / 2)) / 2
     angle = 999
-    while (angle > radius):
+    while angle > radius:
         angle = random.uniform(0, 800) * math.pi * 2
         x = SCREEN_WIDTH / 2 + radius * math.cos(angle)
         y = SCREEN_HEIGHT / 2 + radius * math.sin(angle)
-        if (x == sx and y == sy):
+        if x == sx and y == sy:
             continue
     new_apple = Apple(x, y, 1)
     apples[index] = new_apple
@@ -200,8 +200,8 @@ def respawn_apples(apples, quantity, sx, sy):
     del apples[:]
     radius = math.sqrt((SCREEN_WIDTH / 2 * SCREEN_WIDTH / 2 + SCREEN_HEIGHT / 2 * SCREEN_HEIGHT / 2)) / 2
     angle = 999
-    while (counter < quantity):
-        while (angle > radius):
+    while counter < quantity:
+        while angle > radius:
             angle = random.uniform(0, 800) * math.pi * 2
             x = SCREEN_WIDTH / 2 + radius * math.cos(angle)
             y = SCREEN_HEIGHT / 2 + radius * math.sin(angle)
@@ -215,18 +215,18 @@ def respawn_apples(apples, quantity, sx, sy):
 
 def check_collision(pos_a, size_a, pos_b, size_b):
     # size_a size of a | size_b size of B
-    if (pos_a.x < pos_b.x + size_b and pos_a.x + size_a > pos_b.x and pos_a.y < pos_b.y + size_b and pos_a.y + size_a > pos_b.y):
+    if pos_a.x < pos_b.x + size_b and pos_a.x + size_a > pos_b.x and pos_a.y < pos_b.y + size_b and pos_a.y + size_a > pos_b.y:
         return True
     return False
 
 def check_limits(entity):
-    if (entity.x > SCREEN_WIDTH):
+    if entity.x > SCREEN_WIDTH:
         entity.x = SNAKE_SIZE
-    if (entity.x < 0):
+    if entity.x < 0:
         entity.x = SCREEN_WIDTH - SNAKE_SIZE
-    if (entity.y > SCREEN_HEIGHT):
+    if entity.y > SCREEN_HEIGHT:
         entity.y = SNAKE_SIZE
-    if (entity.y < 0):
+    if entity.y < 0:
         entity.y = SCREEN_HEIGHT - SNAKE_SIZE
 
 def end_game():
@@ -239,10 +239,10 @@ def end_game():
     pygame.display.update()
 
     my_key = get_key()
-    while (my_key != "exit"):
-        if (my_key == "yes"):
+    while my_key != "exit":
+        if my_key == "yes":
             main()
-        elif (my_key == "no"):
+        elif my_key == "no":
             break
         my_key = get_key()
         game_clock.tick(FPS)
@@ -255,9 +255,9 @@ def draw_score(score):
     screen.blit(score_numb, (SCREEN_WIDTH - 45, 14))
 
 
-def draw_game_time(gameTime):
+def draw_game_time(game_time):
     game_time = score_font.render("Time:", 1, pygame.Color("red"))
-    game_time_numb = score_numb_font.render(str(gameTime / 1000), 1, pygame.Color("red"))
+    game_time_numb = score_numb_font.render(str(game_time / 1000), 1, pygame.Color("red"))
     screen.blit(game_time, (30, 10))
     screen.blit(game_time_numb, (105, 14))
 
@@ -280,7 +280,7 @@ def main():
     my_snake.set_direction(KEY["UP"])
     my_snake.move()
     start_segments = 3
-    while (start_segments > 0):
+    while start_segments > 0:
         my_snake.grow()
         my_snake.move()
         start_segments -= 1
@@ -294,7 +294,7 @@ def main():
     start_time = pygame.time.get_ticks()
     endgame = 0
 
-    while (endgame != 1):
+    while endgame != 1:
         game_clock.tick(FPS)
 
         # Input
@@ -304,31 +304,31 @@ def main():
 
         # Collision check
         check_limits(my_snake)
-        if (my_snake.check_crash()):
+        if my_snake.check_crash():
             end_game()
 
         for my_apple in apples:
-            if (my_apple.state == 1):
-                if (check_collision(my_snake.get_head(), SNAKE_SIZE, my_apple, APPLE_SIZE)):
+            if my_apple.state == 1:
+                if check_collision(my_snake.get_head(), SNAKE_SIZE, my_apple, APPLE_SIZE):
                     my_snake.grow()
                     my_apple.state = 0
                     score += 5
                     eaten_apple = True
 
         # Position Update
-        if (key_press):
+        if key_press:
             my_snake.set_direction(key_press)
         my_snake.move()
 
         # Respawning apples
-        if (eaten_apple):
+        if eaten_apple:
             eaten_apple = False
             respawn_apple(apples, 0, my_snake.get_head().x, my_snake.get_head().y)
 
         # Drawing
         screen.fill(BACKGROUND_COLOR)
         for my_apple in apples:
-            if (my_apple.state == 1):
+            if my_apple.state == 1:
                 my_apple.draw(screen)
 
         my_snake.draw(screen)
