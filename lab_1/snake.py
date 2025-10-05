@@ -12,7 +12,12 @@ SEPARATION = 10
 SCREEN_HEIGHT = 600
 SCREEN_WIDTH = 800
 FPS = 25
-KEY = {"UP": 1, "DOWN": 2, "LEFT": 3, "RIGHT": 4}
+KEY = {
+    "UP": 1,
+    "DOWN": 2,
+    "LEFT": 3,
+    "RIGHT": 4
+}
 BACKGROUND_COLOR = pygame.Color(0, 255, 255)
 
 # Screen initialization
@@ -37,7 +42,12 @@ class Apple:
         self.color = pygame.color.Color("red")
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, (self.x, self.y, APPLE_SIZE, APPLE_SIZE), 0)
+        pygame.draw.rect(
+            screen,
+            self.color,
+            (self.x, self.y, APPLE_SIZE, APPLE_SIZE),
+            0
+        )
 
 
 class Segment:
@@ -91,19 +101,31 @@ class Snake:
         last_element = len(self.stack) - 1
         self.stack[last_element].direction = self.stack[last_element].direction
         if self.stack[last_element].direction == KEY["UP"]:
-            new_segment = Segment(self.stack[last_element].x, self.stack[last_element].y - SNAKE_SIZE)
+            new_segment = Segment(
+                self.stack[last_element].x,
+                self.stack[last_element].y - SNAKE_SIZE
+            )
             black_box = Segment(new_segment.x, new_segment.y - SEPARATION)
 
         elif self.stack[last_element].direction == KEY["DOWN"]:
-            new_segment = Segment(self.stack[last_element].x, self.stack[last_element].y + SNAKE_SIZE)
+            new_segment = Segment(
+                self.stack[last_element].x,
+                self.stack[last_element].y + SNAKE_SIZE
+            )
             black_box = Segment(new_segment.x, new_segment.y + SEPARATION)
 
         elif self.stack[last_element].direction == KEY["LEFT"]:
-            new_segment = Segment(self.stack[last_element].x - SNAKE_SIZE, self.stack[last_element].y)
+            new_segment = Segment(
+                self.stack[last_element].x - SNAKE_SIZE,
+                self.stack[last_element].y
+            )
             black_box = Segment(new_segment.x - SEPARATION, new_segment.y)
 
         elif self.stack[last_element].direction == KEY["RIGHT"]:
-            new_segment = Segment(self.stack[last_element].x + SNAKE_SIZE, self.stack[last_element].y)
+            new_segment = Segment(
+                self.stack[last_element].x + SNAKE_SIZE,
+                self.stack[last_element].y
+            )
             black_box = Segment(new_segment.x + SEPARATION, new_segment.y)
 
         black_box.color = "NULL"
@@ -114,11 +136,11 @@ class Snake:
         pass
 
     def set_direction(self, direction):
-        if (self.direction == KEY["RIGHT"] and direction == KEY["LEFT"] or self.direction == KEY[
-            "LEFT"] and direction == KEY["RIGHT"]):
+        if (self.direction == KEY["RIGHT"] and direction == KEY["LEFT"] or
+            self.direction == KEY["LEFT"] and direction == KEY["RIGHT"]):
             pass
-        elif (self.direction == KEY["UP"] and direction == KEY["DOWN"] or self.direction == KEY["DOWN"] and direction ==
-              KEY["UP"]):
+        elif (self.direction == KEY["UP"] and direction == KEY["DOWN"] or
+              self.direction == KEY["DOWN"] and direction == KEY["UP"]):
             pass
         else:
             self.direction = direction
@@ -142,22 +164,31 @@ class Snake:
     def check_crash(self):
         counter = 1
         while counter < len(self.stack) - 1:
-            if (check_collision(self.stack[0], SNAKE_SIZE, self.stack[counter], SNAKE_SIZE) and self.stack[
-                counter].color != "NULL"):
+            if (check_collision(
+                self.stack[0], SNAKE_SIZE, self.stack[counter], SNAKE_SIZE
+                ) and self.stack[counter].color != "NULL"):
                 return True
             counter += 1
         return False
 
     def draw(self, screen):
-        pygame.draw.rect(screen, pygame.color.Color("yellow"),
-                         (self.stack[0].x, self.stack[0].y, SNAKE_SIZE, SNAKE_SIZE), 0)
+        pygame.draw.rect(
+            screen,
+            pygame.color.Color("yellow"),
+            (self.stack[0].x, self.stack[0].y, SNAKE_SIZE, SNAKE_SIZE),
+            0
+        )
         counter = 1
         while counter < len(self.stack):
             if self.stack[counter].color == "NULL":
                 counter += 1
                 continue
-            pygame.draw.rect(screen, pygame.color.Color("white"),
-                             (self.stack[counter].x, self.stack[counter].y, SNAKE_SIZE, SNAKE_SIZE), 0)
+            pygame.draw.rect(
+                screen,
+                pygame.color.Color("white"),
+                (self.stack[counter].x, self.stack[counter].y, SNAKE_SIZE, SNAKE_SIZE),
+                0
+            )
             counter += 1
 
 
@@ -215,9 +246,10 @@ def respawn_apples(apples, quantity, sx, sy):
 
 def check_collision(pos_a, size_a, pos_b, size_b):
     # size_a size of a | size_b size of B
-    if pos_a.x < pos_b.x + size_b and pos_a.x + size_a > pos_b.x and pos_a.y < pos_b.y + size_b and pos_a.y + size_a > pos_b.y:
-        return True
-    return False
+    return (pos_a.x < pos_b.x + size_b and
+            pos_a.x + size_a > pos_b.x and
+            pos_a.y < pos_b.y + size_b and
+            pos_a.y + size_a > pos_b.y)
 
 def check_limits(entity):
     if entity.x > SCREEN_WIDTH:
