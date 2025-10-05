@@ -2,18 +2,19 @@ import json
 import pandas as pd
 
 
-def read_csv(filename: str)->pd.DataFrame:
+def read_csv(filename: str) -> pd.DataFrame:
     """
     Read a csv file and return a data frame.
     :param filename: The name of the csv file.
     :return: Data frame.
     """
     try:
-        with open('3.csv', mode='r') as file:
-            df = pd.read_csv('3.csv', delimeter=';')
+        with open(filename, mode='r', encoding='utf-16') as file:
+            df = pd.read_csv(file, delimiter=';')
             return df
     except Exception as exc:
-        print(f"Error reading JSON: {exc}")
+        print(f"Error reading CSV: {exc}")
+        return pd.DataFrame()
 
 
 
