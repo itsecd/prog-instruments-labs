@@ -1,5 +1,5 @@
-from checksum import calculate_checksum, serialize_result
-from dataprocessing import read_json, read_csv, validity_check
+from lab_3.checksum import calculate_checksum, serialize_result
+from lab_3.dataprocessing import read_json, read_csv, validity_check
 
 
 def main():
