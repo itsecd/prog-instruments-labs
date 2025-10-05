@@ -1,5 +1,3 @@
-from config import suits, values, ranks
-
 import random
 
 
@@ -24,7 +22,7 @@ class Deck:
     ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"]
 
     def __init__(self):
-        self.all_cards = [Card(suit, rank) for suit in suits for rank in ranks]
+        self.all_cards = [Card(suit, rank) for suit in self.suits for rank in self.ranks]
         self.shuffle()
 
     def shuffle(self):

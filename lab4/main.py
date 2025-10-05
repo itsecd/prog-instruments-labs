@@ -1,10 +1,9 @@
-from BlackJack import BlackJack
+from BlackJackCLI import BlackJackCLI
 
 
 def main():
-    print(int("Six"))
-    game = BlackJack()
-    game.start()
+    game = BlackJackCLI()
+    game.play()
 
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ class BlackJack2:
         self.player.add_card(card)
         return card
 
-    def dealer_paly(self):
+    def dealer_play(self):
         while self.dealer.should_hit() < self.DEALER_OPTIMAL_SUM:
             self.dealer.add_card(self.deck.deal_one())
 
@@ -65,11 +65,11 @@ class BlackJack2:
 
 
 
-
+"""
 def check_ace(card):
-    """
+
     function to check for ace and adjust its value according to the user
-    """
+
     if card.rank == "Ace":
         while True:
             try:
@@ -282,7 +282,7 @@ class BlackJack:
                     print(f"Following error occurred : {error} \nPlease try again.")
                     self._game_num -= 1  # round with error won't be counted
                     continue
-
+"""
 
 
 
