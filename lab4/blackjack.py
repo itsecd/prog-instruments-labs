@@ -11,6 +11,7 @@ class BlackJack:
         self.dealer = Dealer("Dealer", 10000)
         self.game_num = 0
         self.DEALER_OPTIMAL_SUM = 17
+        self.MAX_SUM = 21
 
     def start_round(self, bet: int):
         """
@@ -54,14 +55,14 @@ class BlackJack:
         player_sum = self.player.hand_value()
         dealer_sum = self.dealer.hand_value()
 
-        if player_sum > 21:
+        if player_sum > self.MAX_SUM:
             return "dealer", 0
 
-        if dealer_sum > 21:
+        if dealer_sum > self.MAX_SUM:
             self.player.win(bet * 2)
             return "player", bet * 2
 
-        if player_sum == 21:
+        if player_sum == self.MAX_SUM:
             self.player.win(bet * 3)
             return "blackjack", bet * 3
 
