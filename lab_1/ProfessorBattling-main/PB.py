@@ -195,7 +195,7 @@ def readBattlersFile():
             battlerCounter += 1
             battlerLine = allBattlersLine[battlerCounter].replace(" ", "").split("/")
 
-            battlers.append(battler(battlerLine[0], battlerLine[1], battlerLine[2], battlerLine[3], battlerLine[4], battlerLine[5], battlerLine[6].split("-"), battlerLine[7].split("-")))
+            battlers.append(Battler(battlerLine[0], battlerLine[1], battlerLine[2], battlerLine[3], battlerLine[4], battlerLine[5], battlerLine[6].split("-"), battlerLine[7].split("-")))
 
 
     return battlers
@@ -208,7 +208,7 @@ def readMovesFile():
         while moveCounter < len(allMovesLine) - 1:
             moveCounter += 1
             moveLine = allMovesLine[moveCounter].replace(" ", "").split("/")
-            moves.append(move(moveLine[0], moveLine[1].replace("_"," "), moveLine[2], moveLine[3], moveLine[4], moveLine[5],moveLine[6].split("|"), moveLine[7].split("|"), moveLine[8].replace("_"," ")))
+            moves.append(Move(moveLine[0], moveLine[1].replace("_"," "), moveLine[2], moveLine[3], moveLine[4], moveLine[5],moveLine[6].split("|"), moveLine[7].split("|"), moveLine[8].replace("_"," ")))
 
     return moves
 def determineBattlers():
@@ -598,7 +598,7 @@ while gameActive == 1:
     #Make a round
     makeRound(roundCounter, battlers)
     #Add a count to the round
-    roundCounter+=1
+    roundCounter += 1
 
     #If someone's HP hit 0
     if checkForWin(battlers) == 1:
