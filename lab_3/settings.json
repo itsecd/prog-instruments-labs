@@ -1,5 +1,6 @@
 {
   "csv": "3.csv",
-  "results": "result.json",
-  "patterns": "patterns.json"
+  "result": "result.json",
+  "patterns": "patterns.json",
+  "variant": "3"
 }
