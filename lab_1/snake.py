@@ -35,6 +35,8 @@ score_msg_size = score_font.size("Score")
 game_clock = pygame.time.Clock()
 
 class Apple:
+    """Apple class representing food for the snake"""
+
     def __init__(self, x, y, state):
         self.x = x
         self.y = y
@@ -42,6 +44,7 @@ class Apple:
         self.color = pygame.color.Color("red")
 
     def draw(self, screen):
+        """Draw the apple on the screen"""
         pygame.draw.rect(
             screen,
             self.color,
@@ -51,6 +54,8 @@ class Apple:
 
 
 class Segment:
+    """Segment class representing part of the snake"""
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -59,6 +64,8 @@ class Segment:
 
 
 class Snake:
+    """Snake class representing the player character"""
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -73,6 +80,7 @@ class Snake:
         self.stack.append(black_box)
 
     def move(self):
+        """Move the snake in the current direction"""
         last_element = len(self.stack) - 1
         while last_element != 0:
             self.stack[last_element].direction = self.stack[last_element - 1].direction
@@ -95,9 +103,11 @@ class Snake:
         self.stack.insert(0, last_segment)
 
     def get_head(self):
+        """Get the head segment of the snake"""
         return self.stack[0]
 
     def grow(self):
+        """Increase the snake's length"""
         last_element = len(self.stack) - 1
         self.stack[last_element].direction = self.stack[last_element].direction
         if self.stack[last_element].direction == KEY["UP"]:
@@ -136,6 +146,7 @@ class Snake:
         pass
 
     def set_direction(self, direction):
+        """Set the snake's direction if valid"""
         if (self.direction == KEY["RIGHT"] and direction == KEY["LEFT"] or
             self.direction == KEY["LEFT"] and direction == KEY["RIGHT"]):
             pass
@@ -146,22 +157,28 @@ class Snake:
             self.direction = direction
 
     def get_rect(self):
+        """Get the rectangle coordinates of the snake"""
         rect = (self.x, self.y)
         return rect
 
     def get_x(self):
+        """Get the x coordinate"""
         return self.x
 
     def get_y(self):
+        """Get the y coordinate"""
         return self.y
 
     def set_x(self, x):
+        """Set the x coordinate"""
         self.x = x
 
     def set_y(self, y):
+        """Set the y coordinate"""
         self.y = y
 
     def check_crash(self):
+        """Check if the snake has collided with itself"""
         counter = 1
         while counter < len(self.stack) - 1:
             if (check_collision(
@@ -172,6 +189,7 @@ class Snake:
         return False
 
     def draw(self, screen):
+        """Draw the snake on the screen"""
         pygame.draw.rect(
             screen,
             pygame.color.Color("yellow"),
@@ -193,6 +211,7 @@ class Snake:
 
 
 def get_key():
+    """Get keyboard input from player"""
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
@@ -214,6 +233,7 @@ def get_key():
 
 
 def respawn_apple(apples, index, sx, sy):
+    """Respawn an apple at a random position"""
     radius = math.sqrt((SCREEN_WIDTH / 2 * SCREEN_WIDTH / 2 + SCREEN_HEIGHT / 2 * SCREEN_HEIGHT / 2)) / 2
     angle = 999
     while angle > radius:
@@ -227,6 +247,7 @@ def respawn_apple(apples, index, sx, sy):
 
 
 def respawn_apples(apples, quantity, sx, sy):
+    """Respawn multiple apples"""
     counter = 0
     del apples[:]
     radius = math.sqrt((SCREEN_WIDTH / 2 * SCREEN_WIDTH / 2 + SCREEN_HEIGHT / 2 * SCREEN_HEIGHT / 2)) / 2
@@ -245,13 +266,22 @@ def respawn_apples(apples, quantity, sx, sy):
 
 
 def check_collision(pos_a, size_a, pos_b, size_b):
-    # size_a size of a | size_b size of B
+    """
+    Check collision between two objects
+    :param pos_a: Position of first object
+    :param size_a: Size of first object
+    :param pos_b: Position of second object
+    :param size_b: Size of second object
+    :return: True if collision detected
+    """
     return (pos_a.x < pos_b.x + size_b and
             pos_a.x + size_a > pos_b.x and
             pos_a.y < pos_b.y + size_b and
             pos_a.y + size_a > pos_b.y)
 
+
 def check_limits(entity):
+    """Check and adjust entity position to stay within screen bounds"""
     if entity.x > SCREEN_WIDTH:
         entity.x = SNAKE_SIZE
     if entity.x < 0:
@@ -261,7 +291,9 @@ def check_limits(entity):
     if entity.y < 0:
         entity.y = SCREEN_HEIGHT - SNAKE_SIZE
 
+
 def end_game():
+    """Display game over screen and handle restart options"""
     message = game_over_font.render("Game Over", 1, pygame.Color("white"))
     message_play_again = play_again_font.render("Play Again? Y/N", 1, pygame.Color("green"))
     screen.blit(message, (320, 240))
@@ -282,20 +314,18 @@ def end_game():
 
 
 def draw_score(score):
+    """Draw the score on the screen"""
     score_numb = score_numb_font.render(str(score), 1, pygame.Color("red"))
     screen.blit(score_msg, (SCREEN_WIDTH - score_msg_size[0] - 60, 10))
     screen.blit(score_numb, (SCREEN_WIDTH - 45, 14))
 
 
 def draw_game_time(game_time):
+    """Draw the game time on the screen"""
     game_time = score_font.render("Time:", 1, pygame.Color("red"))
     game_time_numb = score_numb_font.render(str(game_time / 1000), 1, pygame.Color("red"))
     screen.blit(game_time, (30, 10))
     screen.blit(game_time_numb, (105, 14))
-
-
-def exit_screen():
-    pass
 
 
 def main():
