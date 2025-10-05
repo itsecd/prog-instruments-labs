@@ -890,21 +890,26 @@ temp_files = {}
 
 @app.route('/download/<file_id>/<filename>')
 def download_file(file_id, filename):
-    logger.info(f"📥 Запрос на скачивание файла: {filename} (ID: {file_id})")
+    # Логируем информацию о запросе скачивания
+    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+
+    logger.info("📥 Запрос на скачивание файла: %s (ID: %s) - IP: %s",
+                filename, file_id, client_ip)
 
     try:
         if file_id not in temp_files:
-            logger.warning(f"🚫 Файл не найден или устарел: {file_id}")
+            logger.warning("🚫 Файл не найден или устарел: %s - IP: %s", file_id, client_ip)
             return jsonify({'error': 'File not found or expired'}), 404
 
         file_path = temp_files[file_id]
 
         if not os.path.exists(file_path):
-            logger.error(f"🚫 Физический файл отсутствует: {file_path}")
+            logger.error("🚫 Физический файл отсутствует: %s - IP: %s", file_path, client_ip)
             return jsonify({'error': f'File not found: {file_path}'}), 404
 
         file_size = os.path.getsize(file_path)
-        logger.info(f"📤 Отправка файла: {filename} (размер: {file_size} байт)")
+        logger.info("📤 Отправка файла: %s (размер: %d байт) - IP: %s",
+                    filename, file_size, client_ip)
 
         response = send_file(file_path, as_attachment=True, download_name=filename)
 
@@ -913,14 +918,16 @@ def download_file(file_id, filename):
             try:
                 os.unlink(file_path)
                 temp_files.pop(file_id, None)
-                logger.debug(f"🧹 Очистка временного файла: {file_path}")
+                logger.debug("🧹 Очистка временного файла: %s - IP: %s", file_path, client_ip)
             except Exception as e:
-                logger.error(f"❌ Ошибка при очистке файла {file_path}: {str(e)}")
+                logger.error("❌ Ошибка при очистке файла %s: %s - IP: %s",
+                             file_path, str(e), client_ip)
 
         return response
 
     except Exception as e:
-        logger.error(f"💥 Ошибка скачивания файла {filename}: {str(e)}", exc_info=True)
+        logger.error("💥 Ошибка скачивания файла %s: %s - IP: %s",
+                     filename, str(e), client_ip, exc_info=True)
         return jsonify({'error': f'Download failed: {str(e)}'}), 500
 
 
