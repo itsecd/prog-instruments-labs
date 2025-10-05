@@ -9,13 +9,12 @@ def read_csv(filename: str) -> pd.DataFrame:
     :return: Data frame.
     """
     try:
-        with open(filename, mode='r', encoding='utf-16') as file:
-            df = pd.read_csv(file, delimiter=';')
+        with open(filename, mode="r", encoding="utf-16") as file:
+            df = pd.read_csv(file, delimiter=";")
             return df
     except Exception as exc:
         print(f"Error reading CSV: {exc}")
         return pd.DataFrame()
-
 
 
 def read_json(filename: str) -> dict:

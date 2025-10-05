@@ -34,12 +34,12 @@ from selenium.webdriver.firefox.options import Options
 
 TG_BASE = "https://api.telegram.org/bot{}/"
 # This is used to check the length of messages later
-TAG_REGEX = re.compile(r'<[^>]+>')
+TAG_REGEX = re.compile(r"<[^>]+>")
 TIME_REGEX = re.compile(r"(#)(1[0-9]{9})(#)")
 USER_AGENT = {
     "User-Agent": (
-        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 '
-        '(KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
     )
 }
 FIREFOX_OPTIONS = Options()
@@ -48,12 +48,13 @@ FIREFOX_OPTIONS.headless = True
 
 # basic stuff
 
+
 def create_session():
     session = requests.Session()
     retry = Retry(total=10, connect=3, redirect=5, backoff_factor=0.5)
     adapter = HTTPAdapter(max_retries=retry)
-    session.mount('http://', adapter)
-    session.mount('https://', adapter)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
     return session
 
 
@@ -94,11 +95,9 @@ It is structured as follows:
 
 
 def update_csv(pages, input_file):  # write new data to csv of Facebook Pages
-    with open(input_file, "w", newline='', encoding='utf_8') as file:
+    with open(input_file, "w", newline="", encoding="utf_8") as file:
         writer = csv.writer(file, quoting=csv.QUOTE_ALL)
-        writer.writerow(
-            ("HUMAN READABLE", "NAME", "URL", "LAST_TIME", "TOKEN", "ID")
-        )
+        writer.writerow(("HUMAN READABLE", "NAME", "URL", "LAST_TIME", "TOKEN", "ID"))
         for row in pages:
             writer.writerow(row)
 
@@ -136,9 +135,7 @@ def add_link(post):  # add link to the top of the post's text
 # add link to the Facebook post at the bottom of the post
 def add_link_to_post(post):
     post["link2post"] = handle_link_to_post(post)
-    text = (
-        f"{post['text']}\n<a href='{post['link2post']}'>POST</a>"
-    )
+    text = f"{post['text']}\n<a href='{post['link2post']}'>POST</a>"
     return text
 
 
@@ -149,7 +146,7 @@ def add_page_name(post):  # add page name in bold to the top of the post
 
 # used to check if the shown message will be <200 chars in Telegram
 def remove_tags(text):
-    return TAG_REGEX.sub('', text)
+    return TAG_REGEX.sub("", text)
 
 
 def config_parser(ini_file):
@@ -162,12 +159,10 @@ def configure_logging(log_config):
     numeric_level = getattr(logging, log_config["debug_level"].upper(), None)
     if not isinstance(numeric_level, int):
         raise ValueError(
-            f"Invalid log level in configuration file:"
-            f" {log_config['debug_level']}"
+            f"Invalid log level in configuration file:" f" {log_config['debug_level']}"
         )
     log_config["log_file"] = (
-        f"{log_config['log_file_name']}"
-        f"{get_day(log_config['date_structure'])}.log"
+        f"{log_config['log_file_name']}" f"{get_day(log_config['date_structure'])}.log"
     )
     logging.basicConfig(filename=log_config["log_file"], level=numeric_level)
 
@@ -176,30 +171,36 @@ def configure_logging(log_config):
 def argument_parser():
     parser = argparse.ArgumentParser(
         description="Scraper for Facebook pages that "
-                    "sends posts to telegram channels"
+        "sends posts to telegram channels"
     )
     parser.add_argument(
         "-ini_file",
         dest="ini_file",
-        help="INI file from which all settings are read; "
-             "defaults to ./FB_Bot.ini",
-        default="./FB_Bot.ini"
+        help="INI file from which all settings are read; " "defaults to ./FB_Bot.ini",
+        default="./FB_Bot.ini",
     )
     parser.add_argument(
         "-D",
         dest="DEBUG_MODE",
         help="Forces DEBUG level logging, ignoring settings in ./FB_Bot.ini",
-        action="store_true"
+        action="store_true",
     )
     return vars(parser.parse_args())
 
 
 # telegram relaying
 
+
 def send_post(post):  # for text posts
-    if len(remove_tags(
-            # Recursively split text into 4000-character messages
-            post["text"])) > 4000:
+    if (
+        len(
+            remove_tags(
+                # Recursively split text into 4000-character messages
+                post["text"]
+            )
+        )
+        > 4000
+    ):
         print("LOONG MESSAGE")
         print("LENGHT: " + str(len(post["text"])))
         print(type(post))
@@ -218,11 +219,12 @@ def send_post(post):  # for text posts
         "chat_id": post["channel_id"],
         "text": post["text"],
         "parse_mode": "html",
-        "disable_web_page_preview": post.get("no_link")
+        "disable_web_page_preview": post.get("no_link"),
     }
     r = requests.get(url, params=data, headers=USER_AGENT)
-    log_message = ("SENDING POST, RESPONSE:" + r.reason
-                   + " STATUS CODE:" + str(r.status_code))
+    log_message = (
+        "SENDING POST, RESPONSE:" + r.reason + " STATUS CODE:" + str(r.status_code)
+    )
     logging.info(log_message)
     if r.status_code != 200:
         logging.critical("THERE WAS AN ERROR IN A REQUEST IN send_post")
@@ -243,12 +245,11 @@ def send_photo_multipart(post):
         "chat_id": post["channel_id"],
         "caption": post["text"],
         "parse_mode": "html",
-        "reply_to_message_id": post.get("reply_id")
+        "reply_to_message_id": post.get("reply_id"),
     }
     r = requests.post(url, data=data, files=photo, headers=USER_AGENT)
     if r.status_code != 200:
-        logging.critical("THERE WAS A N ERROR IN A REQUEST "
-                         "IN send_photo_multipart")
+        logging.critical("THERE WAS A N ERROR IN A REQUEST " "IN send_photo_multipart")
         logging.critical("URL: " + str(r.url))
         logging.critical("DATA: " + str(data))
         logging.critical("REASON: " + str(r.reason))
@@ -268,25 +269,21 @@ def send_photo(post):  # send photo via URL, with the text if <200
         "photo": post["photo"],
         "caption": post["text"],
         "parse_mode": "html",
-        "reply_to_message_id": post.get("reply_id")
+        "reply_to_message_id": post.get("reply_id"),
     }
     r = requests.get(url, params=data, headers=USER_AGENT)
-    log_message = ("SENDING PHOTO, RESPONSE:" + r.reason
-                   + " STATUS CODE:" + str(r.status_code))
+    log_message = (
+        "SENDING PHOTO, RESPONSE:" + r.reason + " STATUS CODE:" + str(r.status_code)
+    )
     logging.info(log_message)
     # when Facebook links don't work
-    if (
-            r.status_code == 400
-            and (
-            r.json()["description"] == "Bad Request: wrong "
-                                       "file identifier/HTTP URL specified"
-            or r.json()["description"] == "Bad Request: failed "
-                                          "to get HTTP URL content"
-            )
+    if r.status_code == 400 and (
+        r.json()["description"] == "Bad Request: wrong "
+        "file identifier/HTTP URL specified"
+        or r.json()["description"] == "Bad Request: failed " "to get HTTP URL content"
     ):
         logging.warning("URL: %s", r.url)
-        logging.warning("THERE WAS A PROBLEM IN THE REQUEST,"
-                        " TRYING TO MULTIPART IT")
+        logging.warning("THERE WAS A PROBLEM IN THE REQUEST," " TRYING TO MULTIPART IT")
         logging.warning("DATA: %s", data)
         r = send_photo_multipart(post)
     elif r.status_code != 200:
@@ -343,10 +340,14 @@ def handle_text(post):
 def handle_shares(post):
     try:
         share_area = post["HTML"].select_one("span._1nb_.fwn")
-        shared_page_link, shared_page = (share_area.a["href"],
-                                         share_area.a.string)
-        link = ("\U0001F4E4 <a href='" + str(shared_page_link) + "'>"
-                + str(shared_page) + "</a>\n")
+        shared_page_link, shared_page = (share_area.a["href"], share_area.a.string)
+        link = (
+            "\U0001f4e4 <a href='"
+            + str(shared_page_link)
+            + "'>"
+            + str(shared_page)
+            + "</a>\n"
+        )
         strings = share_area.next_sibling.next_sibling.find_all(
             string=re.compile("[<>&]")
         )
@@ -437,7 +438,7 @@ def find_link(post):
 
 
 def has_video(post):  # to detect of a post has a Facebook video
-    split_link2post = list(post["link2post"].split('/'))
+    split_link2post = list(post["link2post"].split("/"))
     try:
         if split_link2post[4] == "videos":
             return True
@@ -454,15 +455,15 @@ def find_video(post):
     if len(video_areas) != 0 and video_areas is not None:
         for video_area in video_areas:
             try:
-                if (video_area.contents is not None
-                        and video_area.contents[0].name != "span"):
+                if (
+                    video_area.contents is not None
+                    and video_area.contents[0].name != "span"
+                ):
                     video_link_dict = parse_qs(video_area["href"])
                     if "/video_redirect/?src" in video_link_dict:
                         video_link = video_link_dict["/video_redirect/?src"]
                     elif "https://lm.facebook.com/l.php?u" in video_link_dict:
-                        video_link = video_link_dict[
-                            "https://lm.facebook.com/l.php?u"
-                        ]
+                        video_link = video_link_dict["https://lm.facebook.com/l.php?u"]
                     return video_link[0]
             except IndexError:
                 logging.debug("VIDEO AREA ERROR, SKIPPING")
@@ -546,14 +547,14 @@ def new_posts_handling(posts, last_time, bot, channel_id, page_name):
             post = {}
             post["HTML"] = element
             log_message = (
-                "New post with post_time: " + str(post_time)
-                + " for " + str(page_name)
+                "New post with post_time: " + str(post_time) + " for " + str(page_name)
             )
             logging.debug(log_message)
-            post["BOT"], post["channel_id"], post["page_name"] = (bot,
-                                                                  channel_id,
-                                                                  page_name,
-                                                                  )
+            post["BOT"], post["channel_id"], post["page_name"] = (
+                bot,
+                channel_id,
+                page_name,
+            )
             content(post)  # the post is handled
             # the new post time is added to the list
             times.append(int(post_time))
@@ -563,13 +564,15 @@ def new_posts_handling(posts, last_time, bot, channel_id, page_name):
 
 # A PATCH FOR PYPETEER CRASHING
 
+
 def patch_pyppeteer():
     import pyppeteer.connection
+
     original_method = pyppeteer.connection.websockets.client.connect
 
     def new_method(*args, **kwargs):
-        kwargs['ping_interval'] = None
-        kwargs['ping_timeout'] = 40
+        kwargs["ping_interval"] = None
+        kwargs["ping_timeout"] = 40
         return original_method(*args, **kwargs)
 
     pyppeteer.connection.websockets.client.connect = new_method
@@ -605,7 +608,7 @@ def generate_soup(url):  # now we use RequestsHTML,
 def gather_data(input_file):  # pages are loaded for the input file
     pages = []
     try:
-        with open(input_file, "r", newline='', encoding='utf_8') as file:
+        with open(input_file, "r", newline="", encoding="utf_8") as file:
             next(file, None)
             reader = csv.reader(file)
             pages = list(reader)
@@ -624,7 +627,7 @@ def update_pages(csv_file, config, ini_file):  # also updates log_file
     for i in range(len(data)):
         if TIME_REGEX.search(data[i]):
             if int(data[i].strip().strip("#")) > int(last_time):
-                data = data[i + 1::]
+                data = data[i + 1 : :]
                 logging.info("NEW PAGES FOUND:\n" + str(data))
                 break
     added = []
@@ -634,7 +637,7 @@ def update_pages(csv_file, config, ini_file):  # also updates log_file
         if TIME_REGEX.search(data[i]):
             if int(data[i].strip().strip("#")) > new_time:
                 new_time = int(data[i].strip().strip("#"))
-                if len(data[j + 1:i:]) > 3:
+                if len(data[j + 1 : i :]) > 3:
                     added.append(data[j:i:])
                 else:
                     warning_msg = (
@@ -661,7 +664,7 @@ def update_pages(csv_file, config, ini_file):  # also updates log_file
                 str(channel_id),
             ]
             lines.append(line)
-    with open(csv_file, "a", encoding="utf_8", newline='') as file:
+    with open(csv_file, "a", encoding="utf_8", newline="") as file:
         writer = csv.writer(file, quoting=csv.QUOTE_ALL)
         writer.writerows(lines)
     adder_config["last_request_unix"] = str(new_time)
@@ -690,12 +693,12 @@ def main():
                 # [0]is HUMAN REDABLE data, [1] is NAME,
                 # [2] is URL, [3] is LAST_TIME and [4] is ID
                 page_name = page[1]
-                human_data = page[0].encode(
-                    "ascii", "ignore").decode("ascii", "ignore")
+                human_data = page[0].encode("ascii", "ignore").decode("ascii", "ignore")
                 logging.info("HUMAN DATA: %s", human_data)
 
-                shown_name = page_name.encode(
-                    "ascii", "ignore").decode("ascii", "ignore")
+                shown_name = page_name.encode("ascii", "ignore").decode(
+                    "ascii", "ignore"
+                )
                 logging.info("SHOWN ON CHANNEL: %s", shown_name)
 
                 url = page[2]
@@ -725,5 +728,5 @@ def main():
         raise e
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
