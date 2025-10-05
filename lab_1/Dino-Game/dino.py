@@ -1,8 +1,7 @@
 import os
-import sys
 import pygame
 import random
-from pygame import *
+from pygame import RLEACCEL
 
 # Инициализация Pygame
 pygame.init()
@@ -13,8 +12,8 @@ FPS = 60
 gravity = 0.6
 
 # Цветовые коды
-black_color = (0,0,0)
-white_color = (255,255,255)
+black_color = (0, 0, 0)
+white_color = (255, 255, 255)
 bg_color = (235, 235, 235)
 
 # Переменная для хранения рекорда
@@ -76,7 +75,7 @@ def load_sprite_sheet(
             rect = pygame.Rect((j*sx,i*sy,sx,sy))
             img = pygame.Surface(rect.size)
             img = img.convert()
-            img.blit(sh,(0,0),rect)
+            img.blit(sh, (0, 0), rect)
 
             if c_key is not None:
                 if c_key == -1:
@@ -115,7 +114,7 @@ def extractDigits(num):
             num = int(num / 10)
 
         d.append(num % 10)
-        for i in range(len(d),5):
+        for i in range(len(d), 5):
             d.append(0)
         d.reverse()
         return d
@@ -235,8 +234,8 @@ class birds(pygame.sprite.Sprite):
 
 class Ground():
     def __init__(self,speed=-5):
-        self.image,self.rect = load_image('ground.png',-1,-1,-1)
-        self.image1,self.rect1 = load_image('ground.png',-1,-1,-1)
+        self.image,self.rect = load_image('ground.png', -1, -1, -1)
+        self.image1,self.rect1 = load_image('ground.png', -1, -1, -1)
         self.rect.bottom = height_screen
         self.rect1.bottom = height_screen
         self.rect1.left = self.rect.right
@@ -259,11 +258,11 @@ class Ground():
 class Cloud(pygame.sprite.Sprite):
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self,self.containers)
-        self.image,self.rect = load_image('cloud.png',int(90*30/42),30,-1)
+        self.image,self.rect = load_image('cloud.png', int(90*30/42), 30, -1)
         self.speed = 1
         self.rect.left = x
         self.rect.top = y
-        self.movement = [-1*self.speed,0]
+        self.movement = [-1*self.speed, 0]
 
     def draw(self):
         screen_layout_display.blit(self.image, self.rect)
@@ -274,7 +273,7 @@ class Cloud(pygame.sprite.Sprite):
             self.kill()
 
 class Scoreboard():
-    def __init__(self,x=-1,y=-1):
+    def __init__(self, x=-1, y=-1):
         self.score = 0
         self.scre_img, self.screrect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11 * 6 / 5), -1)
         self.image = pygame.Surface((55,int(11*6/5)))
@@ -301,15 +300,15 @@ class Scoreboard():
 
 
 def introduction_screen():
-    ado_dino = Dino(44,47)
+    ado_dino = Dino(44, 47)
     ado_dino.blinking = True
     starting_game = False
 
-    t_ground,t_ground_rect = load_sprite_sheet('ground.png',15,1,-1,-1,-1)
+    t_ground,t_ground_rect = load_sprite_sheet('ground.png', 15, 1, -1, -1, -1)
     t_ground_rect.left = width_screen / 20
     t_ground_rect.bottom = height_screen
 
-    logo,l_rect = load_image('logo.png',300,140,-1)
+    logo,l_rect = load_image('logo.png', 300, 140, -1)
     l_rect.centerx = width_screen * 0.6
     l_rect.centery = height_screen * 0.6
     while not starting_game:
@@ -347,7 +346,7 @@ def gameplay():
     s_Menu = False
     g_Over = False
     g_exit = False
-    gamer_Dino = Dino(44,47)
+    gamer_Dino = Dino(44, 47)
     new_grnd = Ground(-1*gp)
     score_boards = Scoreboard()
     highScore = Scoreboard(width_screen * 0.78)
@@ -362,16 +361,16 @@ def gameplay():
     birds.containers = smallBird
     Cloud.containers = skyClouds
 
-    rbtn_image,rbtn_rect = load_image('replay_button.png',35,31,-1)
-    gmo_image,gmo_rect = load_image('game_over.png',190,11,-1)
+    rbtn_image,rbtn_rect = load_image('replay_button.png', 35, 31, -1)
+    gmo_image,gmo_rect = load_image('game_over.png', 190, 11, -1)
 
-    t_images,t_rect = load_sprite_sheet('numbers.png',12,1,11,int(11*6/5),-1)
-    ado_image = pygame.Surface((22,int(11*6/5)))
+    t_images,t_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11*6/5), -1)
+    ado_image = pygame.Surface((22, int(11*6/5)))
     ado_rect = ado_image.get_rect()
     ado_image.fill(bg_color)
-    ado_image.blit(t_images[10],t_rect)
+    ado_image.blit(t_images[10], t_rect)
     t_rect.left += t_rect.width
-    ado_image.blit(t_images[11],t_rect)
+    ado_image.blit(t_images[11], t_rect)
     ado_rect.top = height_screen * 0.1
     ado_rect.left = width_screen * 0.73
 
@@ -406,14 +405,14 @@ def gameplay():
                             gamer_Dino.ducking = False
             for c in cactusan:
                 c.movement[0] = -1*gp
-                if pygame.sprite.collide_mask(gamer_Dino,c):
+                if pygame.sprite.collide_mask(gamer_Dino, c):
                     gamer_Dino.dead = True
                     if pygame.mixer.get_init() != None:
                         die_sound.play()
 
             for p in smallBird:
                 p.movement[0] = -1*gp
-                if pygame.sprite.collide_mask(gamer_Dino,p):
+                if pygame.sprite.collide_mask(gamer_Dino, p):
                     gamer_Dino.dead = True
                     if pygame.mixer.get_init() != None:
                         die_sound.play()
@@ -421,20 +420,20 @@ def gameplay():
             if len(cactusan) < 2:
                 if len(cactusan) == 0:
                     last_end_obs.empty()
-                    last_end_obs.add(Cactus(gp,40,40))
+                    last_end_obs.add(Cactus(gp, 40, 40))
                 else:
                     for l in last_end_obs:
                         if l.rect.right < width_screen*0.7 and random.randrange(0, 50) == 10:
                             last_end_obs.empty()
                             last_end_obs.add(Cactus(gp, 40, 40))
 
-            if len(smallBird) == 0 and random.randrange(0,200) == 10 and counter > 500:
+            if len(smallBird) == 0 and random.randrange(0, 200) == 10 and counter > 500:
                 for l in last_end_obs:
                     if l.rect.right < width_screen*0.8:
                         last_end_obs.empty()
                         last_end_obs.add(birds(gp, 46, 40))
 
-            if len(skyClouds) < 5 and random.randrange(0,300) == 10:
+            if len(skyClouds) < 5 and random.randrange(0, 300) == 10:
                 Cloud(width_screen, random.randrange(int(height_screen / 5), int(height_screen / 2)))
 
             gamer_Dino.update()
