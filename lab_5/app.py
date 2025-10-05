@@ -931,6 +931,18 @@ def download_file(file_id, filename):
         return jsonify({'error': f'Download failed: {str(e)}'}), 500
 
 
+@app.before_request
+def log_request_info():
+    if request.path == '/convert' and request.method == 'POST':
+        # Для convert уже есть детальное логирование, пропускаем
+        return
+
+    client_ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    logger.info("🌐 Входящий запрос: %s %s - IP: %s - User-Agent: %s",
+                request.method, request.path, client_ip,
+                request.headers.get('User-Agent', 'Unknown'))
+
+
 if __name__ == '__main__':
     logger.info("🚀 Запуск Flask приложения File Converter")
     logger.info("📍 Хост: 0.0.0.0, Порт: 5000")
