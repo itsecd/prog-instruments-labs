@@ -304,12 +304,12 @@ def main():
 
         # Collision check
         check_limits(my_snake)
-        if (my_snake.check_crash() == True):
+        if (my_snake.check_crash()):
             end_game()
 
         for my_apple in apples:
             if (my_apple.state == 1):
-                if (check_collision(my_snake.get_head(), SNAKE_SIZE, my_apple, APPLE_SIZE) == True):
+                if (check_collision(my_snake.get_head(), SNAKE_SIZE, my_apple, APPLE_SIZE)):
                     my_snake.grow()
                     my_apple.state = 0
                     score += 5
@@ -321,7 +321,7 @@ def main():
         my_snake.move()
 
         # Respawning apples
-        if (eaten_apple == True):
+        if (eaten_apple):
             eaten_apple = False
             respawn_apple(apples, 0, my_snake.get_head().x, my_snake.get_head().y)
 
