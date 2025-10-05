@@ -48,24 +48,27 @@ class DataProcessor:
 
         if 'timestamp' in item:
             try:
-                transformed['time']=datetime.datetime.strptime(item['timestamp'], '%Y-%m-%d %H:%M:%S')
+                timestamp_format='%Y-%m-%d %H:%M:%S'
+                transformed['time']=(datetime.datetime.strptime(
+                    item['timestamp'], timestamp_format
+                ))
             except ValueError:
-                transformed['time']=None
+                transformed['time'] = None
 
         if 'category' in item:
             transformed['category'] = item['category'].upper()
 
         return transformed
     def batch_process(self, items: List[Dict]) -> List[Dict]:
-        processed_items=[]
+        processed_items = []
         for i, item in enumerate(items):
             if self._validate_item(item):
-                processed=self._transform_item(item, i)
+                processed = self._transform_item(item, i)
                 processed_items.append(processed)
         return processed_items
 
     def clear_cache(self):
-        self._cache={}
+        self._cache = {}
         print("Cache cleared")
     def get_stats(self) -> Dict:
         return {
@@ -160,7 +163,9 @@ class Calculator:
 
 
 
-def process_user_input(input_string: str, validation_rules: Optional[Dict] = None) -> Dict[str, Any]:
+def process_user_input(input_string: str,
+                      validation_rules: Optional[Dict] = None
+                      ) -> Dict[str, Any]:
     result = {'success': False, 'data': None, 'error': None, 'warnings': []}
 
     if not input_string or len(input_string.strip()) == 0:
@@ -171,14 +176,19 @@ def process_user_input(input_string: str, validation_rules: Optional[Dict] = Non
 
     if validation_rules and 'max_length' in validation_rules:
         if len(cleaned_input) > validation_rules['max_length']:
-            result['warnings'].append(f'Input exceeds maximum length of {validation_rules["max_length"]} characters')
+            max_len = validation_rules["max_length"]
+            result['warnings'].append(
+                f'Input exceeds maximum length of {max_len} characters'
+            )
 
     if validation_rules and 'min_length' in validation_rules:
         if len(cleaned_input) < validation_rules['min_length']:
-            result['error'] = f'Input must be at least {validation_rules["min_length"]} characters long'
+            min_len = validation_rules["min_length"]
+            result['error'] = f'Input must be at least {min_len} characters long'
             return result
 
     cleaned_input = cleaned_input.lower()
+    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 
     if cleaned_input.isdigit():
         result['data'] = int(cleaned_input)
@@ -186,7 +196,8 @@ def process_user_input(input_string: str, validation_rules: Optional[Dict] = Non
     elif re.match(r'^[a-zA-Z\s]+$', cleaned_input):
         result['data'] = cleaned_input.upper()
         result['success'] = True
-    elif re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', cleaned_input):
+
+    elif re.match(email_pattern, cleaned_input):
         result['data'] = cleaned_input
         result['success'] = True
     else:
@@ -203,7 +214,9 @@ def validate_phone(phone: str) -> bool:
     return bool(re.match(pattern, phone))
 
 def sanitize_input(input_string: str) -> str:
-    return input_string.strip().replace('\0', '').replace('\r', '').replace('\n', '')
+    sanitized = input_string.strip()
+    sanitized = sanitized.replace('\0', '').replace('\r', '').replace('\n', '')
+    return sanitized
 
 def format_output(data: Any, format_type: str = 'string') -> str:
     if format_type == 'json':
@@ -216,8 +229,15 @@ def format_output(data: Any, format_type: str = 'string') -> str:
         return str(data)
 
 class DatabaseHandler:
-    def __init__(self, host: str, port: int, database: str, username: str, password: str,
-                 connection_timeout: float = 10.0):
+    def __init__(
+            self,
+            host: str,
+            port: int,
+            database: str,
+            username: str,
+            password: str,
+            connection_timeout: float = 10.0
+    ):
         self.connection_params = {
             'host': host,
             'port': port,
@@ -233,7 +253,9 @@ class DatabaseHandler:
 
     def connect(self) -> bool:
         try:
-            print(f"Connecting to {self.connection_params['host']}:{self.connection_params['port']}")
+            host = self.connection_params['host']
+            port = self.connection_params['port']
+            print(f"Connecting to {host}:{port}")
             time.sleep(0.1)
             self.is_connected=True
             self.connection ="mock_connection_object"
@@ -247,7 +269,8 @@ class DatabaseHandler:
             print(f"Unexpected error: {e}")
             return False
 
-    def execute_query(self, query: str, params: Optional[Tuple] = None) -> List[Dict]:
+    def execute_query(self, query: str,
+                      params: Optional[Tuple] = None) -> List[Dict]:
         if not self.is_connected:
             print("Not connected to database")
             return []
@@ -261,9 +284,14 @@ class DatabaseHandler:
 
         if "SELECT" in query.upper():
             if "WHERE age >" in query:
-                return [{'id': 1, 'name': 'John', 'age': 30}, {'id': 2, 'name': 'Jane', 'age': 28}]
+                return [
+                    {'id': 1, 'name': 'Test', 'value': 100},
+                    {'id': 2, 'name': 'Test2', 'value': 200}
+                ]
             else:
-                return [{'id': 1, 'name': 'Test', 'value': 100}, {'id': 2, 'name': 'Test2', 'value': 200}]
+                return [
+                    {'id': 1, 'name': 'Test', 'value': 100},
+                    {'id': 2, 'name': 'Test2', 'value': 200}]
         elif "INSERT" in query.upper():
             return [{'affected_rows': 1}]
         elif "UPDATE" in query.upper():
@@ -304,7 +332,9 @@ class DatabaseHandler:
             print(f"Unexpected error during connection test: {e}")
             return False
 
-def generate_report(data: List[Dict], output_file: Optional[str] = None, include_details: bool = False) -> str:
+def generate_report(data: List[Dict],
+                   output_file: Optional[str] = None,
+                   include_details: bool = False) -> str:
     if not data:
         return "No data to generate report"
 
@@ -336,7 +366,9 @@ def generate_report(data: List[Dict], output_file: Optional[str] = None, include
         report_lines.append("-" * 40)
         for i, item in enumerate(data[:5]):
             report_lines.append(
-                f"{i + 1}. ID: {item.get('identifier', 'N/A')}, Value: {item.get('numeric_value', 'N/A')}")
+                f"{i + 1}. ID: {item.get('identifier', 'N/A')}, "
+                f"Value: {item.get('numeric_value', 'N/A')}"
+                )
         if len(data) > 5:
             report_lines.append(f"... and {len(data) - 5} more items")
 
