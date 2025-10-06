@@ -1,4 +1,6 @@
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+from typing import Union
 
 from filehandler import FileHandler
 
@@ -7,7 +9,10 @@ class DeSerialization:
     """Serialization and deserialization operations"""
 
     @staticmethod
-    def serialization_rsa_key(key, key_type):
+    def serialization_rsa_key(
+            key: Union[rsa.RSAPrivateKey, rsa.RSAPublicKey],
+            key_type: str
+    ) -> bytes:
         """
         Serialization rsa asymmetric key
         :param key_dir: directory to save the key
@@ -29,12 +34,15 @@ class DeSerialization:
                 )
 
     @staticmethod
-    def deserialization_rsa_key(key, key_type):
+    def deserialization_rsa_key(
+            key: bytes,
+            key_type: str
+    ) -> Union[rsa.RSAPrivateKey, rsa.RSAPublicKey]:
         """
         Deserialization rsa asymmetric key
         :param key: the key to deserialize
         :param key_type: type of key - private or public
-        :return: None
+        :return: deserialized key
         """
         match key_type:
             case "private":
@@ -43,7 +51,10 @@ class DeSerialization:
                 return serialization.load_pem_public_key(key)
 
     @staticmethod
-    def serialization_data(data_dir, data):
+    def serialization_data(
+            data_dir: str,
+            data: bytes
+    ) -> None:
         """
         Method serializes the data and saves it to a file
         :param data_dir: directory to save file
@@ -53,7 +64,9 @@ class DeSerialization:
         FileHandler.save_data(data_dir, data, "wb")
 
     @staticmethod
-    def deserialization_data(data_dir):
+    def deserialization_data(
+            data_dir: str
+    ) -> Union[bytes, str]:
         """
         Method deserializes the data from the file
         :param data_dir: directory to serialized file

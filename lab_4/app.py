@@ -1,7 +1,5 @@
 import sys
 
-sys.path.append("C:/Users/ct/PycharmProjects/isb/lab3")
-
 from PyQt6 import QtCore
 
 from PyQt6.QtWidgets import (

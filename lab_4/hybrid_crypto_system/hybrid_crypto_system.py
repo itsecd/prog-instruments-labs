@@ -19,7 +19,7 @@ class HybridCryptoSystem:
         encrypted_symmetric_key_dir: str,
         private_key_dir: str,
         public_key_dir: str,
-    ):
+    ) -> None:
         """
         Key generation method
         :param encrypted_symmetric_key_dir: directory to save encrypted symmetric key
@@ -27,7 +27,7 @@ class HybridCryptoSystem:
         :param private_key_dir: directory to save private asymmetric key
         :return None
         """
-        private_key, public_key = AsymmetricCrypto.generate_keys(self.__key_length)
+        private_key, public_key = AsymmetricCrypto.generate_keys()
         symmetric_key = SymmetricCrypto.generate_key(self.__key_length)
 
         s_private_key = DeSerialization.serialization_rsa_key(private_key, "private")
@@ -48,7 +48,7 @@ class HybridCryptoSystem:
         private_key_dir: str,
         encrypted_symmetric_key_dir: str,
         encrypted_data_dir: str,
-    ):
+    ) -> None:
         """
         Data encryption method
         :param plain_text_dir: directory to file with text to encrypt
@@ -71,7 +71,6 @@ class HybridCryptoSystem:
         encrypted_data = SymmetricCrypto.encrypt_data(
             plain_text, private_bytes, encrypted_symmetric_key
         )
-        # FileHandler.save_data(encrypted_data_dir, encrypted_data, "wb")
         DeSerialization.serialization_data(encrypted_data_dir, encrypted_data)
 
     def decrypt_data(
@@ -80,13 +79,13 @@ class HybridCryptoSystem:
         private_key_dir: str,
         encrypted_symmetric_key_dir: str,
         decrypted_text_dir: str,
-    ):
+    ) -> None:
         """
         Decryption data method
         :param encrypted_text_dir: directory to file with text to decrypt
         :param private_key_dir: directory to private asymmetric key
         :param encrypted_symmetric_key_dir: directory to symmetric key
-        :param decrypted_text_dir: irectory to save decrypted data
+        :param decrypted_text_dir: directory to save decrypted data
         :return: None
         """
         if not (encrypted_text := FileHandler.read_data(encrypted_text_dir, "rb")):

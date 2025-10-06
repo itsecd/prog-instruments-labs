@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa, padding as asymmetric_padding
 
@@ -6,10 +8,9 @@ from hybrid_crypto_system.asymmetric_crypto.constants import KEY_SIZE, PUBLIC_EX
 
 class AsymmetricCrypto:
     @staticmethod
-    def generate_keys(key_length: int) -> tuple:
+    def generate_keys() -> Tuple[rsa.RSAPrivateKey, rsa.RSAPublicKey]:
         """
-        Asymmetric key generation method
-        :param key_length: key size
+        Asymmetric keys generation method
         :return: private_key, public_key
         """
         keys = rsa.generate_private_key(public_exponent=PUBLIC_EXPONENT, key_size=KEY_SIZE)
@@ -19,7 +20,10 @@ class AsymmetricCrypto:
         return private_key, public_key
 
     @staticmethod
-    def encrypt_symmetric_key(symmetric_key, public_key):
+    def encrypt_symmetric_key(
+            symmetric_key: bytes,
+            public_key: rsa.RSAPublicKey
+    ) -> bytes:
         """
         Symmetric key encryption method
         :param symmetric_key: the key to encrypt
@@ -36,7 +40,10 @@ class AsymmetricCrypto:
         )
 
     @staticmethod
-    def decrypt_symmetric_key(encrypted_symmetric_key, private_key):
+    def decrypt_symmetric_key(
+            encrypted_symmetric_key: bytes,
+            private_key: rsa.RSAPrivateKey
+    ) -> bytes:
         """
         Symmetric key decryption method
         :param encrypted_symmetric_key: the key to decrypt
