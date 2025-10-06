@@ -418,11 +418,11 @@ def solve(numbers: list, target: int, state: SolverState) -> Optional[Solution]:
     return _try_arithmetic_approaches(numbers, target, state)
 
 
-def solve_card(card: list[int], target: int = 24) -> tuple[Optional[Solution], int]:
+def solve_card(card: list, target: int = 24) -> tuple[Optional[Solution], int]:
     """
     This method solves the 24 Card using my custom algorithm
     :param card: A list representing the 24 Card
-    target: Target value (default 24)
+    : param target: Target value (default 24)
     :return: Tuple of (solution, attempts_count)
     """
     state = SolverState()
@@ -430,27 +430,40 @@ def solve_card(card: list[int], target: int = 24) -> tuple[Optional[Solution], i
     return solution, state.attempts_count
 
 
-# The 24 card. It's an array of 4 numbers
-card = []
+def get_card_from_user() -> list:
+    """Gets card numbers from command line or user input."""
+    if len(sys.argv) > 1:
+        return [int(arg) for arg in sys.argv[1:] if is_numeric(arg)]
+    else:
+        user_input = input("Please enter 4 numbers separated by a space: ")
+        return [int(num_str) for num_str in user_input.split() if is_numeric(num_str)]
 
-# Get the card's numbers from the user
-if len(sys.argv) <= 1:
-    user_input = raw_input("Please enter 4 numbers separated by a space: ")
-    split_input = user_input.split()
-    for num_str in split_input:
-        card.append(int(num_str))
-else:
-    for arg in sys.argv[1:]:
-        if is_numeric(arg):
-            card.append(int(arg))
 
-# Solve the card
-solution = solve_card(card)
+if __name__ == "__main__":
+    try:
+        card = get_card_from_user()
+        
+        if len(card) != 4:
+            raise ValueError("Length not equal 4!")
 
-# Print results
-if solution:
-    print ("Solution: %s" % solution)
-else:
-    print ("No solution found.")
+        print(f"Solving for card: {card}")
+        
+        solution, attempts = solve_card(card)
+        
+        if solution:
+            try:
+                if solution.is_correct():
+                    print(f"Solution: {solution}")
+                    print(f"Verification: {solution.evaluate()}")
+            except Exception as e:
+                print("Error in solution evaluation: {e}")
+            
+        else:
+            print("No solution found!")
+        
+        print(f"Number of attempts: {attempts}")
 
-print ("Number of attempts: %s" % num_attempts)
+    except ValueError as e:
+        print(f"Input error: Please enter valid numbers - {e}")
+    except Exception as e:
+        print(f"Something went wrong: {e}")
