@@ -1,9 +1,24 @@
 import file_reader
+import validator
+import checksum
 
 
 def main():
-    encoding = file_reader.detect_encoding('32.csv')
-    print(f"Определенная кодировка файла: {encoding}")
+    """Основная функция приложения"""
+    try:
+        lines = file_reader.read_csv_file('32.csv')
+
+        invalid_rows = validator.process_csv_data(lines)
+
+        control_sum = checksum.calculate_checksum(invalid_rows)
+
+        checksum.serialize_result(32, control_sum)
+
+        print(f"Найдено невалидных строк: {len(invalid_rows)}")
+        print(f"Контрольная сумма: {control_sum}")
+
+    except Exception as e:
+        print(f"Ошибка выполнения: {e}")
 
 
 if __name__ == "__main__":
