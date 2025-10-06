@@ -24,6 +24,12 @@ class SymmetricCrypto:
         return padder.update(text) + padder.finalize()
 
     @staticmethod
+    def split_from_iv(text: bytes) -> tuple:
+        iv = text[-8:]
+        split_text = text[:-8]
+        return iv, split_text
+
+    @staticmethod
     def encrypt_data(plain_text, private_bytes, encrypted_symmetric_key):
         private_key = DeSerialization.deserialization_rsa_key(private_bytes, "private")
         symmetric_key = AsymmetricCrypto.decrypt_symmetric_key(
@@ -45,8 +51,8 @@ class SymmetricCrypto:
             encrypted_symmetric_key, private_key
         )
 
-        iv = encrypted_data[-8:]
-        text = encrypted_data[:-8]
+        iv, text = SymmetricCrypto.split_from_iv(encrypted_data)
+
         cipher = Cipher(TripleDES(symmetric_key), modes.CBC(iv))
         decryptor = cipher.decryptor()
         padded_text = decryptor.update(text) + decryptor.finalize()
