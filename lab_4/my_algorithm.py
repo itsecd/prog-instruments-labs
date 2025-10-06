@@ -1,9 +1,7 @@
 import sys
 
-
 from math import sqrt
 from typing import Optional
-
 
 from utils import Operator, SolverState, Solution
 
