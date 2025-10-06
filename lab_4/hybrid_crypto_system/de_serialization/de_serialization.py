@@ -68,7 +68,7 @@ class DeSerialization:
     @staticmethod
     def deserialization_data(
             data_dir: str
-    ) -> Union[bytes, str]:
+    ) -> bytes:
         """
         Method deserializes the data from the file
         :param data_dir: directory to serialized file
