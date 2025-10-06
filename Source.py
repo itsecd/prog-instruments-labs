@@ -5,13 +5,13 @@ import time
 from enum import Enum
 from typing import List, Tuple, Optional
 
-class _direction(Enum):
+class Direction(Enum):
     UP = (0, -1)
     DOWN = (0, 1)
     LEFT = (-1, 0)
     RIGHT = (1, 0)
 
-class _game_state(Enum):
+class GameState(Enum):
     MENU = 0
     PLAYING = 1
     GAME_OVER = 2
@@ -31,18 +31,18 @@ class Colors:
 class Snake:
     def __init__(self, start_pos: Tuple[int, int], block_size: int = 20):
         self.body = [ start_pos ]
-        self.direction = _direction.RIGHT
-        self.next_direction = _direction.RIGHT
+        self.direction = Direction.RIGHT
+        self.next_direction = Direction.RIGHT
         self.block_size = block_size
         self.grow_pending = 3
         self.speed = 10
         self.last_move_time = 0
-    def change_direction(self, new_direction: _direction):
+    def change_direction(self, new_direction: Direction):
         opposite_directions = {
-            _direction.UP: _direction.DOWN,
-            _direction.DOWN: _direction.UP,
-            _direction.LEFT: _direction.RIGHT,
-            _direction.RIGHT: _direction.LEFT
+            Direction.UP: Direction.DOWN,
+            Direction.DOWN: Direction.UP,
+            Direction.LEFT: Direction.RIGHT,
+            Direction.RIGHT: Direction.LEFT
         }
         
         if new_direction != opposite_directions.get(self.direction):
@@ -87,13 +87,13 @@ class Snake:
                 eye_size = 4
                 eye_offset = 5
                 
-                if self.direction == _direction.RIGHT:
+                if self.direction == Direction.RIGHT:
                     left_eye = (x + self.block_size - eye_offset, y + eye_offset)
                     right_eye = (x + self.block_size - eye_offset, y + self.block_size - eye_offset)
-                elif self.direction == _direction.LEFT:
+                elif self.direction == Direction.LEFT:
                     left_eye = (x + eye_offset, y + eye_offset)
                     right_eye = (x + eye_offset, y + self.block_size - eye_offset)
-                elif self.direction == _direction.UP:
+                elif self.direction == Direction.UP:
                     left_eye = (x + eye_offset, y + eye_offset)
                     right_eye = (x + self.block_size - eye_offset, y + eye_offset)
                 else:
@@ -158,7 +158,7 @@ class Game:
         self.food = Food(self.block_size)
         self.score = 0
         self.high_score = 0
-        self.state = _game_state.MENU
+        self.state = GameState.MENU
         self.last_food_check = 0
     def handle_events(self):
         for event in pygame.event.get():
@@ -166,44 +166,44 @@ class Game:
                 return False
             
             if event.type == pygame.KEYDOWN:
-                if self.state == _game_state.MENU:
+                if self.state == GameState.MENU:
                     if event.key == pygame.K_SPACE:
                         self.start_game()
                 
-                elif self.state == _game_state.PLAYING:
+                elif self.state == GameState.PLAYING:
                     if event.key == pygame.K_UP:
-                        self.snake.change_direction(_direction.UP)
+                        self.snake.change_direction(Direction.UP)
                     elif event.key == pygame.K_DOWN:
-                        self.snake.change_direction(_direction.DOWN)
+                        self.snake.change_direction(Direction.DOWN)
                     elif event.key == pygame.K_LEFT:
-                        self.snake.change_direction(_direction.LEFT)
+                        self.snake.change_direction(Direction.LEFT)
                     elif event.key == pygame.K_RIGHT:
-                        self.snake.change_direction(_direction.RIGHT)
+                        self.snake.change_direction(Direction.RIGHT)
                     elif event.key == pygame.K_p:
-                        self.state = _game_state.PAUSED
+                        self.state = GameState.PAUSED
                     elif event.key == pygame.K_ESCAPE:
-                        self.state = _game_state.MENU
+                        self.state = GameState.MENU
                 
-                elif self.state == _game_state.PAUSED:
+                elif self.state == GameState.PAUSED:
                     if event.key == pygame.K_p:
-                        self.state = _game_state.PLAYING
+                        self.state = GameState.PLAYING
                     elif event.key == pygame.K_ESCAPE:
-                        self.state = _game_state.MENU
+                        self.state = GameState.MENU
                 
-                elif self.state == _game_state.GAME_OVER:
+                elif self.state == GameState.GAME_OVER:
                     if event.key == pygame.K_SPACE:
                         self.start_game()
                     elif event.key == pygame.K_ESCAPE:
-                        self.state = _game_state.MENU
+                        self.state = GameState.MENU
         
         return True
     def start_game(self):
         self.snake = Snake((100, 100), self.block_size)
         self.food.randomize_position(self.snake.body)
         self.score = 0
-        self.state = _game_state.PLAYING
+        self.state = GameState.PLAYING
     def update(self):
-        if self.state != _game_state.PLAYING:
+        if self.state != GameState.PLAYING:
             return
             
         current_time = time.time()
@@ -224,7 +224,7 @@ class Game:
                 self.last_food_check = current_time
     def game_over(self):
         self.high_score = max(self.high_score, self.score)
-        self.state = _game_state.GAME_OVER
+        self.state = GameState.GAME_OVER
     def draw_grid(self):
         for x in range(0, 800, self.block_size):
             pygame.draw.line(self.screen, Colors.GRAY, (x, 0), (x, 600), 1)
@@ -292,13 +292,13 @@ class Game:
         self.screen.blit(restart_text, (400 - restart_text.get_width() // 2, 350))
         self.screen.blit(menu_text, (400 - menu_text.get_width() // 2, 400))
     def draw(self):
-        if self.state == _game_state.MENU:
+        if self.state == GameState.MENU:
             self.draw_menu()
-        elif self.state == _game_state.PLAYING:
+        elif self.state == GameState.PLAYING:
             self.draw_playing()
-        elif self.state == _game_state.PAUSED:
+        elif self.state == GameState.PAUSED:
             self.draw_paused()
-        elif self.state == _game_state.GAME_OVER:
+        elif self.state == GameState.GAME_OVER:
             self.draw_game_over()
         
         pygame.display.flip()
