@@ -3,7 +3,6 @@ from typing import Tuple
 
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, modes
-from cryptography.hazmat.decrepit.ciphers.algorithms import TripleDES
 
 from hybrid_crypto_system.asymmetric_crypto.asymmetric_crypto import AsymmetricCrypto
 from hybrid_crypto_system.de_serialization.de_serialization import DeSerialization
@@ -31,23 +30,25 @@ class SymmetricCrypto:
         return os.urandom(BYTES)
 
     @staticmethod
-    def padding(text: bytes) -> bytes:
+    def padding(block_size: int, text: bytes) -> bytes:
         """
         Method to padding data
+        :param block_size: size of block
         :param text: text to padding
         :return: padded text
         """
-        padder = padding.ANSIX923(TripleDES.block_size).padder()
+        padder = padding.ANSIX923(block_size).padder()
         return padder.update(text) + padder.finalize()
 
     @staticmethod
-    def unpadding(text: bytes) -> bytes:
+    def unpadding(block_size: int, text: bytes) -> bytes:
         """
         Method to unpadding data
+        :param block_size: size of block
         :param text: text to unpadding
         :return: unpadded text
         """
-        unpadder = padding.ANSIX923(TripleDES.block_size).unpadder()
+        unpadder = padding.ANSIX923(block_size).unpadder()
         return unpadder.update(text) + unpadder.finalize()
 
     @staticmethod
@@ -62,7 +63,7 @@ class SymmetricCrypto:
         return iv, split_text
 
     @staticmethod
-    def encrypt_with_cipher(
+    def encrypt_with_algorithm(
             algorithm,
             key: bytes,
             iv: bytes,
@@ -81,7 +82,7 @@ class SymmetricCrypto:
         return encryptor.update(padded_text) + encryptor.finalize()
 
     @staticmethod
-    def decrypt_with_cipher(
+    def decrypt_with_algorithm(
             algorithm,
             key: bytes,
             iv: bytes,
@@ -101,12 +102,14 @@ class SymmetricCrypto:
 
     @staticmethod
     def encrypt_data(
+            cipher_algorithm,
             plain_text: bytes,
             private_bytes: bytes,
             encrypted_symmetric_key: bytes
     ) -> bytes:
         """
         Method to encrypt data from plain_text
+        :param cipher_algorithm: cipher algorithm
         :param plain_text: text to encrypt
         :param private_bytes: private key to decrypt key
         :param encrypted_symmetric_key: key to encrypt data
@@ -121,10 +124,13 @@ class SymmetricCrypto:
         )
 
         iv = SymmetricCrypto.get_iv()
-        padded_text = SymmetricCrypto.padding(plain_text)
+        padded_text = SymmetricCrypto.padding(
+            cipher_algorithm.block_size,
+            plain_text
+        )
 
-        encrypted_text = SymmetricCrypto.encrypt_with_cipher(
-            TripleDES,
+        encrypted_text = SymmetricCrypto.encrypt_with_algorithm(
+            cipher_algorithm,
             symmetric_key,
             iv,
             padded_text
@@ -133,12 +139,14 @@ class SymmetricCrypto:
 
     @staticmethod
     def decrypt_data(
+            cipher_algorithm,
             encrypted_data: bytes,
             private_bytes: bytes,
             encrypted_symmetric_key: bytes
     ) -> bytes:
         """
         Method to decrypt data from encrypted data
+        :param cipher_algorithm: cipher algorithm
         :param encrypted_data: encrypted text
         :param private_bytes: private key as bytes
         :param encrypted_symmetric_key: symmetric key as bytes
@@ -151,12 +159,15 @@ class SymmetricCrypto:
 
         iv, text = SymmetricCrypto.split_from_iv(encrypted_data)
 
-        decrypted_padded_text = SymmetricCrypto.decrypt_with_cipher(
-            TripleDES,
+        decrypted_padded_text = SymmetricCrypto.decrypt_with_algorithm(
+            cipher_algorithm,
             symmetric_key,
             iv,
             text
         )
 
-        decrypted_text = SymmetricCrypto.unpadding(decrypted_padded_text)
+        decrypted_text = SymmetricCrypto.unpadding(
+            cipher_algorithm.block_size,
+            decrypted_padded_text
+        )
         return decrypted_text

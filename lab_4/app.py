@@ -1,5 +1,6 @@
 import sys
 
+from cryptography.hazmat.decrepit.ciphers.algorithms import TripleDES
 from PyQt6 import QtCore
 from PyQt6.QtWidgets import (
     QApplication,
@@ -194,6 +195,7 @@ class MainWindow(QMainWindow):
             self.__crypto_system = HybridCryptoSystem()
         try:
             self.__crypto_system.encrypt_data(
+                TripleDES,
                 self.__settings["plain_text"],
                 self.__settings["private_key"],
                 self.__settings["symmetric_key"],
@@ -222,6 +224,7 @@ class MainWindow(QMainWindow):
             self.__crypto_system = HybridCryptoSystem()
         try:
             self.__crypto_system.decrypt_data(
+                TripleDES,
                 self.__settings["encrypted_text"],
                 self.__settings["private_key"],
                 self.__settings["symmetric_key"],

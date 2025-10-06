@@ -45,6 +45,7 @@ class HybridCryptoSystem:
 
     def encrypt_data(
         self,
+        cipher_algorithm,
         plain_text_dir: str,
         private_key_dir: str,
         encrypted_symmetric_key_dir: str,
@@ -52,6 +53,7 @@ class HybridCryptoSystem:
     ) -> None:
         """
         Data encryption method
+        :param cipher_algorithm: cipher algorithm
         :param plain_text_dir: directory to file with text to encrypt
         :param private_key_dir: directory to private asymmetric key
         :param encrypted_symmetric_key_dir: directory to symmetric key
@@ -70,12 +72,16 @@ class HybridCryptoSystem:
             raise ValueError("Encrypted symmetric key must not be empty")
 
         encrypted_data = SymmetricCrypto.encrypt_data(
-            plain_text, private_bytes, encrypted_symmetric_key
+            cipher_algorithm,
+            plain_text,
+            private_bytes,
+            encrypted_symmetric_key
         )
         DeSerialization.serialization_data(encrypted_data_dir, encrypted_data)
 
     def decrypt_data(
         self,
+        cipher_algorithm,
         encrypted_text_dir: str,
         private_key_dir: str,
         encrypted_symmetric_key_dir: str,
@@ -83,6 +89,7 @@ class HybridCryptoSystem:
     ) -> None:
         """
         Decryption data method
+        :param cipher_algorithm: cipher algorithm
         :param encrypted_text_dir: directory to file with text to decrypt
         :param private_key_dir: directory to private asymmetric key
         :param encrypted_symmetric_key_dir: directory to symmetric key
@@ -101,6 +108,9 @@ class HybridCryptoSystem:
             raise ValueError("Encrypted symmetric key must not be empty")
 
         decrypted_data = SymmetricCrypto.decrypt_data(
-            encrypted_text, private_bytes, encrypted_symmetric_key
+            cipher_algorithm,
+            encrypted_text,
+            private_bytes,
+            encrypted_symmetric_key
         )
         FileHandler.save_data(decrypted_text_dir, decrypted_data, "wb")
