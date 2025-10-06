@@ -9,6 +9,11 @@ from hybrid_crypto_system.de_serialization.de_serialization import DeSerializati
 
 
 class SymmetricCrypto:
+
+    @staticmethod
+    def generate_key(key_length: int) -> bytes:
+        return os.urandom(key_length // 8)
+
     @staticmethod
     def encrypt_data(plain_text, private_bytes, encrypted_symmetric_key):
         private_key = DeSerialization.deserialization_rsa_key(private_bytes, "private")
