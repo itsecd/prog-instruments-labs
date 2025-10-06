@@ -74,12 +74,32 @@ Given n numbers (stored in array A), can you use arithmetic to arrive at x?
 import sys
 from math import sqrt
 
+class OperationResult:
+    value: float
+    is_valid: bool = True
+    error_message: str = ""
+
 class Operator(object):
     """
     Represents an operator ('*', '+', '-', '/') used in solving a 24 Card.
     """
+    _operations = {
+        '*': lambda left, right: OperationResult(left * right),
+        '+': lambda left, right: OperationResult(left + right),
+        '-': lambda left, right: OperationResult(left - right),
+        '/': lambda left, right: (
+            OperationResult(float(left) / right) if right != 0 
+            else OperationResult(0, False, "Division by zero")
+        )
+    }
+
     def __init__(self, op):
         self.op = op
+
+    def _validate_operator(self):
+        """Проверяет валидность оператора."""
+        if self.op not in self._operations:
+            raise ValueError(f"Invalid operator: {self.op}")
 
     def evaluate(self, left, right):
         """
@@ -88,16 +108,7 @@ class Operator(object):
         :param right: The right operand
         :return: The result of executing the operator on the two operands
         """
-        if self.op == '*':
-            return left * right
-        elif self.op == '+':
-            return left + right
-        elif self.op == '-':
-            return left - right
-        elif self.op == '/':
-            return float(left) / right
-        else:
-            return "Error"
+        return self._operations[self.op](left, right)
 
     def __repr__(self):
         return str(self.op)
