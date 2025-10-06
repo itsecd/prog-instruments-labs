@@ -81,6 +81,25 @@ class SymmetricCrypto:
         return encryptor.update(padded_text) + encryptor.finalize()
 
     @staticmethod
+    def decrypt_with_cipher(
+            algorithm,
+            key: bytes,
+            iv: bytes,
+            text: bytes
+    ) -> bytes:
+        """
+        Method decrypts data with cipher algorithm
+        :param algorithm: cipher algorithm
+        :param key: key for decryption
+        :param iv: iv for decryption
+        :param text: encrypted text
+        :return: decrypted padded text
+        """
+        cipher = Cipher(algorithm(key), modes.CBC(iv))
+        decryptor = cipher.decryptor()
+        return decryptor.update(text) + decryptor.finalize()
+
+    @staticmethod
     def encrypt_data(
             plain_text: bytes,
             private_bytes: bytes,
@@ -132,9 +151,12 @@ class SymmetricCrypto:
 
         iv, text = SymmetricCrypto.split_from_iv(encrypted_data)
 
-        cipher = Cipher(TripleDES(symmetric_key), modes.CBC(iv))
-        decryptor = cipher.decryptor()
-        padded_text = decryptor.update(text) + decryptor.finalize()
+        decrypted_padded_text = SymmetricCrypto.decrypt_with_cipher(
+            TripleDES,
+            symmetric_key,
+            iv,
+            text
+        )
 
-        decrypted_text = SymmetricCrypto.unpadding(padded_text)
+        decrypted_text = SymmetricCrypto.unpadding(decrypted_padded_text)
         return decrypted_text
