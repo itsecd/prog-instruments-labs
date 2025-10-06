@@ -1,4 +1,7 @@
-import pygame, random, sys, time
+import pygame
+import random
+import sys
+import time
 from enum import Enum
 from typing import List, Tuple, Optional
 
