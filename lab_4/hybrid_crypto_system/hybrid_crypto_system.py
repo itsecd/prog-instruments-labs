@@ -1,3 +1,5 @@
+from cryptography.hazmat.decrepit.ciphers.algorithms import TripleDES
+
 from filehandler import FileHandler
 from hybrid_crypto_system.asymmetric_crypto.asymmetric_crypto import AsymmetricCrypto
 from hybrid_crypto_system.de_serialization.de_serialization import DeSerialization
@@ -8,11 +10,12 @@ from hybrid_crypto_system.symmetric_crypto.symmetric_crypto import SymmetricCryp
 class HybridCryptoSystem:
     """Hybrid CryptoSystem class"""
 
-    def __init__(self, length=192):
+    def __init__(self, cipher_algorithm=TripleDES, length=192):
         """
         Initializing the system
         :param length: key length, default value=192 bits
         """
+        self.__cipher_algorithm = cipher_algorithm
         self.__key_length = length
 
     def generate_keys(
@@ -45,7 +48,6 @@ class HybridCryptoSystem:
 
     def encrypt_data(
         self,
-        cipher_algorithm,
         plain_text_dir: str,
         private_key_dir: str,
         encrypted_symmetric_key_dir: str,
@@ -53,7 +55,6 @@ class HybridCryptoSystem:
     ) -> None:
         """
         Data encryption method
-        :param cipher_algorithm: cipher algorithm
         :param plain_text_dir: directory to file with text to encrypt
         :param private_key_dir: directory to private asymmetric key
         :param encrypted_symmetric_key_dir: directory to symmetric key
@@ -72,7 +73,7 @@ class HybridCryptoSystem:
             raise ValueError("Encrypted symmetric key must not be empty")
 
         encrypted_data = SymmetricCrypto.encrypt_data(
-            cipher_algorithm,
+            self.__cipher_algorithm,
             plain_text,
             private_bytes,
             encrypted_symmetric_key
@@ -81,7 +82,6 @@ class HybridCryptoSystem:
 
     def decrypt_data(
         self,
-        cipher_algorithm,
         encrypted_text_dir: str,
         private_key_dir: str,
         encrypted_symmetric_key_dir: str,
@@ -89,7 +89,6 @@ class HybridCryptoSystem:
     ) -> None:
         """
         Decryption data method
-        :param cipher_algorithm: cipher algorithm
         :param encrypted_text_dir: directory to file with text to decrypt
         :param private_key_dir: directory to private asymmetric key
         :param encrypted_symmetric_key_dir: directory to symmetric key
@@ -108,7 +107,7 @@ class HybridCryptoSystem:
             raise ValueError("Encrypted symmetric key must not be empty")
 
         decrypted_data = SymmetricCrypto.decrypt_data(
-            cipher_algorithm,
+            self.__cipher_algorithm,
             encrypted_text,
             private_bytes,
             encrypted_symmetric_key

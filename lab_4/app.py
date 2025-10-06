@@ -127,7 +127,10 @@ class MainWindow(QMainWindow):
         """Launch a dialog box to select the key length"""
         self.__dialog = SelectLength()
         self.__dialog.exec()
-        self.__crypto_system = HybridCryptoSystem(self.__dialog.get_key_length())
+        self.__crypto_system = HybridCryptoSystem(
+            TripleDES,
+            self.__dialog.get_key_length()
+        )
 
     def open_settings(self):
         """Upload the settings file"""
@@ -195,7 +198,6 @@ class MainWindow(QMainWindow):
             self.__crypto_system = HybridCryptoSystem()
         try:
             self.__crypto_system.encrypt_data(
-                TripleDES,
                 self.__settings["plain_text"],
                 self.__settings["private_key"],
                 self.__settings["symmetric_key"],
@@ -224,7 +226,6 @@ class MainWindow(QMainWindow):
             self.__crypto_system = HybridCryptoSystem()
         try:
             self.__crypto_system.decrypt_data(
-                TripleDES,
                 self.__settings["encrypted_text"],
                 self.__settings["private_key"],
                 self.__settings["symmetric_key"],
