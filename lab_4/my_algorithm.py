@@ -1,176 +1,11 @@
-"""
-This is my custom algorithm for finding a solution to a 24 Card (or to any card).
-Hopefully it should be smarter than the brute-force algorithm.
-
-
-Theory behind the algorithm:
-
-When humans try to solve a 24 Card, they don't think in a brute-force way. Humans are smart.
-When I try to solve a 24 Card, I think of FACTORS. Factors are very important. Normally, I'll try to find a factor
-of 24 on my card and see if I can arrange the other 3 numbers to make the other factor (e.g. my card has a 4 in
-it, can I use the other 3 numbers to make 4 so that I can multiply 4 * 6?).
-
-
-Generalizing:
-
-I figured that I could make this algorithm recursive. What I imagined was this: I'd pick one number from the
-card, and then see if the other 3 numbers can make the other number that I need. What this inherently necessitates is
-a general function which can answer this question:
-        > Given n numbers, can you use arithmetic to arrive at an answer x?
-
-Or more programmatically written as:
-        > solution(array, x)    # array has size n
-
-
-My algorithm in a nutshell:
-
-Given n numbers (stored in array A), can you use arithmetic to arrive at x?
-
-1.  If n = 1:
-    a)  If A[0] = x, then yes
-    b)  If A[0] != x, then no
-
-2.  If n = 2:
-    a)  Try multiplying the two numbers
-    b)  Try adding the two numbers
-    c)  If x >= 0
-        i)  Try subtracting the smaller from the larger
-        ii) Else try subtracting the larger from the smaller
-    d)  Try dividing the larger by the smaller
-    e)  If any of those work, then yes. If not, then no solution.
-
-3.  Try adding all the numbers in A together.
-
-4.  Try multiplying all the numbers in A together.
-
-5.  If there are factors of x in A, pick one.
-    * Prefer 1 as a factor of x, and then prefer smaller factors
-    a)  See if the other n - 1 numbers can make the other factor of x
-        i)  If so, then yes
-        ii) If not, then pick another factor
-
-6.  If there are no more factors of x in A, then for each number a in A:
-    a)  SUBTRACT a from x
-    * Prefer even numbers
-    b)  See if the other n - 1 numbers can form the result
-        i)  If so, then yes
-        ii) If not, try the next number
-
-7.  If that fails, then for each number a in A:
-    a)  ADD a to x
-    * Prefer Even Numbers
-    b)  See if the other n - 1 numbers can form the result
-        i)  If so, then yes
-        ii) If not, try the next number
-
-8.  If that fails, then for each number a in A:
-    a)  MULTIPLY x by a
-    * Prefer smaller numbers
-    b)  See if the other n - 1 numbers can form the result
-        i)  If so, then yes
-        ii) If not, then no solution
-"""
-
 import sys
+
+
 from math import sqrt
 from typing import Optional
 
-class OperationResult:
-    value: float
-    is_valid: bool = True
-    error_message: str = ""
 
-class Operator(object):
-    """
-    Represents an operator ('*', '+', '-', '/') used in solving a 24 Card.
-    """
-    _operations = {
-        '*': lambda left, right: OperationResult(left * right),
-        '+': lambda left, right: OperationResult(left + right),
-        '-': lambda left, right: OperationResult(left - right),
-        '/': lambda left, right: (
-            OperationResult(float(left) / right) if right != 0 
-            else OperationResult(0, False, "Division by zero")
-        )
-    }
-
-    def __init__(self, op):
-        self.op = op
-
-    def _validate_operator(self):
-        if self.op not in self._operations:
-            raise ValueError(f"Invalid operator: {self.op}")
-
-    def evaluate(self, left, right):
-        """
-        Evaluates the result of multiplying/adding/subtracting/dividing left and right
-        :param left: The left operand
-        :param right: The right operand
-        :return: The result of executing the operator on the two operands
-        """
-        return self._operations[self.op](left, right)
-
-    def __repr__(self):
-        return str(self.op)
-
-class Solution(object):
-    """
-    Represents a potential solution to a 24 Card.
-    Has an array of 4 numbers and an array of 3 operations.
-    A Solution does not necessarily have to be correct.
-    """
-
-    def __init__(self, numbers: Optional[list[float]] = None, 
-                 operations: Optional[list[Operator]] = None):
-        self.numbers = numbers or []
-        self.operations = operations or []
-
-    def evaluate(self):
-        """
-        Evaluates the result of this Solution.
-        Executes the 3 operations (in order) on the 4 numbers (in order).
-        num1 <op1> num2 <op2> num3 <op3> num4
-        :return: The result of evaluating the Solution.
-        """
-        result = self.numbers[0]
-        for i in range(1, len(self.numbers)):
-            left = result
-            right = self.numbers[i]
-            operator = self.operations[i - 1]
-            result = operator.evaluate(left, right)
-        return result
-    
-    def is_correct(self, target: float = 24) -> bool:
-        """Checks if solution evaluates to target value."""
-        return abs(self.evaluate() - target) < 1e-10
-
-
-    def __repr__(self):
-        """
-        Makes a human-readable string to represent this Solution
-        :return The string representation of this Solution
-        """
-        result = str(self.numbers[0])
-        for i in range(1, len(self.numbers)):
-            result += (f" {self.operations[i - 1]} {self.numbers[i]}")
-        return result
-
-
-class SolverState:
-    """Tracks the state of the solver during computation."""
-        
-    def __init__(self) -> None:
-        """Initialize solver state."""
-        self.attempts_count: int = 0
-        self.current_solution: Optional[Solution] = None
-
-    def increment_attempts(self) -> None:
-        """Increment the attempts counter."""
-        self.attempts_count += 1
-
-    def set_current_solution(self, solution: Solution) -> None:
-        """Set the current solution being evaluated."""
-        self.current_solution = solution
+from utils import Operator, SolverState, Solution
 
 class TwentyFourSolver:
     """Main solver class for 24 Card game that encapsulates all solving logic"""
@@ -247,6 +82,11 @@ class TwentyFourSolver:
                            b: int, target: int, state: SolverState) -> Optional[Solution]:
         """
         Solves the case for exactly two numbers.
+        :param a: First number
+        :param b: Second number
+        :param target: Target value
+        :param state: Solver state for tracking attempts
+        :return: Solution if found, None otherwise
         """
         for left, right in [(a, b), (b, a)]:
             state.increment_attempts()
@@ -284,6 +124,10 @@ class TwentyFourSolver:
                          target: int, state: SolverState) -> Optional[Solution]:
         """
         Checks if sum of all numbers equals target.
+        :param numbers: List of numbers
+        :param target: Target value
+        :param state: Solver state for tracking attempts
+        :return: Solution if sum equals target, None otherwise
         """
         state.increment_attempts()
         if sum(numbers) == target:
@@ -298,6 +142,10 @@ class TwentyFourSolver:
                              target: int, state: SolverState) -> Optional[Solution]:
         """
         Checks if product of all numbers equals target.
+        :param numbers: List of numbers
+        :param target: Target value
+        :param state: Solver state for tracking attempts
+        :return: Solution if product equals target, None otherwise
         """
         state.increment_attempts()
         product = 1
@@ -315,6 +163,10 @@ class TwentyFourSolver:
                                 target: int, state: SolverState) -> Optional[Solution]:
         """
         Tries to solve using factoring approach.
+        :param numbers: List of numbers
+        :param target: Target value
+        :param state: Solver state for tracking attempts
+        :return: Solution if found, None otherwise
         """
         if target <= 0:
             return None
@@ -337,7 +189,13 @@ class TwentyFourSolver:
 
     def _try_addition_approach(self, numbers: list, 
                                target: int, state: SolverState) -> Optional[Solution]:
-        """Tries solving using addition strategy."""
+        """
+        Tries solving using addition strategy.
+        :param numbers: List of numbers
+        :param target: Target value
+        :param state: Solver state for tracking attempts
+        :return: Solution if found, None otherwise
+        """
         numbers_sorted = self.sort_evens_first(numbers)
         for num in numbers_sorted:
             other_numbers = self.exclude(numbers, num)
@@ -351,7 +209,13 @@ class TwentyFourSolver:
     
     def _try_subtraction_approach(self, numbers: list, 
                                   target: int, state: SolverState) -> Optional[Solution]:
-        """Tries solving using subtraction strategy."""
+        """
+        Tries solving using subtraction strategy.
+        :param numbers: List of numbers
+        :param target: Target value
+        :param state: Solver state for tracking attempts
+        :return: Solution if found, None otherwise
+        """
         numbers_sorted = self.sort_evens_first(numbers)
         for num in numbers_sorted:
             other_numbers = self.exclude(numbers, num)
@@ -365,7 +229,13 @@ class TwentyFourSolver:
     
     def _try_division_approach(self, numbers: list, 
                                target: int, state: SolverState) -> Optional[Solution]:
-        """Tries solving using division strategy."""
+        """
+        Tries solving using division strategy.
+        :param numbers: List of numbers
+        :param target: Target value
+        :param state: Solver state for tracking attempts
+        :return: Solution if found, None otherwise
+        """
         for num in sorted(numbers):
             if num == 0:
                 continue
@@ -382,6 +252,10 @@ class TwentyFourSolver:
                                    target: int, state: SolverState) -> Optional[Solution]:
         """
         Tries addition, subtraction, and division approaches.
+        :param numbers: List of numbers
+        :param target: Target value
+        :param state: Solver state for tracking attempts
+        :return: Solution if found, None otherwise
         """
         addition_solution = self._try_addition_approach(numbers, target, state)
         if addition_solution:
