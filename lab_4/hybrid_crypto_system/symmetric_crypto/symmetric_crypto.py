@@ -24,6 +24,11 @@ class SymmetricCrypto:
         return padder.update(text) + padder.finalize()
 
     @staticmethod
+    def unpadding(text: bytes) -> bytes:
+        unpadder = padding.ANSIX923(64).unpadder()
+        return unpadder.update(text) + unpadder.finalize()
+
+    @staticmethod
     def split_from_iv(text: bytes) -> tuple:
         iv = text[-8:]
         split_text = text[:-8]
@@ -57,6 +62,5 @@ class SymmetricCrypto:
         decryptor = cipher.decryptor()
         padded_text = decryptor.update(text) + decryptor.finalize()
 
-        unpadder = padding.ANSIX923(64).unpadder()
-        decrypted_text = unpadder.update(padded_text) + unpadder.finalize()
+        decrypted_text = SymmetricCrypto.unpadding(padded_text)
         return decrypted_text
