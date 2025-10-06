@@ -27,14 +27,20 @@ class HybridCryptoSystem:
         :param private_key_dir: directory to save private asymmetric key
         :return None
         """
-        encrypted_symmetric_key, private_key, public_key = (
-            AsymmetricCrypto.generate_keys(self.__key_length)
+        private_key, public_key = AsymmetricCrypto.generate_keys(self.__key_length)
+        symmetric_key = SymmetricCrypto.generate_key(self.__key_length)
+
+        s_private_key = DeSerialization.serialization_rsa_key(private_key, "private")
+        s_public_key = DeSerialization.serialization_rsa_key(public_key, "public")
+        encrypted_symmetric_key = AsymmetricCrypto.encrypt_symmetric_key(
+            symmetric_key, public_key
         )
+
         DeSerialization.serialization_data(
             encrypted_symmetric_key_dir, encrypted_symmetric_key
         )
-        DeSerialization.serialization_data(private_key_dir, private_key)
-        DeSerialization.serialization_data(public_key_dir, public_key)
+        DeSerialization.serialization_data(private_key_dir, s_private_key)
+        DeSerialization.serialization_data(public_key_dir, s_public_key)
 
     def encrypt_data(
         self,
