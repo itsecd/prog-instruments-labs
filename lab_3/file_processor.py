@@ -24,23 +24,11 @@ class FileProcessor:
         :return: list of dict-s where every one is CSV-string
         """
         try:
-            with open(self.settings['input_file'], 'r', encoding='utf-8') as file:
-                return list(csv.DictReader(file))
+            with open(self.settings["input_file"], 'r', encoding = "utf-16") as file:
+                read_helper = csv.DictReader(file, delimiter = ";")
+                return list(read_helper)
         except Exception as e:
             raise RuntimeError(f"Error while loading CSV-file {e}")
-        
-
-    def validate_field(self, value: any, pattern: str) -> bool:
-        """
-        Validation 1 field by regular expression
-        :param value: value of string
-        :param pattern: regular expression
-        :return: validation flag
-        """
-        if not value:
-            return False
-
-        return bool(re.match(pattern, str(value)))
         
 
     def validate_data(self, row: dict[str, str]) -> bool:
@@ -50,11 +38,11 @@ class FileProcessor:
         :return: flag if all of raws are valid
         """
         for field, pattern in self.parsers.items():
-            if not self.validate_field(row.get(field), pattern):
+            value = row.get(field, "")
+            if not re.match(pattern, str(value)):
                 return False
-        
         return True
-    
+        
 
     def process(self) -> None:
         """
