@@ -169,7 +169,7 @@ current_attempt = Solution()
 final_solution = None
 
 
-def is_numeric(string):
+def is_numeric(string: str) -> bool:
     """
     Checks if a string is numeric (as in alphanumeric without the alpha)
     :param string: The string we want to check
@@ -177,16 +177,23 @@ def is_numeric(string):
     """
     return string.isalnum() and not string.isalpha()
 
-def get_factors(n):
+def get_factors(n: int) -> list:
     """
     Returns all the factors of n.
     Code for this method can be attributed to user agf on StackExchange
     :param n: An integer
     :return: A list of whole-number factors of n
     """
-    return list(set(reduce(list.__add__, ([i, n//i] for i in range(1, int(sqrt(n)) + 1) if n % i == 0))))
+    if n == 0:
+        return []
+    factors = set()
+    for i in range(1, int(sqrt(abs(n))) + 1):
+        if n % i == 0:
+            factors.add(i)
+            factors.add(n // i)
+    return list(factors)
 
-def exclude(lst, value):
+def exclude(lst: list, value) -> list:
     """
     Returns lst excluding the first occurrence of value. Performs a deep copy in doing so.
     This is useful when we want to pass the n - 1 "other" numbers to another recursion of our solve() method.
@@ -194,24 +201,19 @@ def exclude(lst, value):
     :param value: The value we want to exclude
     :return: lst with the first occurrence of value excluded from it.
     """
-    other_lst = lst[:]  # Perform a deep copy so we can safely modify it
-    other_lst.remove(value)
+    other_lst = lst.copy()  # Perform a deep copy so we can safely modify it
+    if value in other_lst:
+        other_lst.remove(value)
     return other_lst
 
-def sort_evens_first(lst):
+def sort_evens_first(lst: list) -> list:
     """
     Sorts a list, putting the even numbers first (in ascending order)
     :param lst: The list we want to sort
     :return: The sorted list
     """
-    lst.sort()
-    evens = []
-    odds = []
-    for num in lst:
-        if num % 2 == 0:
-            evens.append(num)
-        else:
-            odds.append(num)
+    evens = sorted([x for x in lst if x % 2 == 0])
+    odds = sorted([x for x in lst if x % 2 == 1])
     return evens + odds
 
 
