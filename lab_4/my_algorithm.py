@@ -73,6 +73,7 @@ Given n numbers (stored in array A), can you use arithmetic to arrive at x?
 
 import sys
 from math import sqrt
+from typing import Optional
 
 class OperationResult:
     value: float
@@ -97,7 +98,6 @@ class Operator(object):
         self.op = op
 
     def _validate_operator(self):
-        """Проверяет валидность оператора."""
         if self.op not in self._operations:
             raise ValueError(f"Invalid operator: {self.op}")
 
@@ -119,11 +119,11 @@ class Solution(object):
     Has an array of 4 numbers and an array of 3 operations.
     A Solution does not necessarily have to be correct.
     """
-    numbers = []
-    operations = []
 
-    def __init__(self):
-        pass
+    def __init__(self, numbers: Optional[list[float]] = None, 
+                 operations: Optional[list[Operator]] = None):
+        self.numbers = numbers or []
+        self.operations = operations or []
 
     def evaluate(self):
         """
@@ -139,6 +139,11 @@ class Solution(object):
             operator = self.operations[i - 1]
             result = operator.evaluate(left, right)
         return result
+    
+    def is_correct(self, target: float = 24) -> bool:
+        """Checks if solution evaluates to target value."""
+        return abs(self.evaluate() - target) < 1e-10
+
 
     def __repr__(self):
         """
@@ -147,9 +152,7 @@ class Solution(object):
         """
         result = str(self.numbers[0])
         for i in range(1, len(self.numbers)):
-            op = self.operations[i - 1].op
-            num = self.numbers[i]
-            result += " " + op + " " + str(num)
+            result += (f" {self.operations[i - 1]} {self.numbers[i]}")
         return result
 
 
