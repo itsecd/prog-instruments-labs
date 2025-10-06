@@ -6,32 +6,33 @@ from cryptography.hazmat.decrepit.ciphers.algorithms import TripleDES
 
 from hybrid_crypto_system.asymmetric_crypto.asymmetric_crypto import AsymmetricCrypto
 from hybrid_crypto_system.de_serialization.de_serialization import DeSerialization
+from hybrid_crypto_system.symmetric_crypto.constants import BYTES
 
 
 class SymmetricCrypto:
 
     @staticmethod
     def generate_key(key_length: int) -> bytes:
-        return os.urandom(key_length // 8)
+        return os.urandom(key_length // BYTES)
 
     @staticmethod
     def get_iv() -> bytes:
-        return os.urandom(8)
+        return os.urandom(BYTES)
 
     @staticmethod
     def padding(text: bytes) -> bytes:
-        padder = padding.ANSIX923(64).padder()
+        padder = padding.ANSIX923(TripleDES.block_size).padder()
         return padder.update(text) + padder.finalize()
 
     @staticmethod
     def unpadding(text: bytes) -> bytes:
-        unpadder = padding.ANSIX923(64).unpadder()
+        unpadder = padding.ANSIX923(TripleDES.block_size).unpadder()
         return unpadder.update(text) + unpadder.finalize()
 
     @staticmethod
     def split_from_iv(text: bytes) -> tuple:
-        iv = text[-8:]
-        split_text = text[:-8]
+        iv = text[-BYTES:]
+        split_text = text[:-BYTES]
         return iv, split_text
 
     @staticmethod
