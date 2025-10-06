@@ -1,8 +1,8 @@
+import chardet
+
 """
 Определение кодировки csv-файла
 """
-
-import chardet
 
 
 def detect_encoding(file_path):
