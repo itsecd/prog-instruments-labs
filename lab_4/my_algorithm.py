@@ -418,13 +418,16 @@ def solve(numbers: list, target: int, state: SolverState) -> Optional[Solution]:
     return _try_arithmetic_approaches(numbers, target, state)
 
 
-def solve_card(card):
+def solve_card(card: list[int], target: int = 24) -> tuple[Optional[Solution], int]:
     """
     This method solves the 24 Card using my custom algorithm
     :param card: A list representing the 24 Card
-    :return: Returns a Solution instance if a solution was found, and False if no solution was found.
+    target: Target value (default 24)
+    :return: Tuple of (solution, attempts_count)
     """
-    return solve(card, 24)
+    state = SolverState()
+    solution = solve(card, target, state)
+    return solution, state.attempts_count
 
 
 # The 24 card. It's an array of 4 numbers
