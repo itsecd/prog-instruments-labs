@@ -1,0 +1,8 @@
+{
+  "symmetric_key" : "keys/symmetric_key.txt",
+  "public_key" : "keys/public_key.pem",
+  "private_key" : "keys/private_key.pem",
+  "plain_text" : "data/plain_text.txt",
+  "encrypted_text" : "data/encrypted_text.txt",
+  "decrypted_text" : "data/decrypted_text.txt"
+}
