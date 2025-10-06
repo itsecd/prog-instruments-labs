@@ -205,7 +205,6 @@ class MainWindow(QMainWindow):
             self.show_message(
                 "Error", f"Something wrong in data: {ve}", IconTypes.Critical
             )
-            print(ve)
         except Exception as e:
             self.show_message(
                 "Error",
