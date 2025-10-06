@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 
 class FileHandler:
@@ -18,7 +19,7 @@ class FileHandler:
             raise Exception(f"An error occurred when opening the file {e}")
 
     @staticmethod
-    def save_data(directory: str, data: str | dict, mode: str) -> None:
+    def save_data(directory: str, data: Any, mode: str) -> None:
         try:
             with open(directory, mode) as file:
                 if directory.endswith(".json"):
