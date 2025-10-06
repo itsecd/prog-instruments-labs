@@ -94,8 +94,10 @@ class Snake:
                 eye_offset = 5
                 
                 if self.direction == Direction.RIGHT:
-                    left_eye = (x + self.block_size - eye_offset, y + eye_offset)
-                    right_eye = (x + self.block_size - eye_offset, y + self.block_size - eye_offset)
+                    left_eye = (x + self.block_size - eye_offset,
+                                y + eye_offset)
+                    right_eye = (x + self.block_size - eye_offset,
+                                 y + self.block_size - eye_offset)
                 elif self.direction == Direction.LEFT:
                     left_eye = (x + eye_offset, y + eye_offset)
                     right_eye = (x + eye_offset, y + self.block_size - eye_offset)
@@ -104,7 +106,8 @@ class Snake:
                     right_eye = (x + self.block_size - eye_offset, y + eye_offset)
                 else:
                     left_eye = (x + eye_offset, y + self.block_size - eye_offset)
-                    right_eye = (x + self.block_size - eye_offset, y + self.block_size - eye_offset)
+                    right_eye = (x + self.block_size - eye_offset,
+                                 y + self.block_size - eye_offset)
                 
                 pygame.draw.circle(screen, Colors.BLACK, left_eye, eye_size)
                 pygame.draw.circle(screen, Colors.BLACK, right_eye, eye_size)
@@ -249,8 +252,10 @@ class Game:
         self.screen.fill(Colors.BLACK)
         
         title = self.font.render("ЗМЕЙКА", True, Colors.GREEN)
-        start_text = self.font.render("Нажмите ПРОБЕЛ для начала игры", True, Colors.WHITE)
-        controls_text = self.small_font.render("Управление: Стрелки | Пауза: P | Выход: ESC", True, Colors.GRAY)
+        start_text = self.font.render("Нажмите ПРОБЕЛ для начала игры",
+                                      True, Colors.WHITE)
+        controls_text = self.small_font.render("Управление: Стрелки | Пауза: P | Выход: ESC",
+                                                True, Colors.GRAY)
         
         self.screen.blit(title, (400 - title.get_width() // 2, 200))
         self.screen.blit(start_text, (400 - start_text.get_width() // 2, 300))
@@ -269,9 +274,12 @@ class Game:
         self.food.draw(self.screen, current_time)
         self.snake.draw(self.screen)
         
-        score_text = self.font.render(f"Счет: {self.score}", True, Colors.WHITE)
-        speed_text = self.small_font.render(f"Скорость: {self.snake.speed:.1f}", True, Colors.GRAY)
-        high_score_text = self.small_font.render(f"Рекорд: {self.high_score}", True, Colors.YELLOW)
+        score_text = self.font.render(f"Счет: {self.score}",
+                                      True, Colors.WHITE)
+        speed_text = self.small_font.render(f"Скорость: {self.snake.speed:.1f}",
+                                            True, Colors.GRAY)
+        high_score_text = self.small_font.render(f"Рекорд: {self.high_score}",
+                                                 True, Colors.YELLOW)
         
         self.screen.blit(score_text, (10, 10))
         self.screen.blit(speed_text, (10, 50))
@@ -279,7 +287,8 @@ class Game:
         
         food_time_left = self.food.lifetime - (current_time - self.food.spawn_time)
         if food_time_left < 5:
-            time_text = self.small_font.render(f"Еда исчезнет через: {food_time_left:.1f}с", True, Colors.RED)
+            time_text = self.small_font.render(f"Еда исчезнет через: {food_time_left:.1f}с",
+                                               True, Colors.RED)
             self.screen.blit(time_text, (600, 10))
     
     def draw_paused(self):
@@ -290,7 +299,8 @@ class Game:
         self.screen.blit(overlay, (0, 0))
         
         pause_text = self.font.render("ПАУЗА", True, Colors.YELLOW)
-        continue_text = self.small_font.render("Нажмите P для продолжения", True, Colors.WHITE)
+        continue_text = self.small_font.render("Нажмите P для продолжения",
+                                               True, Colors.WHITE)
         
         self.screen.blit(pause_text, (400 - pause_text.get_width() // 2, 250))
         self.screen.blit(continue_text, (400 - continue_text.get_width() // 2, 300))
@@ -298,11 +308,16 @@ class Game:
     def draw_game_over(self):
         self.screen.fill(Colors.BLACK)
         
-        game_over_text = self.font.render("ИГРА ОКОНЧЕНА!", True, Colors.RED)
-        score_text = self.font.render(f"Ваш счет: {self.score}", True, Colors.WHITE)
-        high_score_text = self.font.render(f"Рекорд: {self.high_score}", True, Colors.YELLOW)
-        restart_text = self.font.render("Нажмите ПРОБЕЛ для повторной игры", True, Colors.GREEN)
-        menu_text = self.small_font.render("Нажмите ESC для выхода в меню", True, Colors.GRAY)
+        game_over_text = self.font.render("ИГРА ОКОНЧЕНА!",
+                                          True, Colors.RED)
+        score_text = self.font.render(f"Ваш счет: {self.score}",
+                                      True, Colors.WHITE)
+        high_score_text = self.font.render(f"Рекорд: {self.high_score}",
+                                           True, Colors.YELLOW)
+        restart_text = self.font.render("Нажмите ПРОБЕЛ для повторной игры",
+                                        True, Colors.GREEN)
+        menu_text = self.small_font.render("Нажмите ESC для выхода в меню",
+                                           True, Colors.GRAY)
         
         self.screen.blit(game_over_text, (400 - game_over_text.get_width() // 2, 200))
         self.screen.blit(score_text, (400 - score_text.get_width() // 2, 250))
