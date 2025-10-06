@@ -156,6 +156,22 @@ class Solution(object):
         return result
 
 
+class SolverState:
+    """Tracks the state of the solver during computation."""
+        
+    def __init__(self) -> None:
+        """Initialize solver state."""
+        self.attempts_count: int = 0
+        self.current_solution: Optional[Solution] = None
+
+    def increment_attempts(self) -> None:
+        """Increment the attempts counter."""
+        self.attempts_count += 1
+
+    def set_current_solution(self, solution: Solution) -> None:
+        """Set the current solution being evaluated."""
+        self.current_solution = solution
+
 # Constants for the different Operators
 MUL = Operator('*')
 ADD = Operator('+')
@@ -226,176 +242,180 @@ def is_correct(solution, value=24):
     """
     return solution.evaluate() == value
 
+def _solve_two_numbers(a: int, b: int, target: int, state: SolverState) -> Optional[Solution]:
+    """
+    Solves the case for exactly two numbers.
+    """
+    for left, right in [(a, b), (b, a)]:
+        state.increment_attempts()
+        if left * right == target:
+            solution = Solution()
+            solution.numbers = [left, right]
+            solution.operations = [MUL]
+            return solution
+        
+        state.increment_attempts()
+        if left + right == target:
+            solution = Solution()
+            solution.numbers = [left, right]
+            solution.operations = [ADD]
+            return solution
+        
+        state.increment_attempts()
+        if left - right == target:
+            solution = Solution()
+            solution.numbers = [left, right]
+            solution.operations = [SUB]
+            return solution
+        
+        state.increment_attempts()
+        if right != 0 and abs(float(left) / right - target) < 1e-10:
+            solution = Solution()
+            solution.numbers = [left, right]
+            solution.operations = [DIV]
+            return solution
+    
+    return
 
-def solve(numbers, value):
+def _check_total_sum(numbers: list, target: int, state: SolverState) -> Optional[Solution]:
+    """
+    Checks if sum of all numbers equals target.
+    """
+    state.increment_attempts()
+    if sum(numbers) == target:
+        solution = Solution()
+        solution.numbers = numbers
+        solution.operations = [ADD] * (len(numbers) - 1)
+        return solution
+    return
+
+def _check_total_product(numbers: list, target: int, state: SolverState) -> Optional[Solution]:
+    """
+    Checks if product of all numbers equals target.
+    """
+    state.increment_attempts()
+    product = 1
+    for num in numbers:
+        product *= num
+    if product == target:
+        solution = Solution()
+        solution.numbers = numbers
+        solution.operations = [MUL] * (len(numbers) - 1)
+        return solution
+    return
+
+def _try_factoring_approach(numbers: list, target: int, state: SolverState) -> Optional[Solution]:
+    """
+    Tries to solve using factoring approach.
+    """
+    if target <= 0:
+        return None
+
+    factors = get_factors(target)
+    factors_in_list = [num for num in numbers if num in factors]
+    
+    for factor in sorted(factors_in_list):
+        other_factor = target // factor
+        other_numbers = exclude(numbers, factor)
+        solution = solve(other_numbers, other_factor, state)
+        if solution:
+            solution.numbers.append(factor)
+            solution.operations.append(MUL)
+            return solution
+    
+    return
+
+def _try_arithmetic_approaches(numbers: list, target: int, state: SolverState) -> Optional[Solution]:
+    """
+    Tries addition, subtraction, and division approaches.
+    """
+    addition_solution = _try_addition_approach(numbers, target, state)
+    if addition_solution:
+        return addition_solution
+        
+    subtraction_solution = _try_subtraction_approach(numbers, target, state)
+    if subtraction_solution:
+        return subtraction_solution
+        
+    division_solution = _try_division_approach(numbers, target, state)
+    return division_solution
+
+def _try_addition_approach(numbers: list, target: int, state: SolverState) -> Optional[Solution]:
+    """Tries solving using addition strategy."""
+    numbers_sorted = sort_evens_first(numbers)
+    for num in numbers_sorted:
+        other_numbers = exclude(numbers, num)
+        solution = solve(other_numbers, target - num, state)
+        if solution:
+            solution.numbers.append(num)
+            solution.operations.append(ADD)
+            return solution
+    return
+
+def _try_subtraction_approach(numbers: list, target: int, state: SolverState) -> Optional[Solution]:
+    """Tries solving using subtraction strategy."""
+    numbers_sorted = sort_evens_first(numbers)
+    for num in numbers_sorted:
+        other_numbers = exclude(numbers, num)
+        solution = solve(other_numbers, target + num, state)
+        if solution:
+            solution.numbers.append(num)
+            solution.operations.append(SUB)
+            return solution
+    return
+
+def _try_division_approach(numbers: list, target: int, state: SolverState) -> Optional[Solution]:
+    """Tries solving using division strategy."""
+    for num in sorted(numbers):
+        if num == 0:
+            continue
+        other_numbers = exclude(numbers, num)
+        solution = solve(other_numbers, target * num, state)
+        if solution:
+            solution.numbers.append(num)
+            solution.operations.append(DIV)
+            return solution
+    return
+
+def solve(numbers: list, target: int, state: SolverState) -> Optional[Solution]:
     """
     Uses arithmetic (*, +, -, /) to arrive at value, using my custom recursive algorithm
     :param numbers: The list of numbers we're going to use to arrive at value
     :param value: The value that we want to arrive at using all of the
     :return: If solvable, returns a Solution instance. If not, returns False.
     """
-    # Referring to the global variables we want to modify
-    global num_attempts
-    global current_attempt
-
-    # Begin my algorithm
-    solution = Solution()
+    state.increment_attempts()
+    
+    if not numbers:
+        return
+        
     n = len(numbers)
-
-    # print "Solve %s for %s" % (numbers, value)
-
-    # 1. If n = 1
-    if n < 1:
-        return False
+    
     if n == 1:
-        num_attempts += 1
-        if numbers[0] == value:
-            solution.numbers = [value]
+        if numbers[0] == target:
+            solution = Solution()
+            solution.numbers = [target]
             solution.operations = []
             return solution
         else:
-            return False
+            return
 
-    # 2.  If n = 2:
     if n == 2:
-        # a)  Try multiplying the two numbers
-        num_attempts += 1
-        if numbers[0] * numbers[1] == value:
-            solution.numbers = numbers
-            solution.operations = [MUL]
-            return solution
+        return _solve_two_numbers(numbers[0], numbers[1], target, state)
 
-        # b)  Try adding the two numbers
-        num_attempts += 1
-        if numbers[0] + numbers[1] == value:
-            solution.numbers = numbers
-            solution.operations = [ADD]
-            return solution
+    total_sum_solution = _check_total_sum(numbers, target, state)
+    if total_sum_solution:
+        return total_sum_solution
 
-        # Find the larger and the smaller number of the two
-        smaller = numbers[0]
-        larger = numbers[1]
-        if smaller > larger:
-            smaller = numbers[1]
-            larger = numbers[0]
+    total_product_solution = _check_total_product(numbers, target, state)
+    if total_product_solution:
+        return total_product_solution
 
-        # c)  If x >= 0
-        if value >= 0:
-            # i)  Try subtracting the smaller from the larger
-            num_attempts += 1
-            if larger - smaller == value:
-                solution.numbers = [larger, smaller]
-                solution.operations = [SUB]
-                return solution
-        else:
-            # ii) Else try subtracting the larger from the smaller
-            num_attempts += 1
-            if smaller - larger == value:
-                solution.numbers = [smaller, larger]
-                solution.operations = [SUB]
-                return solution
+    factoring_solution = _try_factoring_approach(numbers, target, state)
+    if factoring_solution:
+        return factoring_solution
 
-        # d)  Try dividing the larger by the smaller
-        num_attempts += 1
-        if float(larger) / smaller == value:
-            solution.numbers = [larger, smaller]
-            solution.operations = [DIV]
-            return solution
-
-        # e)  If any of those work, then yes. If not, then no solution.
-        return False
-
-    # 3.  Try adding all the numbers together.
-    num_attempts += 1
-    if sum(numbers) == value:
-        solution.numbers = numbers
-        for i in range(n - 1):
-            solution.operations.append(ADD)
-        return solution
-
-    # 4.  Try multiplying all the numbers together.
-    num_attempts += 1
-    product = 1
-    for num in numbers:
-        product *= num
-    if product == value:
-        solution.numbers = numbers
-        for i in range(n - 1):
-            solution.operations.append(MUL)
-        return solution
-
-
-    # 5.  If there are factors of value in numbers, pick one.
-
-    # Find the factors
-    if value > 0:
-        factors = get_factors(value)
-        factors_in_list = []
-        for num in numbers:
-            if num in factors and num not in factors_in_list:
-                factors_in_list.append(num)
-
-        # Prefer smaller factors
-        factors_in_list.sort()
-
-        # Make an attempt for each factor in the list
-        for factor in factors_in_list:
-            other_factor = value / factor
-            # See if the other n - 1 numbers can arrive at the other_factor
-            other_numbers = exclude(numbers, factor)
-            solution = solve(other_numbers, other_factor)
-            # If so, append a '*' operation to the end of the solution
-            if solution:
-                solution.numbers.append(factor)
-                solution.operations.append(MUL)
-                return solution
-
-
-    # 6.  Try subtracting from value
-    # Try it for each number in numbers
-    # Prefer even numbers
-    numbers_evens_first = sort_evens_first(numbers)
-    for num in numbers_evens_first:
-        result = value - num
-        # See if the other n - 1 numbers can arrive at the result
-        other_numbers = exclude(numbers, num)
-        solution = solve(other_numbers, result)
-        # If so, append a '+' operation to the end of the solution
-        if solution:
-            solution.numbers.append(num)
-            solution.operations.append(ADD)
-            return solution
-
-    # 7.  Try adding to value
-    # Try it for each number in numbers
-    # Prefer even numbers
-    for num in numbers_evens_first:
-        result = value + num
-        # See if the other n - 1 numbers can arrive at the result
-        other_numbers = exclude(numbers, num)
-        solution = solve(other_numbers, result)
-        # If so, append a '+' operation to the end of the solution
-        if solution:
-            solution.numbers.append(num)
-            solution.operations.append(SUB)
-            return solution
-
-    # 8.  Try multiplying value
-    # Try it for each number in numbers
-    # Prefer smaller numbers
-    numbers.sort()
-    for num in numbers:
-        result = value * num
-        # See if the other n - 1 numbers can arrive at the result
-        other_numbers = exclude(numbers, num)
-        solution = solve(other_numbers, result)
-        # If so, append a '/' operation to the end of the solution
-        if solution:
-            solution.numbers.append(num)
-            solution.operations.append(DIV)
-            return solution
-
-    return False
+    return _try_arithmetic_approaches(numbers, target, state)
 
 
 def solve_card(card):
