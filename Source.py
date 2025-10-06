@@ -18,19 +18,19 @@ class GameState(Enum):
     PAUSED = 3
 
 class Colors:
-    BLACK = ( 0, 0, 0 )
-    WHITE = ( 255, 255, 255 )
-    RED = ( 255, 0, 0 )
-    GREEN = ( 0, 255, 0 )
-    BLUE = ( 0, 120, 255 )
-    DARK_GREEN = ( 0, 180, 0 )
-    GRAY = ( 100, 100, 100 )
-    YELLOW = ( 255, 255, 0 )
-    PURPLE = ( 180, 0, 255 )
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    BLUE = (0, 120, 255)
+    DARK_GREEN = (0, 180, 0)
+    GRAY = (100, 100, 100)
+    YELLOW = (255, 255, 0)
+    PURPLE = (180, 0, 255)
 
 class Snake:
     def __init__(self, start_pos: Tuple[int, int], block_size: int = 20):
-        self.body = [ start_pos ]
+        self.body = [start_pos]
         self.direction = Direction.RIGHT
         self.next_direction = Direction.RIGHT
         self.block_size = block_size
@@ -257,9 +257,9 @@ class Game:
         speed_text = self.small_font.render(f"Скорость: {self.snake.speed:.1f}", True, Colors.GRAY)
         high_score_text = self.small_font.render(f"Рекорд: {self.high_score}", True, Colors.YELLOW)
         
-        self.screen.blit( score_text, ( 10, 10 ))
-        self.screen.blit( speed_text, ( 10, 50 ))
-        self.screen.blit( high_score_text, ( 10, 80 ))
+        self.screen.blit(score_text, (10, 10))
+        self.screen.blit(speed_text, (10, 50))
+        self.screen.blit(high_score_text, (10, 80))
         
         food_time_left = self.food.lifetime - (current_time - self.food.spawn_time)
         if food_time_left < 5:
