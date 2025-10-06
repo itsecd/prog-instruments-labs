@@ -1,5 +1,5 @@
-from typing import Tuple
 import os
+from typing import Tuple
 
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives.ciphers import Cipher, modes

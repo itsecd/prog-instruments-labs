@@ -1,7 +1,6 @@
 import sys
 
 from PyQt6 import QtCore
-
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
