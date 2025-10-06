@@ -1,6 +1,8 @@
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import rsa, padding as asymmetric_padding
 
+from hybrid_crypto_system.asymmetric_crypto.constants import KEY_SIZE, PUBLIC_EXPONENT
+
 
 class AsymmetricCrypto:
     @staticmethod
@@ -10,8 +12,7 @@ class AsymmetricCrypto:
         :param key_length: key size
         :return: private_key, public_key
         """
-
-        keys = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+        keys = rsa.generate_private_key(public_exponent=PUBLIC_EXPONENT, key_size=KEY_SIZE)
         private_key = keys
         public_key = keys.public_key()
 
