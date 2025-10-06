@@ -7,6 +7,7 @@ from cryptography.hazmat.decrepit.ciphers.algorithms import TripleDES
 
 from hybrid_crypto_system.asymmetric_crypto.asymmetric_crypto import AsymmetricCrypto
 from hybrid_crypto_system.de_serialization.de_serialization import DeSerialization
+from hybrid_crypto_system.de_serialization.constants import KeyTypes
 from hybrid_crypto_system.symmetric_crypto.constants import BYTES
 
 
@@ -73,7 +74,7 @@ class SymmetricCrypto:
         :param encrypted_symmetric_key: key to encrypt data
         :return: encrypted data
         """
-        private_key = DeSerialization.deserialization_rsa_key(private_bytes, "private")
+        private_key = DeSerialization.deserialization_rsa_key(private_bytes, KeyTypes.private)
         symmetric_key = AsymmetricCrypto.decrypt_symmetric_key(
             encrypted_symmetric_key, private_key
         )
@@ -99,7 +100,7 @@ class SymmetricCrypto:
         :param encrypted_symmetric_key: symmetric key as bytes
         :return: decrypted data
         """
-        private_key = DeSerialization.deserialization_rsa_key(private_bytes, "private")
+        private_key = DeSerialization.deserialization_rsa_key(private_bytes, KeyTypes.private)
         symmetric_key = AsymmetricCrypto.decrypt_symmetric_key(
             encrypted_symmetric_key, private_key
         )

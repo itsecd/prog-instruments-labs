@@ -1,5 +1,6 @@
 from hybrid_crypto_system.asymmetric_crypto.asymmetric_crypto import AsymmetricCrypto
 from hybrid_crypto_system.de_serialization.de_serialization import DeSerialization
+from hybrid_crypto_system.de_serialization.constants import KeyTypes
 from filehandler import FileHandler
 from hybrid_crypto_system.symmetric_crypto.symmetric_crypto import SymmetricCrypto
 
@@ -30,8 +31,8 @@ class HybridCryptoSystem:
         private_key, public_key = AsymmetricCrypto.generate_keys()
         symmetric_key = SymmetricCrypto.generate_key(self.__key_length)
 
-        s_private_key = DeSerialization.serialization_rsa_key(private_key, "private")
-        s_public_key = DeSerialization.serialization_rsa_key(public_key, "public")
+        s_private_key = DeSerialization.serialization_rsa_key(private_key, KeyTypes.private)
+        s_public_key = DeSerialization.serialization_rsa_key(public_key, KeyTypes.public)
         encrypted_symmetric_key = AsymmetricCrypto.encrypt_symmetric_key(
             symmetric_key, public_key
         )

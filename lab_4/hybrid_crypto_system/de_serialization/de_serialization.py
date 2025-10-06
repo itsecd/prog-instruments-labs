@@ -2,6 +2,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from typing import Union
 
+from hybrid_crypto_system.de_serialization.constants import KeyTypes
 from filehandler import FileHandler
 
 
@@ -11,7 +12,7 @@ class DeSerialization:
     @staticmethod
     def serialization_rsa_key(
             key: Union[rsa.RSAPrivateKey, rsa.RSAPublicKey],
-            key_type: str
+            key_type: KeyTypes
     ) -> bytes:
         """
         Serialization rsa asymmetric key
@@ -21,13 +22,13 @@ class DeSerialization:
         :return: serialized key
         """
         match key_type:
-            case "private":
+            case KeyTypes.private:
                 return key.private_bytes(
                     encoding=serialization.Encoding.PEM,
                     format=serialization.PrivateFormat.TraditionalOpenSSL,
                     encryption_algorithm=serialization.NoEncryption(),
                 )
-            case "public":
+            case KeyTypes.public:
                 return key.public_bytes(
                     encoding=serialization.Encoding.PEM,
                     format=serialization.PublicFormat.SubjectPublicKeyInfo,
@@ -36,7 +37,7 @@ class DeSerialization:
     @staticmethod
     def deserialization_rsa_key(
             key: bytes,
-            key_type: str
+            key_type: KeyTypes
     ) -> Union[rsa.RSAPrivateKey, rsa.RSAPublicKey]:
         """
         Deserialization rsa asymmetric key
@@ -45,9 +46,9 @@ class DeSerialization:
         :return: deserialized key
         """
         match key_type:
-            case "private":
+            case KeyTypes.private:
                 return serialization.load_pem_private_key(key, password=None)
-            case "public":
+            case KeyTypes.public:
                 return serialization.load_pem_public_key(key)
 
     @staticmethod
