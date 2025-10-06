@@ -37,6 +37,7 @@ class Snake:
         self.grow_pending = 3
         self.speed = 10
         self.last_move_time = 0
+    
     def change_direction(self, new_direction: Direction):
         opposite_directions = {
             Direction.UP: Direction.DOWN,
@@ -47,6 +48,7 @@ class Snake:
         
         if new_direction != opposite_directions.get(self.direction):
             self.next_direction = new_direction
+    
     def move(self, current_time: float):
         if current_time - self.last_move_time < 1.0 / self.speed:
             return False
@@ -70,14 +72,18 @@ class Snake:
             self.body.pop()
             
         return True
+    
     def grow(self):
         self.grow_pending += 1
         if len(self.body) % 5 == 0:
             self.speed = min(self.speed + 0.5, 20)
+    
     def check_self_collision(self) -> bool:
         return self.body[0] in self.body[1:]
+    
     def get_head_position(self) -> Tuple[int, int]:
         return self.body[0]
+    
     def draw(self, screen: pygame.Surface):
         for i, (x, y) in enumerate(self.body):
             color = Colors.DARK_GREEN if i > 0 else Colors.GREEN
@@ -110,6 +116,7 @@ class Food:
         self.spawn_time = 0
         self.lifetime = 8
         self.randomize_position()
+    
     def randomize_position(self, snake_body: Optional[List[Tuple[int, int]]] = None):
         if snake_body is None:
             snake_body = []
@@ -126,8 +133,10 @@ class Food:
                 self.position = new_pos
                 self.spawn_time = time.time()
                 break
+    
     def should_despawning(self, current_time: float) -> bool:
         return current_time - self.spawn_time > self.lifetime
+    
     def draw(self, screen: pygame.Surface, current_time: float):
         x, y = self.position
         
@@ -160,6 +169,7 @@ class Game:
         self.high_score = 0
         self.state = GameState.MENU
         self.last_food_check = 0
+    
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -197,11 +207,13 @@ class Game:
                         self.state = GameState.MENU
         
         return True
+    
     def start_game(self):
         self.snake = Snake((100, 100), self.block_size)
         self.food.randomize_position(self.snake.body)
         self.score = 0
         self.state = GameState.PLAYING
+    
     def update(self):
         if self.state != GameState.PLAYING:
             return
@@ -222,14 +234,17 @@ class Game:
                 if self.food.should_despawning(current_time):
                     self.food.randomize_position(self.snake.body)
                 self.last_food_check = current_time
+    
     def game_over(self):
         self.high_score = max(self.high_score, self.score)
         self.state = GameState.GAME_OVER
+    
     def draw_grid(self):
         for x in range(0, 800, self.block_size):
             pygame.draw.line(self.screen, Colors.GRAY, (x, 0), (x, 600), 1)
         for y in range(0, 600, self.block_size):
             pygame.draw.line(self.screen, Colors.GRAY, (0, y), (800, y), 1)
+    
     def draw_menu(self):
         self.screen.fill(Colors.BLACK)
         
@@ -245,6 +260,7 @@ class Game:
         for i, pos in enumerate(demo_snake):
             color = Colors.DARK_GREEN if i > 0 else Colors.GREEN
             pygame.draw.rect(self.screen, color, (pos[0], pos[1], 18, 18))
+    
     def draw_playing(self):
         self.screen.fill(Colors.BLACK)
         self.draw_grid()
@@ -265,6 +281,7 @@ class Game:
         if food_time_left < 5:
             time_text = self.small_font.render(f"Еда исчезнет через: {food_time_left:.1f}с", True, Colors.RED)
             self.screen.blit(time_text, (600, 10))
+    
     def draw_paused(self):
         self.draw_playing()
         
@@ -277,6 +294,7 @@ class Game:
         
         self.screen.blit(pause_text, (400 - pause_text.get_width() // 2, 250))
         self.screen.blit(continue_text, (400 - continue_text.get_width() // 2, 300))
+    
     def draw_game_over(self):
         self.screen.fill(Colors.BLACK)
         
@@ -291,6 +309,7 @@ class Game:
         self.screen.blit(high_score_text, (400 - high_score_text.get_width() // 2, 300))
         self.screen.blit(restart_text, (400 - restart_text.get_width() // 2, 350))
         self.screen.blit(menu_text, (400 - menu_text.get_width() // 2, 400))
+    
     def draw(self):
         if self.state == GameState.MENU:
             self.draw_menu()
@@ -302,6 +321,7 @@ class Game:
             self.draw_game_over()
         
         pygame.display.flip()
+    
     def run(self):
         running = True
         while running:
