@@ -193,7 +193,9 @@ def now(): return datetime.datetime.now()
 
 
 def generate_books(library, count=20):
-    titles=["The Great Adventure","Python in Practice","Data Structures","Algorithms Unleashed","Mystery of the Old House","Gardening 101","Astronomy Today","Cooking with Fire","Lonely Planet","History of Art"]
+    titles=["The Great Adventure","Python in Practice","Data Structures","Algorithms Unleashed",
+            "Mystery of the Old House","Gardening 101","Astronomy Today",
+            "Cooking with Fire","Lonely Planet","History of Art"]
     authors=["A.Author","B.Writer","C.Smith","D.Jones","E.White","F.Green","G.Black"]
     years=[1990,1995,2000,2005,2010,2015,2020]
     for i in range(count):
@@ -252,7 +254,9 @@ def quick_demo_run(lib,days = 5):
 
 
 def VeryLongMessageExample():
-    return "This is a very long message that intentionally exceeds the typical 79 characters limit used by PEP8 guidelines so that it must be wrapped or shortened by the student when cleaning up the code."
+    return ("This is a very long message that intentionally exceeds the typical "
+            "79 characters limit used by PEP8 guidelines so that it must "
+            "be wrapped or shortened by the student when cleaning up the code.")
 
 
 def weird_spacing_example(a, b, c):return a + b * c
