@@ -2,7 +2,7 @@ import sys, os, math, random, json
 from collections import defaultdict as dd
 import datetime as dt
 
-class my_class:
+class MyClass:
 
  def __init__(self, name, value = 0):
   self.NAME = name
@@ -24,7 +24,7 @@ class my_class:
  def get_name(self):
   return self.NAME
 
-class another_class(my_class):
+class AnotherClass(MyClass):
 
  def __init__(self, name, value = 0, extra_param = None):
   super().__init__(name, value)
@@ -94,10 +94,10 @@ def global_function_two(data, threshold = 100):
  return output
 
 def create_objects_and_use_them():
- obj1 = my_class("FirstObject",10)
+ obj1 = MyClass("FirstObject",10)
  obj1.add_data(1, 2, 3, 4, 5)
 
- obj2 = another_class("SecondObject", 20, "extra_value")
+ obj2 = AnotherClass("SecondObject", 20, "extra_value")
  obj2.add_data(10, 20, 30)
 
  result1 = obj1.calculate_something(2, 3)
@@ -267,7 +267,7 @@ def main():
  print(f"Global function results: max={max_val}, min={min_val}, avg={avg_val}")
 
  # More object operations
- obj = another_class("TestObject", 42, "additional_info")
+ obj = AnotherClass("TestObject", 42, "additional_info")
  obj.add_data(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 
  for i in range(3):
