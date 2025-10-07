@@ -8,9 +8,9 @@ def open_json(path):
     except FileNotFoundError:
         raise FileNotFoundError(f"File not found in this path: '{path}'")
     except json.JSONDecodeError as e:
-        raise(f"JSON decoding error: {e}")
+        raise json.JSONDecodeError(f"JSON decoding error: {e}")
     except Exception as e:
-        raise Exception(f"Unexpected error")
+        raise Exception("Unexpected error")
     
 def save_json(data, path):
     try:
@@ -19,7 +19,7 @@ def save_json(data, path):
     except FileNotFoundError:
         raise FileNotFoundError(f"File not found in this path: '{path}'")
     except Exception as e:
-        raise Exception(f"Unexpected error")
+        raise Exception("Unexpected error")
     
 
 def open_csv(path):
