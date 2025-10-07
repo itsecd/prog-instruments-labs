@@ -47,7 +47,7 @@ class AnotherClass(MyClass):
         self._internal_counter += 1
         return temp_result / len(self.data_list) if len(self.data_list) > 0 else 0
 
-    def complicated_method(self, param1, param2, param3=[]):
+    def complicated_method(self, param1, param2):
         if param1 > param2:
             result = []
             for i in range(param1):
@@ -64,7 +64,7 @@ class AnotherClass(MyClass):
             return None
 
 
-def global_function_one(a, b, c=None, d=[1, 2, 3]):
+def global_function_one(a, b, c = None, d = None):
     if c is None:
         c = []
 
