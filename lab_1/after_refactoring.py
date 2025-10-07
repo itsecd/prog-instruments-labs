@@ -86,7 +86,7 @@ class LibrarySystem:
     def member_report(self, member_id):
         for m in self.members:
             if m.id == member_id:
-                print("Member report for", m.name)
+                print("Member report forю", m.name)
                 print("Current loans:", len(m.current_loans))
                 for L in m.current_loans: print("  ->", L.book.title, "due", L.due_date)
                 print("Fines due:", m.calculate_fines())
