@@ -1,0 +1,14 @@
+{
+    "paths": {
+        "PUBLIC_KEY": "public_key.pem",
+        "SECRET_KEY": "private_key.pem",
+        "SYMMETRIC_KEY": "symmetric_key.bin",
+        "INITIAL_FILE": "test.txt",
+        "ENCRYPTED_FILE": "encrypted.bin",
+        "DECRYPTED_FILE": "decrypted.txt"
+    },
+    "settings": {
+        "default_key_size": 256,
+        "encryption_algorithm": "RSA+AES"
+    }
+}
