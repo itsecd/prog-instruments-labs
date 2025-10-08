@@ -16,6 +16,7 @@ def totalServed(df):
         print(f"Ошибка в totalServed: {e}")
         return 0
 
+
 def negativeCount(df):
     """Количество негативных обращений"""
     try:
@@ -24,6 +25,7 @@ def negativeCount(df):
     except Exception as e:
         print(f"Ошибка в negativeCount: {e}")
         return 0
+
 
 def negativeShare(df):
     """Доля негативных обращений"""
@@ -35,6 +37,7 @@ def negativeShare(df):
     except Exception as e:
         print(f"Ошибка в negativeShare: {e}")
         return 0
+
 
 def forecastNegativeThemes(df, return_type="both"):
     """
@@ -160,6 +163,7 @@ def forecastNegativeThemes(df, return_type="both"):
         }
         return result
 
+
 def forecastDeviation(df, df_today):
     """Отклонение от прогноза"""
     try:
@@ -173,6 +177,7 @@ def forecastDeviation(df, df_today):
     except Exception as e:
         print(f"Ошибка в forecastDeviation: {e}")
         return 0
+
 
 def csiIndex(df):
     """Расчет индекса CSI"""
