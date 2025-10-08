@@ -1,12 +1,13 @@
-import io
 import pandas as pd
+import io
 from datetime import timedelta
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+
 from scipy.stats import linregress
 
 
-def totalServed(df):
+def total_served(df):
     """Количество обслуженных клиентов"""
     try:
         return len(df)
@@ -14,7 +15,6 @@ def totalServed(df):
     except Exception as e:
         print(f"Ошибка в totalServed: {e}")
         return 0
-
 
 def negativeCount(df):
     """Количество негативных обращений"""
@@ -24,7 +24,6 @@ def negativeCount(df):
     except Exception as e:
         print(f"Ошибка в negativeCount: {e}")
         return 0
-
 
 def negativeShare(df):
     """Доля негативных обращений"""
@@ -36,7 +35,6 @@ def negativeShare(df):
     except Exception as e:
         print(f"Ошибка в negativeShare: {e}")
         return 0
-
 
 def forecastNegativeThemes(df, return_type="both"):
     """
@@ -163,14 +161,11 @@ def forecastNegativeThemes(df, return_type="both"):
         }
         return result
 
-
 def forecastDeviation(df, df_today):
     """Отклонение от прогноза"""
     try:
         return (
-            (
-                negativeCount(df_today)
-                - forecastNegativeThemes(df, return_type="forecast")["forecast_today"]
+            (negativeCount(df_today) - forecastNegativeThemes(df, return_type="forecast")["forecast_today"]
             )
             / forecastNegativeThemes(df, return_type="forecast")["forecast_today"]
             * 100
@@ -179,7 +174,6 @@ def forecastDeviation(df, df_today):
     except Exception as e:
         print(f"Ошибка в forecastDeviation: {e}")
         return 0
-
 
 def csiIndex(df):
     """Расчет индекса CSI"""
@@ -224,7 +218,7 @@ def arpuSegments(df):
     return result
 
 
-def arpuNegativeThemes(df, segment="Все"):
+def arpu_negative_themes(df, segment="Все"):
     """
     Строит гистограмму тем недовольства с фильтрацией по сегменту ARPU
 
@@ -395,9 +389,7 @@ def regionDistrictAnalysis(df, region=None, district=None, theme=None):
                 negative_df.groupby(["Район", "Тема"]).size().unstack(fill_value=0)
             )
             grouped["Всего"] = grouped.sum(axis=1)
-            grouped["Доля от региона"] = (
-                grouped["Всего"] / grouped["Всего"].sum() * 100
-            ).round(1)
+            grouped["Доля от региона"] = (grouped["Всего"] / grouped["Всего"].sum() * 100).round(1)
             grouped = grouped.sort_values("Всего", ascending=False)
             grouped = grouped.reset_index()
         elif district:
@@ -408,9 +400,7 @@ def regionDistrictAnalysis(df, region=None, district=None, theme=None):
                 .sort_values(ascending=False)
                 .reset_index(name="Количество")
             )
-            grouped["Доля от района"] = (
-                grouped["Количество"] / grouped["Количество"].sum() * 100
-            ).round(1)
+            grouped["Доля от района"] = (grouped["Количество"] / grouped["Количество"].sum() * 100).round(1)
         else:
             # Группировка по регионам
             grouped = (
@@ -451,3 +441,4 @@ def regionDistrictAnalysis(df, region=None, district=None, theme=None):
             "districts": [],
             "stats": {},
         }
+
