@@ -1,7 +1,5 @@
 import json
 from typing import Dict, Any
-
-
 class Config:
     """Класс для работы с конфигурацией приложения"""
 

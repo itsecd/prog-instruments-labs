@@ -7,7 +7,7 @@ class AsymmetricCrypto:
     """Класс для работы с асимметричным шифрованием (RSA)"""
 
     @staticmethod
-    def generate_keys() -> tuple[RSAPrivateKey, RSAPublicKey]:
+    def  generate_keys() -> tuple[RSAPrivateKey, RSAPublicKey]:
         """Генерирует пару RSA ключей"""
         private_key = rsa.generate_private_key(
             public_exponent=65537,
@@ -16,10 +16,7 @@ class AsymmetricCrypto:
         return private_key, private_key.public_key()
 
     @staticmethod
-    def encrypt_with_public_key(
-            public_key: RSAPublicKey,
-            data: bytes
-    ) -> bytes:
+    def encrypt_with_public_key(public_key: RSAPublicKey, data: bytes) -> bytes:
         """Шифрует данные публичным ключом"""
         return public_key.encrypt(
             data,
@@ -31,10 +28,7 @@ class AsymmetricCrypto:
         )
 
     @staticmethod
-    def decrypt_with_private_key(
-            private_key: RSAPrivateKey,
-            encrypted_data: bytes
-    ) -> bytes:
+    def decrypt_with_private_key(private_key: RSAPrivateKey, encrypted_data: bytes) -> bytes:
         """Дешифрует данные приватным ключом"""
         return private_key.decrypt(
             encrypted_data,

@@ -24,18 +24,9 @@ class FileManager:
         """Сохраняет криптографический ключ в файл"""
         with open(path, 'wb') as f:
             if isinstance(key, RSAPrivateKey):
-                private_bytes = key.private_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PrivateFormat.TraditionalOpenSSL,
-                    encryption_algorithm=serialization.NoEncryption()
-                )
-                f.write(private_bytes)
+                f.write(key.private_bytes(encoding=serialization.Encoding.PEM, format=serialization.PrivateFormat.TraditionalOpenSSL, encryption_algorithm=serialization.NoEncryption()))
             else:
-                public_bytes = key.public_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PublicFormat.SubjectPublicKeyInfo
-                )
-                f.write(public_bytes)
+                f.write(key.public_bytes(encoding=serialization.Encoding.PEM, format=serialization.PublicFormat.SubjectPublicKeyInfo))
 
     @staticmethod
     def load_private_key(path: str) -> RSAPrivateKey:
