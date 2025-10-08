@@ -441,7 +441,3 @@ def regionDistrictAnalysis(df, region=None, district=None, theme=None):
             "districts": [],
             "stats": {},
         }
-
-
-
-
