@@ -3,7 +3,6 @@ import io
 from datetime import timedelta
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-
 from scipy.stats import linregress
 
 
