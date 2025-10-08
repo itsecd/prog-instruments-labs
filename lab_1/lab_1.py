@@ -42,6 +42,7 @@ def negativeShare(df):
 def forecastNegativeThemes(df, return_type="both"):
     """
     Анализирует негативные обращения.
+
     Параметры:
         df - DataFrame с данными обращений
         return_type - что возвращать:
@@ -168,7 +169,9 @@ def forecastDeviation(df, df_today):
     """Отклонение от прогноза"""
     try:
         return (
-            (negativeCount(df_today) - forecastNegativeThemes(df, return_type="forecast")["forecast_today"]
+            (
+                negativeCount(df_today)
+                - forecastNegativeThemes(df, return_type="forecast")["forecast_today"]
             )
             / forecastNegativeThemes(df, return_type="forecast")["forecast_today"]
             * 100
@@ -225,9 +228,11 @@ def arpuSegments(df):
 def arpuNegativeThemes(df, segment="Все"):
     """
     Строит гистограмму тем недовольства с фильтрацией по сегменту ARPU
+
     Параметры:
         df - DataFrame с данными обращений
         segment - сегмент для фильтрации ('Все', 'B2C Low', 'B2C Mid', 'VIP', 'VIP adv', 'Platinum')
+
     Возвращает:
         Словарь с SVG изображением графика или None при ошибке
     """
@@ -320,11 +325,13 @@ def arpuNegativeThemes(df, segment="Все"):
 def regionDistrictAnalysis(df, region=None, district=None, theme=None):
     """
     Анализ негативных обращений по регионам и районам
+
     Параметры:
         df - DataFrame с данными обращений
         region - выбранный регион (None - все регионы)
         theme - выбранная тема (None - все темы недовольства)
         district - выбранный район (None - все районы)
+
     Возвращает:
         Словарь с:
         - таблицей данных (с дополнительными метриками)
@@ -389,7 +396,9 @@ def regionDistrictAnalysis(df, region=None, district=None, theme=None):
                 negative_df.groupby(["Район", "Тема"]).size().unstack(fill_value=0)
             )
             grouped["Всего"] = grouped.sum(axis=1)
-            grouped["Доля от региона"] = (grouped["Всего"] / grouped["Всего"].sum() * 100).round(1)
+            grouped["Доля от региона"] = (
+                grouped["Всего"] / grouped["Всего"].sum() * 100
+            ).round(1)
             grouped = grouped.sort_values("Всего", ascending=False)
             grouped = grouped.reset_index()
         elif district:
@@ -400,7 +409,9 @@ def regionDistrictAnalysis(df, region=None, district=None, theme=None):
                 .sort_values(ascending=False)
                 .reset_index(name="Количество")
             )
-            grouped["Доля от района"] = (grouped["Количество"] / grouped["Количество"].sum() * 100).round(1)
+            grouped["Доля от района"] = (
+                grouped["Количество"] / grouped["Количество"].sum() * 100
+            ).round(1)
         else:
             # Группировка по регионам
             grouped = (
