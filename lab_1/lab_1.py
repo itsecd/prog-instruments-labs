@@ -39,7 +39,6 @@ def negativeShare(df):
 def forecastNegativeThemes(df, return_type="both"):
     """
     Анализирует негативные обращения.
-
     Параметры:
         df - DataFrame с данными обращений
         return_type - что возвращать:
@@ -221,11 +220,9 @@ def arpuSegments(df):
 def arpu_negative_themes(df, segment="Все"):
     """
     Строит гистограмму тем недовольства с фильтрацией по сегменту ARPU
-
     Параметры:
         df - DataFrame с данными обращений
         segment - сегмент для фильтрации ('Все', 'B2C Low', 'B2C Mid', 'VIP', 'VIP adv', 'Platinum')
-
     Возвращает:
         Словарь с SVG изображением графика или None при ошибке
     """
@@ -318,13 +315,11 @@ def arpu_negative_themes(df, segment="Все"):
 def regionDistrictAnalysis(df, region=None, district=None, theme=None):
     """
     Анализ негативных обращений по регионам и районам
-
     Параметры:
         df - DataFrame с данными обращений
         region - выбранный регион (None - все регионы)
         theme - выбранная тема (None - все темы недовольства)
         district - выбранный район (None - все районы)
-
     Возвращает:
         Словарь с:
         - таблицей данных (с дополнительными метриками)
@@ -441,4 +436,3 @@ def regionDistrictAnalysis(df, region=None, district=None, theme=None):
             "districts": [],
             "stats": {},
         }
-
