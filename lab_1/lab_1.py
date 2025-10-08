@@ -6,7 +6,7 @@ import matplotlib.dates as mdates
 from scipy.stats import linregress
 
 
-def total_served(df):
+def totalServed(df):
     """Количество обслуженных клиентов"""
     try:
         return len(df)
@@ -216,7 +216,7 @@ def arpuSegments(df):
     return result
 
 
-def arpu_negative_themes(df, segment="Все"):
+def arpuNegativeThemes(df, segment="Все"):
     """
     Строит гистограмму тем недовольства с фильтрацией по сегменту ARPU
     Параметры:
