@@ -1,8 +1,9 @@
-import pandas as pd
 import io
 from datetime import timedelta
-import matplotlib.pyplot as plt
+
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import pandas as pd
 from scipy.stats import linregress
 
 
