@@ -6,12 +6,11 @@ class Yahtzee:
 
     @staticmethod
     def yahtzee(dice):
-        counts = [0] * (len(dice) + 1)
-        for die in dice:
-            counts[die - 1] += 1
+        yahtzee_bonus = 50
+        counts = Yahtzee.get_counts(dice)
         for i in range(len(counts)):
             if counts[i] == 5:
-                return 50
+                return yahtzee_bonus
         return 0
 
     @staticmethod
@@ -92,6 +91,7 @@ class Yahtzee:
 
     @staticmethod
     def small_straight(dice):
+        small_straight_bonus = 15
         counts = Yahtzee.get_counts(dice)
         required_numbers = [1, 2, 3, 4, 5]
 
@@ -99,10 +99,11 @@ class Yahtzee:
             if counts[number] == 0:
                 return 0
 
-        return 15#Idk what is this
+        return small_straight_bonus
 
     @staticmethod
     def large_straight(dice):
+        large_straight_bonus = 20
         counts = Yahtzee.get_counts(dice)
         required_numbers = [2, 3, 4, 5, 6]
 
@@ -110,7 +111,7 @@ class Yahtzee:
             if counts[number] == 0:
                 return 0
 
-        return 20#Idk what is this
+        return large_straight_bonus
 
     @staticmethod
     def full_house(dice):
