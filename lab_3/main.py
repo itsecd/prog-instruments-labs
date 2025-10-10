@@ -1,6 +1,6 @@
+import checksum
 import file_reader
 import validator
-import checksum
 
 
 def main():
