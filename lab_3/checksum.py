@@ -1,6 +1,5 @@
 import hashlib
 import json
-
 from typing import List
 
 """
@@ -49,8 +48,3 @@ def serialize_result(variant: int, checksum: str) -> None:
 
     with open('result.json', 'w', encoding='utf-8') as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
-
-
-#if __name__ == "__main__":
-#    print(calculate_checksum([1, 2, 3]))
-#    print(calculate_checksum([3, 2, 1]))
