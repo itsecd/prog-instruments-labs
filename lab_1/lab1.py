@@ -118,7 +118,15 @@ T = [['.....',
       '.....']]
 
 SHAPES = [S, Z, I, O, J, L, T]
-SHAPE_COLORS = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+SHAPE_COLORS = [
+    (0, 255, 0),
+    (255, 0, 0),
+    (0, 255, 255),
+    (255, 255, 0),
+    (255, 165, 0),
+    (0, 0, 255),
+    (128, 0, 128)
+]
 
 
 class Piece:
@@ -160,7 +168,10 @@ def convert_shape_format(piece):
 
 def valid_space(piece, grid):
     # Only accept if that position is empty (0, 0, 0)
-    accepted_pos = [[(j, i) for j in range(10) if grid[i][j] == (0, 0, 0)] for i in range(20)]
+    accepted_pos = [
+        [(j, i) for j in range(10) if grid[i][j] == (0, 0, 0)]
+        for i in range(20)
+    ]
     accepted_pos = [j for sub in accepted_pos for j in sub]
 
     formatted_shape = convert_shape_format(piece)
@@ -189,16 +200,28 @@ def draw_text_middle(surface, text, size, color):
     font = pygame.font.SysFont('comicsans', size, bold=True)
     label = font.render(text, True, color)
 
-    surface.blit(label, (TOP_LEFT_X + PLAY_WIDTH / 2 - label.get_width() / 2, TOP_LEFT_Y + PLAY_HEIGHT / 2 - label.get_height() / 2))
+    pos = (
+        TOP_LEFT_X + PLAY_WIDTH / 2 - label.get_width() / 2,
+        TOP_LEFT_Y + PLAY_HEIGHT / 2 - label.get_height() / 2
+    )
+    surface.blit(label, pos)
 
 
 def draw_grid(surface, grid):
     for i in range(len(grid)):
         # Draw parallel lines with axis x
-        pygame.draw.line(surface, (128, 128, 128), (TOP_LEFT_X, TOP_LEFT_Y + i * BLOCK_SIZE), (TOP_LEFT_X + PLAY_WIDTH, TOP_LEFT_Y + i * BLOCK_SIZE))
+        pygame.draw.line(
+            surface, (128, 128, 128),
+            (TOP_LEFT_X, TOP_LEFT_Y + i * BLOCK_SIZE),
+            (TOP_LEFT_X + PLAY_WIDTH, TOP_LEFT_Y + i * BLOCK_SIZE)
+        )
         for j in range(len(grid[i])):
             # Draw parallel lines with axis y
-            pygame.draw.line(surface, (128, 128, 128), (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y), (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + PLAY_HEIGHT))
+            pygame.draw.line(
+                surface, (128, 128, 128),
+                (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y),
+                (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + PLAY_HEIGHT)
+            )
 
 
 def clear_rows(grid, locked_positions):
@@ -240,7 +263,13 @@ def draw_next_shape(piece, surface):
         row = list(line)
         for j, column in enumerate(row):
             if column == '0':
-                pygame.draw.rect(surface, piece.color, (sx + j * BLOCK_SIZE, sy + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
+                rect = (
+                    sx + j * BLOCK_SIZE,
+                    sy + i * BLOCK_SIZE,
+                    BLOCK_SIZE,
+                    BLOCK_SIZE
+                )
+                pygame.draw.rect(surface, piece.color, rect, 0)
 
     surface.blit(label, (sx + 10, sy - 30))
 
@@ -278,16 +307,27 @@ def draw_window(surface, grid, score=0, high_score=0):
     surface.blit(label, (sx + 20, sy + 160))
 
     # Draw high score
-    label = font.render('High Score: ' + str(high_score), True, (255, 255, 255))
+    label = font.render(
+        'High Score: ' + str(high_score),
+        True, (255, 255, 255)
+    )
     surface.blit(label, (TOP_LEFT_X - 200, TOP_LEFT_Y))
 
     # Draw play screen
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            pygame.draw.rect(surface, grid[i][j], (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
+            rect = (
+                TOP_LEFT_X + j * BLOCK_SIZE,
+                TOP_LEFT_Y + i * BLOCK_SIZE,
+                BLOCK_SIZE, BLOCK_SIZE
+            )
+            pygame.draw.rect(surface, grid[i][j], rect, 0)
 
     # Draw border of play screen
-    pygame.draw.rect(surface, (255, 0, 0), (TOP_LEFT_X, TOP_LEFT_Y, PLAY_WIDTH, PLAY_HEIGHT), 5)
+    pygame.draw.rect(
+        surface, (255, 0, 0),
+        (TOP_LEFT_X, TOP_LEFT_Y, PLAY_WIDTH, PLAY_HEIGHT),5
+    )
 
     # Draw grid
     draw_grid(surface, grid)
