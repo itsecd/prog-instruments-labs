@@ -289,7 +289,7 @@ def clear_rows(grid: list, locked_positions: dict) -> int:
             for j in range(len(row)):
                 try:
                     del locked_positions[(j, i)]
-                except:
+                except KeyError:
                     continue
 
     if increment > 0:
@@ -349,10 +349,12 @@ def max_score() -> str:
     Get the current high score.
     :return: High score
     """
-    with open('scores.txt', 'r') as f:
-        lines = f.readlines()
-        high_score = lines[0].strip()
-
+    try:
+        with open('scores.txt', 'r') as f:
+            lines = f.readlines()
+            high_score = lines[0].strip()
+    except FileNotFoundError:
+        high_score = "0"
     return high_score
 
 
