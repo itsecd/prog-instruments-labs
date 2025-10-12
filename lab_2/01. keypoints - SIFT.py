@@ -6,7 +6,7 @@ from os import listdir
 from os.path import isfile, join
 
 #задаём путь к файлам
-pathIn  = "Image Registraion Feature-based/"             #откуда брать файлы
+pathIn  = "Image Registraion Feature-based/"             #откуда брать файлы.
 pathOut = "Image Registraion Feature-based Out/SIFT/"    #куда сохранять файлы
 files = [f for f in listdir(pathIn) if isfile(join(pathIn, f))]         #сами картинки
 if not os.path.exists(pathOut):    os.makedirs(pathOut)                 #создать путь, если ещё нет
