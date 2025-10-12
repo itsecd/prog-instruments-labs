@@ -181,7 +181,7 @@ class Dino():
         self.rect = self.rect.move(self.movement)
         self.checkbounds()
 
-        if not self.dead and self.counter % 7 == 6 and self.blinking == False:
+        if not self.dead and self.counter % 7 == 6 and not self.blinking:
             self.score += 1
             if self.score % 100 == 0 and self.score != 0:
                 if pygame.mixer.get_init() != None:
@@ -337,7 +337,7 @@ def introduction_screen():
             pygame.display.update()
 
         time_clock.tick(FPS)
-        if ado_dino.jumping == False and ado_dino.blinking == False:
+        if not ado_dino.jumping and not ado_dino.blinking:
             starting_game = True
 
 def gameplay():
