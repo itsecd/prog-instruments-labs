@@ -20,6 +20,7 @@ class TextRNN(nn.Module):
             weights: Optional[torch.Tensor] = None,
             rnn_type: str = "LSTM",
             bidirectional: bool = True,
+            num_layers: int = 1,
             dropout: float = 0.5
     ):
         super(TextRNN, self).__init__()
@@ -30,6 +31,7 @@ class TextRNN(nn.Module):
         self.embedding_dim = embedding_dim
         self.rnn_type = rnn_type
         self.bidirectional = bidirectional
+        self.num_layers = num_layers
         self.num_directions = 2 if bidirectional else 1
 
         # Embedding layer
@@ -45,6 +47,8 @@ class TextRNN(nn.Module):
                 embedding_dim=embedding_dim
             )
 
+        dropout_val = dropout if dropout > 0 and num_layers > 1 else 0
+
         # RNN layers
         if rnn_type == "RNN":
             self.rnn = nn.RNN(
@@ -52,7 +56,8 @@ class TextRNN(nn.Module):
                 hidden_size=hidden_size,
                 batch_first=True,
                 bidirectional=bidirectional,
-                dropout=dropout if dropout > 0 else 0
+                num_layers=num_layers,
+                dropout=dropout_val
             )
         elif rnn_type == "LSTM":
             self.rnn = nn.LSTM(
@@ -60,7 +65,8 @@ class TextRNN(nn.Module):
                 hidden_size=hidden_size,
                 batch_first=True,
                 bidirectional=bidirectional,
-                dropout=dropout if dropout > 0 else 0
+                num_layers=num_layers,
+                dropout=dropout_val
             )
         else:
             raise ValueError(f"Неподдерживаемый тип RNN: {rnn_type}")
@@ -81,20 +87,19 @@ class TextRNN(nn.Module):
         # RNN layer
         if self.rnn_type == "RNN":
             h0 = torch.zeros(
-                self.num_directions,
+                self.num_layers * self.num_directions,
                 batch_size,
                 self.hidden_size
             )
             _, hn = self.rnn(embed_out, h0)
-            # hn shape: (num_directions, batch_size, hidden_size)
         elif self.rnn_type == "LSTM":
             h0 = torch.zeros(
-                self.num_directions,
+                self.num_layers * self.num_directions,
                 batch_size,
                 self.hidden_size
             )
             c0 = torch.zeros(
-                self.num_directions,
+                self.num_layers * self.num_directions,
                 batch_size,
                 self.hidden_size
             )
@@ -102,14 +107,13 @@ class TextRNN(nn.Module):
 
         # Handle bidirectional output
         if self.bidirectional:
-            hn = torch.cat([hn[0], hn[1]], dim=-1)
+            hn = torch.cat([hn[-2], hn[-1]], dim=-1)
         else:
-            hn = hn.squeeze(0)
+            hn = hn[-1]
 
         # Classification
         hn = self.dropout(hn)
         logits = self.classifier(hn)
-
         return logits
 
     def __repr__(self):
