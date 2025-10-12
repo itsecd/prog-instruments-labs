@@ -27,23 +27,23 @@ pygame.display.set_caption("Dino Run ")
 # Загрузка звуков
 jump_sound = pygame.mixer.Sound('resources/jump.wav')
 die_sound = pygame.mixer.Sound('resources/die.wav')
-checkPoint_sound = pygame.mixer.Sound('resources/checkPoint.wav')
+check_point_sound = pygame.mixer.Sound('resources/checkPoint.wav')
 
 # Загрузка изображения с возможностью изменения размера
 def load_image(
     name,
-    sx = -1,
-    sy = -1,
-    colorkey = None,
-   ):
+    sx=-1,
+    sy=-1,
+    color_key=None,
+    ):
 
     fullname = os.path.join('resources', name)
     img = pygame.image.load(fullname)
     img = img.convert()
-    if colorkey is not None:
-        if colorkey == -1:
-            colorkey = img.get_at((0, 0))
-        img.set_colorkey(colorkey, RLEACCEL)
+    if color_key is not None:
+        if color_key == -1:
+            color_key = img.get_at((0, 0))
+        img.set_colorkey(color_key, RLEACCEL)
 
     if sx != -1 or sy != -1:
         img = pygame.transform.scale(img, (sx, sy))
@@ -53,11 +53,11 @@ def load_image(
 # Загрузка спрайтов из спрайт-листа
 def load_sprite_sheet(
         s_name,
-        namex,
-        namey,
-        scx = -1,
-        scy = -1,
-        c_key = None,
+        name_x,
+        name_y,
+        scx=-1,
+        scy=-1,
+        c_key=None,
        ):
     fullname = os.path.join('resources', s_name)
     sh = pygame.image.load(fullname)
@@ -67,11 +67,11 @@ def load_sprite_sheet(
 
     sprites = []
 
-    sx = sh_rect.width/ namex
-    sy = sh_rect.height/ namey
+    sx = sh_rect.width/ name_x
+    sy = sh_rect.height/ name_y
 
-    for i in range(0, namey):
-        for j in range(0, namex):
+    for i in range(0, name_y):
+        for j in range(0, name_x):
             rect = pygame.Rect((j * sx, i * sy, sx, sy))
             img = pygame.Surface(rect.size)
             img = img.convert()
@@ -105,7 +105,7 @@ def gameover_display_message(rbtn_image, gmo_image):
     screen_layout_display.blit(gmo_image, gmo_rect)
 
 # Разбивка числа на отдельные цифры для отображения очков
-def extractDigits(num):
+def extract_digits(num):
     if num > -1:
         d = []
         i = 0
@@ -120,7 +120,7 @@ def extractDigits(num):
         return d
 
 class Dino():
-    def __init__(self, sx = -1, sy = -1):
+    def __init__(self, sx=-1, sy=-1):
         self.imgs, self.rect = load_sprite_sheet('dino.png', 5, 1, sx, sy, -1)
         self.imgs1, self.rect1 = load_sprite_sheet('dino_ducking.png', 2, 1, 59, sy, -1)
         self.rect.bottom = int(0.98 * height_screen)
@@ -134,7 +134,7 @@ class Dino():
         self.ducking = False
         self.blinking = False
         self.movement = [0, 0]
-        self.jumpSpeed = 11.5
+        self.jump_speed = 11.5
 
         self.stand_position_width = self.rect.width
         self.duck_position_width = self.rect1.width
@@ -156,17 +156,17 @@ class Dino():
         elif self.blinking:
             if self.index == 0:
                 if self.counter % 400 == 399:
-                    self.index = (self.index + 1) % 2
+                    self.index = (self.index+1) % 2
             else:
                 if self.counter % 20 == 19:
-                    self.index = (self.index + 1) % 2 
+                    self.index = (self.index+1) % 2 
 
         elif self.ducking:
             if self.counter % 5 == 0:
-                self.index = (self.index + 1) % 2
+                self.index = (self.index+1) % 2
         else:
             if self.counter % 5 == 0:
-                self.index = (self.index + 1) % 2 + 2
+                self.index = (self.index+1) % 2 + 2
 
         if self.dead:
            self.index = 4
@@ -185,12 +185,12 @@ class Dino():
             self.score += 1
             if self.score % 100 == 0 and self.score != 0:
                 if pygame.mixer.get_init() != None:
-                    checkPoint_sound.play()
+                    check_point_sound.play()
 
         self.counter = (self.counter + 1)
 
 class Cactus(pygame.sprite.Sprite):
-    def __init__(self, speed = 5, sx = -1, sy = -1):
+    def __init__(self, speed=5, sx=-1, sy=-1):
         pygame.sprite.Sprite.__init__(self,self.containers)
         self.imgs, self.rect = load_sprite_sheet('cactus-small.png', 3, 1, sx, sy, -1)
         self.rect.bottom = int(0.98 * height_screen)
@@ -207,15 +207,15 @@ class Cactus(pygame.sprite.Sprite):
         if self.rect.right < 0:
             self.kill()
 
-class birds(pygame.sprite.Sprite):
-    def __init__(self, speed = 5, sx = -1, sy = -1):
+class Birds(pygame.sprite.Sprite):
+    def __init__(self, speed=5, sx=-1, sy=-1):
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.imgs, self.rect = load_sprite_sheet('birds.png', 2, 1, sx, sy, -1)
         self.birds_height = [height_screen * 0.82, height_screen * 0.75, height_screen * 0.60]
         self.rect.centery = self.birds_height[random.randrange(0, 3)]
         self.rect.left = width_screen + self.rect.width
         self.image = self.imgs[0]
-        self.movement = [-1*speed,0]
+        self.movement = [-1 * speed, 0]
         self.index = 0
         self.counter = 0
 
@@ -224,16 +224,16 @@ class birds(pygame.sprite.Sprite):
 
     def update(self):
         if self.counter % 10 == 0:
-            self.index = (self.index + 1) % 2
+            self.index = (self.index+1) % 2
         self.image = self.imgs[self.index]
         self.rect = self.rect.move(self.movement)
-        self.counter = (self.counter + 1)
+        self.counter = (self.counter+1)
         if self.rect.right < 0:
             self.kill()
 
 
 class Ground():
-    def __init__(self,speed = -5):
+    def __init__(self,speed=-5):
         self.image,self.rect = load_image('ground.png', -1, -1, -1)
         self.image1,self.rect1 = load_image('ground.png', -1, -1, -1)
         self.rect.bottom = height_screen
@@ -258,7 +258,7 @@ class Ground():
 class Cloud(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self,self.containers)
-        self.image,self.rect = load_image('cloud.png', int(90 * 30 / 42), 30, -1)
+        self.image,self.rect = load_image('cloud.png', int(90*30 / 42), 30, -1)
         self.speed = 1
         self.rect.left = x
         self.rect.top = y
@@ -273,10 +273,10 @@ class Cloud(pygame.sprite.Sprite):
             self.kill()
 
 class Scoreboard():
-    def __init__(self, x = -1, y = -1):
+    def __init__(self, x=-1, y=-1):
         self.score = 0
-        self.scre_img, self.screrect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11 * 6 / 5), -1)
-        self.image = pygame.Surface((55, int(11 * 6 / 5)))
+        self.scre_img, self.screrect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11*6 / 5), -1)
+        self.image = pygame.Surface((55, int(11*6 / 5)))
         self.rect = self.image.get_rect()
         if x == -1:
             self.rect.left = width_screen * 0.89
@@ -291,7 +291,7 @@ class Scoreboard():
         screen_layout_display.blit(self.image, self.rect)
 
     def update(self,score):
-        score_digits = extractDigits(score)
+        score_digits = extract_digits(score)
         self.image.fill(bg_color)
         for s in score_digits:
             self.image.blit(self.scre_img[s], self.screrect)
@@ -323,7 +323,7 @@ def introduction_screen():
                     if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                         ado_dino.jumping = True
                         ado_dino.blinking = False
-                        ado_dino.movement[1] = -1 * ado_dino.jumpSpeed
+                        ado_dino.movement[1] = -1 * ado_dino.jump_speed
 
         ado_dino.update()
 
@@ -344,27 +344,27 @@ def gameplay():
     global highest_scores
     gp = 4
     s_Menu = False
-    g_Over = False
+    g_over = False
     g_exit = False
-    gamer_Dino = Dino(44, 47)
+    gamer_dino = Dino(44, 47)
     new_grnd = Ground(-1 * gp)
     score_boards = Scoreboard()
-    highScore = Scoreboard(width_screen * 0.78)
+    high_score = Scoreboard(width_screen * 0.78)
     counter = 0
 
     cactusan = pygame.sprite.Group()
-    smallBird = pygame.sprite.Group()
-    skyClouds = pygame.sprite.Group()
+    small_bird = pygame.sprite.Group()
+    sky_clouds = pygame.sprite.Group()
     last_end_obs = pygame.sprite.Group()
 
     Cactus.containers = cactusan
-    birds.containers = smallBird
-    Cloud.containers = skyClouds
+    Birds.containers = small_bird
+    Cloud.containers = sky_clouds
 
     rbtn_image,rbtn_rect = load_image('replay_button.png', 35, 31, -1)
     gmo_image,gmo_rect = load_image('game_over.png', 190, 11, -1)
 
-    t_images,t_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11*6/5), -1)
+    t_images,t_rect = load_sprite_sheet('numbers.png', 12, 1, 11, int(11*6 / 5), -1)
     ado_image = pygame.Surface((22, int(11 * 6 / 5)))
     ado_rect = ado_image.get_rect()
     ado_image.fill(bg_color)
@@ -377,43 +377,43 @@ def gameplay():
     while not g_exit:
         while s_Menu:
             pass
-        while not g_Over:
+        while not g_over:
             if pygame.display.get_surface() == None:
                 print("Couldn't load display surface")
                 g_exit = True
-                g_Over = True
+                g_over = True
             else:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         g_exit = True
-                        g_Over = True
+                        g_over = True
 
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_SPACE:
-                            if gamer_Dino.rect.bottom == int(0.98 * height_screen):
-                                gamer_Dino.jumping = True
+                            if gamer_dino.rect.bottom == int(0.98 * height_screen):
+                                gamer_dino.jumping = True
                                 if pygame.mixer.get_init() != None:
                                     jump_sound.play()
-                                gamer_Dino.movement[1] = -1 * gamer_Dino.jumpSpeed
+                                gamer_dino.movement[1] = -1 * gamer_dino.jump_speed
 
                         if event.key == pygame.K_DOWN:
-                            if not (gamer_Dino.jumping and gamer_Dino.dead):
-                                gamer_Dino.ducking = True
+                            if not (gamer_dino.jumping and gamer_dino.dead):
+                                gamer_dino.ducking = True
 
                     if event.type == pygame.KEYUP:
                         if event.key == pygame.K_DOWN:
-                            gamer_Dino.ducking = False
+                            gamer_dino.ducking = False
             for c in cactusan:
                 c.movement[0] = -1*gp
-                if pygame.sprite.collide_mask(gamer_Dino, c):
-                    gamer_Dino.dead = True
+                if pygame.sprite.collide_mask(gamer_dino, c):
+                    gamer_dino.dead = True
                     if pygame.mixer.get_init() != None:
                         die_sound.play()
 
-            for p in smallBird:
+            for p in small_bird:
                 p.movement[0] = -1 * gp
-                if pygame.sprite.collide_mask(gamer_Dino, p):
-                    gamer_Dino.dead = True
+                if pygame.sprite.collide_mask(gamer_dino, p):
+                    gamer_dino.dead = True
                     if pygame.mixer.get_init() != None:
                         die_sound.play()
 
@@ -427,44 +427,44 @@ def gameplay():
                             last_end_obs.empty()
                             last_end_obs.add(Cactus(gp, 40, 40))
 
-            if len(smallBird) == 0 and random.randrange(0, 200) == 10 and counter > 500:
+            if len(small_bird) == 0 and random.randrange(0, 200) == 10 and counter > 500:
                 for l in last_end_obs:
                     if l.rect.right < width_screen * 0.8:
                         last_end_obs.empty()
-                        last_end_obs.add(birds(gp, 46, 40))
+                        last_end_obs.add(Birds(gp, 46, 40))
 
-            if len(skyClouds) < 5 and random.randrange(0, 300) == 10:
+            if len(sky_clouds) < 5 and random.randrange(0, 300) == 10:
                 Cloud(width_screen, random.randrange(int(height_screen / 5), int(height_screen / 2)))
 
-            gamer_Dino.update()
+            gamer_dino.update()
             cactusan.update()
-            smallBird.update()
-            skyClouds.update()
+            small_bird.update()
+            sky_clouds.update()
             new_grnd.update()
-            score_boards.update(gamer_Dino.score)
-            highScore.update(highest_scores)
+            score_boards.update(gamer_dino.score)
+            high_score.update(highest_scores)
 
             if pygame.display.get_surface() != None:
                 screen_layout_display.fill(bg_color)
                 new_grnd.draw()
-                skyClouds.draw(screen_layout_display)
+                sky_clouds.draw(screen_layout_display)
                 score_boards.draw()
                 if highest_scores != 0:
-                    highScore.draw()
+                    high_score.draw()
                     screen_layout_display.blit(ado_image, ado_rect)
                 cactusan.draw(screen_layout_display)
-                smallBird.draw(screen_layout_display)
-                gamer_Dino.draw()
+                small_bird.draw(screen_layout_display)
+                gamer_dino.draw()
 
                 pygame.display.update()
             time_clock.tick(FPS)
 
-            if gamer_Dino.dead:
-                g_Over = True
-                if gamer_Dino.score > highest_scores:
-                    highest_scores = gamer_Dino.score
+            if gamer_dino.dead:
+                g_over = True
+                if gamer_dino.score > highest_scores:
+                    highest_scores = gamer_dino.score
 
-            if counter%700 == 699:
+            if counter % 700 == 699:
                 new_grnd.speed -= 1
                 gp += 1
 
@@ -473,29 +473,29 @@ def gameplay():
         if g_exit:
             break
 
-        while g_Over:
+        while g_over:
             if pygame.display.get_surface() == None:
                 print("Couldn't load display surface")
                 g_exit = True
-                g_Over = False
+                g_over = False
             else:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         g_exit = True
-                        g_Over = False
+                        g_over = False
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_ESCAPE:
                             g_exit = True
-                            g_Over = False
+                            g_over = False
 
                         if event.key == pygame.K_RETURN or event.key == pygame.K_SPACE:
-                            g_Over = False
+                            g_over = False
                             gameplay()
-            highScore.update(highest_scores)
+            high_score.update(highest_scores)
             if pygame.display.get_surface() != None:
                 gameover_display_message(rbtn_image, gmo_image)
                 if highest_scores != 0:
-                    highScore.draw()
+                    high_score.draw()
                     screen_layout_display.blit(ado_image, ado_rect)
                 pygame.display.update()
             time_clock.tick(FPS)
@@ -505,8 +505,8 @@ def gameplay():
 
 # Точка входа в игру
 def main():
-    isGameQuit = introduction_screen()
-    if not isGameQuit:
+    is_game_quit = introduction_screen()
+    if not is_game_quit:
         gameplay()
 
 main()
