@@ -130,7 +130,16 @@ SHAPE_COLORS = [
 
 
 class Piece:
+    """
+    Represents a Tetris piece.
+    """
     def __init__(self, x, y, shape):
+        """
+        Initialize a piece.
+        :param x: x-coordinate on the grid.
+        :param y: y-coordinate on the grid.
+        :param shape: Shape format (list of rotations).
+        """
         self.x = x
         self.y = y
         self.shape = shape
@@ -140,6 +149,11 @@ class Piece:
 
 # locked_pos is position that other pieces already in the grid
 def create_grid(locked_pos=None):
+    """
+    Create a 20x10 Tetris grid with locked positions.
+    :param locked_pos: Positions already occupied by pieces.
+    :return: 2D list representing the grid with block colors.
+    """
     if locked_pos is None:
         locked_pos = {}
     # Also contain block color that paint the empty block in grid too
@@ -153,6 +167,11 @@ def create_grid(locked_pos=None):
 
 
 def convert_shape_format(piece):
+    """
+    Convert a piece's current rotation to grid positions.
+    :param piece: Tetris piece.
+    :return: List of (x, y) positions occupied by the piece.
+    """
     positions = []
     format_shape = piece.shape[piece.rotation % len(piece.shape)]
 
@@ -169,6 +188,12 @@ def convert_shape_format(piece):
 
 
 def valid_space(piece, grid):
+    """
+    Check if a piece is in a valid space on the grid.
+    :param piece: Tetris piece.
+    :param grid: Current grid with colors.
+    :return: True if piece is in valid space, False otherwise.
+    """
     # Only accept if that position is empty (0, 0, 0)
     accepted_pos = [
         [(j, i) for j in range(10) if grid[i][j] == (0, 0, 0)]
@@ -186,6 +211,11 @@ def valid_space(piece, grid):
 
 
 def check_lost(positions):
+    """
+    Check if the player has lost.
+    :param positions: Locked positions on the grid
+    :return: True if lost, False otherwise
+    """
     for pos in positions:
         x, y = pos
         if y < -1:
@@ -195,10 +225,21 @@ def check_lost(positions):
 
 
 def get_shape():
+    """
+    Get a random new Tetris piece.
+    :return: Tetris piece
+    """
     return Piece(5, 0, random.choice(SHAPES))
 
 
 def draw_text_middle(surface, text, size, color):
+    """
+    Draw text in the middle of the screen.
+    :param surface: Surface to draw on
+    :param text: Text to render
+    :param size: Font size
+    :param color: Color of text
+    """
     font = pygame.font.SysFont('comicsans', size, bold=True)
     label = font.render(text, True, color)
 
@@ -210,6 +251,11 @@ def draw_text_middle(surface, text, size, color):
 
 
 def draw_grid(surface, grid):
+    """
+    Draw grid lines on the surface.
+    :param surface: Surface to draw on
+    :param grid: Current grid
+    """
     for i in range(len(grid)):
         # Draw parallel lines with axis x
         pygame.draw.line(
@@ -227,6 +273,12 @@ def draw_grid(surface, grid):
 
 
 def clear_rows(grid, locked_positions):
+    """
+    Clear full rows and update locked positions.
+    :param grid: Current grid
+    :param locked_positions: Locked block positions
+    :return: Number of rows cleared
+    """
     index = 0
     increment = 0
     for i in range(len(grid) - 1, -1, -1):
@@ -254,6 +306,11 @@ def clear_rows(grid, locked_positions):
 
 
 def draw_next_shape(piece, surface):
+    """
+    Draw the next piece preview.
+    :param piece: Next Tetris piece
+    :param surface: Surface to draw on
+    """
     font = pygame.font.SysFont('comicsans', 30)
     label = font.render('Next Shape', True, (255, 255, 255))
     sx = TOP_LEFT_X + PLAY_WIDTH + 50
@@ -277,6 +334,10 @@ def draw_next_shape(piece, surface):
 
 
 def update_score(score):
+    """
+    Update high score if current score is higher.
+    :param score: Current score
+    """
     high_score = max_score()
     with open('scores.txt', 'w') as f:
         if int(high_score) < score:
@@ -284,6 +345,10 @@ def update_score(score):
 
 
 def max_score():
+    """
+    Get the current high score.
+    :return: High score
+    """
     with open('scores.txt', 'r') as f:
         lines = f.readlines()
         high_score = lines[0].strip()
@@ -292,6 +357,13 @@ def max_score():
 
 
 def draw_window(surface, grid, score=0, high_score=0):
+    """
+    Draw the game window including grid, score, and borders.
+    :param surface: Surface to draw on
+    :param grid: Current grid
+    :param score: Current score
+    :param high_score: High score
+    """
     surface.fill((0, 0, 0))
 
     pygame.font.init()
@@ -336,6 +408,11 @@ def draw_window(surface, grid, score=0, high_score=0):
 
 
 def main(surface):
+    """
+    Main game loop for Tetris.
+    :param surface: Surface on which the game is drawn
+    :return: True if the user closed the window, False otherwise
+    """
     locked_positions = {}
 
     change_piece = False
@@ -429,6 +506,10 @@ def main(surface):
 
 
 def main_menu(surface):
+    """
+    Display the main menu and start the game on key press.
+    :param surface: Surface to draw on
+    """
     run = True
     while run:
         surface.fill((0, 0, 0))
@@ -443,6 +524,9 @@ def main_menu(surface):
 
 
 def run_game():
+    """
+    Initialize the game window and run the main menu.
+    """
     window = pygame.display.set_mode((S_WIDTH, S_HEIGHT))
     pygame.display.set_caption('Tetris')
     main_menu(window)
