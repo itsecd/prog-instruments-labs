@@ -591,12 +591,12 @@ class model:
             self.T = len(self.qt) # update number of clusters
             self.qt_x = np.multiply(self.qt_x,np.tile(1./np.sum(self.qt_x,axis=0),(self.T,1))) # renormalize
             self.qt = np.dot(self.qt_x,self.ds.px).astype(self.dt)
-            if not(self.quiet): print('%i cluster(s) dropped. Down to %i cluster(s).' % (np.sum(dropped),self.T)) 
-        
+            if not(self.quiet): print('%i cluster(s) dropped. Down to %i cluster(s).' % (np.sum(dropped),self.T))
+
     def qy_t_step(self):
-        """Peforms q(y|t) update step for generalized Information Bottleneck."""        
-        self.qy_t = np.dot(self.ds.py_x,np.multiply(self.qt_x,np.outer(1./self.qt,self.ds.px)).T)
-        if self.qy_t.dtype != self.dt: self.qy_t = self.qy_x.astype(self.dt)
+        """Peforms q(y|t) update step for generalized Information Bottleneck."""
+        self.qy_t = np.dot(self.ds.py_x, np.multiply(self.qt_x, np.outer(1. / self.qt, self.ds.px)).T)
+        if self.qy_t.dtype != self.dt: self.qy_t = self.qy_t.astype(self.dt)
         
     def query_coord(self,x,ptol=0):
         """Returns cluster assignment for new data point not in training set."""
