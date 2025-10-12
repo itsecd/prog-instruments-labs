@@ -7,8 +7,8 @@ import logging
 from typing import List, Dict, Any
 from functools import wraps
 
-# Настройка логирования
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# Настройка логирования только для ошибок
+logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
@@ -35,24 +35,8 @@ SECURITY_HEADERS = {
 
 # Основные порты для сканирования
 COMMON_PORTS = [
-    21,  # FTP
-    22,  # SSH
-    23,  # Telnet
-    25,  # SMTP
-    53,  # DNS
-    80,  # HTTP
-    110,  # POP3
-    143,  # IMAP
-    443,  # HTTPS
-    587,  # SMTP SSL
-    993,  # IMAP SSL
-    995,  # POP3 SSL
-    1433,  # MSSQL
-    3306,  # MySQL
-    3389,  # RDP
-    5432,  # PostgreSQL
-    6379,  # Redis
-    27017,  # MongoDB
+    21, 22, 23, 25, 53, 80, 110, 143, 443, 587, 993, 995,
+    1433, 3306, 3389, 5432, 6379, 27017
 ]
 
 
@@ -139,10 +123,9 @@ def async_retry(max_retries: int = Config.MAX_RETRIES, delay: float = Config.RET
                 except Exception as e:
                     last_exception = e
                     if attempt < max_retries:
-                        logger.debug(f"Попытка {attempt + 1} не удалась, повтор через {delay}сек: {e}")
                         await asyncio.sleep(delay)
                     else:
-                        logger.warning(f"Все {max_retries + 1} попыток не удались для {func.__name__}")
+                        pass  # Убрали логирование
             raise last_exception
 
         return wrapper
@@ -159,14 +142,12 @@ async def scan_ports(domain: str, ports: List[int] = None) -> Dict[str, Any]:
         ports = COMMON_PORTS
 
     open_ports = []
-    semaphore = asyncio.Semaphore(Config.MAX_CONCURRENT_SCANS)
 
-    async def check_port_with_semaphore(port: int):
-        async with semaphore:
-            return await check_port(domain, port)
+    async def check_port_with_timeout(port: int):
+        return await check_port(domain, port)
 
     # Создаем задачи для проверки каждого порта
-    tasks = [check_port_with_semaphore(port) for port in ports]
+    tasks = [check_port_with_timeout(port) for port in ports]
 
     # Ждем завершения всех проверок портов
     port_results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -174,7 +155,6 @@ async def scan_ports(domain: str, ports: List[int] = None) -> Dict[str, Any]:
     # Собираем результаты
     for i, result in enumerate(port_results):
         if isinstance(result, Exception):
-            logger.error(f"Ошибка при сканировании порта {ports[i]} для {domain}: {result}")
             continue
 
         if isinstance(result, dict) and result['is_open']:
@@ -211,8 +191,8 @@ async def check_port(domain: str, port: int) -> Dict[str, Any]:
             await asyncio.wait_for(writer.drain(), timeout=1.0)
             banner_data = await asyncio.wait_for(reader.read(100), timeout=1.0)
             banner = banner_data.decode('utf-8', errors='ignore').strip()
-        except Exception as banner_error:
-            logger.debug(f"Не удалось получить баннер для {domain}:{port}: {banner_error}")
+        except:
+            pass
 
         writer.close()
         await writer.wait_closed()
@@ -264,9 +244,13 @@ async def get_ssl_info(domain: str) -> Dict[str, Any]:
         not_before = datetime.strptime(cert['notBefore'], '%b %d %H:%M:%S %Y %Z')
         days_until_expiry = (not_after - datetime.now()).days
 
+        # Получаем информацию об издателе
+        issuer_info = dict(x[0] for x in cert['issuer'])
+        issuer_name = issuer_info.get('organizationName', issuer_info.get('commonName', 'Unknown'))
+
         return {
             'has_ssl': True,
-            'issuer': dict(x[0] for x in cert['issuer']),
+            'issuer': issuer_name,
             'subject': dict(x[0] for x in cert['subject']),
             'not_before': not_before.strftime('%Y-%m-%d'),
             'not_after': not_after.strftime('%Y-%m-%d'),
@@ -306,15 +290,12 @@ async def check_site_availability(session: aiohttp.ClientSession, domain: str) -
 
             # Обрабатываем возможные исключения в задачах
             if isinstance(ssl_info, Exception):
-                logger.error(f"Ошибка SSL проверки для {domain}: {ssl_info}")
                 ssl_info = {'has_ssl': False, 'error': str(ssl_info)}
 
             if isinstance(security_headers_info, Exception):
-                logger.error(f"Ошибка анализа headers для {domain}: {security_headers_info}")
                 security_headers_info = None
 
             if isinstance(port_scan_info, Exception):
-                logger.error(f"Ошибка сканирования портов для {domain}: {port_scan_info}")
                 port_scan_info = {'open_ports': [], 'total_scanned': 0, 'open_count': 0, 'errors': 1}
 
             return {
@@ -346,7 +327,6 @@ async def safe_check_domain(session: aiohttp.ClientSession, domain: str) -> Dict
     try:
         return await check_site_availability(session, domain)
     except TimeoutError as e:
-        logger.warning(f"Таймаут для {domain}: {e}")
         # Вызываем функции напрямую, а не через await в словаре
         ssl_info = await get_ssl_info(domain)
         port_scan = await scan_ports(domain)
@@ -360,7 +340,6 @@ async def safe_check_domain(session: aiohttp.ClientSession, domain: str) -> Dict
             'error': str(e)
         }
     except SecurityScannerError as e:
-        logger.error(f"Ошибка сканирования {domain}: {e}")
         return {
             'domain': domain,
             'status': 'error',
@@ -371,7 +350,6 @@ async def safe_check_domain(session: aiohttp.ClientSession, domain: str) -> Dict
             'error': str(e)
         }
     except Exception as e:
-        logger.error(f"Критическая ошибка для {domain}: {e}")
         return {
             'domain': domain,
             'status': 'critical_error',
@@ -395,7 +373,7 @@ async def main():
     domains = [d.strip() for d in domains if d.strip()]
 
     print(f"🔍 Найдено {len(domains)} доменов для проверки")
-    print("⏳ Проверяем с улучшенной обработкой ошибок и ретраями...\n")
+    print("⏳ Проверяем доступность, SSL, security headers и порты...\n")
 
     # Семафор для ограничения одновременных запросов
     semaphore = asyncio.Semaphore(Config.MAX_CONCURRENT_SCANS)
@@ -415,8 +393,13 @@ async def main():
     total_open_ports = 0
     total_errors = 0
 
+    print("\n" + "=" * 80)
+    print("РЕЗУЛЬТАТЫ СКАНИРОВАНИЯ")
+    print("=" * 80)
+
     for result in results:
-        ssl_status = "🔒" if result.get('ssl_info', {}).get('has_ssl', False) else "🔓"
+        ssl_info = result.get('ssl_info', {})
+        ssl_status = "🔒" if ssl_info.get('has_ssl', False) else "🔓"
 
         if result.get('available', False):
             successful += 1
@@ -427,28 +410,42 @@ async def main():
             if security_info:
                 security_score = f" | Security: {security_info.get('score', 0)}/{security_info.get('max_score', 0)} ({security_info.get('rating', 'N/A')})"
 
-            # SSL информация
+            # SSL информация - ВЫВОДИМ ПОДРОБНОСТИ
             ssl_details = ""
-            ssl_info = result.get('ssl_info', {})
             if ssl_info.get('has_ssl', False):
                 valid_ssl += 1
                 days = ssl_info.get('days_until_expiry', 0)
-                ssl_details = f" | SSL: {days} дней"
+                issuer = ssl_info.get('issuer', 'Unknown')
+                not_after = ssl_info.get('not_after', 'Unknown')
+                ssl_details = f" | SSL: {days} дней до истечения | Issuer: {issuer}"
+
+                # Выводим детальную информацию о SSL
+                print(f"✅ {ssl_status} {result['domain']} - Доступен (Status: {result.get('status', 'N/A')})")
+                print(f"   📜 SSL сертификат: {issuer}")
+                print(f"   📅 Действует до: {not_after} ({days} дней осталось)")
+            else:
+                ssl_error = ssl_info.get('error', 'No SSL')
+                print(f"✅ {ssl_status} {result['domain']} - Доступен (Status: {result.get('status', 'N/A')})")
+                print(f"   ❌ SSL: {ssl_error}")
 
             # Информация о портах
             port_info = result.get('port_scan', {})
             port_details = f" | Ports: {port_info.get('open_count', 0)}/{port_info.get('total_scanned', 0)} открыто"
 
-            print(
-                f"✅ {ssl_status} {result['domain']} - Доступен (Status: {result.get('status', 'N/A')}{ssl_details}{security_score}{port_details})")
+            # Security headers информация
+            if security_info:
+                print(
+                    f"   🛡️  Security Headers: {security_info.get('score', 0)}/{security_info.get('max_score', 0)} баллов ({security_info.get('rating', 'N/A')})")
 
             # Вывод открытых портов
             open_ports = port_info.get('open_ports', [])
             if open_ports:
-                open_ports_str = ", ".join([f"{p['port']}({p['service']})" for p in open_ports[:3]])
-                if len(open_ports) > 3:
-                    open_ports_str += f" ... (+{len(open_ports) - 3})"
+                open_ports_str = ", ".join([f"{p['port']}({p['service']})" for p in open_ports[:5]])
+                if len(open_ports) > 5:
+                    open_ports_str += f" ... (+{len(open_ports) - 5})"
                 print(f"   🔓 Открытые порты: {open_ports_str}")
+            else:
+                print(f"   🔒 Открытые порты: нет")
 
             total_open_ports += port_info.get('open_count', 0)
 
@@ -456,22 +453,41 @@ async def main():
             if security_info and security_info.get('percentage', 0) >= 60:
                 good_security += 1
 
+            print()  # Пустая строка между сайтами
+
         else:
             port_info = result.get('port_scan', {})
-            port_details = f" | Ports: {port_info.get('open_count', 0)}/{port_info.get('total_scanned', 0)} открыто"
-            ssl_error = f" | SSL: {result.get('ssl_info', {}).get('error', 'N/A')}" if not result.get('ssl_info',
-                                                                                                      {}).get('has_ssl',
-                                                                                                              False) else ""
-            print(
-                f"❌ {ssl_status} {result['domain']} - Недоступен: {result.get('error', 'Unknown error')}{ssl_error}{port_details}")
-            total_errors += 1
+            error_msg = result.get('error', 'Unknown error')
 
-    print(f"\n📊 Итоги:")
+            print(f"❌ {ssl_status} {result['domain']} - Недоступен: {error_msg}")
+
+            # Выводим SSL информацию даже для недоступных сайтов
+            if ssl_info.get('has_ssl', False):
+                days = ssl_info.get('days_until_expiry', 0)
+                issuer = ssl_info.get('issuer', 'Unknown')
+                not_after = ssl_info.get('not_after', 'Unknown')
+                print(f"   📜 SSL сертификат: {issuer} (действует до: {not_after}, {days} дней осталось)")
+            else:
+                ssl_error = ssl_info.get('error', 'No SSL')
+                print(f"   ❌ SSL: {ssl_error}")
+
+            # Вывод открытых портов для недоступных сайтов
+            open_ports = port_info.get('open_ports', [])
+            if open_ports:
+                open_ports_str = ", ".join([f"{p['port']}({p['service']})" for p in open_ports[:3]])
+                print(f"   🔓 Открытые порты: {open_ports_str}")
+
+            total_errors += 1
+            print()  # Пустая строка между сайтами
+
+    print("=" * 80)
+    print("📊 СВОДКА:")
     print(f"   • {successful}/{len(domains)} сайтов доступно")
     print(f"   • {valid_ssl}/{len(domains)} имеют валидные SSL-сертификаты")
     print(f"   • {good_security}/{successful} сайтов с хорошей безопасностью headers")
     print(f"   • Найдено {total_open_ports} открытых портов")
     print(f"   • Произошло {total_errors} ошибок при сканировании")
+    print("=" * 80)
 
 
 if __name__ == "__main__":
@@ -481,4 +497,3 @@ if __name__ == "__main__":
         print("\n⚠️  Сканирование прервано пользователем")
     except Exception as e:
         print(f"💥 Критическая ошибка приложения: {e}")
-        logger.exception("Критическая ошибка:")
