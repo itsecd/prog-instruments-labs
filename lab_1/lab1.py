@@ -139,7 +139,9 @@ class Piece:
 
 
 # locked_pos is position that other pieces already in the grid
-def create_grid(locked_pos={}):
+def create_grid(locked_pos=None):
+    if locked_pos is None:
+        locked_pos = {}
     # Also contain block color that paint the empty block in grid too
     grid = [[(0, 0, 0) for _ in range(10)] for _ in range(20)]
     for y in range(len(grid)):
