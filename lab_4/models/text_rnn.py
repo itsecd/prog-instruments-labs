@@ -47,6 +47,7 @@ class TextRNN(nn.Module):
                 embedding_dim=embedding_dim
             )
 
+
         dropout_val = dropout if dropout > 0 and num_layers > 1 else 0
 
         # RNN layers
