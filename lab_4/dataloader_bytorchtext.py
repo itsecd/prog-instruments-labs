@@ -14,7 +14,8 @@ from torchtext import data
 
 
 def prepare_data(dataset_path, sent_col_name, label_col_name, debug=False):
-    """ 读出tsv中的句子和标签 """
+    """ Читает предложения и метки из TSV-файла, разделяет на обучающую и валидационную выборки
+    и сохраняет их в CSV-файлы """
     file_path = os.path.join(dataset_path, "train.tsv")
     data = pd.read_csv(file_path, sep="\t")
     if debug:
@@ -35,11 +36,13 @@ def prepare_data(dataset_path, sent_col_name, label_col_name, debug=False):
 
 
 def dataset2dataloader(dataset_path="../dataset/kaggle-movie-review", sent_col_name="Phrase", label_col_name="Sentiment", batch_size=32, vec_file_path="./.vector_cache/glove.6B.50d.txt", debug=False):
+    """
+    Создает загрузчики данных для обучения и валидации с использованием torchtext """
     train_file_name, val_file_name = prepare_data(dataset_path, sent_col_name, label_col_name, debug=debug)
     spacy_en = spacy.load('en_core_web_sm')
 
     def tokenizer(text):
-        """ 定义分词操作 """
+        """ Функция токенизации текста с использованием spaCy """
         return [tok.text for tok in spacy_en.tokenizer(text)]
 
     # 这里只是定义了数据格式

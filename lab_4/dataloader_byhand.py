@@ -15,7 +15,7 @@ from torch.utils.data import Dataset, DataLoader
 
 
 def prepare_data(dataset_path, sent_col_name, label_col_name):
-    """ 读出tsv中的句子和标签 """
+    """ Читает предложения и метки из TSV-файла """
     file_path = os.path.join(dataset_path, "train.tsv")
     data = pd.read_csv(file_path, sep="\t")
     X = data[sent_col_name].values
@@ -24,7 +24,7 @@ def prepare_data(dataset_path, sent_col_name, label_col_name):
 
 
 class Language:
-    """ 根据句子列表建立词典并将单词列表转换为数值型表示 """
+    """ Класс для создания словаря и преобразования текстов в числовые представления """
     def __init__(self):
         self.word2id = {}
         self.id2word = {}
@@ -48,7 +48,7 @@ class Language:
 
 
 class ClsDataset(Dataset):
-    """ 文本分类数据集 """
+    """ Датасет для классификации текстов """
     def __init__(self, sents, labels):
         self.sents = sents
         self.labels = labels
@@ -61,7 +61,7 @@ class ClsDataset(Dataset):
 
 
 def collate_fn(batch_data):
-    """ 自定义一个batch里面的数据的组织方式 """
+    """ Функция для организации данных в батчах с дополнением до одинаковой длины """
     batch_data.sort(key=lambda data_pair: len(data_pair[0]), reverse=True)
 
     sents, labels = zip(*batch_data)
@@ -73,8 +73,8 @@ def collate_fn(batch_data):
 
 
 def get_wordvec(word2id, vec_file_path, vec_dim=50):
-    """ 读出txt文件的预训练词向量 """
-    print("开始加载词向量")
+    """  Загружает предобученные векторные представления слов из текстового файла """
+    print("Начало загрузки векторных представлений слов")
     word_vectors = torch.nn.init.xavier_uniform_(torch.empty(len(word2id), vec_dim))
     word_vectors[0, :] = 0  # <pad>
     found = 0
@@ -87,11 +87,13 @@ def get_wordvec(word2id, vec_file_path, vec_dim=50):
                 word_vectors[word2id[splited[0]]] = torch.tensor(list(map(lambda x: float(x), splited[1:])))
             if found == len(word2id) - 1:  # 允许<unk>找不到
                 break
-    print("总共 %d个词，其中%d个找到了对应的词向量" % (len(word2id), found))
+    print("Всего слов в словаре: %d, из них найдено векторных представлений: %d" % (len(word2id), found))
     return word_vectors.float()
 
 
 def make_dataloader(dataset_path="../dataset/kaggle-movie-review", sent_col_name="Phrase", label_col_name="Sentiment", batch_size=32, vec_file_path="./.vector_cache/glove.6B.50d.txt", debug=False):
+    """
+    Создает загрузчики данных для обучения и валидации модели классификации текстов """
     # X, y = prepare_datapairs(dataset_path="../dataset/imdb", sent_col_name="review", label_col_name="sentiment")
     X, y = prepare_data(dataset_path=dataset_path, sent_col_name=sent_col_name, label_col_name=label_col_name)
 
