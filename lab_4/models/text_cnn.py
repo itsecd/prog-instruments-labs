@@ -53,38 +53,29 @@ class TextCNN(nn.Module):
         self.dropout = nn.Dropout(dropout)
         self.classifier = nn.Linear(len(kernel_size) * kernel_num, num_of_class)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # Embedding layer
-        embed_out = self.embed(x)  # (batch_size, seq_len, embedding_dim)
-        embed_out = embed_out.unsqueeze(1)  # (batch_size, 1, seq_len, embedding_dim)
+    def forward(self, x: torch.Tensor):
 
-        # Convolution and pooling
-        conv_outputs = []
-        for conv in self.convs:
-            # Convolution
-            conv_out = F.relu(conv(embed_out))  # (batch_size, kernel_num, seq_len-K+1, 1)
-            conv_out = conv_out.squeeze(3)  # (batch_size, kernel_num, seq_len-K+1)
+        # Преобразуем индексы слов в вектора и добавляем размер канала
+        x_emb = self.embed(x).unsqueeze(1)  # (batch, 1, seq_len, emb_dim)
 
-            # Max pooling over time
-            pool_out = F.max_pool1d(conv_out, conv_out.size(2))  # (batch_size, kernel_num, 1)
-            pool_out = pool_out.squeeze(2)  # (batch_size, kernel_num)
+        # Применяем свертку + ReLU + max pooling для каждого фильтра
+        conv_results = [
+            F.max_pool1d(F.relu(conv(x_emb)).squeeze(3), kernel_size=F.relu(conv(x_emb)).squeeze(3).size(2)).squeeze(2)
+            for conv in self.convs
+        ]
 
-            conv_outputs.append(pool_out)
+        # Объединяем результаты всех фильтров
+        features = torch.cat(conv_results, dim=1)
+        features = self.dropout(features)
 
-        # Concatenate and classify
-        concatenated = torch.cat(conv_outputs, 1)  # (batch_size, len(kerner_size)*kernel_num)
-        concatenated = self.dropout(concatenated)
-        logits = self.classifier(concatenated)
-
-        return logits
-
+        # Классификация
+        return self.classifier(features)
 
     def __repr__(self):
         return f"{self.__class__.__name__}(emb_dim={self.embedding_dim}, hidden={self.hidden_size}, num_classes={self.num_of_class})"
 
 
 if __name__ == "__main__":
-    import torch
     model = TextCNN(vocab_size=100, embedding_dim=50, num_of_class=5)
     x = torch.randint(0, 100, (8, 20))
     print(model(x).shape)

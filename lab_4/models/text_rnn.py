@@ -117,7 +117,6 @@ class TextRNN(nn.Module):
 
 
 if __name__ == "__main__":
-    import torch
     model = TextRNN(vocab_size=200, embedding_dim=50, hidden_size=128, num_of_class=5)
     x = torch.randint(0, 200, (8, 30))
     print(model(x).shape)
