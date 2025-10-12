@@ -99,3 +99,80 @@ def debug_dimensions(ds):
     print(f"  px shape: {ds.px.shape} [X]")
     print(f"  pxy shape: {ds.pxy.shape} [X, Y]")
     print(f"  X: {ds.X}, Y: {ds.Y}")
+
+
+def fast_kl(p, q):
+    """
+    Векторизованное вычисление KL дивергенции KL(p||q)
+    p, q: распределения одинаковой размерности
+    """
+    # Маска для избежания деления на ноль и log(0)
+    mask = (p > 0) & (q > 0)
+
+    if np.any(~mask):
+        # Если есть нулевые вероятности, обрабатываем аккуратно
+        result = np.zeros_like(p)
+        result[mask] = p[mask] * np.log2(p[mask] / q[mask])
+        # p=0 -> 0, q=0 -> inf (если p>0)
+        result[(p > 0) & (q == 0)] = np.inf
+        return np.sum(result)
+    else:
+        # Все вероятности > 0 - быстрая векторизованная версия
+        return np.sum(p * np.log2(p / q))
+
+
+def fast_kl_matrix(P, Q):
+    """
+    Векторизованное вычисление KL дивергенции для матриц
+    P: [M, N], Q: [M, L] -> результат: [N, L]
+    """
+    if P.ndim == 1 and Q.ndim == 1:
+        return fast_kl(P, Q)
+    elif P.ndim == 1:
+        # P - вектор, Q - матрица
+        results = np.zeros(Q.shape[1])
+        for i in range(Q.shape[1]):
+            results[i] = fast_kl(P, Q[:, i])
+        return results
+    elif Q.ndim == 1:
+        # P - матрица, Q - вектор
+        results = np.zeros(P.shape[1])
+        for i in range(P.shape[1]):
+            results[i] = fast_kl(P[:, i], Q)
+        return results
+    else:
+        # Обе матрицы
+        N = P.shape[1]
+        L = Q.shape[1]
+        results = np.zeros((N, L))
+        for i in range(N):
+            for j in range(L):
+                results[i, j] = fast_kl(P[:, i], Q[:, j])
+        return results
+
+
+def add_kl_optimizations():
+    """Добавляет оптимизированные KL методы в IB модуль"""
+    # Импортируем внутри функции чтобы избежать циклических импортов
+    import IB
+
+    # Сохраняем оригинальные функции
+    IB._original_kl = IB.kl
+    IB._original_kl_single = IB.kl_single
+
+    # Заменяем на оптимизированные версии
+    IB.kl_single = fast_kl
+    IB.kl = fast_kl_matrix
+
+    print("✅ Optimized KL methods added")
+
+
+# Альтернативный подход - прямой monkey patch
+def apply_kl_optimizations_directly():
+    """Применяет оптимизации KL напрямую (простой способ)"""
+    import IB
+
+    # Просто заменяем функции
+    IB.kl_single = fast_kl
+    IB.kl = fast_kl_matrix
+    print("✅ KL optimizations applied directly")
