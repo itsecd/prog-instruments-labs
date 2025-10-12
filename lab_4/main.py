@@ -16,6 +16,16 @@ from dataloader_bytorchtext import dataset2dataloader
 from dataloader_byhand import make_dataloader
 
 
+def save_model(model, path='model.pth'):
+    torch.save(model.state_dict(), path)
+
+
+def load_model(model_class, path='model.pth', *args, **kwargs):
+    model = model_class(*args, **kwargs)
+    model.load_state_dict(torch.load(path))
+    return model
+
+
 def train_model(model, train_iter, val_iter, optimizer, loss_fn, epochs, load_data_by_torchtext=True):
     for epoch in range(epochs):
         epoch_start = time.time()
@@ -130,3 +140,6 @@ if __name__ == "__main__":
     loss_fun = torch.nn.CrossEntropyLoss()
 
     model = train_model(model, train_iter, val_iter, optimizer, loss_fun, epoch_num, load_data_by_torchtext)
+
+    save_model(model, path=f"{args.model}_trained.pth")
+    print(f"Модель {args.model.upper()} сохранена.")
