@@ -5,14 +5,14 @@ import pygame
 pygame.font.init()
 
 # Constant
-s_width = 800
-s_height = 700
-block_size = 30
-play_width = 300  # mean 10 block
-play_height = 600  # mean 20 block
+S_WIDTH = 800
+S_HEIGHT = 700
+BLOCK_SIZE = 30
+PLAY_WIDTH = 300  # mean 10 block
+PLAY_HEIGHT = 600  # mean 20 block
 
-top_left_x = (s_width - play_width) // 2
-top_left_y = s_height - play_height
+TOP_LEFT_X = (S_WIDTH - PLAY_WIDTH) // 2
+TOP_LEFT_Y = S_HEIGHT - PLAY_HEIGHT
 
 # Shape Format
 S = [['.....',
@@ -187,16 +187,16 @@ def draw_text_middle(surface, text, size, color):
     font = pygame.font.SysFont('comicsans', size, bold=True)
     label = font.render(text, True, color)
 
-    surface.blit(label, (top_left_x + play_width / 2 - label.get_width() / 2, top_left_y + play_height / 2 - label.get_height() / 2))
+    surface.blit(label, (TOP_LEFT_X + PLAY_WIDTH / 2 - label.get_width() / 2, TOP_LEFT_Y + PLAY_HEIGHT / 2 - label.get_height() / 2))
 
 
 def draw_grid(surface, grid):
     for i in range(len(grid)):
         # draw parallel lines with axis x
-        pygame.draw.line(surface, (128, 128, 128), (top_left_x, top_left_y + i * block_size), (top_left_x + play_width, top_left_y + i * block_size))
+        pygame.draw.line(surface, (128, 128, 128), (TOP_LEFT_X, TOP_LEFT_Y + i * BLOCK_SIZE), (TOP_LEFT_X + PLAY_WIDTH, TOP_LEFT_Y + i * BLOCK_SIZE))
         for j in range(len(grid[i])):
             # draw parallel lines with axis y
-            pygame.draw.line(surface, (128, 128, 128), (top_left_x + j * block_size, top_left_y), (top_left_x + j * block_size, top_left_y + play_height))
+            pygame.draw.line(surface, (128, 128, 128), (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y), (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + PLAY_HEIGHT))
 
 
 def clear_rows(grid, locked_positions):
@@ -228,8 +228,8 @@ def clear_rows(grid, locked_positions):
 def draw_next_shape(piece, surface):
     font = pygame.font.SysFont('comicsans', 30)
     label = font.render('Next Shape', True, (255, 255, 255))
-    sx = top_left_x + play_width + 50
-    sy = top_left_y + play_height // 3
+    sx = TOP_LEFT_X + PLAY_WIDTH + 50
+    sy = TOP_LEFT_Y + PLAY_HEIGHT // 3
 
     format_shape = piece.shape[piece.rotation % len(piece.shape)]
 
@@ -237,7 +237,7 @@ def draw_next_shape(piece, surface):
         row = list(line)
         for j, column in enumerate(row):
             if column == '0':
-                pygame.draw.rect(surface, piece.color, (sx + j * block_size, sy + i * block_size, block_size, block_size), 0)
+                pygame.draw.rect(surface, piece.color, (sx + j * BLOCK_SIZE, sy + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
 
     surface.blit(label, (sx + 10, sy - 30))
 
@@ -265,26 +265,26 @@ def draw_window(surface, grid, score=0, high_score=0):
     label = font.render('Tetris', True, (255, 255, 255))
 
     # draw label in top center of play screen
-    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), 30))
+    surface.blit(label, (TOP_LEFT_X + PLAY_WIDTH / 2 - (label.get_width() / 2), 30))
 
     # draw score
     font = pygame.font.SysFont('comicsans', 30)
     label = font.render('Score: ' + str(score), True, (255, 255, 255))
-    sx = top_left_x + play_width + 50
-    sy = top_left_y + play_height // 3
+    sx = TOP_LEFT_X + PLAY_WIDTH + 50
+    sy = TOP_LEFT_Y + PLAY_HEIGHT // 3
     surface.blit(label, (sx + 20, sy + 160))
 
     # draw high score
     label = font.render('High Score: ' + str(high_score), True, (255, 255, 255))
-    surface.blit(label, (top_left_x - 200, top_left_y))
+    surface.blit(label, (TOP_LEFT_X - 200, TOP_LEFT_Y))
 
     # draw play screen
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            pygame.draw.rect(surface, grid[i][j], (top_left_x + j * block_size, top_left_y + i * block_size, block_size, block_size), 0)
+            pygame.draw.rect(surface, grid[i][j], (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
 
     # draw border of play screen
-    pygame.draw.rect(surface, (255, 0, 0), (top_left_x, top_left_y, play_width, play_height), 5)
+    pygame.draw.rect(surface, (255, 0, 0), (TOP_LEFT_X, TOP_LEFT_Y, PLAY_WIDTH, PLAY_HEIGHT), 5)
 
     # draw grid
     draw_grid(surface, grid)
@@ -394,6 +394,6 @@ def main_menu(surface):
     pygame.display.quit()
 
 
-window = pygame.display.set_mode((s_width, s_height))
+window = pygame.display.set_mode((S_WIDTH, S_HEIGHT))
 pygame.display.set_caption('Tetris')
 main_menu(window)
