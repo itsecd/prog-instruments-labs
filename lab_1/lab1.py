@@ -8,13 +8,13 @@ pygame.font.init()
 S_WIDTH = 800
 S_HEIGHT = 700
 BLOCK_SIZE = 30
-PLAY_WIDTH = 300  # mean 10 block
-PLAY_HEIGHT = 600  # mean 20 block
+PLAY_WIDTH = 300  # Mean 10 block
+PLAY_HEIGHT = 600  # Mean 20 block
 
 TOP_LEFT_X = (S_WIDTH - PLAY_WIDTH) // 2
 TOP_LEFT_Y = S_HEIGHT - PLAY_HEIGHT
 
-# Shape Format
+# Shape format
 S = [['.....',
       '.....',
       '..00.',
@@ -132,11 +132,13 @@ class Piece:
 
 # locked_pos is position that other pieces already in the grid
 def create_grid(locked_pos={}):
-    grid = [[(0, 0, 0) for _ in range(10)] for _ in range(20)]  # also contain block color that paint the empty block in grid too
+    # Also contain block color that paint the empty block in grid too
+    grid = [[(0, 0, 0) for _ in range(10)] for _ in range(20)]
     for y in range(len(grid)):
         for x in range(len(grid[y])):
             if (x, y) in locked_pos:
-                grid[y][x] = locked_pos[(x, y)]  # update color of block that other pieces already in
+                # Update color of block that other pieces already in
+                grid[y][x] = locked_pos[(x, y)]
     return grid
 
 
@@ -157,9 +159,9 @@ def convert_shape_format(piece):
 
 
 def valid_space(piece, grid):
-    # only accept if that position is empty (0, 0, 0)
-    accepted_pos = [[(j, i) for j in range(10) if grid[i][j] == (0, 0, 0)] for i in range(20)]  # [[(0, 0), (1, 0), (2, 0)...], [(0, 1), (1, 1), (2, 1)...]...]
-    accepted_pos = [j for sub in accepted_pos for j in sub]  # [(0, 0), (1, 0), (2, 0), ..., (0, 1), (1, 1), (2, 1), ...]
+    # Only accept if that position is empty (0, 0, 0)
+    accepted_pos = [[(j, i) for j in range(10) if grid[i][j] == (0, 0, 0)] for i in range(20)]
+    accepted_pos = [j for sub in accepted_pos for j in sub]
 
     formatted_shape = convert_shape_format(piece)
 
@@ -192,10 +194,10 @@ def draw_text_middle(surface, text, size, color):
 
 def draw_grid(surface, grid):
     for i in range(len(grid)):
-        # draw parallel lines with axis x
+        # Draw parallel lines with axis x
         pygame.draw.line(surface, (128, 128, 128), (TOP_LEFT_X, TOP_LEFT_Y + i * BLOCK_SIZE), (TOP_LEFT_X + PLAY_WIDTH, TOP_LEFT_Y + i * BLOCK_SIZE))
         for j in range(len(grid[i])):
-            # draw parallel lines with axis y
+            # Draw parallel lines with axis y
             pygame.draw.line(surface, (128, 128, 128), (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y), (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + PLAY_HEIGHT))
 
 
@@ -214,7 +216,8 @@ def clear_rows(grid, locked_positions):
                     continue
 
     if increment > 0:
-        # sorted(list(locked_positions), key=lambda pos: pos[1]) sort locked_positions by y ascending
+        # Sorted(list(locked_positions), key=lambda pos: pos[1])
+        # sort locked_positions by y ascending
         # and [::-1] for reversing from below to above
         for key in sorted(list(locked_positions), key=lambda pos: pos[1])[::-1]:
             x, y = key
@@ -264,29 +267,29 @@ def draw_window(surface, grid, score=0, high_score=0):
     font = pygame.font.SysFont('comicsans', 60)
     label = font.render('Tetris', True, (255, 255, 255))
 
-    # draw label in top center of play screen
+    # Draw label in top center of play screen
     surface.blit(label, (TOP_LEFT_X + PLAY_WIDTH / 2 - (label.get_width() / 2), 30))
 
-    # draw score
+    # Draw score
     font = pygame.font.SysFont('comicsans', 30)
     label = font.render('Score: ' + str(score), True, (255, 255, 255))
     sx = TOP_LEFT_X + PLAY_WIDTH + 50
     sy = TOP_LEFT_Y + PLAY_HEIGHT // 3
     surface.blit(label, (sx + 20, sy + 160))
 
-    # draw high score
+    # Draw high score
     label = font.render('High Score: ' + str(high_score), True, (255, 255, 255))
     surface.blit(label, (TOP_LEFT_X - 200, TOP_LEFT_Y))
 
-    # draw play screen
+    # Draw play screen
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             pygame.draw.rect(surface, grid[i][j], (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + i * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE), 0)
 
-    # draw border of play screen
+    # Draw border of play screen
     pygame.draw.rect(surface, (255, 0, 0), (TOP_LEFT_X, TOP_LEFT_Y, PLAY_WIDTH, PLAY_HEIGHT), 5)
 
-    # draw grid
+    # Draw grid
     draw_grid(surface, grid)
 
 
@@ -326,7 +329,8 @@ def main(surface):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-                # if we call pygame.display.quit() here, the surface which drawing function use down there will be dead display
+                # If we call pygame.display.quit() here, the surface
+                # which drawing function use down there will be dead display
                 # and it will throw exception
                 is_quit = True
 
@@ -349,7 +353,7 @@ def main(surface):
                         current_piece.rotation -= 1
 
         shape_pos = convert_shape_format(current_piece)
-        # put color of shape into grid
+        # Put color of shape into grid
         for i in range(len(shape_pos)):
             x, y = shape_pos[i]
             if y > -1:
@@ -364,7 +368,7 @@ def main(surface):
             change_piece = False
             score += clear_rows(grid, locked_positions) * 10
 
-        # window must be drawn first
+        # Window must be drawn first
         draw_window(surface, grid, score, high_score)
         draw_next_shape(next_piece, surface)
         pygame.display.update()
@@ -376,7 +380,9 @@ def main(surface):
             run = False
             update_score(score)
 
-    # we couldn't call pygame.display.quit() here too because same thing happen in while loop of main_menu
+    # We couldn't call pygame.display.quit()
+    # here too because same thing happen
+    # in while loop of main_menu
     return is_quit
 
 
