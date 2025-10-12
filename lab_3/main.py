@@ -1,6 +1,6 @@
+from utils.checksum import calculate_checksum
 from utils.file_manager import read_csv, read_json, write_json
 from utils.pattern_library import find_error_rows
-from utils.checksum import calculate_checksum
 
 
 def main():

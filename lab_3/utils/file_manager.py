@@ -1,6 +1,7 @@
 import json
-from pandas import DataFrame
+
 import pandas as pd
+from pandas import DataFrame
 
 
 def read_csv(file_path: str, encoding: str = 'utf-16', delimiter: str = ';') -> DataFrame:

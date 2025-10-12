@@ -1,6 +1,7 @@
 import re
+from typing import Dict, List
+
 from pandas import DataFrame
-from typing import List, Dict
 
 
 def validate_by_pattern(data: str, pattern: str) -> bool:
