@@ -19,16 +19,16 @@ class TextCNN(nn.Module):
             num_of_class: int,
             embedding_vectors: Optional[torch.Tensor] = None,
             kernel_num: int = 100,
-            kerner_size: List[int] = None,
+            kernel_size: List[int] = None,
             dropout: float = 0.5
     ):
         super(TextCNN, self).__init__()
 
-        if kerner_size is None:
-            kerner_size = [3, 4, 5]
+        if kernel_size is None:
+            kernel_size = [3, 4, 5]
 
         self.kernel_num = kernel_num
-        self.kerner_size = kerner_size
+        self.kernel_size = kernel_size
 
         # Embedding layer
         if embedding_vectors is not None:
@@ -46,12 +46,12 @@ class TextCNN(nn.Module):
         # Convolutional layers
         self.convs = nn.ModuleList([
             nn.Conv2d(1, kernel_num, (K, embedding_dim))
-            for K in kerner_size
+            for K in kernel_size
         ])
 
         # Regularization and output
         self.dropout = nn.Dropout(dropout)
-        self.classifier = nn.Linear(len(kerner_size) * kernel_num, num_of_class)
+        self.classifier = nn.Linear(len(kernel_size) * kernel_num, num_of_class)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # Embedding layer
