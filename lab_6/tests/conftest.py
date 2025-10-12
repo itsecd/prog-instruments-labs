@@ -4,10 +4,13 @@ import os
 from io import BytesIO
 from unittest.mock import MagicMock
 
-# Добавляем путь к проекту для импорта
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# Добавляем корневую директорию в путь Python
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir)
 
-from ..app import app as flask_app
+# Теперь импортируем АБСОЛЮТНО
+from app import app as flask_app
 
 
 @pytest.fixture
@@ -15,7 +18,17 @@ def app():
     """Фикстура Flask приложения"""
     flask_app.config['TESTING'] = True
     flask_app.config['WTF_CSRF_ENABLED'] = False
-    return flask_app
+    flask_app.config['UPLOAD_FOLDER'] = 'temp_uploads_test'
+
+    # Создаем тестовую директорию для загрузок
+    os.makedirs(flask_app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+    yield flask_app
+
+    # Очистка после тестов
+    import shutil
+    if os.path.exists(flask_app.config['UPLOAD_FOLDER']):
+        shutil.rmtree(flask_app.config['UPLOAD_FOLDER'])
 
 
 @pytest.fixture

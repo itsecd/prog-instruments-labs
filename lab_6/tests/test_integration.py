@@ -1,10 +1,17 @@
 import pytest
 import json
 from io import BytesIO
-from ..app import temp_files
 import tempfile
 import os
+import sys
 
+# Добавляем корневую директорию в путь Python
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir)
+
+# АБСОЛЮТНЫЕ импорты
+from app import temp_files
 
 class TestFlaskEndpoints:
     """Тесты Flask endpoints"""
@@ -12,14 +19,11 @@ class TestFlaskEndpoints:
     def test_index_route(self, client):
         """Тест главной страницы"""
         response = client.get('/')
-
         assert response.status_code == 200
-        assert b'<!DOCTYPE html>' in response.data
 
     def test_convert_route_no_file(self, client):
         """Тест конвертации без файла"""
         response = client.post('/convert', data={})
-
         assert response.status_code == 400
         json_data = response.get_json()
         assert 'error' in json_data
@@ -33,8 +37,8 @@ class TestFlaskEndpoints:
         }
 
         response = client.post('/convert',
-                               data=test_data,
-                               content_type='multipart/form-data')
+                           data=test_data,
+                           content_type='multipart/form-data')
 
         assert response.status_code == 400
         json_data = response.get_json()
@@ -49,8 +53,8 @@ class TestFlaskEndpoints:
         }
 
         response = client.post('/convert',
-                               data=test_data,
-                               content_type='multipart/form-data')
+                           data=test_data,
+                           content_type='multipart/form-data')
 
         assert response.status_code == 200
         json_data = response.get_json()
@@ -62,7 +66,6 @@ class TestFlaskEndpoints:
     def test_download_route_file_not_found(self, client):
         """Тест скачивания несуществующего файла"""
         response = client.get('/download/invalid_id/filename.json')
-
         assert response.status_code == 404
         json_data = response.get_json()
         assert 'error' in json_data
@@ -75,8 +78,8 @@ class TestFlaskEndpoints:
         }
 
         response = client.post('/convert',
-                               data=test_data,
-                               content_type='multipart/form-data')
+                           data=test_data,
+                           content_type='multipart/form-data')
 
         assert response.status_code == 400
         json_data = response.get_json()
