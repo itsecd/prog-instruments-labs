@@ -117,8 +117,8 @@ T = [['.....',
       '..0..',
       '.....']]
 
-shapes = [S, Z, I, O, J, L, T]
-shape_colors = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
+SHAPES = [S, Z, I, O, J, L, T]
+SHAPE_COLORS = [(0, 255, 0), (255, 0, 0), (0, 255, 255), (255, 255, 0), (255, 165, 0), (0, 0, 255), (128, 0, 128)]
 
 
 class Piece:
@@ -126,7 +126,7 @@ class Piece:
         self.x = x
         self.y = y
         self.shape = shape
-        self.color = shape_colors[shapes.index(shape)]
+        self.color = SHAPE_COLORS[SHAPES.index(shape)]
         self.rotation = 0
 
 
@@ -180,7 +180,7 @@ def check_lost(positions):
 
 
 def get_shape():
-    return Piece(5, 0, random.choice(shapes))
+    return Piece(5, 0, random.choice(SHAPES))
 
 
 def draw_text_middle(surface, text, size, color):
