@@ -442,6 +442,10 @@ def main_menu(surface):
     pygame.display.quit()
 
 
-window = pygame.display.set_mode((S_WIDTH, S_HEIGHT))
-pygame.display.set_caption('Tetris')
-main_menu(window)
+def run_game():
+    window = pygame.display.set_mode((S_WIDTH, S_HEIGHT))
+    pygame.display.set_caption('Tetris')
+    main_menu(window)
+
+if __name__ == "__main__":
+    run_game()
