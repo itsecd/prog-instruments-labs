@@ -187,7 +187,7 @@ class Dino():
                 if pygame.mixer.get_init() != None:
                     check_point_sound.play()
 
-        self.counter = (self.counter + 1)
+        self.counter += 1
 
 class Cactus(pygame.sprite.Sprite):
     def __init__(self, speed=5, sx=-1, sy=-1):
@@ -404,7 +404,7 @@ def gameplay():
                         if event.key == pygame.K_DOWN:
                             gamer_dino.ducking = False
             for c in cactusan:
-                c.movement[0] = -1*gp
+                c.movement[0] = -1 * gp
                 if pygame.sprite.collide_mask(gamer_dino, c):
                     gamer_dino.dead = True
                     if pygame.mixer.get_init() != None:
@@ -468,7 +468,7 @@ def gameplay():
                 new_grnd.speed -= 1
                 gp += 1
 
-            counter = (counter + 1)
+            counter += 1
 
         if g_exit:
             break
@@ -509,4 +509,5 @@ def main():
     if not is_game_quit:
         gameplay()
 
-main()
+if __name__ == "__main__":
+    main()
