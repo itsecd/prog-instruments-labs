@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 """
-Реализация модели TextRNN.
+Реализация модели TextRNN
 """
 
 import torch
@@ -10,6 +10,9 @@ from typing import Optional
 
 
 class TextRNN(nn.Module):
+    """
+    Класс TextRNN для классификации текстов
+    """
 
     def __init__(
             self,
@@ -34,7 +37,7 @@ class TextRNN(nn.Module):
         self.num_layers = num_layers
         self.num_directions = 2 if bidirectional else 1
 
-        # Embedding layer
+        # Встраиваемый слой
         if weights is not None:
             self.embed = nn.Embedding(
                 num_embeddings=vocab_size,
@@ -49,7 +52,7 @@ class TextRNN(nn.Module):
 
         dropout_val = dropout if dropout > 0 and num_layers > 1 else 0
 
-        # RNN layers
+        # RNN слои
         if rnn_type == "RNN":
             self.rnn = nn.RNN(
                 input_size=embedding_dim,
@@ -71,20 +74,25 @@ class TextRNN(nn.Module):
         else:
             raise ValueError(f"Неподдерживаемый тип RNN: {rnn_type}")
 
-        # Classifier
+        # Классификатор
         self.dropout = nn.Dropout(dropout)
         self.classifier = nn.Linear(
             hidden_size * self.num_directions,
             num_of_class
         )
 
-    def forward(self, input_sents):
+    def forward(self, input_sents: torch.Tensor) -> torch.Tensor:
+        """
+        Прямой проход модели
+        :param input_sents: Тензор индексов слов с размерностью (batch_size, seq_len)
+        :return: Логиты для каждого класса
+        """
         batch_size, seq_len = input_sents.shape
 
-        # Embedding layer
+        # Встраиваемый слой
         embed_out = self.embed(input_sents)  # (batch_size, seq_len, embedding_dim)
 
-        # RNN layer
+        # RNN слой
         if self.rnn_type == "RNN":
             h0 = torch.zeros(
                 self.num_layers * self.num_directions,
@@ -105,22 +113,24 @@ class TextRNN(nn.Module):
             )
             _, (hn, _) = self.rnn(embed_out, (h0, c0))
 
-        # Handle bidirectional output
+        # Обработчик двунаправленного вывода
         if self.bidirectional:
             hn = torch.cat([hn[-2], hn[-1]], dim=-1)
         else:
             hn = hn[-1]
 
-        # Classification
+        # Классификатор
         hn = self.dropout(hn)
         logits = self.classifier(hn)
         return logits
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(emb_dim={self.embedding_dim}, hidden={self.hidden_size}, num_classes={self.num_of_class})"
+        return (f"{self.__class__.__name__}(emb_dim={self.embedding_dim}, "
+                f"hidden={self.hidden_size}, num_classes={self.num_of_class})")
 
 
 if __name__ == "__main__":
-    model = TextRNN(vocab_size=200, embedding_dim=50, hidden_size=128, num_of_class=5)
+    model = TextRNN(vocab_size=200, embedding_dim=50,
+                    hidden_size=128, num_of_class=5)
     x = torch.randint(0, 200, (8, 30))
     print(model(x).shape)

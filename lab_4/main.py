@@ -1,32 +1,66 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 """
-Главный модуль запуска обучения моделей TextRNN и TextCNN.
-Created on 2020/4/30 8:33
-@author: phil
+Главный модуль запуска обучения моделей TextRNN и TextCNN
 """
 
 import argparse
 import time
-from torch import optim
-import torch
+from typing import Tuple, Optional
 import numpy as np
+import torch
+from torch import optim
 from models import TextRNN, TextCNN
 from dataloader_bytorchtext import dataset2dataloader
 from dataloader_byhand import make_dataloader
 
 
-def save_model(model, path='model.pth'):
+def save_model(model: torch.nn.Module, path: str = 'model.pth') -> None:
+    """
+    Сохраняет веса модели в файл
+
+    :param model: Объект модели PyTorch
+    :param path: Путь для сохранения модели
+    """
     torch.save(model.state_dict(), path)
 
 
-def load_model(model_class, path='model.pth', *args, **kwargs):
+def load_model(model_class, path: str = 'model.pth', *args, **kwargs) -> torch.nn.Module:
+    """
+    Загружает веса модели из файла и возвращает объект модели.
+
+    :param model_class: Класс модели (TextCNN или TextRNN)
+    :param path: Путь к файлу с сохраненными весами
+    :param args: Аргументы конструктора модели
+    :param kwargs: Именованные аргументы конструктора модели
+    :return: Объект модели с загруженными весами
+    """
     model = model_class(*args, **kwargs)
     model.load_state_dict(torch.load(path))
     return model
 
 
-def train_model(model, train_iter, val_iter, optimizer, loss_fn, epochs, load_data_by_torchtext=True):
+def train_model(
+    model: torch.nn.Module,
+    train_iter,
+    val_iter,
+    optimizer: torch.optim.Optimizer,
+    loss_fn,
+    epochs: int,
+    load_data_by_torchtext: bool = True
+) -> torch.nn.Module:
+    """
+    Обучает модель на тренировочной выборке и оценивает на валидационной
+
+    :param model: Объект модели PyTorch
+    :param train_iter: Итератор обучающей выборки
+    :param val_iter: Итератор валидационной выборки
+    :param optimizer: Оптимизатор
+    :param loss_fn: Функция потерь
+    :param epochs: Количество эпох
+    :param load_data_by_torchtext: Использовать ли torchtext для загрузки данных
+    :return: Обученная модель
+    """
     for epoch in range(epochs):
         epoch_start = time.time()
         model.train()
@@ -94,10 +128,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Text Classification with CNN/RNN")
     parser.add_argument("--model", choices=["cnn", "rnn", "lstm"], default="cnn",
                         help="Тип модели для обучения (cnn, rnn или lstm)")
-    parser.add_argument("--epochs", type=int, default=500, help="Количество этапов обучения")
-    parser.add_argument("--lr", type=float, default=0.001, help="Скорость обучения")
-    parser.add_argument("--batch-size", type=int, default=100, help="Размер батча")
-    parser.add_argument("--torchtext", action="store_true", help="Использовать torchtext для загрузки данных")
+    parser.add_argument("--epochs",
+                        type=int, default=500, help="Количество этапов обучения")
+    parser.add_argument("--lr",
+                        type=float, default=0.001, help="Скорость обучения")
+    parser.add_argument("--batch-size",
+                        type=int, default=100, help="Размер батча")
+    parser.add_argument("--torchtext",
+                        action="store_true", help="Использовать torchtext для загрузки данных")
     args = parser.parse_args()
 
     learning_rate = args.lr
@@ -106,9 +144,11 @@ if __name__ == "__main__":
     load_data_by_torchtext = args.torchtext
 
     if load_data_by_torchtext:
-        train_iter, val_iter, word_vectors = dataset2dataloader(batch_size=args.batch_size, debug=True)
+        train_iter, val_iter, word_vectors = (
+            dataset2dataloader(batch_size=args.batch_size, debug=True))
     else:
-        train_iter, val_iter, word_vectors, X_lang = make_dataloader(batch_size=args.batch_size, debug=True)
+        train_iter, val_iter, word_vectors, X_lang = (
+            make_dataloader(batch_size=args.batch_size, debug=True))
 
     if args.model == "rnn":
         model = TextRNN(
@@ -139,7 +179,8 @@ if __name__ == "__main__":
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     loss_fun = torch.nn.CrossEntropyLoss()
 
-    model = train_model(model, train_iter, val_iter, optimizer, loss_fun, epoch_num, load_data_by_torchtext)
+    model = train_model(model, train_iter, val_iter,
+                        optimizer, loss_fun, epoch_num, load_data_by_torchtext)
 
     save_model(model, path=f"{args.model}_trained.pth")
     print(f"Модель {args.model.upper()} сохранена.")
