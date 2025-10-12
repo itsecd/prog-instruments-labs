@@ -148,7 +148,7 @@ class Piece:
 
 
 # locked_pos is position that other pieces already in the grid
-def create_grid(locked_pos=None):
+def create_grid(locked_pos: dict = None) -> list:
     """
     Create a 20x10 Tetris grid with locked positions.
     :param locked_pos: Positions already occupied by pieces.
@@ -166,7 +166,7 @@ def create_grid(locked_pos=None):
     return grid
 
 
-def convert_shape_format(piece):
+def convert_shape_format(piece: Piece) -> list:
     """
     Convert a piece's current rotation to grid positions.
     :param piece: Tetris piece.
@@ -187,7 +187,7 @@ def convert_shape_format(piece):
     return positions
 
 
-def valid_space(piece, grid):
+def valid_space(piece: Piece, grid: list) -> bool:
     """
     Check if a piece is in a valid space on the grid.
     :param piece: Tetris piece.
@@ -210,7 +210,7 @@ def valid_space(piece, grid):
     return True
 
 
-def check_lost(positions):
+def check_lost(positions: dict) -> bool:
     """
     Check if the player has lost.
     :param positions: Locked positions on the grid
@@ -224,7 +224,7 @@ def check_lost(positions):
     return False
 
 
-def get_shape():
+def get_shape() -> Piece:
     """
     Get a random new Tetris piece.
     :return: Tetris piece
@@ -232,7 +232,7 @@ def get_shape():
     return Piece(5, 0, random.choice(SHAPES))
 
 
-def draw_text_middle(surface, text, size, color):
+def draw_text_middle(surface: pygame.Surface, text: str, size: int, color: tuple) -> None:
     """
     Draw text in the middle of the screen.
     :param surface: Surface to draw on
@@ -250,7 +250,7 @@ def draw_text_middle(surface, text, size, color):
     surface.blit(label, pos)
 
 
-def draw_grid(surface, grid):
+def draw_grid(surface: pygame.Surface, grid: list) -> None:
     """
     Draw grid lines on the surface.
     :param surface: Surface to draw on
@@ -272,7 +272,7 @@ def draw_grid(surface, grid):
             )
 
 
-def clear_rows(grid, locked_positions):
+def clear_rows(grid: list, locked_positions: dict) -> int:
     """
     Clear full rows and update locked positions.
     :param grid: Current grid
@@ -305,7 +305,7 @@ def clear_rows(grid, locked_positions):
     return increment
 
 
-def draw_next_shape(piece, surface):
+def draw_next_shape(piece: Piece, surface: pygame.Surface) -> None:
     """
     Draw the next piece preview.
     :param piece: Next Tetris piece
@@ -333,7 +333,7 @@ def draw_next_shape(piece, surface):
     surface.blit(label, (sx + 10, sy - 30))
 
 
-def update_score(score):
+def update_score(score: int) -> None:
     """
     Update high score if current score is higher.
     :param score: Current score
@@ -344,7 +344,7 @@ def update_score(score):
             f.write(str(score))
 
 
-def max_score():
+def max_score() -> str:
     """
     Get the current high score.
     :return: High score
@@ -356,7 +356,7 @@ def max_score():
     return high_score
 
 
-def draw_window(surface, grid, score=0, high_score=0):
+def draw_window(surface: pygame.Surface, grid: list, score: int = 0, high_score: int = 0):
     """
     Draw the game window including grid, score, and borders.
     :param surface: Surface to draw on
@@ -407,7 +407,7 @@ def draw_window(surface, grid, score=0, high_score=0):
     draw_grid(surface, grid)
 
 
-def main(surface):
+def main(surface: pygame.Surface) -> bool:
     """
     Main game loop for Tetris.
     :param surface: Surface on which the game is drawn
@@ -505,7 +505,7 @@ def main(surface):
     return is_quit
 
 
-def main_menu(surface):
+def main_menu(surface: pygame.Surface) -> None:
     """
     Display the main menu and start the game on key press.
     :param surface: Surface to draw on
@@ -523,7 +523,7 @@ def main_menu(surface):
     pygame.display.quit()
 
 
-def run_game():
+def run_game() -> None:
     """
     Initialize the game window and run the main menu.
     """
