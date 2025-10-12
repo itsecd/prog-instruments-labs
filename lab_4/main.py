@@ -7,6 +7,7 @@ Created on 2020/4/30 8:33
 """
 
 import argparse
+import time
 from torch import optim
 import torch
 import numpy as np
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Text Classification with CNN/RNN")
     parser.add_argument("--model", choices=["cnn", "rnn", "lstm"], default="cnn",
                         help="Тип модели для обучения (cnn, rnn или lstm)")
-    parser.add_argument("--epochs", type=int, default=500, help="Количество эпох обучения")
+    parser.add_argument("--epochs", type=int, default=500, help="Количество этапов обучения")
     parser.add_argument("--lr", type=float, default=0.001, help="Скорость обучения")
     parser.add_argument("--batch-size", type=int, default=100, help="Размер батча")
     parser.add_argument("--torchtext", action="store_true", help="Использовать torchtext для загрузки данных")
@@ -64,44 +65,63 @@ if __name__ == "__main__":
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     loss_fun = torch.nn.CrossEntropyLoss()
 
+    print(f"\nЗапуск обучения модели: {args.model.upper()} (epochs={epoch_num}, lr={learning_rate})\n")
+
     for epoch in range(epoch_num):
+        epoch_start = time.time()
         model.train()
+        running_loss = 0.0
+
+        # Обучение
         for i, batch in enumerate(train_iter):
             if load_data_by_torchtext:
                 x, y = batch.sent.t(), batch.label
             else:
                 x, y, lens = batch
             logits = model(x)
-            optimizer.zero_grad()
             loss = loss_fun(logits, y)
+            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+            running_loss += loss.item()
 
+        # Оценка
         model.eval()
-        train_accs = []
-        for i, batch in enumerate(train_iter):
-            if load_data_by_torchtext:
-                x, y = batch.sent.t(), batch.label
-            else:
-                x, y, lens = batch
-            logits = model(x)
-            _, y_pre = torch.max(logits, -1)
-            acc = torch.mean((torch.tensor(y_pre == y, dtype=torch.float)))
-            train_accs.append(acc)
+        train_accs, val_accs = [], []
+
+        with torch.no_grad():
+            # Train acc
+            for batch in train_iter:
+                if load_data_by_torchtext:
+                    x, y = batch.sent.t(), batch.label
+                else:
+                    x, y, lens = batch
+                logits = model(x)
+                _, y_pre = torch.max(logits, -1)
+                acc = torch.mean((torch.tensor(y_pre == y, dtype=torch.float)))
+                train_accs.append(acc)
+
+            for batch in val_iter:
+                if load_data_by_torchtext:
+                    x, y = batch.sent.t(), batch.label
+                else:
+                    x, y, lens = batch
+                logits = model(x)
+                _, y_pre = torch.max(logits, -1)
+                acc = torch.mean((torch.tensor(y_pre == y, dtype=torch.float)))
+                val_accs.append(acc)
+
         train_acc = np.array(train_accs).mean()
-
-        val_accs = []
-        for i, batch in enumerate(val_iter):
-            if load_data_by_torchtext:
-                x, y = batch.sent.t(), batch.label
-            else:
-                x, y, lens = batch
-            logits = model(x)
-            _, y_pre = torch.max(logits, -1)
-            acc = torch.mean((torch.tensor(y_pre == y, dtype=torch.float)))
-            val_accs.append(acc)
         val_acc = np.array(val_accs).mean()
+        avg_loss = running_loss / len(train_iter)
+        elapsed = time.time() - epoch_start
 
-        print(f"epoch {epoch} train acc:{train_acc:.2f}, val acc:{val_acc:.2f}")
+        print(f"Этап {epoch + 1:03d}/{epoch_num:03d} "
+              f"| Потеря: {avg_loss:.4f} "
+              f"| Точность на обучении: {train_acc:.2f} "
+              f"| Точность на валидации: {val_acc:.2f} "
+              f"| Время: {elapsed:.1f}s")
+
         if train_acc >= 0.99:
+            print("Достигнута точность 99%, обучение остановлено.")
             break
