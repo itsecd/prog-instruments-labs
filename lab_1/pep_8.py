@@ -1,9 +1,9 @@
-import os
-import math
-import random
-import json
-from collections import defaultdict as dd
 import datetime as dt
+import json
+import math
+import os
+import random
+from collections import defaultdict as dd
 
 
 class MyClass:
@@ -64,7 +64,7 @@ class AnotherClass(MyClass):
             return None
 
 
-def global_function_one(a, b, c = None, d = None):
+def global_function_one(a, b, c=None, d=None):
     if c is None:
         c = []
 
