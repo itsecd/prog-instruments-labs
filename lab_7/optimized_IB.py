@@ -41,7 +41,7 @@ def fast_multivariate_normal_pdf(grid_points, means, cov):
             norm_factor = 1.0 / np.sqrt((2 * np.pi) ** dim * det)
             pdf_values[:, i] = norm_factor * np.exp(-0.5 * exponent)
 
-    return pdf_values
+    return pdf_values  # [N, M] - grid_points x means
 
 
 def add_optimized_methods():
@@ -59,22 +59,29 @@ def add_optimized_methods():
 
         # Оригинальный код подготовки
         Y, bins1, bins2, y1v, y2v, Ygrid = self.make_bins(total_bins=total_bins, pad=pad)
+        print(f"Debug: Ygrid shape: {Ygrid.shape}, coord shape: {self.coord.shape}")
 
         # ОПТИМИЗАЦИЯ: векторизованное вычисление PDF
         S = (self.s ** 2) * np.eye(2)
-        py_x = fast_multivariate_normal_pdf(Ygrid, self.coord, S)
-        py_x = py_x.T  # [Y, X]
 
-        # Нормализация
-        for x in range(self.X):
-            py_x[:, x] = py_x[:, x] / np.sum(py_x[:, x])
+        # Вычисляем PDF: результат [Y, X] (Y точек сетки x X данных)
+        py_x = fast_multivariate_normal_pdf(Ygrid, self.coord, S)  # [Y, X]
+        print(f"Debug: py_x shape after computation: {py_x.shape}")
+
+        # Нормализация по столбцам (для каждого x)
+        py_x = py_x / np.sum(py_x, axis=0, keepdims=True)  # Векторизованная нормализация!
+        print(f"Debug: py_x shape after normalization: {py_x.shape}")
 
         # Продолжение оригинального кода
-        self.py_x = py_x
+        self.py_x = py_x  # [Y, X]
         self.Y = Y
         self.Ygrid = Ygrid
         self.px = (1 / self.X) * np.ones(self.X, dtype=self.dt)
-        self.pxy = (self.py_x * self.px).T  # Более эффективно чем multiply+tile
+
+        # pxy = p(x,y) = p(y|x) * p(x) [=] X x Y
+        # py_x: [Y, X], px: [X] -> pxy: [Y, X] -> транспонируем в [X, Y]
+        self.pxy = (self.py_x * self.px).T  # [X, Y]
+        print(f"Debug: pxy shape: {self.pxy.shape}")
 
         self.process_pxy(drop_zeros=True)
         print(f"Vectorized: I(X;Y) = {self.ixy:.3f}")
@@ -84,18 +91,11 @@ def add_optimized_methods():
     print("Optimized methods added to dataset class")
 
 
-# Альтернативная версия для прямого использования
-class OptimizedDataset:
-    """Оптимизированная версия класса dataset (альтернативный подход)"""
-
-    def __init__(self, *args, **kwargs):
-        from IB import dataset
-        self._ds = dataset(*args, **kwargs)
-
-    def __getattr__(self, name):
-        """Делегируем все атрибуты оригинальному dataset"""
-        return getattr(self._ds, name)
-
-    def fast_coord_to_pxy(self, total_bins=2500, pad=None, drop_distant=True):
-        """Оптимизированная версия coord_to_pxy"""
-        return self._ds.fast_coord_to_pxy(total_bins, pad, drop_distant)
+# Дополнительная функция для отладки размерностей
+def debug_dimensions(ds):
+    """Выводит размерности матриц для отладки"""
+    print(f"Debug dimensions:")
+    print(f"  py_x shape: {ds.py_x.shape} [Y, X]")
+    print(f"  px shape: {ds.px.shape} [X]")
+    print(f"  pxy shape: {ds.pxy.shape} [X, Y]")
+    print(f"  X: {ds.X}, Y: {ds.Y}")
