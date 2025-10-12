@@ -51,7 +51,12 @@ class TestCSVConversions:
         assert isinstance(parsed_json, list)
         assert len(parsed_json) == 2
         assert parsed_json[0]["name"] == "John"
-        assert parsed_json[0]["age"] == "30"  # CSV читает как строку
+        # pandas может автоматически определить тип числа, поэтому проверяем значение, а не тип
+        assert parsed_json[0]["age"] == 30
+        assert parsed_json[0]["city"] == "New York"
+        assert parsed_json[1]["name"] == "Jane"
+        assert parsed_json[1]["age"] == 25
+        assert parsed_json[1]["city"] == "London"
 
     def test_convert_csv_to_xml_structure(self, sample_csv_content):
         """Тест структуры XML при конвертации из CSV"""
