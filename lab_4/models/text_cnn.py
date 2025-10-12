@@ -29,6 +29,7 @@ class TextCNN(nn.Module):
 
         self.kernel_num = kernel_num
         self.kernel_size = kernel_size
+        self.hidden_size = embedding_dim
 
         # Embedding layer
         if embedding_vectors is not None:
