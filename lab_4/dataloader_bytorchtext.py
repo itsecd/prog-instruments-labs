@@ -45,7 +45,6 @@ def dataset2dataloader(dataset_path="../dataset/kaggle-movie-review", sent_col_n
         """ Функция токенизации текста с использованием spaCy """
         return [tok.text for tok in spacy_en.tokenizer(text)]
 
-    # 这里只是定义了数据格式
     TEXT = data.Field(sequential=True, tokenize=tokenizer, lower=True)
     LABEL = data.Field(sequential=False, use_vocab=False)
     train, val = data.TabularDataset.splits(
@@ -53,15 +52,13 @@ def dataset2dataloader(dataset_path="../dataset/kaggle-movie-review", sent_col_n
         fields=[('sent', TEXT), ('label', LABEL)])
 
     TEXT.build_vocab(train, vectors='glove.6B.50d')  # , max_size=30000)
-    # 当 corpus 中有的 token 在 vectors 中不存在时 的初始化方式.
     TEXT.vocab.vectors.unk_init = init.xavier_uniform
 
     DEVICE = "cpu"
-    train_iter = data.BucketIterator(train, batch_size=batch_size, sort_key=lambda x: len(x.review), device=DEVICE)
-    val_iter = data.BucketIterator(val, batch_size=batch_size, sort_key=lambda x: len(x.review), shuffle=True, device=DEVICE)
-
-    # 在 test_iter , sort一定要设置成 False, 要不然会被 torchtext 搞乱样本顺序
-    # test_iter = data.Iterator(dataset=test, batch_size=128, train=False, sort=False, device=DEVICE)
+    train_iter = data.BucketIterator(train, batch_size=batch_size, sort_key=lambda x: len(x.sent),
+                                     device=DEVICE)
+    val_iter = data.BucketIterator(val, batch_size=batch_size, sort_key=lambda x: len(x.sent), shuffle=True,
+                                   device=DEVICE)
 
     return train_iter, val_iter, TEXT.vocab.vectors
 
