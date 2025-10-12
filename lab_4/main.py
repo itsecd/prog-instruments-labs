@@ -16,6 +16,70 @@ from dataloader_bytorchtext import dataset2dataloader
 from dataloader_byhand import make_dataloader
 
 
+def train_model(model, train_iter, val_iter, optimizer, loss_fn, epochs, load_data_by_torchtext=True):
+    for epoch in range(epochs):
+        epoch_start = time.time()
+        model.train()
+        running_loss = 0.0
+
+        # Обучение
+        for i, batch in enumerate(train_iter):
+            if load_data_by_torchtext:
+                x, y = batch.sent.t(), batch.label
+            else:
+                x, y, lens = batch
+            logits = model(x)
+            loss = loss_fn(logits, y)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            running_loss += loss.item()
+
+        # Оценка
+        model.eval()
+        train_accs, val_accs = [], []
+
+        with torch.no_grad():
+            # Train acc
+            for batch in train_iter:
+                if load_data_by_torchtext:
+                    x, y = batch.sent.t(), batch.label
+                else:
+                    x, y, lens = batch
+                logits = model(x)
+                _, y_pre = torch.max(logits, -1)
+                acc = torch.mean((torch.tensor(y_pre == y, dtype=torch.float)))
+                train_accs.append(acc)
+
+            # Val acc
+            for batch in val_iter:
+                if load_data_by_torchtext:
+                    x, y = batch.sent.t(), batch.label
+                else:
+                    x, y, lens = batch
+                logits = model(x)
+                _, y_pre = torch.max(logits, -1)
+                acc = torch.mean((torch.tensor(y_pre == y, dtype=torch.float)))
+                val_accs.append(acc)
+
+        train_acc = np.array(train_accs).mean()
+        val_acc = np.array(val_accs).mean()
+        avg_loss = running_loss / len(train_iter)
+        elapsed = time.time() - epoch_start
+
+        print(f"Этап {epoch + 1:03d}/{epochs:03d} "
+              f"| Потеря: {avg_loss:.4f} "
+              f"| Точность на обучении: {train_acc:.2f} "
+              f"| Точность на валидации: {val_acc:.2f} "
+              f"| Время: {elapsed:.1f}s")
+
+        if train_acc >= 0.99:
+            print("Достигнута точность 99%, обучение остановлено.")
+            break
+
+    return model
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Text Classification with CNN/RNN")
     parser.add_argument("--model", choices=["cnn", "rnn", "lstm"], default="cnn",
@@ -65,63 +129,4 @@ if __name__ == "__main__":
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     loss_fun = torch.nn.CrossEntropyLoss()
 
-    print(f"\nЗапуск обучения модели: {args.model.upper()} (epochs={epoch_num}, lr={learning_rate})\n")
-
-    for epoch in range(epoch_num):
-        epoch_start = time.time()
-        model.train()
-        running_loss = 0.0
-
-        # Обучение
-        for i, batch in enumerate(train_iter):
-            if load_data_by_torchtext:
-                x, y = batch.sent.t(), batch.label
-            else:
-                x, y, lens = batch
-            logits = model(x)
-            loss = loss_fun(logits, y)
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            running_loss += loss.item()
-
-        # Оценка
-        model.eval()
-        train_accs, val_accs = [], []
-
-        with torch.no_grad():
-            # Train acc
-            for batch in train_iter:
-                if load_data_by_torchtext:
-                    x, y = batch.sent.t(), batch.label
-                else:
-                    x, y, lens = batch
-                logits = model(x)
-                _, y_pre = torch.max(logits, -1)
-                acc = torch.mean((torch.tensor(y_pre == y, dtype=torch.float)))
-                train_accs.append(acc)
-
-            for batch in val_iter:
-                if load_data_by_torchtext:
-                    x, y = batch.sent.t(), batch.label
-                else:
-                    x, y, lens = batch
-                logits = model(x)
-                _, y_pre = torch.max(logits, -1)
-                acc = torch.mean((torch.tensor(y_pre == y, dtype=torch.float)))
-                val_accs.append(acc)
-
-        train_acc = np.array(train_accs).mean()
-        val_acc = np.array(val_accs).mean()
-        avg_loss = running_loss / len(train_iter)
-        elapsed = time.time() - epoch_start
-
-        print(f"Этап {epoch + 1:03d}/{epoch_num:03d} "
-              f"| Потеря: {avg_loss:.4f} "
-              f"| Точность на обучении: {train_acc:.2f} "
-              f"| Точность на валидации: {val_acc:.2f} "
-              f"| Время: {elapsed:.1f}s")
-
-        if train_acc >= 0.99:
-            print("Достигнута точность 99%, обучение остановлено.")
-            break
+    model = train_model(model, train_iter, val_iter, optimizer, loss_fun, epoch_num, load_data_by_torchtext)
