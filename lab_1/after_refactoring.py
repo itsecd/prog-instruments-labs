@@ -8,9 +8,9 @@ class LibrarySystem:
     def __init__(self, name, city):
         self.name = name
         self.city = city
-        self.catalog = [];
-        self.members = [];
-        self.loans = [];
+        self.catalog = []
+        self.members = []
+        self.loans = []
         self.history = []
         self.next_book_id = 1
         self.next_member_id = 1
@@ -135,7 +135,7 @@ class Book:
 
     def remove_copies(self, n):
         if n > self.available_copies: return False
-        self.total_copies -= n;
+        self.total_copies -= n
         self.available_copies -= n
         return True
 
@@ -165,7 +165,7 @@ class Loan:
 
 
 def __init__(self, book, member, start_date, due_date):
-    self.id = Loan._next;
+    self.id = Loan._next
     Loan._next += 1
     self.book = book
     self.member = member
@@ -294,14 +294,14 @@ def simple_console_sim(lib):
     show_all_books(lib)
     print("Let's lend some books randomly")
     for i in range(3):
-        b = choice(lib.catalog);
+        b = choice(lib.catalog)
         m = choice(lib.members)
         loan = lib.lend_book(b.id, m.id, days=7)
         if loan: print("Lent", b.title, "to", m.name)
     print("Now return one book if exists")
     active = [L for L in lib.loans if L.return_date is None]
     if active:
-        L = active[0];
+        L = active[0]
         lib.return_book(L.id, datetime.date.today())
         print("Returned loan", L.id)
 
@@ -383,8 +383,8 @@ def final_demo_run():
 
 
 def trailing_space_example():
-    x = 1;
-    y = 2;
+    x = 1
+    y = 2
     return x + y
 
 
