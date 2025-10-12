@@ -72,8 +72,8 @@ if __name__ == "__main__":
     print("Starting IB profiling...")
 
     # Начнем с самого маленького теста
-    profile_small_dataset()
+    #profile_small_dataset()
 
     # Потом можно раскомментировать другие
-    # profile_coord_to_pxy()
-    # profile_kl_calculations()
+    profile_coord_to_pxy()
+    profile_kl_calculations()
