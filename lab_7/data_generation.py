@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 
+
 def gen_easytest(plot=True):
-    
     # set name
     name = "easytest"
             
@@ -43,6 +43,7 @@ def gen_easytest(plot=True):
         
     return ds
 
+
 def gen_blob(plot=True):
 
     # set name
@@ -71,7 +72,8 @@ def gen_blob(plot=True):
     if plot: ds.plot_coord()
         
     return ds
-     
+
+
 def gen_3sph_evensamp_evenspacing(plot=True):
 
     # set name
@@ -110,7 +112,8 @@ def gen_3sph_evensamp_evenspacing(plot=True):
     if plot: ds.plot_coord()
         
     return ds
-    
+
+
 def gen_3sph_unevensamp_evenspacing(plot=True):
 
     # set name
@@ -149,6 +152,7 @@ def gen_3sph_unevensamp_evenspacing(plot=True):
     if plot: ds.plot_coord()
         
     return ds
+
 
 def gen_3sph_evensamp_unevenspacing(plot=True):
 
@@ -189,6 +193,7 @@ def gen_3sph_evensamp_unevenspacing(plot=True):
         
     return ds
 
+
 def make_circle(radius,num_points):
     
     count = 0
@@ -201,6 +206,7 @@ def make_circle(radius,num_points):
             points[count,:] = x
             count += 1
     return points
+
 
 def gen_mouse(plot=True):
 
@@ -241,6 +247,7 @@ def gen_mouse(plot=True):
         
     return ds
 
+
 def gen_circleandcigar(plot=True):
 
     # set name
@@ -275,6 +282,7 @@ def gen_circleandcigar(plot=True):
         
     return ds
 
+
 def gen_2cigars(plot=True):
     
     # set name
@@ -308,7 +316,8 @@ def gen_2cigars(plot=True):
     if plot: ds.plot_coord()
         
     return ds
-    
+
+
 def gen_2over3(plot=True):
 
     # set name
@@ -358,7 +367,8 @@ def gen_2over3(plot=True):
     if plot: ds.plot_coord()
         
     return ds
-    
+
+
 def gen_halfconcentric(plot=True):
     
     # set name
@@ -396,7 +406,8 @@ def gen_halfconcentric(plot=True):
     if plot: ds.plot_coord()
         
     return ds
-    
+
+
 def gen_concentric(plot=True):
     
     # set name
@@ -438,13 +449,15 @@ def gen_concentric(plot=True):
 # CODE BELOW NOT YET ADAPTED TO USE NEW IB DATASET CLASS
 # GENERATE ONLY P(X,Y)
 
+
 def gen_zipf_pxy():
     X = 1024
     Y = X
     pxy = np.eye(X)
     pxy = pxy/np.sum(pxy[:])
     return pxy
-    
+
+
 def gen_blurred_diag_pxy(s):
     X = 1024
     Y = X
@@ -466,6 +479,7 @@ def gen_blurred_diag_pxy(s):
     plt.show()
     
     return pxy
+
 
 def gen_dir_pxy():
     # param
@@ -501,7 +515,8 @@ def gen_dir_pxy():
     print("I(X;Y) = %.3f" % ixy)
     
     return pxy
-    
+
+
 def gen_gaussian_pxy():
     # param
     cov = np.array([[1.5,1.1],[1.1,1]])
@@ -540,7 +555,8 @@ def gen_gaussian_pxy():
     ixy_emp = hy-hy_x
     print("I(X;Y) = %.3f (empirical)" % ixy_emp)   
     return pxy
-    
+
+
 def array_split2(x,f,minsize=1):
     """Splits numpy array x into two pieces, with f specifying fraction in 1st."""
     X = len(x)
@@ -551,7 +567,8 @@ def array_split2(x,f,minsize=1):
         i = minsize
     x_split = [x[0:i],x[i:X]]
     return x_split
-    
+
+
 def gen_hierarchical_pxy(component_type):
     """component_type in {uni,dir}"""
     # todo:
