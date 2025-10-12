@@ -111,3 +111,13 @@ class TextRNN(nn.Module):
         logits = self.classifier(hn)
 
         return logits
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(emb_dim={self.embedding_dim}, hidden={self.hidden_size}, num_classes={self.num_of_class})"
+
+
+if __name__ == "__main__":
+    import torch
+    model = TextRNN(vocab_size=200, embedding_dim=50, hidden_size=128, num_of_class=5)
+    x = torch.randint(0, 200, (8, 30))
+    print(model(x).shape)

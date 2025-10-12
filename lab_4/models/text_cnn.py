@@ -77,3 +77,14 @@ class TextCNN(nn.Module):
         logits = self.classifier(concatenated)
 
         return logits
+
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}(emb_dim={self.embedding_dim}, hidden={self.hidden_size}, num_classes={self.num_of_class})"
+
+
+if __name__ == "__main__":
+    import torch
+    model = TextCNN(vocab_size=100, embedding_dim=50, num_of_class=5)
+    x = torch.randint(0, 100, (8, 20))
+    print(model(x).shape)
