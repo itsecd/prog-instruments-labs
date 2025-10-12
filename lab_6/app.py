@@ -808,6 +808,9 @@ def convert_file():
         # Binary formats that need special handling
         binary_formats = ['pdf', 'docx', 'pptx', 'xlsx', 'jpg', 'jpeg', 'png', 'bmp', 'gif']
 
+        # Инициализируем file_obj как None по умолчанию
+        file_obj = None
+
         if input_format in binary_formats:
             file_obj = file
             if input_format == 'xlsx':
@@ -816,7 +819,7 @@ def convert_file():
                 df = pd.read_excel(file)
                 file_content = df.to_csv(index=False)
                 input_format = 'csv'
-                file_obj = None
+                file_obj = None  # После конвертации в CSV file_obj больше не нужен
                 logger.debug(f"📊 Excel конвертирован в CSV: {len(df)} строк")
             else:
                 file_content = ""  # Will be processed using file_obj
