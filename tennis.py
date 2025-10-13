@@ -2,6 +2,16 @@
 
 class TennisGameDefactored1:
 
+    SCORE_TO_TEXT = {
+    0: "Love",
+    1: "Fifteen",
+    2: "Thirty",
+    3: "Forty"
+}
+
+    def _get_score_text(self, score):
+        return self.SCORE_TO_TEXT.get(score, "Deuce")
+
     def __init__(self, player1Name, player2Name):
         self.player1Name = player1Name
         self.player2Name = player2Name
@@ -18,12 +28,10 @@ class TennisGameDefactored1:
         result = ""
         tempScore=0
         if (self.p1points==self.p2points):
-            result = {
-                0 : "Love-All",
-                1 : "Fifteen-All",
-                2 : "Thirty-All",
-                3 : "Forty-All",
-            }.get(self.p1points, "Deuce")
+            if self.p1points >= 3:
+                result = "Deuce"
+            else:
+                result = f"{self._get_score_text(self.p1points)}-All"
         elif (self.p1points>=4 or self.p2points>=4):
             minusResult = self.p1points-self.p2points
             if (minusResult==1):
@@ -41,12 +49,7 @@ class TennisGameDefactored1:
                 else:
                     result+="-"
                     tempScore = self.p2points
-                result += {
-                    0 : "Love",
-                    1 : "Fifteen",
-                    2 : "Thirty",
-                    3 : "Forty",
-                }[tempScore]
+                result += self._get_score_text(tempScore)
         return result
 
 
