@@ -18,7 +18,7 @@ def validate_regex(value: Any, rule: dict) -> bool:
     return bool(re.fullmatch(rule["pattern"], str(value)))
 
 
-def validate_ip(value: Any) -> bool:
+def validate_ip(value: Any, rule: dict) -> bool:
     """
     Проверяет, является ли значение корректным IPv4 адресом.
     :param value: Значение для проверки

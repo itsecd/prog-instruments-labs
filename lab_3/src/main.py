@@ -1,6 +1,6 @@
 from files_handler import get_csv_path, load_csv
 from validator import validate_row
-from checksum import calculate_checksum, serialize_result
+from lab_3.checksum import calculate_checksum, serialize_result
 
 VARIANT = 6
 
