@@ -1,6 +1,8 @@
 import json
 import hashlib
 from typing import List
+from pathlib import Path
+
 
 """
 В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
@@ -38,7 +40,14 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    result = {
+        "variant": variant,
+        "checksum": checksum
+    }
+    # путь к файлу result.json рядом с checksum.py
+    result_file = Path(__file__).parent / "result.json"
+    with open(result_file, "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=4)
 
 
 if __name__ == "__main__":
