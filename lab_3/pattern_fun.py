@@ -1,5 +1,6 @@
-from pandas import DataFrame
 import re
+
+from pandas import DataFrame
 
 
 def validation_check(pattern: str, string: str) -> bool:
