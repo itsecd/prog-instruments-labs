@@ -24,33 +24,30 @@ class TennisGameDefactored1:
         else:
             self.p2points += 1
     
+    def _format_equal_score(self):
+        if self.p1points >= 3:
+            return "Deuce"
+        return f"{self._get_score_text(self.p1points)}-All"
+
+    def _format_advantage_or_win(self):
+        score_diff = self.p1points - self.p2points
+        if abs(score_diff) >= 2:
+            winner = self.player1Name if score_diff > 0 else self.p2points
+            return f"Win for {winner}"
+        leader = self.player1Name if score_diff > 0 else self.p2points
+        return f"Advantage {leader}"
+
+    def _format_regular_score(self):
+        p1_text = self._get_score_text(self.p1points)
+        p2_text = self._get_score_text(self.p2points)
+        return f"{p1_text}-{p2_text}"
+
     def score(self):
-        result = ""
-        tempScore=0
-        if (self.p1points==self.p2points):
-            if self.p1points >= 3:
-                result = "Deuce"
-            else:
-                result = f"{self._get_score_text(self.p1points)}-All"
-        elif (self.p1points>=4 or self.p2points>=4):
-            minusResult = self.p1points-self.p2points
-            if (minusResult==1):
-                result ="Advantage " + self.player1Name
-            elif (minusResult ==-1):
-                result ="Advantage " + self.player2Name
-            elif (minusResult>=2):
-                result = "Win for " + self.player1Name
-            else:
-                result ="Win for " + self.player2Name
-        else:
-            for i in range(1,3):
-                if (i==1):
-                    tempScore = self.p1points
-                else:
-                    result+="-"
-                    tempScore = self.p2points
-                result += self._get_score_text(tempScore)
-        return result
+        if self.p1points == self.p2points:
+            return self._format_equal_score()
+        if self.p1points >= 4 or self.p2points >= 4:
+            return self._format_advantage_or_win()
+        return self._format_regular_score()
 
 
 class TennisGameDefactored2:
