@@ -53,3 +53,5 @@ def validate_field(field_name, value):
     return validator(value, rule)
 
 
+def validate_row(row):
+    return all(validate_field(col, row[col]) for col in VALIDATION_RULES.keys())
