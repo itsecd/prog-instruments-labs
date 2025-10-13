@@ -1,0 +1,6 @@
+{
+  "variant": 54,
+  "input_csv": "data/54.csv",
+  "regex_json": "regex.json",
+  "result_json": "result.json"
+}

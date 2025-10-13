@@ -26,7 +26,7 @@ def calculate_checksum(row_numbers: List[int]) -> str:
     return hashlib.md5(json.dumps(row_numbers).encode('utf-8')).hexdigest()
 
 
-def serialize_result(variant: int, checksum: str) -> None:
+def serialize_result(variant: int, checksum: str, path: str) -> None:
     """
     Метод для сериализации результатов лабораторной пишите сами.
     Вам нужно заполнить данными - номером варианта и контрольной суммой - файл, лежащий в папке с лабораторной.
@@ -35,10 +35,18 @@ def serialize_result(variant: int, checksum: str) -> None:
     ВНИМАНИЕ, ВАЖНО! На json натравлен github action, который проверяет корректность выполнения лабораторной.
     Так что не перемещайте, не переименовывайте и не изменяйте его структуру, если планируете успешно сдать лабу.
 
+    :param path: Путь до файла
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    try:
+        data = {"variant": variant, "checksum": checksum}
+        with open(path, mode = "w", encoding = "utf-8") as file:
+            return json.dump(data, file)
+    except FileNotFoundError as not_found:
+        raise FileNotFoundError(f"File was not found: {not_found}")
+    except Exception as exc:
+        raise Exception(f"An error occurred when opening the file {exc}")
 
 
 if __name__ == "__main__":
