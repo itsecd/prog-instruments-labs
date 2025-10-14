@@ -6,7 +6,7 @@ VALIDATION_RULES = {
 
     "http_status_message": {
         "type": 'regex',
-        "pattern": r'^\d{3} [A-Za-z]+$'
+        "pattern": r'^\d{3} [A-Za-z ]+$'
     },
 
     "inn": {
@@ -30,8 +30,13 @@ VALIDATION_RULES = {
     },
 
     "blood_type": {
-        "type": 'enum',
-        "values": ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+        "type": "enum",
+        "values": [
+            "A+", "A−",
+            "B+", "B−",
+            "AB+", "AB−",
+            "O+", "O−"
+        ]
     },
 
     "isbn": {

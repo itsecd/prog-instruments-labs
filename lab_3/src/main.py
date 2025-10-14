@@ -12,7 +12,7 @@ def main():
 
     for idx, row in df.iterrows():
         if not validate_row(row):
-            invalid_rows.append(idx - 1)
+            invalid_rows.append(idx)
 
     checksum = calculate_checksum(invalid_rows)
 
