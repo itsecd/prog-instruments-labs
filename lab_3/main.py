@@ -1,6 +1,6 @@
+from checksum import calculate_checksum, serialize_result
 from io_operations import read_csv, read_json, write_json
 from pattern_fun import pattern_fun
-from checksum import calculate_checksum, serialize_result
 
 
 def main():
