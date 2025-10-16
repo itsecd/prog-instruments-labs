@@ -15,7 +15,7 @@ def test_multiplication(monkeypatch):
     monkeypatch.setattr(builtins, 'input', lambda _: "2 5")
     assert multiplication() == 10
 
-def test_division(monkeypatch):
+def test_exponentiation(monkeypatch):
     inputs = iter(["15", "3"])
     monkeypatch.setattr(builtins, 'input', lambda _: next(inputs))
     assert division() == 5
