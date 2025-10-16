@@ -1,0 +1,10 @@
+2025-10-16 13:19:36 | INFO | calculator.py:177 <module> | Program started
+2025-10-16 13:19:50 | INFO | calculator.py:187 <module> | Choice: 6
+2025-10-16 13:20:00 | DEBUG | calculator.py:110 factorial | Result: 120
+2025-10-16 13:20:55 | INFO | calculator.py:177 <module> | Program started
+2025-10-16 13:21:01 | INFO | calculator.py:187 <module> | Choice: 6
+2025-10-16 13:21:03 | DEBUG | calculator.py:110 factorial | Result: 24
+2025-10-16 13:21:03 | INFO | calculator.py:217 <module> | Operation result: 24
+2025-10-16 13:21:08 | INFO | calculator.py:187 <module> | Choice: -1
+2025-10-16 13:21:08 | INFO | calculator.py:208 <module> | User exited the calculator.
+2025-10-16 13:21:08 | INFO | calculator.py:221 <module> | Calculator session ended.
