@@ -66,26 +66,14 @@ class Yatzy:
         return 0
     
     def score(self, dice, category: YatzyCategory) -> int:
-        # calculate dice frequencies
-        dice_frequencies = {i: 0 for i in DICE_VALUES}
-        for die in dice:
-            dice_frequencies[die] += 1
-
-        # calculate the score
-        result = 0
+        freq = self.get_frequencies(dise)
+        
         match category:
             case YatzyCategory.CHANCE:
-                # chance sums the dice
-                result = sum(dice)
+                return sum(dice)
 
             case YatzyCategory.YATZY:
-
-                # score for yatzy if all dice are the same
-                yatzy_result = 0
-                if 5 in dice_frequencies.values():
-                    yatzy_result = 50
-
-                result = yatzy_result
+                return self.yatzy(freq)
 
             case YatzyCategory.ONES:
                 # sum all the ones
