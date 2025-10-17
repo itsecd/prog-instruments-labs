@@ -1,0 +1,52 @@
+2025-10-17 15:16:05 | INFO | app.py:66 __init__ | Hybrid Crypto System started
+2025-10-17 15:16:11 | INFO | app.py:153 open_settings | Settings have been loaded
+2025-10-17 15:16:15 | INFO | app.py:130 select_key_length | Select key length dialog box started
+2025-10-17 15:16:17 | DEBUG | app.py:137 select_key_length | Selected key length: 192
+2025-10-17 15:16:22 | INFO | asymmetric_crypto.py:17 generate_keys | Starting asymmetric key generation
+2025-10-17 15:16:22 | INFO | asymmetric_crypto.py:22 generate_keys | Asymmetric keys generated successfully
+2025-10-17 15:16:22 | INFO | symmetric_crypto.py:23 generate_key | Generating symmetric key with length: 192 bits
+2025-10-17 15:16:22 | DEBUG | symmetric_crypto.py:26 generate_key | Symmetric key generated successfully, length: 24 bytes
+2025-10-17 15:16:22 | INFO | de_serialization.py:26 serialization_rsa_key | Starting asymmetric key serialization - key type: KeyTypes.private
+2025-10-17 15:16:22 | DEBUG | de_serialization.py:36 serialization_rsa_key | Serializing private key
+2025-10-17 15:16:22 | INFO | de_serialization.py:43 serialization_rsa_key | Asymmetric key serialized successfully
+2025-10-17 15:16:22 | DEBUG | de_serialization.py:44 serialization_rsa_key | Serialized key length: 1679 bytes
+2025-10-17 15:16:22 | INFO | de_serialization.py:26 serialization_rsa_key | Starting asymmetric key serialization - key type: KeyTypes.public
+2025-10-17 15:16:22 | DEBUG | de_serialization.py:42 serialization_rsa_key | Serializing public key
+2025-10-17 15:16:22 | INFO | de_serialization.py:43 serialization_rsa_key | Asymmetric key serialized successfully
+2025-10-17 15:16:22 | DEBUG | de_serialization.py:44 serialization_rsa_key | Serialized key length: 451 bytes
+2025-10-17 15:16:22 | INFO | asymmetric_crypto.py:39 encrypt_symmetric_key | Starting symmetric key encryption
+2025-10-17 15:16:22 | INFO | asymmetric_crypto.py:49 encrypt_symmetric_key | Symmetric key encrypted successfully
+2025-10-17 15:16:22 | INFO | de_serialization.py:90 serialization_data | Starting data serialization
+2025-10-17 15:16:22 | DEBUG | de_serialization.py:93 serialization_data | File operation completed - write binary mode
+2025-10-17 15:16:22 | INFO | de_serialization.py:90 serialization_data | Starting data serialization
+2025-10-17 15:16:22 | DEBUG | de_serialization.py:93 serialization_data | File operation completed - write binary mode
+2025-10-17 15:16:22 | INFO | de_serialization.py:90 serialization_data | Starting data serialization
+2025-10-17 15:16:22 | DEBUG | de_serialization.py:93 serialization_data | File operation completed - write binary mode
+2025-10-17 15:16:30 | INFO | symmetric_crypto.py:149 encrypt_data | Starting data encryption
+2025-10-17 15:16:30 | INFO | de_serialization.py:61 deserialization_rsa_key | Starting asymmetric key deserialization - key type: KeyTypes.private
+2025-10-17 15:16:30 | DEBUG | de_serialization.py:62 deserialization_rsa_key | Input key data length: 1679 bytes
+2025-10-17 15:16:30 | DEBUG | de_serialization.py:68 deserialization_rsa_key | Private key deserialized
+2025-10-17 15:16:30 | INFO | de_serialization.py:73 deserialization_rsa_key | Asymmetric key deserialized successfully - key type: KeyTypes.private
+2025-10-17 15:16:30 | INFO | asymmetric_crypto.py:66 decrypt_symmetric_key | Starting symmetric key decryption
+2025-10-17 15:16:30 | INFO | asymmetric_crypto.py:76 decrypt_symmetric_key | Symmetric key decrypted successfully
+2025-10-17 15:16:30 | DEBUG | symmetric_crypto.py:50 padding | Padding completed - padded text length: 1440 bytes
+2025-10-17 15:16:30 | INFO | symmetric_crypto.py:93 encrypt_with_algorithm | Encrypting data with TripleDES
+2025-10-17 15:16:30 | INFO | symmetric_crypto.py:99 encrypt_with_algorithm | Data encrypted successfully
+2025-10-17 15:16:30 | DEBUG | symmetric_crypto.py:100 encrypt_with_algorithm | Encrypted text length: 1440 bytes
+2025-10-17 15:16:30 | INFO | symmetric_crypto.py:174 encrypt_data | Symmetric data encryption completed successfully
+2025-10-17 15:16:30 | DEBUG | symmetric_crypto.py:175 encrypt_data | Final encrypted data length: 1448 bytes
+2025-10-17 15:16:30 | INFO | de_serialization.py:90 serialization_data | Starting data serialization
+2025-10-17 15:16:30 | DEBUG | de_serialization.py:93 serialization_data | File operation completed - write binary mode
+2025-10-17 15:16:31 | INFO | symmetric_crypto.py:196 decrypt_data | Starting symmetric data decryption process
+2025-10-17 15:16:31 | INFO | de_serialization.py:61 deserialization_rsa_key | Starting asymmetric key deserialization - key type: KeyTypes.private
+2025-10-17 15:16:31 | DEBUG | de_serialization.py:62 deserialization_rsa_key | Input key data length: 1679 bytes
+2025-10-17 15:16:31 | DEBUG | de_serialization.py:68 deserialization_rsa_key | Private key deserialized
+2025-10-17 15:16:31 | INFO | de_serialization.py:73 deserialization_rsa_key | Asymmetric key deserialized successfully - key type: KeyTypes.private
+2025-10-17 15:16:31 | INFO | asymmetric_crypto.py:66 decrypt_symmetric_key | Starting symmetric key decryption
+2025-10-17 15:16:31 | INFO | asymmetric_crypto.py:76 decrypt_symmetric_key | Symmetric key decrypted successfully
+2025-10-17 15:16:31 | INFO | symmetric_crypto.py:121 decrypt_with_algorithm | Decrypting data with TripleDES
+2025-10-17 15:16:31 | INFO | symmetric_crypto.py:127 decrypt_with_algorithm | Data decrypted successfully
+2025-10-17 15:16:31 | DEBUG | symmetric_crypto.py:128 decrypt_with_algorithm | Decrypted padded text length: 1440 bytes
+2025-10-17 15:16:31 | DEBUG | symmetric_crypto.py:64 unpadding | Unpadding completed - unpadded text length: 1436 bytes
+2025-10-17 15:16:31 | INFO | symmetric_crypto.py:218 decrypt_data | Symmetric data decryption completed successfully
+2025-10-17 15:16:31 | DEBUG | symmetric_crypto.py:219 decrypt_data | Decrypted text length: 1436 bytes
