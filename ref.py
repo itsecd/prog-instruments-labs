@@ -23,6 +23,48 @@ DICE_VALUES = [6, 5, 4, 3, 2, 1]
 
 
 class Yatzy:
+
+    def get_frequencies(self, dice):
+        """Подсчитывает, сколько раз встречается каждое значение"""
+        freq = {i: 0 for i in DICE_VALUES}
+        for die in dice:
+            freq[die] += 1
+        return freq
+
+    def sum_of_number(self, dice_frequencies, number):
+        """Возвращает сумму всех костей с указанным числом"""
+        return dice_frequencies[number] * number
+
+    def of_a_kind(self, dice_frequencies, count):
+        """Возвращает сумму очков для N одинаковых костей (наибольшего номинала)"""
+        for i in DICE_VALUES:
+            if dice_frequencies[i] >= count:
+                return i * count
+        return 0
+
+    def pair(self, dice_frequencies):
+        """Находит одну пару"""
+        return self._of_a_kind(dice_frequencies, 2)
+
+    def two_pairs(self, dice_frequencies):
+        """Находит две пары."""
+        pairs = [i for i in DICE_VALUES if dice_frequencies[i] >= 2]
+        return sum(i * 2 for i in pairs) if len(pairs) == 2 else 0
+
+    def yatzy(self, dice_frequencies):
+        """Проверяет (все пять одинаковые)."""
+        return 50 if 5 in dice_frequencies.values() else 0
+
+    def straight(self, dice, expected):
+        """Проверяет стрит"""
+        return sum(dice) if sorted(dice) == expected else 0
+
+    def full_house(self, dice_frequencies, dice):
+        """Проверяет фулл-хаус"""
+        if 2 in dice_frequencies.values() and 3 in dice_frequencies.values():
+            return sum(dice)
+        return 0
+    
     def score(self, dice, category: YatzyCategory) -> int:
         # calculate dice frequencies
         dice_frequencies = {i: 0 for i in DICE_VALUES}
