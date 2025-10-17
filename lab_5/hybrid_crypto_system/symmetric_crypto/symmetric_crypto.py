@@ -8,6 +8,7 @@ from hybrid_crypto_system.asymmetric_crypto.asymmetric_crypto import AsymmetricC
 from hybrid_crypto_system.de_serialization.de_serialization import DeSerialization
 from hybrid_crypto_system.de_serialization.constants import KeyTypes
 from hybrid_crypto_system.symmetric_crypto.constants import BYTES
+from hybrid_crypto_system.logger.logger_config import logger
 
 
 class SymmetricCrypto:
@@ -19,7 +20,14 @@ class SymmetricCrypto:
         :param key_length: key size
         :return: symmetric key
         """
-        return os.urandom(key_length // BYTES)
+        logger.info(f'Generating symmetric key with length: {key_length} bits')
+        try:
+            key = os.urandom(key_length // BYTES)
+            logger.debug(f'Symmetric key generated successfully, length: {len(key)} bytes')
+            return key
+        except Exception as e:
+            logger.error(f"Failed to generate symmetric key: {str(e)}")
+            raise
 
     @staticmethod
     def get_iv() -> bytes:
@@ -38,7 +46,10 @@ class SymmetricCrypto:
         :return: padded text
         """
         padder = padding.ANSIX923(block_size).padder()
-        return padder.update(text) + padder.finalize()
+        padded_text = padder.update(text) + padder.finalize()
+        logger.debug(f'Padding completed - padded text length: {len(padded_text)} bytes')
+        return padded_text
+
 
     @staticmethod
     def unpadding(block_size: int, text: bytes) -> bytes:
@@ -49,7 +60,9 @@ class SymmetricCrypto:
         :return: unpadded text
         """
         unpadder = padding.ANSIX923(block_size).unpadder()
-        return unpadder.update(text) + unpadder.finalize()
+        unpadded_text = unpadder.update(text) + unpadder.finalize()
+        logger.debug(f'Unpadding completed - unpadded text length: {len(unpadded_text)} bytes')
+        return unpadded_text
 
     @staticmethod
     def split_from_iv(text: bytes) -> Tuple[bytes, bytes]:
@@ -77,9 +90,18 @@ class SymmetricCrypto:
         :param padded_text: padded text
         :return: encrypted text
         """
-        cipher = Cipher(algorithm(key), modes.CBC(iv))
-        encryptor = cipher.encryptor()
-        return encryptor.update(padded_text) + encryptor.finalize()
+        logger.info(f'Encrypting data with {algorithm.__name__}')
+        try:
+            cipher = Cipher(algorithm(key), modes.CBC(iv))
+            encryptor = cipher.encryptor()
+            encrypted_text = encryptor.update(padded_text) + encryptor.finalize()
+
+            logger.info('Data encrypted successfully')
+            logger.debug(f'Encrypted text length: {len(encrypted_text)} bytes')
+            return encrypted_text
+        except Exception as e:
+            logger.error(f"Failed to encrypt data with algorithm {algorithm.__name__}: {str(e)}")
+            raise
 
     @staticmethod
     def decrypt_with_algorithm(
@@ -96,9 +118,18 @@ class SymmetricCrypto:
         :param text: encrypted text
         :return: decrypted padded text
         """
-        cipher = Cipher(algorithm(key), modes.CBC(iv))
-        decryptor = cipher.decryptor()
-        return decryptor.update(text) + decryptor.finalize()
+        logger.info(f'Decrypting data with {algorithm.__name__}')
+        try:
+            cipher = Cipher(algorithm(key), modes.CBC(iv))
+            decryptor = cipher.decryptor()
+            decrypted_text = decryptor.update(text) + decryptor.finalize()
+
+            logger.info('Data decrypted successfully')
+            logger.debug(f'Decrypted padded text length: {len(decrypted_text)} bytes')
+            return decrypted_text
+        except Exception as e:
+            logger.error(f"Failed to decrypt data with algorithm {algorithm.__name__}: {str(e)}")
+            raise
 
     @staticmethod
     def encrypt_data(
@@ -115,27 +146,37 @@ class SymmetricCrypto:
         :param encrypted_symmetric_key: key to encrypt data
         :return: encrypted data
         """
-        private_key = DeSerialization.deserialization_rsa_key(
-            private_bytes,
-            KeyTypes.private
-        )
-        symmetric_key = AsymmetricCrypto.decrypt_symmetric_key(
-            encrypted_symmetric_key, private_key
-        )
+        logger.info('Starting data encryption')
+        try:
+            private_key = DeSerialization.deserialization_rsa_key(
+                private_bytes,
+                KeyTypes.private
+            )
 
-        iv = SymmetricCrypto.get_iv()
-        padded_text = SymmetricCrypto.padding(
-            cipher_algorithm.block_size,
-            plain_text
-        )
+            symmetric_key = AsymmetricCrypto.decrypt_symmetric_key(
+                encrypted_symmetric_key, private_key
+            )
 
-        encrypted_text = SymmetricCrypto.encrypt_with_algorithm(
-            cipher_algorithm,
-            symmetric_key,
-            iv,
-            padded_text
-        )
-        return encrypted_text + iv
+            iv = SymmetricCrypto.get_iv()
+            padded_text = SymmetricCrypto.padding(
+                cipher_algorithm.block_size,
+                plain_text
+            )
+
+            encrypted_text = SymmetricCrypto.encrypt_with_algorithm(
+                cipher_algorithm,
+                symmetric_key,
+                iv,
+                padded_text
+            )
+
+            result = encrypted_text + iv
+            logger.info('Symmetric data encryption completed successfully')
+            logger.debug(f'Final encrypted data length: {len(result)} bytes')
+            return result
+        except Exception as e:
+            logger.error(f"Failed to encrypt data: {str(e)}")
+            raise
 
     @staticmethod
     def decrypt_data(
@@ -152,22 +193,31 @@ class SymmetricCrypto:
         :param encrypted_symmetric_key: symmetric key as bytes
         :return: decrypted data
         """
-        private_key = DeSerialization.deserialization_rsa_key(private_bytes, KeyTypes.private)
-        symmetric_key = AsymmetricCrypto.decrypt_symmetric_key(
-            encrypted_symmetric_key, private_key
-        )
+        logger.info('Starting symmetric data decryption process')
+        try:
+            private_key = DeSerialization.deserialization_rsa_key(private_bytes, KeyTypes.private)
 
-        iv, text = SymmetricCrypto.split_from_iv(encrypted_data)
+            symmetric_key = AsymmetricCrypto.decrypt_symmetric_key(
+                encrypted_symmetric_key, private_key
+            )
 
-        decrypted_padded_text = SymmetricCrypto.decrypt_with_algorithm(
-            cipher_algorithm,
-            symmetric_key,
-            iv,
-            text
-        )
+            iv, text = SymmetricCrypto.split_from_iv(encrypted_data)
 
-        decrypted_text = SymmetricCrypto.unpadding(
-            cipher_algorithm.block_size,
-            decrypted_padded_text
-        )
-        return decrypted_text
+            decrypted_padded_text = SymmetricCrypto.decrypt_with_algorithm(
+                cipher_algorithm,
+                symmetric_key,
+                iv,
+                text
+            )
+
+            decrypted_text = SymmetricCrypto.unpadding(
+                cipher_algorithm.block_size,
+                decrypted_padded_text
+            )
+
+            logger.info('Symmetric data decryption completed successfully')
+            logger.debug(f'Decrypted text length: {len(decrypted_text)} bytes')
+            return decrypted_text
+        except Exception as e:
+            logger.error(f"Failed to decrypt data: {str(e)}")
+            raise
