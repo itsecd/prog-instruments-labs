@@ -94,92 +94,24 @@ class Yatzy:
                 return self.sum_of_number(freq, 6)
 
             case YatzyCategory.PAIR:
-
-                # score pair if two dice are the same
-                pair_result = 0
-                # score highest pair if there is more than one
-                for i in DICE_VALUES:
-                    if dice_frequencies[i] >= 2:
-                        pair_result = i * 2
-                        break
-
-                result = pair_result
+                return self.pair(freq)
 
             case YatzyCategory.THREE_OF_A_KIND:
-
-                # score if three dice are the same
-                three_kind_result = 0
-                for i in DICE_VALUES:
-                    if dice_frequencies[i] >= 3:
-                        three_kind_result = i * 3
-
-                result = three_kind_result
+                return self.of_a_kind(freq, 3)
 
             case YatzyCategory.FOUR_OF_A_KIND:
-
-                # score if four dice are the same
-                four_kind_result = 0
-                for i in DICE_VALUES:
-                    if dice_frequencies[i] >= 4:
-                        four_kind_result = i * 4
-
-                result = four_kind_result
+                return self.of_a_kind(freq, 4)
 
             case YatzyCategory.SMALL_STRAIGHT:
-
-                # score if dice contains 1,2,3,4,5
-                small_straight_result = 0
-
-                count = 0
-                for frequency in dice_frequencies.values():
-                    if frequency == 1:
-                        count += 1
-
-                if count == 5 and dice_frequencies[6] == 0:
-                    for die in dice:
-                        small_straight_result += die
-
-                result = small_straight_result
+                return self.straight(dice, [1, 2, 3, 4, 5])
 
             case YatzyCategory.LARGE_STRAIGHT:
-
-                # score if dice contains 2,3,4,5,6
-                large_straight_result = 0
-                straight_count = 0
-                for frequency in dice_frequencies.values():
-                    if frequency == 1:
-                        straight_count += 1
-
-                if straight_count == 5 and dice_frequencies[1] == 0:
-                    for die in dice:
-                        large_straight_result += die
-
-                result = large_straight_result
+                return self.straight(dice, [2, 3, 4, 5, 6])
 
             case YatzyCategory.TWO_PAIRS:
-
-                # score if there are two pairs
-                two_pair_result = 0
-                pair_count = 0
-                for frequency in dice_frequencies.values():
-                    if frequency >= 2:
-                        pair_count += 1
-
-                if pair_count == 2:
-                    for i in DICE_VALUES:
-                        if dice_frequencies[i] >= 2:
-                            two_pair_result += i * 2
-
-                result = two_pair_result
+                return self.two_pairs(freq)
 
             case YatzyCategory.FULL_HOUSE:
+                return self.full_house(freq, dice)
 
-                # score if there is a pair as well as three of a kind
-                full_house_result = 0
-                if 2 in dice_frequencies.values() and 3 in dice_frequencies.values():
-                    for die in dice:
-                        full_house_result += die
-
-                result = full_house_result
-
-        return result
+        return 0
