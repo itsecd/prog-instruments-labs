@@ -66,7 +66,7 @@ class Yatzy:
         return 0
     
     def score(self, dice, category: YatzyCategory) -> int:
-        freq = self.get_frequencies(dise)
+        freq = self.get_frequencies(dice)
         
         match category:
             case YatzyCategory.CHANCE:
