@@ -17,6 +17,7 @@ from PyQt6.QtWidgets import (
 from constant import DEFAULT_DIRECTORY, FILTER, IconTypes
 from filehandler import FileHandler
 from hybrid_crypto_system.hybrid_crypto_system import HybridCryptoSystem
+from hybrid_crypto_system.logger.logger_config import logger
 
 
 class SelectLength(QDialog):
@@ -62,6 +63,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         """Initializing the application window"""
+        logger.info("Hybrid Crypto System started")
         super().__init__()
         self.setWindowTitle("Hybrid CryptoSystem")
         self.setFixedSize(1280, 320)
@@ -125,12 +127,14 @@ class MainWindow(QMainWindow):
 
     def select_key_length(self):
         """Launch a dialog box to select the key length"""
+        logger.info("Select key length dialog box started")
         self.__dialog = SelectLength()
         self.__dialog.exec()
         self.__crypto_system = HybridCryptoSystem(
             TripleDES,
             self.__dialog.get_key_length()
         )
+        logger.debug(f"Selected key length: {self.__dialog.get_key_length()}")
 
     def open_settings(self):
         """Upload the settings file"""
@@ -146,6 +150,7 @@ class MainWindow(QMainWindow):
                 self.show_message(
                     "Success", "Settings have been loaded", IconTypes.Information
                 )
+                logger.info("Settings have been loaded")
                 if not QtCore.QFile.exists(file):
                     self.show_message("Error", "File not found", IconTypes.Critical)
             else:
