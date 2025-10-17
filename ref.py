@@ -76,28 +76,22 @@ class Yatzy:
                 return self.yatzy(freq)
 
             case YatzyCategory.ONES:
-                # sum all the ones
-                result = dice_frequencies[1]
+                return self.sum_of_number(freq, 1)
 
             case YatzyCategory.TWOS:
-                # sum all the twos
-                result = dice_frequencies[2] * 2
+                return self.sum_of_number(freq, 2)
 
             case YatzyCategory.THREES:
-                # sum all the threes
-                result = dice_frequencies[3] * 3
+                return self.sum_of_number(freq, 3)
 
             case YatzyCategory.FOURS:
-                # sum all the fours
-                result = dice_frequencies[4] * 4
+                return self.sum_of_number(freq, 4)
 
             case YatzyCategory.FIVES:
-                # sum all the fives
-                result = dice_frequencies[5] * 5
+                return self.sum_of_number(freq, 5)
 
             case YatzyCategory.SIXES:
-                # sum all the sixes
-                result = dice_frequencies[6] * 6
+                return self.sum_of_number(freq, 6)
 
             case YatzyCategory.PAIR:
 
