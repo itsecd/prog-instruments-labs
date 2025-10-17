@@ -5,6 +5,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 
 from filehandler import FileHandler
 from hybrid_crypto_system.de_serialization.constants import KeyTypes
+from hybrid_crypto_system.logger.logger_config import logger
 
 
 class DeSerialization:
@@ -22,18 +23,29 @@ class DeSerialization:
         :param key_type: type of key - private or public
         :return: serialized key
         """
-        match key_type:
-            case KeyTypes.private:
-                return key.private_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PrivateFormat.TraditionalOpenSSL,
-                    encryption_algorithm=serialization.NoEncryption(),
-                )
-            case KeyTypes.public:
-                return key.public_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PublicFormat.SubjectPublicKeyInfo,
-                )
+        logger.info(f"Starting asymmetric key serialization - key type: {key_type}")
+        try:
+            serialized_key = None
+            match key_type:
+                case KeyTypes.private:
+                    serialized_key = key.private_bytes(
+                        encoding=serialization.Encoding.PEM,
+                        format=serialization.PrivateFormat.TraditionalOpenSSL,
+                        encryption_algorithm=serialization.NoEncryption(),
+                    )
+                    logger.debug("Serializing private key")
+                case KeyTypes.public:
+                    serialized_key =  key.public_bytes(
+                        encoding=serialization.Encoding.PEM,
+                        format=serialization.PublicFormat.SubjectPublicKeyInfo,
+                    )
+                    logger.debug("Serializing public key")
+            logger.info("Asymmetric key serialized successfully")
+            logger.debug(f"Serialized key length: {len(serialized_key)} bytes")
+            return serialized_key
+        except Exception as e:
+            logger.error(f"Failed to serialize key: {str(e)}")
+            raise
 
     @staticmethod
     def deserialization_rsa_key(
@@ -46,11 +58,23 @@ class DeSerialization:
         :param key_type: type of key - private or public
         :return: deserialized key
         """
-        match key_type:
-            case KeyTypes.private:
-                return serialization.load_pem_private_key(key, password=None)
-            case KeyTypes.public:
-                return serialization.load_pem_public_key(key)
+        logger.info(f"Starting asymmetric key deserialization - key type: {key_type}")
+        logger.debug(f"Input key data length: {len(key)} bytes")
+        try:
+            deserialized_key = None
+            match key_type:
+                case KeyTypes.private:
+                    deserialized_key =  serialization.load_pem_private_key(key, password=None)
+                    logger.debug("Private key deserialized")
+                case KeyTypes.public:
+                    deserialized_key = serialization.load_pem_public_key(key)
+                    logger.debug("Public key deserialized")
+
+            logger.info(f"Asymmetric key deserialized successfully - key type: {key_type}")
+            return deserialized_key
+        except Exception as e:
+            logger.error(f"Failed to deserialize key: {str(e)}")
+            raise
 
     @staticmethod
     def serialization_data(
@@ -63,7 +87,17 @@ class DeSerialization:
         :param data: data to serialize
         :return: None
         """
-        FileHandler.save_data(data_dir, data, "wb")
+        logger.info("Starting data serialization")
+        try:
+            FileHandler.save_data(data_dir, data, "wb")
+            logger.debug(f"File operation completed - write binary mode")
+        except FileNotFoundError:
+            logger.error(f"File not found during serialization: {data_dir}")
+            raise
+        except Exception as e:
+            logger.error(f"Failed to serialize data: {str(e)}")
+            raise
+
 
     @staticmethod
     def deserialization_data(
@@ -74,4 +108,15 @@ class DeSerialization:
         :param data_dir: directory to serialized file
         :return: deserialized data
         """
-        return FileHandler.read_data(data_dir, "rb")
+        logger.info("Starting data deserialization")
+        try:
+            data = FileHandler.read_data(data_dir, "rb")
+            logger.info("Data deserialization successful")
+            logger.debug(f"File operation completed - read binary mode")
+            return data
+        except FileNotFoundError:
+            logger.error(f"File not found during deserialization: {data_dir}")
+            raise
+        except Exception as e:
+            logger.error(f"Failed to deserialize data: {str(e)}")
+            raise
