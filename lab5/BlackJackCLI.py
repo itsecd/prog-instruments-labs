@@ -1,5 +1,5 @@
 from BlackJack import BlackJack
-from  config import BLACKJACK_STR, START_MESSAGE
+from config import BLACKJACK_STR, START_MESSAGE
 
 
 class BlackJackCLI:
