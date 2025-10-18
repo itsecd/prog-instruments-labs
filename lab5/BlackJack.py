@@ -14,7 +14,7 @@ class BlackJack:
         self.game_num = 0
         self.DEALER_OPTIMAL_SUM = 17
         self.MAX_SUM = 21
-        self.logger = module_logger.bind(service="BlackJack")
+        self.BlackJack_logger = module_logger.bind(service="BlackJack")
 
     @log_errors(logger)
     def start_round(self, bet: int):
@@ -22,7 +22,7 @@ class BlackJack:
         Метод для запуска раунда
         :param bet: ставка
         """
-        self.logger.info("Start new round")
+        self.BlackJack_logger.info("Start new round")
 
         self.game_num += 1
         self.player.reset_hand()
@@ -64,24 +64,34 @@ class BlackJack:
         player_sum = self.player.hand_value()
         dealer_sum = self.dealer.hand_value()
 
-        self.logger.info("Round finished")
+        self.BlackJack_logger.info("Round finished")
 
         if player_sum > self.MAX_SUM:
+            self.BlackJack_logger.info("Dealer win")
             return "dealer", 0
 
         if dealer_sum > self.MAX_SUM:
+            self.BlackJack_logger.info("Player win")
+
             self.player.win(bet * 2)
             return "player", bet * 2
 
         if player_sum == self.MAX_SUM:
+            self.BlackJack_logger.info("Player win")
+
             self.player.win(bet * 3)
             return "blackjack", bet * 3
 
         if player_sum > dealer_sum:
+            self.BlackJack_logger.info("Player win")
+
             self.player.win(bet * 2)
             return "player", bet * 2
         elif player_sum < dealer_sum:
+            self.BlackJack_logger.info("Dealer win")
             return "dealer", 0
         else:
+            self.BlackJack_logger.info("Tie")
+
             self.player.win(bet)
             return "tie", bet

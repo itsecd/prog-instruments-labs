@@ -2,6 +2,7 @@ import random
 from log_module import module_logger, log_errors
 from loguru import logger
 
+
 class Card:
     """
     Класс реализующий карту
@@ -11,6 +12,7 @@ class Card:
     def __init__(self, suit, rank):
         self.suit = suit
         self.rank = rank
+        self.Card_logger = module_logger.bind(service="Card")
 
     @log_errors(logger)
     def value(self):
@@ -39,6 +41,7 @@ class Deck:
     def __init__(self):
         self.all_cards = [Card(suit, rank) for suit in self.suits for rank in self.ranks]
         self.shuffle()
+        self.deck_logger = module_logger.bind(service="Deck")
 
     @log_errors(logger)
     def shuffle(self):

@@ -2,6 +2,7 @@ from Deck import Card
 from log_module import module_logger, log_errors
 from loguru import logger
 
+
 class Player:
     """
     Класс игрока
@@ -12,6 +13,7 @@ class Player:
         self.name = name
         self.chips = chips
         self.hand = []
+        self.player_logger = module_logger.bind(service="Player")
 
     @log_errors(logger)
     def reset_hand(self):

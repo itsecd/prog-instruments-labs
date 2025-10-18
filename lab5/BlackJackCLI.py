@@ -12,12 +12,14 @@ class BlackJackCLI:
     @log_errors(logger)
     def __init__(self):
         self.game = BlackJack()
+        self.BlackJackCLI_logger = module_logger.bind(service="BlackJackCLI")
 
     @log_errors(logger)
     def play(self):
         """
         Метод запускающий игру
         """
+        self.BlackJackCLI_logger.info("Game start")
         print(BLACKJACK_STR)
         print(START_MESSAGE)
 
@@ -67,3 +69,4 @@ class BlackJackCLI:
                 continue
 
         print("\nGame over! You finished with", self.game.player.chips, "chips.")
+        self.BlackJackCLI_logger.info("Game finish")

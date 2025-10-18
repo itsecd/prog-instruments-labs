@@ -7,9 +7,9 @@ from loguru import logger
 def main():
     main_logger = module_logger.bind(service="main")
     game = BlackJackCLI()
-    main_logger.info("Start Game")
+    main_logger.info("Program Game")
     game.play()
-    main_logger.info("Finish game")
+    main_logger.info("Finish program")
 
 
 if __name__ == "__main__":
