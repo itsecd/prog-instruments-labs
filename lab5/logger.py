@@ -3,6 +3,8 @@ import loguru
 
 def setup_logger():
 
+    loguru.logger.remove()
+
     file_format = (
                     "{time:YYYY-MM-DD HH:mm:ss} | "
                     "{level: <8} | "
