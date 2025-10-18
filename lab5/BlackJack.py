@@ -1,5 +1,6 @@
 from Deck import Deck
 from Player import Player, Dealer
+from logger import module_logger
 
 
 class BlackJack:
@@ -12,12 +13,15 @@ class BlackJack:
         self.game_num = 0
         self.DEALER_OPTIMAL_SUM = 17
         self.MAX_SUM = 21
+        self.logger = module_logger.bind(service="BlackJack")
 
     def start_round(self, bet: int):
         """
         Метод для запуска раунда
         :param bet: ставка
         """
+        self.logger.info("Start new round")
+
         self.game_num += 1
         self.player.reset_hand()
         self.dealer.reset_hand()
@@ -54,6 +58,8 @@ class BlackJack:
         """
         player_sum = self.player.hand_value()
         dealer_sum = self.dealer.hand_value()
+
+        self.logger.info("Round finished")
 
         if player_sum > self.MAX_SUM:
             return "dealer", 0
