@@ -1,14 +1,19 @@
 from BlackJack import BlackJack
 from config import BLACKJACK_STR, START_MESSAGE
+from log_module import module_logger, log_errors
+from loguru import logger
 
 
 class BlackJackCLI:
     """
     Класс реализующий логику игры БлэкДжек через ввод через командную строку
     """
+
+    @log_errors(logger)
     def __init__(self):
         self.game = BlackJack()
 
+    @log_errors(logger)
     def play(self):
         """
         Метод запускающий игру

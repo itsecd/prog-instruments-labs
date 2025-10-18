@@ -1,6 +1,7 @@
 import loguru
 import functools
 
+
 def setup_logger():
 
     loguru.logger.remove()

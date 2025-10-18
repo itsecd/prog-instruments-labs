@@ -12,7 +12,6 @@ def main():
     main_logger.info("Finish game")
 
 
-
 if __name__ == "__main__":
     main()
 

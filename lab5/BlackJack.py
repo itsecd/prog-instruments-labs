@@ -1,6 +1,7 @@
 from Deck import Deck
 from Player import Player, Dealer
-from logger import module_logger
+from log_module import module_logger, log_errors
+from loguru import logger
 
 
 class BlackJack:
@@ -15,6 +16,7 @@ class BlackJack:
         self.MAX_SUM = 21
         self.logger = module_logger.bind(service="BlackJack")
 
+    @log_errors(logger)
     def start_round(self, bet: int):
         """
         Метод для запуска раунда
@@ -36,6 +38,7 @@ class BlackJack:
 
         return bet_amount
 
+    @log_errors(logger)
     def player_hit(self):
         """
         Метод выдает карту игроку
@@ -44,6 +47,7 @@ class BlackJack:
         self.player.add_card(card)
         return card
 
+    @log_errors(logger)
     def dealer_play(self):
         """
         Метод для передачи хода диллеру
@@ -51,6 +55,7 @@ class BlackJack:
         while self.dealer.should_hit() < self.DEALER_OPTIMAL_SUM:
             self.dealer.add_card(self.deck.deal_one())
 
+    @log_errors(logger)
     def check_winner(self, bet: int):
         """
         Метод для проверки победителя
