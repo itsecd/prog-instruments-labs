@@ -2,8 +2,10 @@ import functools
 import loguru
 
 
-
 def setup_logger():
+    """
+    Устанавливает настройки логгера
+    """
 
     loguru.logger.remove()
 
@@ -27,6 +29,9 @@ def setup_logger():
 
 
 def log_errors(logger):
+    """
+    Декоратор для логирования ошибок функций
+    """
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
