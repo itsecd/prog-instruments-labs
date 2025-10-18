@@ -1,5 +1,6 @@
-import loguru
 import functools
+import loguru
+
 
 
 def setup_logger():

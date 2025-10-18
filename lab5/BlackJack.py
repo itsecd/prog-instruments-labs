@@ -1,6 +1,7 @@
 from Deck import Deck
-from Player import Player, Dealer
 from log_module import module_logger, log_errors
+from Player import Player, Dealer
+
 from loguru import logger
 
 
