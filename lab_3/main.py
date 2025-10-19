@@ -1,11 +1,12 @@
 from checksum import calculate_checksum, serialize_result
-from constants import CSV_DELIMITER,CSV_FILENAME,VARIANT
+from constants import CSV_DELIMITER, CSV_FILENAME, VARIANT
 from csv_processor import read_csv, validate_data
 from validators import get_validation_patterns
 
+
 def main():
     print("Validation of the CSV file")
-    data = read_csv(CSV_FILENAME,CSV_DELIMITER)
+    data = read_csv(CSV_FILENAME, CSV_DELIMITER)
     if not data:
         print("No data loaded. Exiting.")
         return
@@ -19,6 +20,7 @@ def main():
     variant = VARIANT
     serialize_result(variant, checksum)
     print(f"Result saved to result.json for variant {variant}")
+
 
 if __name__ == "__main__":
     main()
