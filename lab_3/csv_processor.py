@@ -1,12 +1,13 @@
 import csv
-from typing import List, Dict, Any
+from typing import Any, Dict, List, Set
+from validators import validate_cell
 
 def read_csv(filename,delimiter) -> List[Dict[str, Any]]:
     """
     Reading a CSV file and returning data
-    :param delimiter:
-    :param filename:
-    :return:
+    :param filename: path to CSV file
+    :param delimiter: field separator character
+    :return: list of dictionaries with CSV data, empty list on error
     """
     try:
         with open(filename, 'r', encoding='utf-16') as file:
@@ -20,3 +21,29 @@ def read_csv(filename,delimiter) -> List[Dict[str, Any]]:
     except Exception as e:
         print(f"Error reading file: {e}")
         return []
+
+
+def validate_data(data: List[Dict[str, Any]],
+                  validation_patterns: Dict[str, Any]) -> Set[int]:
+    """
+    Validation of all CSV file data
+    :param data: CSV file data
+    :param validation_patterns: dictionary with regular expressions
+    :return: multiple invalid line numbers
+    """
+    invalid_rows = set()
+    for row_index, row in enumerate(data, start=1):
+        is_row_valid = True
+
+        for column, pattern in validation_patterns.items():
+            if column in row:
+                value = row[column]
+                if not validate_cell(value, pattern):
+                    is_row_valid = False
+                    break
+
+        if not is_row_valid:
+            invalid_rows.add(row_index)
+
+    print(f"Found {len(invalid_rows)} invalid rows")
+    return invalid_rows
