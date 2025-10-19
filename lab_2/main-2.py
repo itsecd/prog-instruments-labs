@@ -8,7 +8,7 @@ from keys import KeyManager
 MAX_KEY_SIZE = 448
 MIN_KEY_SIZE = 32
 DEFAULT_SETTINGS_FILE = "settings.json"
-BACKUP_PATH = "/default/backup/"
+BACKUP_PATH = "backup/keys"
 ENCRYPTION_MODE = "CBC"
 
 
