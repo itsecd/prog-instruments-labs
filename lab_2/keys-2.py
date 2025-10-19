@@ -1,6 +1,8 @@
 import os
+
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import rsa, padding as asym_padding
+from cryptography.hazmat.primitives.asymmetric import padding as asym_padding
+from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
 
@@ -13,7 +15,7 @@ class KeyManager:
         self.private_key = None
         self.public_key = None
 
-    def ValidateKeySize(self, key_size):
+    def validate_key_size(self, key_size):
 
         if key_size < 32 or key_size > 448 or key_size % 8 != 0:
             raise ValueError(
@@ -21,9 +23,9 @@ class KeyManager:
                 f"Получено: {key_size} бит."
             )
 
-    def Generate_Symmetric_Key(self, key_size=448):
+    def generate_symmetric_key(self, key_size=448):
 
-        self.ValidateKeySize(key_size)
+        self.validate_key_size(key_size)
         self.symmetric_key = os.urandom(key_size // 8)
         print(f"Сгенерирован {key_size}-битный симметричный ключ Blowfish")
         return self.symmetric_key

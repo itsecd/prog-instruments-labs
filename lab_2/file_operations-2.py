@@ -1,9 +1,10 @@
-import shutil
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding as asym_padding
-from cryptography.hazmat.primitives import serialization
-import os
 import json
+import os
+import shutil
+
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import padding as asym_padding
 
 
 
@@ -82,7 +83,7 @@ class FileManager:
         print(f"Файл расшифрован и сохранен в {output_file}")
 
     @staticmethod
-    def LoadSettingsFile(settings_path):
+    def load_settings_file(settings_path):
 
         try:
             with open(settings_path) as f:
@@ -91,7 +92,7 @@ class FileManager:
             print("Ошибка загрузки настроек")
             return {}
 
-    def backupkeys(self, settings):
+    def backup_keys(self, settings):
         print("Создание резервной копии ключей...")
 
         backup_dir = "/backup/keys/"

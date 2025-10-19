@@ -1,13 +1,14 @@
-from keys import KeyManager
-from crypto_operations import FileEncryptor, FileDecryptor
-from file_operations import FileManager
 import argparse
+
+from crypto_operations import FileDecryptor, FileEncryptor
+from file_operations import FileManager
+from keys import KeyManager
 
 
 MAX_KEY_SIZE = 448
 MIN_KEY_SIZE = 32
 DEFAULT_SETTINGS_FILE = "settings.json"
-Backup_Path = "/default/backup/"
+BACKUP_PATH = "/default/backup/"
 ENCRYPTION_MODE = "CBC"
 
 
