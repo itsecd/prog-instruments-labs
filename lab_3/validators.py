@@ -13,7 +13,7 @@ def get_validation_patterns() -> Dict[str, Pattern]:
         r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     )
     patterns[COLUMN_HTTP_STATUS] = re.compile(
-        r'^\d{3} [A-Z][A-Za-z ]+[A-Za-z]$'
+        r'^\d{3} [A-Z][A-Za-z ]+$'
     )
     patterns[COLUMN_IP_V4] = re.compile(
         r'^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'
@@ -31,12 +31,15 @@ def get_validation_patterns() -> Dict[str, Pattern]:
         r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
         re.IGNORECASE
     )
-    remaining_columns = [
-        col for col in COLUMNS_TO_VALIDATE
-        if col not in patterns
-    ]
-    for column in remaining_columns:
-        patterns[column] = re.compile(r'.*')
+    patterns[COLUMN_LATITUDE] = re.compile(
+        r'^(-?(?:90(?:\.0{1,6})?|[1-8]?\d(?:\.\d{1,6})?))$'
+    )
+    patterns[COLUMN_ISBN] = re.compile(
+        r'^(\d{3}-)?\d-\d{5}-\d{3}-\d$'
+    )
+    patterns[COLUMN_TIME] = re.compile(
+        r'^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)\.(\d{1,6})$'
+    )
     return patterns
 
 
