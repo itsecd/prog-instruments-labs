@@ -21,6 +21,16 @@ def get_validation_patterns() -> Dict[str, Pattern]:
     patterns[COLUMN_HEX_COLOR] = re.compile(
         r'^#[0-9A-Fa-f]{6}$'
     )
+    patterns[COLUMN_INN] = re.compile(
+        r'^\d{12}$'
+    )
+    patterns[COLUMN_PASSPORT] = re.compile(
+        r'^\d{2} \d{2} \d{6}$'
+    )
+    patterns[COLUMN_UUID] = re.compile(
+        r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$',
+        re.IGNORECASE
+    )
     remaining_columns = [
         col for col in COLUMNS_TO_VALIDATE
         if col not in patterns
