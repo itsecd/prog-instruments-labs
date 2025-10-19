@@ -52,9 +52,15 @@ class KeyManager:
     def decrypt_symmetric_key(self, encrypted_sym_key_path):
 
         print(f"Расшифровка симметричного ключа из {encrypted_sym_key_path}...")
-        with open(encrypted_sym_key_path, 'rb') as key_file:
-            encrypted_key = key_file.read()
-
+        try:
+            with open(encrypted_sym_key_path, 'rb') as key_file:
+                encrypted_key = key_file.read()
+        except FileNotFoundError:
+            print(f"Ошибка: файл ключа не найден - {encrypted_sym_key_path}")
+            return None
+        except Exception as e:
+            print(f"Ошибка чтения файла ключа: {e}")
+            return None
         self.symmetric_key = self.private_key.decrypt(
             encrypted_key,
             asym_padding.OAEP(

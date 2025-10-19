@@ -21,7 +21,7 @@ def get_valid_key_size():
                 print("Ошибка: Размер ключа должен быть 32-448 бит с шагом 8")
                 continue
             return key_size
-        except:
+        except ValueError:
             print("Ошибка: Введите целое число")
 
 
@@ -50,7 +50,7 @@ def main():
                 key_manager.ValidateKeySize(args.key_size)
                 key_size = args.key_size
             except ValueError as e:
-                print(e)
+                print(f"Ошибка размера ключа: {e}")
                 return
         else:
             key_size = get_valid_key_size()

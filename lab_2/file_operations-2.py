@@ -23,24 +23,38 @@ class FileManager:
                 format=serialization.PublicFormat.SubjectPublicKeyInfo
             ))
 
-        with open(private_key_path, 'wb') as priv_out:
-            priv_out.write(private_key.private_bytes(
-                encoding=serialization.Encoding.PEM,
-                format=serialization.PrivateFormat.TraditionalOpenSSL,
-                encryption_algorithm=serialization.NoEncryption()
-            ))
+        try:
+            # Сохраняем приватный ключ
+            with open(private_key_path, 'wb') as priv_out:
+                priv_out.write(private_key.private_bytes(
+                    encoding=serialization.Encoding.PEM,
+                    format=serialization.PrivateFormat.TraditionalOpenSSL,
+                    encryption_algorithm=serialization.NoEncryption()
+                ))
 
-        encrypted_key = public_key.encrypt(
-            symmetric_key,
-            asym_padding.OAEP(
-                mgf=asym_padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None
+            # Шифруем симметричный ключ
+            encrypted_key = public_key.encrypt(
+                symmetric_key,
+                asym_padding.OAEP(
+                    mgf=asym_padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None
+                )
             )
-        )
 
-        with open(encrypted_sym_key_path, 'wb') as sym_out:
-            sym_out.write(encrypted_key)
+        except IOError as e:
+            print(f"Ошибка записи файла: {e}")
+            return False
+        except Exception as e:
+            print(f"Ошибка работы с ключами: {e}")
+            return False
+
+        try:
+            with open(encrypted_sym_key_path, 'wb') as sym_out:
+                sym_out.write(encrypted_key)
+        except IOError as e:
+            print(f"Ошибка записи зашифрованного ключа в {encrypted_sym_key_path}: {e}")
+            return False
 
         print(f"Публичный ключ сохранен в {public_key_path}")
         print(f"Приватный ключ сохранен в {private_key_path}")
@@ -51,29 +65,54 @@ class FileManager:
 
         print(f"Шифрование файла {input_file}...")
 
-        with open(input_file, 'rb') as f:
-            plaintext = f.read()
+        try:
+            with open(input_file, 'rb') as f:
+                plaintext = f.read()
+        except FileNotFoundError:
+            print(f"Ошибка: файл {input_file} не найден")
+            return False
+        except Exception as e:
+            print(f"Ошибка чтения файла: {e}")
+            return False
 
-        ciphertext = encryptor.encrypt(plaintext)
+        try:
+            ciphertext = encryptor.encrypt(plaintext)
+        except Exception as e:
+            print(f"Ошибка шифрования: {e}")
+            return False
 
-        with open(output_file, 'wb') as f:
-            f.write(encryptor.iv)
-            f.write(ciphertext)
+        try:
+            with open(output_file, 'wb') as f:
+                f.write(encryptor.iv)
+                f.write(ciphertext)
+        except Exception as e:
+            print(f"Ошибка записи файла: {e}")
+            return False
 
-        print("\nHex-дамп зашифрованного файла:")
-        with open(output_file, 'rb') as f:
-            print(f.read().hex())
+        try:
+            print("\nHex-дамп зашифрованного файла:")
+            with open(output_file, 'rb') as f:
+                print(f.read().hex())
+        except Exception as e:
+            print(f"Не удалось создать hex-дамп: {e}")
 
         print(f"Файл зашифрован и сохранен в {output_file}")
+        return True
 
     @staticmethod
     def decrypt_file(input_file, output_file, decryptor):
-
         print(f"Расшифровка файла {input_file}...")
 
-        with open(input_file, 'rb') as f:
-            iv = f.read(8)
-            ciphertext = f.read()
+        try:
+            with open(input_file, 'rb') as f:
+                iv = f.read(8)
+                ciphertext = f.read()
+        except FileNotFoundError:
+            print(f"Ошибка: файл {input_file} не найден")
+            return False
+        except Exception as e:
+            print(f"Ошибка чтения файла: {e}")
+            return False
 
         decrypted = decryptor.decrypt(ciphertext, iv)
 
@@ -88,8 +127,11 @@ class FileManager:
         try:
             with open(settings_path) as f:
                 return json.load(f)
-        except:
-            print("Ошибка загрузки настроек")
+        except Exception as e:
+            print(f"Ошибка загрузки настроек: {e}")
+            return {}
+        except FileNotFoundError:
+            print("Ошибка: файл настроек не найден")
             return {}
 
     def backup_keys(self, settings):
