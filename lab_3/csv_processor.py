@@ -32,7 +32,7 @@ def validate_data(data: List[Dict[str, Any]],
     :return: multiple invalid line numbers
     """
     invalid_rows = set()
-    for row_index, row in enumerate(data, start=1):
+    for row_index, row in enumerate(data, start=0):
         is_row_valid = True
 
         for column, pattern in validation_patterns.items():
