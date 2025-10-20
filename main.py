@@ -16,3 +16,18 @@ def validate_row(row: list[str], patterns: list[re.Pattern]) -> bool:
         return False
     return all(pattern.fullmatch(value.strip()) for pattern, value in zip(patterns, row))
 
+
+def get_validation_patterns() -> list[re.Pattern]:
+    """Returns 10 regex patterns for validation."""
+    return [
+        re.compile(r"[A-Z][a-z]+(?: [A-Z][a-z]+)*"), # Name
+        re.compile(r"[A-Z][a-z]+"), # Surname
+        re.compile(r"[0-9]{2}-[0-9]{3}"), # Postal code
+        re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"), # Email
+        re.compile(r"\+?\d{1,3}[- ]?\(?\d{2,3}\)?[- ]?\d{3}[- ]?\d{2}[- ]?\d{2}"), # Phone
+        re.compile(r"\d{4}-\d{2}-\d{2}"), # Date (YYYY-MM-DD)
+        re.compile(r"[A-Z]{2}\d{6}"), # Passport
+        re.compile(r"[0-9]+\.[0-9]{2}"), # Decimal number
+        re.compile(r"[A-Za-z0-9]{8,}"), # ID / Password
+        re.compile(r"(?:https?://)?(?:www\.)?[A-Za-z0-9.-]+\.[A-Za-z]{2,}"), # URL
+    ]
