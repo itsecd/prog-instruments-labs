@@ -1,5 +1,5 @@
-from BlackJackCLI import BlackJackCLI
-from log_module import module_logger, log_errors
+from src.BlackJackCLI import BlackJackCLI
+from src.log_module import module_logger, log_errors
 
 from loguru import logger
 

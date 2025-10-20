@@ -1,4 +1,4 @@
-from log_module import module_logger, log_errors
+from src.log_module import module_logger, log_errors
 
 from loguru import logger
 import random

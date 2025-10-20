@@ -1,5 +1,5 @@
-from Deck import Card
-from log_module import module_logger, log_errors
+from src.Deck import Card
+from src.log_module import module_logger, log_errors
 
 from loguru import logger
 
@@ -47,7 +47,7 @@ class Player:
         """
         Метод для создания ставки
         """
-        if bet < 0:
+        if bet <= 0:
             raise ValueError("Bet must be > 0")
         if bet > self.chips:
             raise ValueError("Not enough chips")
