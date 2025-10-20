@@ -1,4 +1,11 @@
+import math
+import logging
+
 from scipy.special import gammaincc as igamc
+
+from lab5.logger import logger
+
+logger = logging.getLogger("tests")
 
 
 def frequency_bitwise_test(sequence: str) -> float:
@@ -8,12 +15,14 @@ def frequency_bitwise_test(sequence: str) -> float:
     :param sequence: Binary string
     :return: P-value
     """
+    logger.debug("Start frequency test")
     s_n = 0
     n = len(sequence)
     for val in sequence:
         s_n += 1 / math.sqrt(n) if val == "1" else -1 / math.sqrt(n)
 
     p_value = math.erfc(abs(s_n) / math.sqrt(2))
+    logger.info(f"Frequency test result: {p_value}")
     return p_value
 
 
@@ -23,21 +32,20 @@ def identical_consecutive_bits(sequence: str) -> float:
     :param sequence: Binary string
     :return: P-value
     """
+    logger.debug("Start consecutive bits test")
     n = len(sequence)
     s_n = sum(1 for val in sequence if val == "1") / n
 
     if abs(s_n - 0.5) >= 2 / math.sqrt(n):
+        logger.warning("Sequence unbalanced")
         return 0.0
 
     v_n = sum(1 for i in range(n - 1) if sequence[i] != sequence[i + 1])
     p_value = math.erfc(
         (abs(v_n - 2 * n * s_n * (1 - s_n))) / (2 * math.sqrt(2 * n) * s_n * (1 - s_n))
     )
-
+    logger.info(f"Consecutive bits result: {p_value}")
     return p_value
-
-
-import math
 
 
 def longest_tes_sequence(sequence: str, pi: list[float], block_size: int) -> float:
@@ -48,7 +56,7 @@ def longest_tes_sequence(sequence: str, pi: list[float], block_size: int) -> flo
     :param block_size: Block length
     :return: P-value
     """
-
+    logger.debug("Start longest sequence test")
     n = len(sequence)
     v = [0, 0, 0, 0]
     blocks = [sequence[i : i + block_size] for i in range(0, n, block_size)]
@@ -74,4 +82,6 @@ def longest_tes_sequence(sequence: str, pi: list[float], block_size: int) -> flo
 
     chi_square = sum(((v[i] - 16 * pi[i]) ** 2) / (16 * pi[i]) for i in range(4))
     p_value = igamc(3 / 2, chi_square / 2)
+
+    logger.info(f"Longest sequence result: {p_value}")
     return p_value
