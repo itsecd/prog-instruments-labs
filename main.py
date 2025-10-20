@@ -6,7 +6,7 @@ from consts import *
 
 def load_data(file_path: str):
     """Loads CSV and returns a list of rows (list[list[str]])."""
-    with open(file_path, "r", encoding="windows-1251", newline="") as file:
+    with open(file_path, "r", encoding=FILE_ENCODING, newline="") as file:
         reader = csv.reader(file)
         return list(reader)
 
@@ -45,15 +45,13 @@ def find_invalid_rows(data: list[list[str]], patterns: list[re.Pattern]) -> list
 
 
 def main():
-    file_path = "13.csv"
-    variant = 13
 
-    data = load_data(file_path)
+    data = load_data(DEFAULT_FILE_PATH)
     patterns = get_validation_patterns()
     invalid_rows = find_invalid_rows(data, patterns)
 
     checksum_value = calculate_checksum(invalid_rows)
-    serialize_result(variant, checksum_value)
+    serialize_result(DEFAULT_VARIANT, checksum_value)
 
     print("Checksum:", checksum_value)
     print("Result saved in result.json")
