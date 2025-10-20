@@ -1,0 +1,12 @@
+{
+    "C++": {
+        "frequency_bitwise_test": 0.8596837951986662,
+        "identical_consecutive_bits": 0.4776779258047825,
+        "longest_tes_sequence": 0.8354916269152006
+    },
+    "Java": {
+        "frequency_bitwise_test": 0.8596837951986662,
+        "identical_consecutive_bits": 0.8618206240105855,
+        "longest_tes_sequence": 0.8842848389276898
+    }
+}

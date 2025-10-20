@@ -1,0 +1,7 @@
+{
+  "seq_CPP" : "PRNG/Sequence_CPP.txt",
+  "seq_JAVA" : "PRNG/Sequence_JAVA.txt",
+  "test_results" : "TESTS/results.json",
+  "pi_i": [0.2148, 0.3672, 0.2305, 0.1875],
+  "block_size": 8
+}
