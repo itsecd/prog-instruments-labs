@@ -23,10 +23,9 @@ jobs:
         ref: ${{ github.event.pull_request.head.sha }}
     
     - name: Set up Python 3.12
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v6
       with:
         python-version: "3.12"
-        cache: 'pip'
         
     - name: Set env path
       run: |
