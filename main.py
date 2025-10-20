@@ -1,5 +1,5 @@
-from database import init_database
 from auth import register, login
+from database import init_database
 from student_operations import add_student, view_students, search_student, update_student, delete_student
 
 

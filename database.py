@@ -1,11 +1,12 @@
 import mysql.connector
+from settings import settings
 
 
 def init_database():
     mydb = mysql.connector.connect(
-        host = 'localhost',
-        user = 'susername',
-        passwd = 'password'
+        host=settings['host'],
+        user=settings['user'],
+        passwd=settings['password']
     )
     mycursor = mydb.cursor()
 
