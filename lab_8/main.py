@@ -14,13 +14,13 @@ logger = logging.getLogger(__name__)
 async def main():
     """Programm entry point"""
     logging.basicConfig(
-        level=config.tg_bot_token,
+        level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
 
     logger.info("Program starting")
 
-    bot = Bot(token=config.bot_token)
+    bot = Bot(token=config.tg_bot_token)
 
     dp = Dispatcher()
 
