@@ -9,17 +9,8 @@ def add_student(mycursor, mydb):
     var5 = input("Enter the phone no. of the student: ")
 
     mycursor.execute(
-        "insert into studentsinfo values('"
-        + var1
-        + "','"
-        + var2
-        + "','"
-        + var3
-        + "','"
-        + var4
-        + "','"
-        + var5
-        + "')"
+        "insert into studentsinfo values (%s, %s, %s, %s, %s)",
+        (var1, var2, var3, var4, var5)
     )
     mydb.commit()
     print("Data saved successfully!")
@@ -42,7 +33,7 @@ def search_student(mycursor):
     print("------------------------")
     a = input("Enter the sch no. of the student:")
 
-    mycursor.execute("select * from studentsinfo where Sch_no=('" + a + "')")
+    mycursor.execute("select * from studentsinfo where Sch_no = %s", (a,))
     result = mycursor.fetchall()
 
     if len(result) == 0:
@@ -64,17 +55,8 @@ def update_student(mycursor, mydb):
     var5 = input("Enter the phone no. of the student: ")
 
     mycursor.execute(
-        "update studentsinfo set name=('"
-        + var1
-        + "'),age=('"
-        + var2
-        + "'),email=('"
-        + var3
-        + "'),phone=('"
-        + var4
-        + "') where Sch_no=('"
-        + var5
-        + "')"
+        "update studentsinfo set name = %s, age = %s, email = %s, phone = %s WHERE sch_no = %s",
+        (var1, var2, var3, var4, var5)
     )
     mydb.commit()
     print("Data updated successfully!")
@@ -86,7 +68,7 @@ def delete_student(mycursor, mydb):
     print("--- Delete Student ---")
     print("------------------------")
     var1 = input("Enter the sch no. of the student:")
-    mycursor.execute("delete from studentsinfo where sch_no=('" + var1 + "')")
+    mycursor.execute("delete from studentsinfo where sch_no = %s", (var1,))
     mydb.commit()
     print("Data deleted successfully!")
     input("Press Enter to continue!")

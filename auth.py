@@ -13,7 +13,7 @@ def register(mycursor, mydb):
     password = input("Enter your Password: ")
     hashed_password = hash_password(password)
 
-    mycursor.execute("insert into admin values('" + id + "','" + hashed_password + "')")
+    mycursor.execute("insert into admin values (%s, %s)",   (id, hashed_password))
     mydb.commit()
     print("Registered successfully!")
     input("Press Enter to continue!")
@@ -26,9 +26,10 @@ def login(mycursor):
     print("-------------")
     id = input("Enter the id: ")
     password = input("Enter the password: ")
+    hashed_password = hash_password(password)
 
     mycursor.execute(
-        "select * from admin where id=('" + id + "') and password=('" + password + "')"
+        "select * from admin where id = %s and password = %s", (id, hashed_password)
     )
     result = mycursor.fetchall()
 
