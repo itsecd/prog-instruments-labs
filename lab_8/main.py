@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 async def main():
     """Programm entry point"""
     logging.basicConfig(
-        level=config.logging_level,
+        level=config.tg_bot_token,
         format="%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     )
 
