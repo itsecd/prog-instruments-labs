@@ -1,11 +1,19 @@
+import hashlib
+
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+
 def register(mycursor, mydb):
     print("-------------------------")
     print("--------Register---------")
     print("-------------------------")
     id = input("Enter your Id: ")
     password = input("Enter your Password: ")
+    hashed_password = hash_password(password)
 
-    mycursor.execute("insert into admin values('" + id + "','" + password + "')")
+    mycursor.execute("insert into admin values('" + id + "','" + hashed_password + "')")
     mydb.commit()
     print("Registered successfully!")
     input("Press Enter to continue!")
