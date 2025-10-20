@@ -40,3 +40,22 @@ def find_invalid_rows(data: list[list[str]], patterns: list[re.Pattern]) -> list
         if not validate_row(row, patterns):
             invalid_lines.append(index)
     return invalid_lines
+
+
+def main():
+    file_path = "13.csv"
+    variant = 13
+
+    data = load_data(file_path)
+    patterns = get_validation_patterns()
+    invalid_rows = find_invalid_rows(data, patterns)
+
+    checksum_value = calculate_checksum(invalid_rows)
+    serialize_result(variant, checksum_value)
+
+    print("Checksum:", checksum_value)
+    print("Result saved in result.json")
+
+
+if __name__ == "__main__":
+    main()
