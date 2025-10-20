@@ -12,7 +12,9 @@ class TestPlayer:
         assert sample_player.chips == 100
         assert sample_player.hand == []
 
-    def test_reset_hand(self):
+    def test_reset_hand(self, mock_players_deck):
+        mock_players_deck.reset_hand()
+        assert mock_players_deck.hand == []
 
     @pytest.mark.parametrize(
         ("bet", "exception_str"),
