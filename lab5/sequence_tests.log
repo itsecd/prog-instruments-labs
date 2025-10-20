@@ -1,0 +1,35 @@
+2025-10-20 17:28:46 | INFO | main | Starting sequence tests application
+2025-10-20 17:28:46 | DEBUG | main | Reading configuration
+2025-10-20 17:28:46 | INFO | io | Reading JSON file: settings.json
+2025-10-20 17:28:46 | INFO | main | Configuration loaded: block_size=8
+2025-10-20 17:28:46 | INFO | main | Reading CPP sequence
+2025-10-20 17:28:46 | INFO | io | Reading file: PRNG/Sequence_CPP.txt
+2025-10-20 17:28:46 | INFO | main | Reading JAVA sequence
+2025-10-20 17:28:46 | INFO | io | Reading file: PRNG/Sequence_JAVA.txt
+2025-10-20 17:28:46 | DEBUG | tests | Start frequency test
+2025-10-20 17:28:46 | INFO | tests | Frequency test result: 0.8596837951986662
+2025-10-20 17:28:46 | DEBUG | tests | Start consecutive bits test
+2025-10-20 17:28:46 | INFO | tests | Consecutive bits result: 0.4776779258047825
+2025-10-20 17:28:46 | DEBUG | tests | Start longest sequence test
+2025-10-20 17:28:46 | INFO | tests | Longest sequence result: 0.8354916269152006
+2025-10-20 17:28:46 | DEBUG | tests | Start frequency test
+2025-10-20 17:28:46 | INFO | tests | Frequency test result: 0.8596837951986662
+2025-10-20 17:28:46 | DEBUG | tests | Start consecutive bits test
+2025-10-20 17:28:46 | INFO | tests | Consecutive bits result: 0.8618206240105855
+2025-10-20 17:28:46 | DEBUG | tests | Start longest sequence test
+2025-10-20 17:28:46 | INFO | tests | Longest sequence result: 0.8842848389276898
+2025-10-20 17:28:46 | INFO | main | Saving test results
+2025-10-20 17:28:46 | INFO | io | Writing JSON to: TESTS/results.json
+2025-10-20 17:29:24 | INFO | main | Starting sequence tests application
+2025-10-20 17:29:24 | DEBUG | main | Reading configuration
+2025-10-20 17:29:24 | INFO | io | Reading JSON file: settings.json
+2025-10-20 17:29:24 | INFO | main | Configuration loaded: block_size=8
+2025-10-20 17:29:24 | INFO | main | Reading CPP sequence
+2025-10-20 17:29:24 | INFO | io | Reading file: RNG/Sequence_CPP.txt
+2025-10-20 17:29:24 | ERROR | io | File not found: RNG/Sequence_CPP.txt
+2025-10-20 17:29:24 | INFO | main | Reading JAVA sequence
+2025-10-20 17:29:24 | INFO | io | Reading file: PRNG/Sequence_JAVA.txt
+2025-10-20 17:29:24 | DEBUG | tests | Start frequency test
+2025-10-20 17:29:24 | INFO | tests | Frequency test result: 1.0
+2025-10-20 17:29:24 | DEBUG | tests | Start consecutive bits test
+2025-10-20 17:29:24 | ERROR | main | Application error: division by zero
