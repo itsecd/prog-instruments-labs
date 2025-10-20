@@ -31,3 +31,12 @@ def get_validation_patterns() -> list[re.Pattern]:
         re.compile(r"[A-Za-z0-9]{8,}"), # ID / Password
         re.compile(r"(?:https?://)?(?:www\.)?[A-Za-z0-9.-]+\.[A-Za-z]{2,}"), # URL
     ]
+
+
+def find_invalid_rows(data: list[list[str]], patterns: list[re.Pattern]) -> list[int]:
+    """Finds invalid data rows (excluding header)."""
+    invalid_lines = []
+    for index, row in enumerate(data[1:], start=0):
+        if not validate_row(row, patterns):
+            invalid_lines.append(index)
+    return invalid_lines
