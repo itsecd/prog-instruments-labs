@@ -1,4 +1,5 @@
 from src.Player import Player
+from src.Deck import Card
 
 
 import pytest
@@ -25,6 +26,26 @@ class TestPlayer:
 
         assert exception_str in str(exc.value)
 
-    def test_make_bet_normal(self, sample_player):
-        bet = 70
+    @pytest.mark.parametrize(
+        "bet",
+        [
+            70,
+            100,
+            1
+        ],
+    )
+    def test_make_bet_normal(self, sample_player, bet):
         assert bet == sample_player.make_bet(bet)
+
+    @pytest.mark.parametrize("cards, expected_value", [
+        (("Ace", "King"), 21),
+        (("Ace", "9"), 20),
+        (("Ace", "Ace", "9"), 21),
+        (("10", "10", "2"), 22),
+        (("Ace", "Ace", "Ace", "8"), 21),
+    ])
+    def test_hand_value_parametrized(self, sample_player, cards, expected_value):
+        for rank in cards:
+            sample_player.add_card(Card("Hearts", rank))
+
+        assert sample_player.hand_value() == expected_value
