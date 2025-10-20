@@ -8,7 +8,9 @@ import datetime
 router = Router()
 
 
-def prettify_user_info(user_info: dict) -> str:    
+def prettify_user_info(user_info: dict) -> str:
+
+    # html injection ???   
     prettified = ""
 
     site_admin = user_info["site_admin"]
