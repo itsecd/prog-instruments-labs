@@ -11,6 +11,7 @@ router = Router()
 
 @router.message(Command("github"))
 async def github_command_handler(message: Message):
+    """Github command handler"""
     args = message.text.split(" ", maxsplit=1)
     if len(args) < 2:
         logging.error("Invalid command format: %s", message.text)

@@ -8,4 +8,5 @@ router = Router()
 
 @router.message(Command("start"))
 async def start_command_handler(message: Message):
-    await message.answer("Hello, it's menu!")
+    """Start command handler"""
+    await message.answer("Hello, it's menu! Type /github <username>")

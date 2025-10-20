@@ -3,6 +3,14 @@ import datetime
 
 
 def prettify_user_info(user_info: dict) -> str:
+    """Prettify user info
+
+    Args:
+        user_info (dict)
+
+    Returns:
+        str: result pretty string
+    """
     # html injection ???   
     prettified = ""
 
@@ -38,6 +46,17 @@ def prettify_user_info(user_info: dict) -> str:
 
 
 async def get_github_user(username: str) -> dict | None:
+    """Fetch github user info with github public api
+
+    Args:
+        username (str)
+
+    Raises:
+        RuntimeError: sometring wrong with response
+
+    Returns:
+        dict | None: user info or nothing
+    """
     url = f"https://api.github.com/users/{username}"
 
     async with aiohttp.ClientSession() as session:
