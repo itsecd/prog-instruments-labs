@@ -6,8 +6,10 @@ import pytest
 
 class TestPlayer:
 
-
-
+    def test_player_initialization(self, sample_player):
+        assert sample_player.name == "Test"
+        assert sample_player.chips == 100
+        assert sample_player.hand == []
 
     @pytest.mark.parametrize(
         ("bet", "exception_str"),
