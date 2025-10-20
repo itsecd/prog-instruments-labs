@@ -61,3 +61,17 @@ class TestPlayer:
             sample_player.add_card(Card("Hearts", rank))
 
         assert sample_player.hand_value() == expected_value
+
+class TestDealer:
+    @pytest.mark.parametrize("cards, expected_value", [
+        (("Ace", "King"), 21),
+        (("Ace", "9"), 20),
+        (("Ace", "Ace", "9"), 21),
+        (("10", "10", "2"), 22),
+        (("Ace", "Ace", "Ace", "8"), 21),
+    ])
+    def test_hand_value_parametrized(self, sample_dealer, cards, expected_value):
+        for rank in cards:
+            sample_dealer.add_card(Card("Hearts", rank))
+
+        assert sample_dealer.should_hit() == expected_value

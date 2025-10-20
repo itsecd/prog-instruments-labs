@@ -4,6 +4,11 @@ from src.Deck import Card
 
 
 @pytest.fixture
+def sample_dealer():
+    return Dealer("Test", 100)
+
+
+@pytest.fixture
 def sample_player():
     return Player("Test", 100)
 
