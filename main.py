@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+
 from config import Config
 from asymmetric_crypto import AsymmetricCrypto
 from symmetric_crypto import SymmetricCrypto
@@ -198,6 +199,8 @@ def main():
     init_parser = subparsers.add_parser(
         'init', help='Создание файла настроек по умолчанию'
     )
+
+    init_parser = subparsers.add_parser('init', help='Создание файла настроек по умолчанию')
 
     args = parser.parse_args()
 

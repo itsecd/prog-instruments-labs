@@ -7,7 +7,7 @@ class AsymmetricCrypto:
     """Класс для работы с асимметричным шифрованием (RSA)"""
 
     @staticmethod
-    def generate_keys() -> tuple[RSAPrivateKey, RSAPublicKey]:
+    def  generate_keys() -> tuple[RSAPrivateKey, RSAPublicKey]:
         """Генерирует пару RSA ключей"""
         private_key = rsa.generate_private_key(
             public_exponent=65537,

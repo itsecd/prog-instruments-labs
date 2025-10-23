@@ -1,4 +1,5 @@
 from typing import Union
+
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
 from cryptography.hazmat.primitives.serialization import load_pem_private_key, load_pem_public_key
