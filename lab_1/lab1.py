@@ -46,7 +46,6 @@ class RSACrypto:
             print(f"Ошибка RSA шифрования: {e}")
             raise
 
-
     @staticmethod
     def rsa_decrypt(private_key: Any, encrypted_data: bytes) -> bytes:
         """
@@ -55,7 +54,6 @@ class RSACrypto:
         :param encrypted_data: зашифрованные данные
         :return: расшифрованные данные
         """
-
         try:
             print("Начинаем RSA дешифрование...")
 
@@ -84,7 +82,6 @@ class AESCrypto:
         """Создает случайный вектор инициализации"""
         return os.urandom(16)
 
-
     @staticmethod
     def create_aes_key(key_size=32):
         """
@@ -95,7 +92,6 @@ class AESCrypto:
         if key_size not in [16, 24, 32]:
             raise ValueError("Допустимые размеры ключа: 16, 24, 32 байта")
         return os.urandom(key_size)
-
 
     @staticmethod
     def encrypt_data(data: bytes, key: bytes, iv: bytes = None) -> tuple:
@@ -131,7 +127,6 @@ class AESCrypto:
         except Exception as e:
             print(f"Ошибка AES шифрования: {e}")
             raise
-
 
     @staticmethod
     def decrypt_data(ciphertext: bytes, key: bytes, iv: bytes) -> bytes:
@@ -183,7 +178,6 @@ class FileManager:
             print(f"Ошибка чтения файла: {e}")
             raise
 
-
     @staticmethod
     def write_file(filename, data):
         """
@@ -199,7 +193,6 @@ class FileManager:
             print(f"Ошибка записи файла: {e}")
             raise
 
-
     @staticmethod
     def load_config(config_path):
         """
@@ -213,7 +206,6 @@ class FileManager:
         except Exception as e:
             print(f"Ошибка загрузки конфигурации: {e}")
             raise
-
 
     @staticmethod
     def save_public_key(key, filename):
@@ -231,7 +223,6 @@ class FileManager:
         except Exception as e:
             print(f"Ошибка сохранения публичного ключа: {e}")
             raise
-
 
     @staticmethod
     def save_private_key(key, filename):
@@ -251,7 +242,6 @@ class FileManager:
             print(f"Ошибка сохранения приватного ключа: {e}")
             raise
 
-
     @staticmethod
     def load_public_key(filename):
         """
@@ -265,7 +255,6 @@ class FileManager:
         except Exception as e:
             print(f"Ошибка загрузки публичного ключа: {e}")
             raise
-
 
     @staticmethod
     def load_private_key(filename):
@@ -303,7 +292,6 @@ class KeyManager:
         print(f"RSA-{key_size} ключи созданы")
         return public_key, private_key
 
-
     @staticmethod
     def generate_aes_key():
         """Создает AES ключ и IV"""
@@ -315,7 +303,6 @@ class KeyManager:
         print("AES ключ и IV созданы")
         return aes_key, iv
 
-
     @staticmethod
     def protect_aes_key(public_key, aes_key):
         """
@@ -324,7 +311,6 @@ class KeyManager:
         :param aes_key: ключ для защиты
         :return: зашифрованный ключ
         """
-
         encrypted_key = RSACrypto.rsa_encrypt(public_key, aes_key)
         print("AES ключ защищен")
 
@@ -336,7 +322,6 @@ class CryptoSystem:
 
     def __init__(self, config_path):
         self.config = FileManager.load_config(config_path)
-
 
     def generate_keys(self):
         """Генерирует все необходимые ключи"""
@@ -356,7 +341,6 @@ class CryptoSystem:
         FileManager.write_file(self.config['iv_file'], iv)
 
         print("Все ключи успешно созданы и сохранены!")
-
 
     def encrypt_file(self):
         """Шифрует файл"""
@@ -380,7 +364,6 @@ class CryptoSystem:
         FileManager.write_file(self.config['encrypted_file'], ciphertext)
 
         print("Файл успешно зашифрован!")
-
 
     def decrypt_file(self):
         """Расшифровывает файл"""
@@ -407,7 +390,6 @@ class CryptoSystem:
 
 
 def main():
-
     parser = argparse.ArgumentParser(description="Система гибридного шифрования")
 
     group = parser.add_mutually_exclusive_group(required=True)
