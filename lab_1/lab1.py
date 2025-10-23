@@ -16,16 +16,24 @@ from cryptography.hazmat.primitives.asymmetric.rsa import RSAPublicKey, RSAPriva
 
 
 class RSACrypto:
-    """Обработчик RSA шифрования для защиты ключей"""
+    """Обработчик RSA шифрования для защиты ключей."""
 
     @staticmethod
     def rsa_encrypt(public_key: RSAPublicKey, data: bytes) -> bytes:
-        """
-        Шифрует данные RSA публичным ключом.
+        """Шифрует данные RSA публичным ключом.
+
         Использует OAEP padding с SHA256 для надежности.
-        :param public_key: публичный ключ
-        :param data: данные для шифрования
-        :return: зашифрованные данные
+
+        Args:
+            public_key: Публичный ключ для шифрования
+            data: Данные для шифрования
+
+        Returns:
+            Зашифрованные данные
+
+        Raises:
+            ValueError: Если данные слишком большие для RSA
+            Exception: При ошибках шифрования
         """
         try:
             print("Начинаем RSA шифрование...")
@@ -51,11 +59,17 @@ class RSACrypto:
 
     @staticmethod
     def rsa_decrypt(private_key: RSAPrivateKey, encrypted_data: bytes) -> bytes:
-        """
-        Расшифровывает данные RSA приватным ключом
-        :param private_key: приватный ключ
-        :param encrypted_data: зашифрованные данные
-        :return: расшифрованные данные
+        """Расшифровывает данные RSA приватным ключом.
+
+        Args:
+            private_key: Приватный ключ для расшифровки
+            encrypted_data: Зашифрованные данные
+
+        Returns:
+            Расшифрованные данные
+
+        Raises:
+            Exception: При ошибках расшифровки
         """
         try:
             print("Начинаем RSA дешифрование...")
@@ -78,19 +92,25 @@ class RSACrypto:
 
 
 class AESCrypto:
-    """AES шифрование с CBC режимом для данных"""
+    """AES шифрование с CBC режимом для данных."""
 
     @staticmethod
     def create_iv() -> bytes:
-        """Создает случайный вектор инициализации"""
+        """Создает случайный вектор инициализации."""
         return os.urandom(16)
 
     @staticmethod
     def create_aes_key(key_size: int = 32) -> bytes:
-        """
-        Генерирует AES ключ нужного размера
-        :param key_size: размер ключа
-        :return: ключ
+        """Генерирует AES ключ нужного размера.
+
+        Args:
+            key_size: Размер ключа в байтах (16, 24, 32)
+
+        Returns:
+            Сгенерированный ключ
+
+        Raises:
+            ValueError: При недопустимом размере ключа
         """
         if key_size not in [16, 24, 32]:
             raise ValueError("Допустимые размеры ключа: 16, 24, 32 байта")
@@ -98,12 +118,19 @@ class AESCrypto:
 
     @staticmethod
     def encrypt_data(data: bytes, key: bytes, iv: bytes = None) -> Tuple[bytes, bytes]:
-        """
-        Шифрует данные AES-256 в режиме CBC
-        :param data: данные для шифрования
-        :param key: ключ для щифрования
-        :param iv: вектор инициализации
-        :return: кортеж (зашифрованные данные, вектор инициализации)
+        """Шифрует данные AES-256 в режиме CBC.
+
+        Args:
+            data: Данные для шифрования
+            key: Ключ для шифрования
+            iv: Вектор инициализации (опционально)
+
+        Returns:
+            Кортеж (зашифрованные данные, вектор инициализации)
+
+        Raises:
+            ValueError: При неверном размере ключа
+            Exception: При ошибках шифрования
         """
         try:
             if iv is None:
@@ -133,12 +160,18 @@ class AESCrypto:
 
     @staticmethod
     def decrypt_data(ciphertext: bytes, key: bytes, iv: bytes) -> bytes:
-        """
-        Расшифровывает данные AES
-        :param ciphertext: зашифрованные данные
-        :param key: ключ для расшифровки
-        :param iv: вектор инициализации
-        :return: расшифрованные данные
+        """Расшифровывает данные AES.
+
+        Args:
+            ciphertext: Зашифрованные данные
+            key: Ключ для расшифровки
+            iv: Вектор инициализации
+
+        Returns:
+            Расшифрованные данные
+
+        Raises:
+            Exception: При ошибках расшифровки
         """
         try:
             cipher = Cipher(
@@ -162,14 +195,21 @@ class AESCrypto:
 
 
 class FileManager:
-    """Управление файловыми операциями"""
+    """Управление файловыми операциями."""
 
     @staticmethod
     def read_file(filename: str) -> bytes:
-        """
-        читает файл
-        :param filename: путь к файлу
-        :return: содержимое файла
+        """Читает файл и возвращает его содержимое.
+
+        Args:
+            filename: Путь к файлу
+
+        Returns:
+            Содержимое файла в виде байтов
+
+        Raises:
+            FileNotFoundError: Если файл не найден
+            Exception: При других ошибках чтения
         """
         try:
             with open(filename, 'rb') as f:
@@ -183,10 +223,14 @@ class FileManager:
 
     @staticmethod
     def write_file(filename: str, data: bytes) -> None:
-        """
-        записывает данные в файл
-        :param filename: путь к файлу
-        :param data: данные для записи
+        """Записывает данные в файл.
+
+        Args:
+            filename: Путь к файлу
+            data: Данные для записи
+
+        Raises:
+            Exception: При ошибках записи
         """
         try:
             with open(filename, 'wb') as f:
@@ -198,10 +242,16 @@ class FileManager:
 
     @staticmethod
     def load_config(config_path: str) -> Dict[str, Any]:
-        """
-        загружает конфигурацию
-        :param config_path: путь к конфигурации
-        :return: загруженная конфигурация
+        """Загружает конфигурацию из JSON файла.
+
+        Args:
+            config_path: Путь к файлу конфигурации
+
+        Returns:
+            Загруженная конфигурация в виде словаря
+
+        Raises:
+            Exception: При ошибках загрузки
         """
         try:
             with open(config_path, 'r', encoding='utf-8') as f:
@@ -212,10 +262,14 @@ class FileManager:
 
     @staticmethod
     def save_public_key(key: RSAPublicKey, filename: str) -> None:
-        """
-        сохраняет публичный ключ
-        :param key: публичный ключ
-        :param filename: путь к файлу
+        """Сохраняет публичный ключ в PEM формате.
+
+        Args:
+            key: Публичный ключ для сохранения
+            filename: Путь к файлу
+
+        Raises:
+            Exception: При ошибках сохранения
         """
         try:
             pem_data = key.public_bytes(
@@ -229,10 +283,14 @@ class FileManager:
 
     @staticmethod
     def save_private_key(key: RSAPrivateKey, filename: str) -> None:
-        """
-        сохраняет приватный ключ
-        :param key: приватный ключ
-        :param filename: путь к файлу
+        """Сохраняет приватный ключ в PEM формате.
+
+        Args:
+            key: Приватный ключ для сохранения
+            filename: Путь к файлу
+
+        Raises:
+            Exception: При ошибках сохранения
         """
         try:
             pem_data = key.private_bytes(
@@ -247,10 +305,16 @@ class FileManager:
 
     @staticmethod
     def load_public_key(filename: str) -> RSAPublicKey:
-        """
-        Загружает публичный ключ
-        :param filename: путь к файлу
-        :return: публичный ключ
+        """Загружает публичный ключ из PEM файла.
+
+        Args:
+            filename: Путь к файлу с публичным ключом
+
+        Returns:
+            Загруженный публичный ключ
+
+        Raises:
+            Exception: При ошибках загрузки
         """
         try:
             key_data = FileManager.read_file(filename)
@@ -261,10 +325,16 @@ class FileManager:
 
     @staticmethod
     def load_private_key(filename: str) -> RSAPrivateKey:
-        """
-        Загружает приватный ключ
-        :param filename: путь к файлу
-        :return: приватный ключ
+        """Загружает приватный ключ из PEM файла.
+
+        Args:
+            filename: Путь к файлу с приватным ключом
+
+        Returns:
+            Загруженный приватный ключ
+
+        Raises:
+            Exception: При ошибках загрузки
         """
         try:
             key_data = FileManager.read_file(filename)
@@ -275,14 +345,17 @@ class FileManager:
 
 
 class KeyManager:
-    """Управление генерацией и защитой ключей"""
+    """Управление генерацией и защитой ключей."""
 
     @staticmethod
     def generate_key_pair(key_size: int = 2048) -> Tuple[RSAPublicKey, RSAPrivateKey]:
-        """
-        Создает пару RSA ключей
-        :param key_size: размер ключа
-        :return: пара ключей (публичный, приватный)
+        """Создает пару RSA ключей.
+
+        Args:
+            key_size: Размер ключа в битах
+
+        Returns:
+            Кортеж (публичный ключ, приватный ключ)
         """
         print("Генерируем RSA ключи...")
 
@@ -297,7 +370,11 @@ class KeyManager:
 
     @staticmethod
     def generate_aes_key() -> Tuple[bytes, bytes]:
-        """Создает AES ключ и IV"""
+        """Создает AES ключ и вектор инициализации.
+
+        Returns:
+            Кортеж (AES ключ, вектор инициализации)
+        """
         print("Генерируем AES ключ...")
 
         aes_key = AESCrypto.create_aes_key(32)  # AES-256
@@ -308,11 +385,14 @@ class KeyManager:
 
     @staticmethod
     def protect_aes_key(public_key: RSAPublicKey, aes_key: bytes) -> bytes:
-        """
-        Защищает AES ключ RSA шифрованием
-        :param public_key: публичный ключ
-        :param aes_key: ключ для защиты
-        :return: зашифрованный ключ
+        """Защищает AES ключ RSA шифрованием.
+
+        Args:
+            public_key: Публичный ключ для шифрования
+            aes_key: AES ключ для защиты
+
+        Returns:
+            Зашифрованный AES ключ
         """
         encrypted_key = RSACrypto.rsa_encrypt(public_key, aes_key)
         print("AES ключ защищен")
@@ -321,13 +401,18 @@ class KeyManager:
 
 
 class CryptoSystem:
-    """Главная система гибридного шифрования"""
+    """Главная система гибридного шифрования."""
 
     def __init__(self, config_path: str) -> None:
+        """Инициализирует систему шифрования с конфигурацией.
+
+        Args:
+            config_path: Путь к файлу конфигурации
+        """
         self.config = FileManager.load_config(config_path)
 
     def generate_keys(self) -> None:
-        """Генерирует все необходимые ключи"""
+        """Генерирует все необходимые ключи и сохраняет их."""
         print("\n" + "=" * 50)
         print("ЗАПУСК ГЕНЕРАЦИИ КЛЮЧЕЙ")
         print("=" * 50)
@@ -352,7 +437,7 @@ class CryptoSystem:
         print("Все ключи успешно созданы и сохранены!")
 
     def encrypt_file(self) -> None:
-        """Шифрует файл"""
+        """Шифрует исходный файл используя гибридное шифрование."""
         print("\n" + "=" * 50)
         print("ЗАПУСК ШИФРОВАНИЯ")
         print("=" * 50)
@@ -379,7 +464,7 @@ class CryptoSystem:
         print("Файл успешно зашифрован!")
 
     def decrypt_file(self) -> None:
-        """Расшифровывает файл"""
+        """Расшифровывает файл используя гибридное шифрование."""
         print("\n" + "=" * 50)
         print("ЗАПУСК ДЕШИФРОВАНИЯ")
         print("=" * 50)
@@ -407,6 +492,11 @@ class CryptoSystem:
 
 
 def main() -> int:
+    """Главная функция для запуска системы шифрования.
+
+    Returns:
+        Код завершения программы (0 - успех, 1 - ошибка)
+    """
     parser = argparse.ArgumentParser(
         description="Система гибридного шифрования"
     )
