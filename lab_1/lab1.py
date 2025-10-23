@@ -9,7 +9,9 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.serialization import load_pem_public_key, load_pem_private_key
+from cryptography.hazmat.primitives.serialization import (
+    load_pem_public_key, load_pem_private_key
+)
 
 
 class RSACrypto:
@@ -49,7 +51,7 @@ class RSACrypto:
     @staticmethod
     def rsa_decrypt(private_key: Any, encrypted_data: bytes) -> bytes:
         """
-         Расшифровывает данные RSA приватным ключом
+        Расшифровывает данные RSA приватным ключом
         :param private_key: приватный ключ
         :param encrypted_data: зашифрованные данные
         :return: расшифрованные данные
@@ -164,7 +166,7 @@ class FileManager:
     @staticmethod
     def read_file(filename):
         """
-         читает файл
+        читает файл
         :param filename: путь к файлу
         :return: содержимое файла
         """
@@ -335,9 +337,15 @@ class CryptoSystem:
 
         encrypted_aes_key = KeyManager.protect_aes_key(public_key, aes_key)
 
-        FileManager.save_public_key(public_key, self.config['public_key_file'])
-        FileManager.save_private_key(private_key, self.config['private_key_file'])
-        FileManager.write_file(self.config['encrypted_key_file'], encrypted_aes_key)
+        FileManager.save_public_key(
+            public_key, self.config['public_key_file']
+        )
+        FileManager.save_private_key(
+            private_key, self.config['private_key_file']
+        )
+        FileManager.write_file(
+            self.config['encrypted_key_file'], encrypted_aes_key
+        )
         FileManager.write_file(self.config['iv_file'], iv)
 
         print("Все ключи успешно созданы и сохранены!")
@@ -348,8 +356,12 @@ class CryptoSystem:
         print("ЗАПУСК ШИФРОВАНИЯ")
         print("=" * 50)
 
-        private_key = FileManager.load_private_key(self.config['private_key_file'])
-        encrypted_aes_key = FileManager.read_file(self.config['encrypted_key_file'])
+        private_key = FileManager.load_private_key(
+            self.config['private_key_file']
+        )
+        encrypted_aes_key = FileManager.read_file(
+            self.config['encrypted_key_file']
+        )
         iv = FileManager.read_file(self.config['iv_file'])
 
         print("Восстанавливаем AES ключ...")
@@ -371,8 +383,12 @@ class CryptoSystem:
         print("ЗАПУСК ДЕШИФРОВАНИЯ")
         print("=" * 50)
 
-        private_key = FileManager.load_private_key(self.config['private_key_file'])
-        encrypted_aes_key = FileManager.read_file(self.config['encrypted_key_file'])
+        private_key = FileManager.load_private_key(
+            self.config['private_key_file']
+        )
+        encrypted_aes_key = FileManager.read_file(
+            self.config['encrypted_key_file']
+        )
         iv = FileManager.read_file(self.config['iv_file'])
 
         print("Восстанавливаем AES ключ...")
@@ -390,14 +406,18 @@ class CryptoSystem:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Система гибридного шифрования")
+    parser = argparse.ArgumentParser(
+        description="Система гибридного шифрования"
+    )
 
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-gen', action='store_true', help='Генерация ключей')
     group.add_argument('-enc', action='store_true', help='Шифрование файла')
     group.add_argument('-dec', action='store_true', help='Дешифрование файла')
 
-    parser.add_argument('-c', '--config', required=True, help='Путь к конфигурации')
+    parser.add_argument(
+        '-c', '--config', required=True, help='Путь к конфигурации'
+    )
 
     args = parser.parse_args()
 
