@@ -1,14 +1,25 @@
+# Стандартные библиотеки
 import re
-from PyQt5.QtWidgets import QLineEdit
 import sys
+
+# Сторонние библиотеки
 import docx
-from PyQt5.QtWidgets import QPushButton
-from PyQt5 import QtMultimedia
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 import pymorphy2
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtMultimedia
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtWidgets import (
+    QApplication,
+    QFileDialog,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QMainWindow,
+    QMessageBox,
+    QPushButton,
+    QWidget,
+)
 
 
 SCREEN_SIZE=[300, 300, 335, 300]
