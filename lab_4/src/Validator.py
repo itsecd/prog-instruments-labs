@@ -51,23 +51,23 @@ class Validator:
         """Parse simple node"""
         illegal_keys = []
 
-        if not self.check_telephone(entry['telephone']):
+        if not self.check_telephone(entry.telephone):
             illegal_keys.append('telephone')
-        elif not self.check_inn(entry['inn']):
+        elif not self.check_inn(entry.inn):
             illegal_keys.append('inn')
-        elif not self.check_passport(entry['passport_number']):
+        elif not self.check_passport(entry.passport_number):
             illegal_keys.append('passport_number')
-        elif not self.check_height(entry['height']):
+        elif not self.check_height(entry.height):
             illegal_keys.append('height')
-        elif not self.check_age(entry['age']):
+        elif not self.check_age(entry.age):
             illegal_keys.append('age')
-        elif not self.check_address(entry['address']):
+        elif not self.check_address(entry.address):
             illegal_keys.append('address')
-        elif not self.check_university(entry['university']):
+        elif not self.check_university(entry.university):
             illegal_keys.append('university')
-        elif not self.check_degree(entry['academic_degree']):
+        elif not self.check_degree(entry.academic_degree):
             illegal_keys.append('academic_degree')
-        elif not self.check_worldview(entry['worldview']):
+        elif not self.check_worldview(entry.worldview):
             illegal_keys.append('worldview')
 
         return illegal_keys
@@ -87,7 +87,7 @@ class Validator:
             return True
         return False
 
-    def check_passport(self, passport: int) -> bool:
+    def check_passport(self, passport: str) -> bool:
         return len(str(passport)) == 6
 
     def check_height(self, height: str) -> bool:
