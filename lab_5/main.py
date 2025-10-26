@@ -116,7 +116,7 @@ def main():
         logging.info(f"Результаты тестов сохранены в файл {args.results}")
 
     except Exception as e:
-        print(f"Ошибка: {e}")
+        logging.exception(f"Ошибка: {e}")
 
 
 if __name__ == "__main__":
