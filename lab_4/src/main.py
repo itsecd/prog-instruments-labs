@@ -10,17 +10,21 @@ def create_parser():
 
     return parser
 
-parser = create_parser()
-namespace = parser.parse_args()
-print(namespace)
+def main():
+    parser = create_parser()
+    namespace = parser.parse_args()
+    print(namespace)
 
-inputPath = namespace.input
-outputPath = namespace.output
+    inputPath = namespace.input
+    outputPath = namespace.output
 
-file = FileReader(inputPath)
-validator = Validator(file.get_data())
-print(validator.parse_invalid())
+    file = FileReader(inputPath)
+    validator = Validator(file.get_data())
+    print(validator.parse_invalid())
 
-with open(outputPath, 'w', encoding='utf-8') as f:
-    for i in validator.parse_valid():
-        f.write(str(i) + '\n')
+    with open(outputPath, 'w', encoding='utf-8') as f:
+        for i in validator.parse_valid():
+            f.write(str(i) + '\n')
+
+if __name__ == "__main__":
+    main()
