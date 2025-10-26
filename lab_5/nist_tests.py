@@ -17,9 +17,13 @@ def frequency_monobit_test(binary_sequence):
 
     for bit in binary_sequence:
         sum_sn += 1 if bit == '1' else -1
+    logging.debug(f"Сумма (+1/-1) для битов: {sum_sn}")
 
     normal_sum = abs(sum_sn) / math.sqrt(n)
+    logging.debug(f"Нормализованная сумма: {normal_sum}")
+
     p_value = math.erfc(normal_sum / math.sqrt(2))
+    logging.debug(f"Рассчитанное p-value: {p_value}")
 
     return p_value
 
@@ -39,6 +43,7 @@ def runs_test(binary_sequence):
 
     ones_count = binary_sequence.count('1')
     zeta = ones_count / n
+    logging.debug(f"Количество единиц: {ones_count}, доля zeta: {zeta}")
 
     if abs(zeta - 0.5) >= (2 / math.sqrt(n)):
         logging.error("Ошибка валидации: последовательность не прошла предварительную проверку в runs_test")
@@ -48,10 +53,14 @@ def runs_test(binary_sequence):
     for i in range(n - 1):
         if binary_sequence[i] != binary_sequence[i + 1]:
             series += 1
+    logging.debug(f"Количество серий (runs): {series}")
 
     numerator = abs(series - 2 * n * zeta * (1 - zeta))
     denominator = 2 * math.sqrt(2 * n) * zeta * (1 - zeta)
+    logging.debug(f"Числитель: {numerator}, знаменатель: {denominator}")
+
     p_value = math.erfc(numerator / denominator)
+    logging.debug(f"Рассчитанное p-value: {p_value}")
 
     return p_value
 
@@ -71,6 +80,7 @@ def longest_run_test(binary_sequence, block_size=8):
         return None
 
     num_blocks = n // block_size
+    logging.debug(f"Количество блоков: {num_blocks}")
 
     pi = [0.2148, 0.3672, 0.2305, 0.1875]
 
@@ -96,9 +106,12 @@ def longest_run_test(binary_sequence, block_size=8):
             v[2] += 1
         else:  # max_run >= 4
             v[3] += 1
+    logging.debug(f"Подсчёт блоков по категориям v: {v}")
 
     hi_square = sum((v[i] - num_blocks * pi[i]) ** 2 / (num_blocks * pi[i]) for i in range(4))
+    logging.debug(f"Вычислено x2: {hi_square}")
 
     p_value = gammaincc(1.5, hi_square / 2)
+    logging.debug(f"Рассчитанное p-value: {p_value}")
 
     return p_value
