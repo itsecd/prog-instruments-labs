@@ -87,18 +87,25 @@ def main():
         seq_java = read_file(args.java_file)
 
         if len(seq_cpp) != 128 or len(seq_java) != 128:
+            logging.warning(
+                f"Несоответствие длины: cpp={len(seq_cpp)} бит, java={len(seq_java)} бит. "
+                f"Ожидается 128 бит."
+            )
             raise ValueError("Последовательности должны быть длиной 128 бит!")
 
         logging.info("Файлы успешно прочитаны.")
 
         freq_cpp = nist_tests.frequency_monobit_test(seq_cpp)
         freq_java = nist_tests.frequency_monobit_test(seq_java)
+        logging.debug(f"Результаты выполнения frequency_monobit_test: cpp={freq_cpp}, java={freq_java}")
 
         runs_cpp = nist_tests.runs_test(seq_cpp)
         runs_java = nist_tests.runs_test(seq_java)
+        logging.debug(f"Результаты выполнения runs_test: cpp={runs_cpp}, java={runs_java}")
 
         long_cpp = nist_tests.longest_run_test(seq_cpp)
         long_java = nist_tests.longest_run_test(seq_java)
+        logging.debug(f"Результаты выполнения longest_run_test: cpp={long_cpp}, java={long_java}")
 
         write_results(freq_cpp, freq_java,
                      runs_cpp, runs_java,
