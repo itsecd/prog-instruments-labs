@@ -27,8 +27,8 @@ SCREEN_SIZE=[300, 300, 335, 300]
 class Example(QWidget):
     def __init__(self):
         super().__init__()
-        self.initUI()
-    def initUI(self):
+        self.init_ui()
+    def init_ui(self):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Instruction')
         self.load_mp3('media.mp3')
@@ -63,12 +63,12 @@ class Example(QWidget):
 class TypesOfFilesForm(QWidget):
     def __init__(self, *args):
         super().__init__()
-        self.initUI(args)
-    def initUI(self, args):
+        self.init_ui(args)
+    def init_ui(self, args):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager')
         self.btn_word_file = QPushButton(self)
-        self.btn_word_file.clicked.connect(self.wordForm)
+        self.btn_word_file.clicked.connect(self.word_form)
         self.btn_word_file.setIcon(QIcon('word.png'))
         self.btn_word_file.move(170, 140)
         self.btn_word_file.setIconSize(QSize(100, 100))
@@ -83,7 +83,7 @@ class TypesOfFilesForm(QWidget):
         self.name_label.setFont(QFont('Times New Roman', 10))
         self.show()
 
-    def wordForm(self):
+    def word_form(self):
         filename, _ = QFileDialog.getOpenFileName(self, 'Load file', '', "Word File (*.docx)")
         self.text_input = ''
         if filename:
@@ -105,8 +105,8 @@ class TypesOfFilesForm(QWidget):
 class TextForm(QWidget):
     def __init__(self, *args):
         super().__init__()
-        self.initUI(args)
-    def initUI(self, args):
+        self.init_ui(args)
+    def init_ui(self, args):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Text file')
         self.btn_download1 = QPushButton('Отправить', self)
@@ -128,8 +128,8 @@ class QuestionForm(QWidget):
     def __init__(self, *args):
         super().__init__()
         self.text1 = str(args[2])
-        self.initUI(args)
-    def initUI(self, args):
+        self.init_ui(args)
+    def init_ui(self, args):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Question Form')
         self.btn_download2 = QPushButton('Отправить', self)
@@ -199,8 +199,8 @@ class ResultForm(QMainWindow):
     def __init__(self, *args):
         super().__init__()
         self.text_output = args[2]
-        self.initUI(args)
-    def initUI(self, args):
+        self.init_ui(args)
+    def init_ui(self, args):
         self.setGeometry(300, 300, 600, 400)
         self.setWindowTitle('Text manager Good Answer')
         self.centralwidget = QtWidgets.QWidget(self)
@@ -212,8 +212,8 @@ class ResultForm(QMainWindow):
 class BadResultForm(QWidget):
     def __init__(self, *args):
         super().__init__()
-        self.initUI(args)
-    def initUI(self, args):
+        self.init_ui(args)
+    def init_ui(self, args):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Bad Answer')
         self.text_label1 = QLabel(self)
