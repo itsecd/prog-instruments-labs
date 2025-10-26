@@ -72,6 +72,7 @@ def write_results(freq_cpp, freq_java,
 
 def main():
     args = parse_arguments()
+    logging.debug(f"Аргументы командной строки: cpp_file={args.cpp_file}, java_file={args.java_file}, results={args.results}")
 
     if not os.path.exists(args.cpp_file):
         raise FileNotFoundError(f"Файл {args.cpp_file} не найден")
