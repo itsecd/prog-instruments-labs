@@ -8,10 +8,7 @@ class Validator:
 
     def __init__(self, entries: list[Entry]):
         """Constructor: gets entries and copy them to local list"""
-        self.entries = []
-
-        for i in entries:
-            self.entries.append(i.copy())
+        self.entries = [entry.copy() for entry in entries]
 
     def parse_invalid(self) -> dict:
         """Get invalid writes"""
