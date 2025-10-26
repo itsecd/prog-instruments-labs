@@ -2,8 +2,8 @@
 Лабораторная работа №1 по курсу "Технологии и методы программирования".
 Приведение кода к стандартам PEP8.
 
-Группа: 6311
 Студент: Ладыгин Денис
+Группа: 6311
 
 Программа "Text Manager" для семантического анализа текста
 и поиска ответов на вопросы пользователя.
@@ -82,7 +82,7 @@ class Example(QWidget):
 
     def open_types_of_files_form(self):
         """Открывает окно выбора типа файла."""
-        self.types_of_files_form = TypesOfFilesForm(self)
+        self.types_of_files_form = TypesOfFilesForm()
         self.types_of_files_form.show()
 
     def load_mp3(self, filename):
@@ -96,12 +96,12 @@ class Example(QWidget):
 class TypesOfFilesForm(QWidget):
     """Окно для выбора источника текста (TXT или DOCX)."""
 
-    def __init__(self, *args):
+    def __init__(self):
         super().__init__()
         self.btn_word_file = None
         self.btn_text_file = None
         self.name_label = None
-        self.text_input = ""  # Инициализируем text_input
+        self.text_input = ""
         self.question_form = None
         self.text_form = None
 
@@ -142,19 +142,19 @@ class TypesOfFilesForm(QWidget):
 
     def open_question_form(self):
         """Открывает окно для ввода вопроса."""
-        self.question_form = QuestionForm(self, "", self.text_input)
+        self.question_form = QuestionForm(self, self.text_input)
         self.question_form.show()
 
     def open_text_form(self):
         """Открывает окно для ручного ввода текста."""
-        self.text_form = TextForm(self)
+        self.text_form = TextForm()
         self.text_form.show()
 
 
 class TextForm(QWidget):
     """Окно для ручного ввода анализируемого текста."""
 
-    def __init__(self, *args):
+    def __init__(self):
         super().__init__()
         self.btn_download1 = None
         self.label = None
@@ -181,16 +181,16 @@ class TextForm(QWidget):
 
     def open_question_form(self):
         """Открывает окно для ввода вопроса, передавая введенный текст."""
-        self.question_form = QuestionForm(self, "", self.text_input.text())
+        self.question_form = QuestionForm(self, self.text_input.text())
         self.question_form.show()
 
 
 class QuestionForm(QWidget):
     """Окно для ввода текста вопроса."""
 
-    def __init__(self, *args):
+    def __init__(self, parent=None, text_to_analyze=""):
         super().__init__()
-        self.text1 = str(args[2])
+        self.text_to_analyze = text_to_analyze
         self.btn_download2 = None
         self.label = None
         self.text_label = None
@@ -218,28 +218,29 @@ class QuestionForm(QWidget):
     def open_analysis_form(self):
         """Запускает форму анализа, передавая текст и вопрос."""
         self.question = self.question_input.text()
-        self.analysis_form = AnalysisForm(self, "", self.text1, self.question)
+        self.analysis_form = AnalysisForm(
+            self, self.text_to_analyze, self.question
+        )
         self.analysis_form.show()
 
 
 class AnalysisForm(QMainWindow):
     """Класс, выполняющий семантический анализ текста."""
 
-    def __init__(self, *args):
+    def __init__(self, parent=None, text="", question=""):
         super().__init__()
         self.text_output = None
         self.result_form = None
         self.bad_result_form = None
 
-        self.text_analysis(args)
+        self.text_analysis(text, question)
 
-    def text_analysis(self, args):
+    def text_analysis(self, text, question):
         """Основной метод анализа текста и поиска ответов."""
-        text, question = args[2], args[3]
         morph = pymorphy2.MorphAnalyzer()
         text = text.replace(',', '')
         analysis_text, analysis_question, suggestions = [], [], []
-        split_regex = re.compile(r'[.|!|?|…]')
+        split_regex = re.compile(r'[\.!?…]')
         for content_type, content in enumerate([text, question]):
             sentences = filter(
                 None, [s.strip() for s in split_regex.split(content)])
@@ -279,21 +280,21 @@ class AnalysisForm(QMainWindow):
 
     def open_result_form(self):
         """Открывает окно с результатами поиска."""
-        self.result_form = ResultForm(self, self.text_output)
+        self.result_form = ResultForm(self.text_output)
         self.result_form.show()
 
     def open_bad_result_form(self):
         """Открывает окно с сообщением об отсутствии результатов."""
-        self.bad_result_form = BadResultForm(self)
+        self.bad_result_form = BadResultForm()
         self.bad_result_form.show()
 
 
 class ResultForm(QMainWindow):
     """Окно для отображения найденных предложений."""
 
-    def __init__(self, *args):
+    def __init__(self, text_output):
         super().__init__()
-        self.text_output = args[1]
+        self.text_output = text_output
         self.centralwidget = None
         self.listWidget = None
 
@@ -304,7 +305,7 @@ class ResultForm(QMainWindow):
         self.setGeometry(300, 300, 600, 400)
         self.setWindowTitle('Text manager Good Answer')
         self.centralwidget = QtWidgets.QWidget(self)
-        self.listWidget = QtWidgets.QListWidget(self.centralwidget)
+        self.listWidget = QListWidget(self.centralwidget)
         self.listWidget.setGeometry(QtCore.QRect(0, 30, 600, 500))
         self.listWidget.addItems(self.text_output)
         self.setCentralWidget(self.centralwidget)
@@ -313,7 +314,7 @@ class ResultForm(QMainWindow):
 class BadResultForm(QWidget):
     """Окно с сообщением об отсутствии результатов."""
 
-    def __init__(self, *args):
+    def __init__(self):
         super().__init__()
         self.text_label1 = None
         self.init_ui()
