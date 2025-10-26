@@ -113,6 +113,7 @@ def main():
                      args.results)
 
         print(f"Результаты тестов сохранены в {args.results}")
+        logging.info(f"Результаты тестов сохранены в файл {args.results}")
 
     except Exception as e:
         print(f"Ошибка: {e}")
