@@ -50,11 +50,16 @@ class Example(QWidget):
         self.label.move(40, 30)
         self.text_label = QLabel(self)
         self.text_label.setFont(QFont('Times New Roman', 10))
-        self.text_label.setText("Вас приветствует Text manager - это программа для анализа содержания текста и поиска ответа на заданный вами вопрос.")
+        welcome_text = (
+            "Вас приветствует Text manager - это программа для анализа "
+            "содержания текста и поиска ответа на заданный вами вопрос."
+        )
+        self.text_label.setText(welcome_text)
         self.text_label.move(10, 40)
 
     def open_types_of_files_form(self):
-        self.types_of_files_form = TypesOfFilesForm(self, "Данные для второй формы")
+        self.types_of_files_form = TypesOfFilesForm(
+            self, "Данные для второй формы")
         self.types_of_files_form.show()
 
     def load_mp3(self, filename):
@@ -89,7 +94,8 @@ class TypesOfFilesForm(QWidget):
         self.show()
 
     def word_form(self):
-        filename, _ = QFileDialog.getOpenFileName(self, 'Load file', '', "Word File (*.docx)")
+        filename, _ = QFileDialog.getOpenFileName(
+            self, 'Load file', '', "Word File (*.docx)")
         self.text_input = ''
         if filename:
             doc = docx.Document(filename)
@@ -170,22 +176,29 @@ class AnalysisForm(QMainWindow):
         analysis_text, analysis_question, suggestions = [], [], []
         split_regex = re.compile(r'[.|!|?|…]')
         for content_type, content in enumerate([text, question]):
-            sentences = filter(None, [s.strip() for s in split_regex.split(content)])
+            sentences = filter(
+                None, [s.strip() for s in split_regex.split(content)])
             current_analysis = []
             for s in sentences:
                 suggestions.append(s)
                 words_analysis = []
                 for t in s.split():
                     res = morph.parse(t)[0]
-                    if all(tag not in res.tag for tag in ["CONJ", "NPRO", "PREP", "PRCL"]):
+                    exclude_tags = ["CONJ", "NPRO", "PREP", "PRCL"]
+                    if all(tag not in res.tag for tag in exclude_tags):
                         words_analysis.append(res.normal_form.lower())
                 current_analysis.append(words_analysis)
             if content_type == 0:
                 analysis_text = current_analysis
             else:
-                analysis_question = [word for sent in current_analysis for word in sent]
+                analysis_question = [
+                    word for sent in current_analysis for word in sent
+                ]
 
-        numbers = [analysis_text.index(i) for i in analysis_text for j in i if j in analysis_question]
+        numbers = [
+            analysis_text.index(i) for i in analysis_text
+            for j in i if j in analysis_question
+        ]
         numbers1 = [i for i in numbers if numbers.count(i) >= 2]
         numbers2 = sorted(list(set(numbers1)))
         self.text_output = [suggestions[i] for i in numbers2]
@@ -233,7 +246,8 @@ class BadResultForm(QWidget):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Bad Answer')
         self.text_label1 = QLabel(self)
-        self.text_label1.setText("К сожалению результатов по вашему запросу не найдено.")
+        self.text_label1.setText(
+            "К сожалению результатов по вашему запросу не найдено.")
         self.text_label1.move(20, 90)
 
 
