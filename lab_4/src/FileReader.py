@@ -1,5 +1,4 @@
 import json
-from idlelib.iomenu import encoding
 
 from Entry import Entry
 
@@ -15,6 +14,6 @@ class FileReader:
 
         self.data = data
 
-    def getData(self) -> list[Entry]:
+    def get_data(self) -> list[Entry]:
         """Returns all nodes"""
         return self.data

@@ -19,7 +19,7 @@ inputPath = namespace.input
 outputPath = namespace.output
 
 file = FileReader(inputPath)
-validator = Validator(file.getData())
+validator = Validator(file.get_data())
 print(validator.parse_invalid())
 
 f = open(outputPath, 'w')
