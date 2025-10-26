@@ -10,7 +10,6 @@ def create_parser():
 
     return parser
 
-
 parser = create_parser()
 namespace = parser.parse_args()
 print(namespace)
@@ -22,6 +21,6 @@ file = FileReader(inputPath)
 validator = Validator(file.get_data())
 print(validator.parse_invalid())
 
-f = open(outputPath, 'w')
-for i in validator.parse_valid():
-    f.write(str(i) + '\n')
+with open(outputPath, 'w', encoding='utf-8') as f:
+    for i in validator.parse_valid():
+        f.write(str(i) + '\n')
