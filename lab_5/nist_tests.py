@@ -1,5 +1,6 @@
 import math
 from scipy.special import gammaincc
+import logging
 
 
 def frequency_monobit_test(binary_sequence):
@@ -8,6 +9,8 @@ def frequency_monobit_test(binary_sequence):
     :param binary_sequence: Последовательность(строка) из "0" и "1"
     :return: P-значение последовательности
     """
+    logging.debug("Начало выполнения frequency_monobit_test")
+
     n = len(binary_sequence)
 
     sum_sn= 0
@@ -27,6 +30,8 @@ def runs_test(binary_sequence):
     :param binary_sequence: Последовательность(строка) из "0" и "1"
     :return: P-значение последовательности
     """
+    logging.debug("Начало выполнения runs_test")
+
     n = len(binary_sequence)
     if n < 2:
         raise ValueError("Последовательность должна содержать минимум 2 бита")
@@ -56,6 +61,7 @@ def longest_run_test(binary_sequence, block_size=8):
     :param block_size: Размер блока
     :return: P-значение последовательности
     """
+    logging.debug("Начало выполнения longest_run_test")
 
     n = len(binary_sequence)
     if n % block_size != 0:
