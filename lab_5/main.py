@@ -1,6 +1,21 @@
 import argparse
 import nist_tests
 import os
+import logging
+
+
+LOG_FILE = "app.log"
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler(LOG_FILE, mode='a', encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
+
+logging.info(" Запуск программы сравнения последовательностей ")
 
 
 def parse_arguments():
