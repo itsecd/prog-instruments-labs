@@ -3,7 +3,7 @@ from FileReader import FileReader
 from Validator import Validator
 
 
-def createParser():
+def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', default='input.txt')
     parser.add_argument('--output', default='output.txt')
@@ -11,7 +11,7 @@ def createParser():
     return parser
 
 
-parser = createParser()
+parser = create_parser()
 namespace = parser.parse_args()
 print(namespace)
 
