@@ -25,13 +25,11 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
-    QListWidgetItem,
     QMainWindow,
     QMessageBox,
     QPushButton,
     QWidget,
 )
-
 
 # Константы
 SCREEN_SIZE = [300, 300, 335, 300]
@@ -39,9 +37,19 @@ SCREEN_SIZE = [300, 300, 335, 300]
 
 class Example(QWidget):
     """Начальное окно с инструкцией и аудио-плеером."""
+
     def __init__(self):
         super().__init__()
-        self.player = None  # Инициализируем плеер
+        # Объявление всех атрибутов экземпляра в __init__
+        self.player = None
+        self.playBtn = None
+        self.pauseBtn = None
+        self.stopBtn = None
+        self.btn = None
+        self.label = None
+        self.text_label = None
+        self.types_of_files_form = None
+
         self.init_ui()
 
     def init_ui(self):
@@ -74,8 +82,7 @@ class Example(QWidget):
 
     def open_types_of_files_form(self):
         """Открывает окно выбора типа файла."""
-        self.types_of_files_form = TypesOfFilesForm(
-            self, "Данные для второй формы")
+        self.types_of_files_form = TypesOfFilesForm(self)
         self.types_of_files_form.show()
 
     def load_mp3(self, filename):
@@ -88,11 +95,19 @@ class Example(QWidget):
 
 class TypesOfFilesForm(QWidget):
     """Окно для выбора источника текста (TXT или DOCX)."""
+
     def __init__(self, *args):
         super().__init__()
-        self.init_ui(args)
+        self.btn_word_file = None
+        self.btn_text_file = None
+        self.name_label = None
+        self.text_input = ""  # Инициализируем text_input
+        self.question_form = None
+        self.text_form = None
 
-    def init_ui(self, args):
+        self.init_ui()
+
+    def init_ui(self):
         """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager')
@@ -132,17 +147,24 @@ class TypesOfFilesForm(QWidget):
 
     def open_text_form(self):
         """Открывает окно для ручного ввода текста."""
-        self.text_form = TextForm(self, "")
+        self.text_form = TextForm(self)
         self.text_form.show()
 
 
 class TextForm(QWidget):
     """Окно для ручного ввода анализируемого текста."""
+
     def __init__(self, *args):
         super().__init__()
-        self.init_ui(args)
+        self.btn_download1 = None
+        self.label = None
+        self.text_label = None
+        self.text_input = None
+        self.question_form = None
 
-    def init_ui(self, args):
+        self.init_ui()
+
+    def init_ui(self):
         """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Text file')
@@ -165,12 +187,20 @@ class TextForm(QWidget):
 
 class QuestionForm(QWidget):
     """Окно для ввода текста вопроса."""
+
     def __init__(self, *args):
         super().__init__()
         self.text1 = str(args[2])
-        self.init_ui(args)
+        self.btn_download2 = None
+        self.label = None
+        self.text_label = None
+        self.question_input = None
+        self.question = ""
+        self.analysis_form = None
 
-    def init_ui(self, args):
+        self.init_ui()
+
+    def init_ui(self):
         """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Question Form')
@@ -194,8 +224,13 @@ class QuestionForm(QWidget):
 
 class AnalysisForm(QMainWindow):
     """Класс, выполняющий семантический анализ текста."""
+
     def __init__(self, *args):
         super().__init__()
+        self.text_output = None
+        self.result_form = None
+        self.bad_result_form = None
+
         self.text_analysis(args)
 
     def text_analysis(self, args):
@@ -233,7 +268,7 @@ class AnalysisForm(QMainWindow):
         numbers2 = sorted(list(set(numbers1)))
         self.text_output = [suggestions[i] for i in numbers2]
 
-        with open("text manager answer.txt", 'w') as f:
+        with open("text manager answer.txt", 'w', encoding='utf-8') as f:
             for item in self.text_output:
                 f.write(item + '\n')
 
@@ -244,23 +279,27 @@ class AnalysisForm(QMainWindow):
 
     def open_result_form(self):
         """Открывает окно с результатами поиска."""
-        self.result_form = ResultForm(self, "", self.text_output)
+        self.result_form = ResultForm(self, self.text_output)
         self.result_form.show()
 
     def open_bad_result_form(self):
         """Открывает окно с сообщением об отсутствии результатов."""
-        self.bad_result_form = BadResultForm(self, "")
+        self.bad_result_form = BadResultForm(self)
         self.bad_result_form.show()
 
 
 class ResultForm(QMainWindow):
     """Окно для отображения найденных предложений."""
+
     def __init__(self, *args):
         super().__init__()
-        self.text_output = args[2]
-        self.init_ui(args)
+        self.text_output = args[1]
+        self.centralwidget = None
+        self.listWidget = None
 
-    def init_ui(self, args):
+        self.init_ui()
+
+    def init_ui(self):
         """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(300, 300, 600, 400)
         self.setWindowTitle('Text manager Good Answer')
@@ -273,11 +312,13 @@ class ResultForm(QMainWindow):
 
 class BadResultForm(QWidget):
     """Окно с сообщением об отсутствии результатов."""
+
     def __init__(self, *args):
         super().__init__()
-        self.init_ui(args)
+        self.text_label1 = None
+        self.init_ui()
 
-    def init_ui(self, args):
+    def init_ui(self):
         """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Bad Answer')
