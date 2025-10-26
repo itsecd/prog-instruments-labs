@@ -106,6 +106,7 @@ def longest_run_test(binary_sequence, block_size=8):
             v[2] += 1
         else:  # max_run >= 4
             v[3] += 1
+
     logging.debug(f"Подсчёт блоков по категориям v: {v}")
 
     hi_square = sum((v[i] - num_blocks * pi[i]) ** 2 / (num_blocks * pi[i]) for i in range(4))
