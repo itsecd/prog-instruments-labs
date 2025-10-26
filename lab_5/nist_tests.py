@@ -34,12 +34,14 @@ def runs_test(binary_sequence):
 
     n = len(binary_sequence)
     if n < 2:
-        raise ValueError("Последовательность должна содержать минимум 2 бита")
+        logging.error("Ошибка валидации: слишком короткая последовательность для runs_test (<2 бит)")
+        return None
 
     ones_count = binary_sequence.count('1')
     zeta = ones_count / n
 
     if abs(zeta - 0.5) >= (2 / math.sqrt(n)):
+        logging.error("Ошибка валидации: последовательность не прошла предварительную проверку в runs_test")
         return 0  # Последовательность не прошла проверку
 
     series = 0
@@ -65,7 +67,8 @@ def longest_run_test(binary_sequence, block_size=8):
 
     n = len(binary_sequence)
     if n % block_size != 0:
-        raise ValueError(f"Длина последовательности ({n}) должна быть кратна размеру блока 8")
+        logging.error(f"Ошибка валидации: длина последовательности ({n}) не кратна размеру блока {block_size}")
+        return None
 
     num_blocks = n // block_size
 
