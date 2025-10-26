@@ -1,5 +1,5 @@
 import json
-import Entry
+from Entry import Entry
 
 
 class FileReader:
