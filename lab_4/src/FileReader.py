@@ -1,4 +1,6 @@
 import json
+from idlelib.iomenu import encoding
+
 from Entry import Entry
 
 
@@ -8,7 +10,10 @@ class FileReader:
 
     def __init__(self, path) -> None:
         """Contstructor: writes data to class self"""
-        self.data = json.load(open(path, encoding='windows-1251'))
+        with open(path, encoding='windows-1251') as f:
+            data = json.load(f)
+
+        self.data = data
 
     def getData(self) -> list[Entry]:
         """Returns all nodes"""
