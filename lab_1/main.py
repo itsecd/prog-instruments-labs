@@ -1,3 +1,14 @@
+"""
+Лабораторная работа №1 по курсу "Технологии и методы программирования".
+Приведение кода к стандартам PEP8.
+
+Группа: 6311
+Студент: Ладыгин Денис
+
+Программа "Text Manager" для семантического анализа текста
+и поиска ответов на вопросы пользователя.
+"""
+
 # Стандартные библиотеки
 import re
 import sys
@@ -22,15 +33,19 @@ from PyQt5.QtWidgets import (
 )
 
 
+# Константы
 SCREEN_SIZE = [300, 300, 335, 300]
 
 
 class Example(QWidget):
+    """Начальное окно с инструкцией и аудио-плеером."""
     def __init__(self):
         super().__init__()
+        self.player = None  # Инициализируем плеер
         self.init_ui()
 
     def init_ui(self):
+        """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Instruction')
         self.load_mp3('media.mp3')
@@ -58,11 +73,13 @@ class Example(QWidget):
         self.text_label.move(10, 40)
 
     def open_types_of_files_form(self):
+        """Открывает окно выбора типа файла."""
         self.types_of_files_form = TypesOfFilesForm(
             self, "Данные для второй формы")
         self.types_of_files_form.show()
 
     def load_mp3(self, filename):
+        """Загружает медиафайл в плеер."""
         media = QtCore.QUrl.fromLocalFile(filename)
         content = QtMultimedia.QMediaContent(media)
         self.player = QtMultimedia.QMediaPlayer()
@@ -70,11 +87,13 @@ class Example(QWidget):
 
 
 class TypesOfFilesForm(QWidget):
+    """Окно для выбора источника текста (TXT или DOCX)."""
     def __init__(self, *args):
         super().__init__()
         self.init_ui(args)
 
     def init_ui(self, args):
+        """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager')
         self.btn_word_file = QPushButton(self)
@@ -94,6 +113,7 @@ class TypesOfFilesForm(QWidget):
         self.show()
 
     def word_form(self):
+        """Открывает диалог выбора .docx файла и считывает текст."""
         filename, _ = QFileDialog.getOpenFileName(
             self, 'Load file', '', "Word File (*.docx)")
         self.text_input = ''
@@ -106,20 +126,24 @@ class TypesOfFilesForm(QWidget):
             QMessageBox.warning(self, 'Error', "Файл не выбран.")
 
     def open_question_form(self):
+        """Открывает окно для ввода вопроса."""
         self.question_form = QuestionForm(self, "", self.text_input)
         self.question_form.show()
 
     def open_text_form(self):
+        """Открывает окно для ручного ввода текста."""
         self.text_form = TextForm(self, "")
         self.text_form.show()
 
 
 class TextForm(QWidget):
+    """Окно для ручного ввода анализируемого текста."""
     def __init__(self, *args):
         super().__init__()
         self.init_ui(args)
 
     def init_ui(self, args):
+        """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Text file')
         self.btn_download1 = QPushButton('Отправить', self)
@@ -134,17 +158,20 @@ class TextForm(QWidget):
         self.text_input.move(100, 110)
 
     def open_question_form(self):
+        """Открывает окно для ввода вопроса, передавая введенный текст."""
         self.question_form = QuestionForm(self, "", self.text_input.text())
         self.question_form.show()
 
 
 class QuestionForm(QWidget):
+    """Окно для ввода текста вопроса."""
     def __init__(self, *args):
         super().__init__()
         self.text1 = str(args[2])
         self.init_ui(args)
 
     def init_ui(self, args):
+        """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Question Form')
         self.btn_download2 = QPushButton('Отправить', self)
@@ -159,17 +186,20 @@ class QuestionForm(QWidget):
         self.question_input.move(100, 110)
 
     def open_analysis_form(self):
+        """Запускает форму анализа, передавая текст и вопрос."""
         self.question = self.question_input.text()
         self.analysis_form = AnalysisForm(self, "", self.text1, self.question)
         self.analysis_form.show()
 
 
 class AnalysisForm(QMainWindow):
+    """Класс, выполняющий семантический анализ текста."""
     def __init__(self, *args):
         super().__init__()
         self.text_analysis(args)
 
     def text_analysis(self, args):
+        """Основной метод анализа текста и поиска ответов."""
         text, question = args[2], args[3]
         morph = pymorphy2.MorphAnalyzer()
         text = text.replace(',', '')
@@ -213,21 +243,25 @@ class AnalysisForm(QMainWindow):
             self.open_result_form()
 
     def open_result_form(self):
+        """Открывает окно с результатами поиска."""
         self.result_form = ResultForm(self, "", self.text_output)
         self.result_form.show()
 
     def open_bad_result_form(self):
+        """Открывает окно с сообщением об отсутствии результатов."""
         self.bad_result_form = BadResultForm(self, "")
         self.bad_result_form.show()
 
 
 class ResultForm(QMainWindow):
+    """Окно для отображения найденных предложений."""
     def __init__(self, *args):
         super().__init__()
         self.text_output = args[2]
         self.init_ui(args)
 
     def init_ui(self, args):
+        """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(300, 300, 600, 400)
         self.setWindowTitle('Text manager Good Answer')
         self.centralwidget = QtWidgets.QWidget(self)
@@ -238,11 +272,13 @@ class ResultForm(QMainWindow):
 
 
 class BadResultForm(QWidget):
+    """Окно с сообщением об отсутствии результатов."""
     def __init__(self, *args):
         super().__init__()
         self.init_ui(args)
 
     def init_ui(self, args):
+        """Инициализирует пользовательский интерфейс окна."""
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Bad Answer')
         self.text_label1 = QLabel(self)
