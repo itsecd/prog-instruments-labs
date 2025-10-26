@@ -48,94 +48,44 @@ class Validator:
         return legal_entries
 
     def parse_entry(self, entry: Entry) -> list[str]:
-        """Parse simple node"""
+        """Universal entry validation"""
         illegal_keys = []
 
-        if not self.check_telephone(entry.telephone):
-            illegal_keys.append('telephone')
-        elif not self.check_inn(entry.inn):
-            illegal_keys.append('inn')
-        elif not self.check_passport(entry.passport_number):
-            illegal_keys.append('passport_number')
-        elif not self.check_height(entry.height):
-            illegal_keys.append('height')
-        elif not self.check_age(entry.age):
-            illegal_keys.append('age')
-        elif not self.check_address(entry.address):
-            illegal_keys.append('address')
-        elif not self.check_university(entry.university):
-            illegal_keys.append('university')
-        elif not self.check_degree(entry.academic_degree):
-            illegal_keys.append('academic_degree')
-        elif not self.check_worldview(entry.worldview):
-            illegal_keys.append('worldview')
+        rules = {
+            "telephone": (
+            r"\+[0-9]-\([0-9]{3}\)-[0-9]{3}-[0-9]{2}-[0-9]{2}", "regex"),
+            "inn": (r"^\d{12}$", "regex"),
+            "passport_number": (6, "len"),
+            "height": ((1.2, 2.2), "range_float"),
+            "age": ((18, 110), "range_int"),
+            "address": (r".+\d+", "regex"),
+            "university": (r"[а-яА-Я]+", "regex"),
+            "academic_degree": (r"[a-zA-Zа-яА-Я]+", "regex"),
+            "worldview": (r"[a-zA-Zа-яА-Я]+", "regex")
+        }
+
+        for field, (rule, rule_type) in rules.items():
+            value = getattr(entry, field)
+            if not self.validate(value, rule, rule_type):
+                illegal_keys.append(field)
 
         return illegal_keys
 
-    def check_telephone(self, email: str) -> bool:
-
-        pattern = "\+[0-9]-\([0-9]{3}\)\-[0-9]{3}\-[0-9]{2}\-[0-9]{2}"
-        if re.match(pattern, email):
-            return True
-        return False
-
-    def check_inn(self, inn: str) -> bool:
-
-        pattern = '^\\d{12}$'
-
-        if re.match(pattern, inn):
-            return True
-        return False
-
-    def check_passport(self, passport: str) -> bool:
-        return len(str(passport)) == 6
-
-    def check_height(self, height: str) -> bool:
+    def validate(self, value: str, rule, rule_type: str) -> bool:
+        """Generic field validation"""
         try:
-            float_height = float(height)
-            return 2.2 > float_height > 1.2
-        except ValueError:
+            if rule_type == "regex":
+                return bool(re.match(rule, value))
+            elif rule_type == "len":
+                return len(str(value)) == rule
+            elif rule_type == "range_float":
+                low, high = rule
+                return low < float(value) < high
+            elif rule_type == "range_int":
+                low, high = rule
+                v = int(value)
+                return low <= v < high
+            else:
+                return True
+        except Exception:
             return False
-
-        return True
-
-    def check_age(self, age: str) -> bool:
-
-        try:
-            int_age = int(age)
-        except ValueError:
-            return False
-
-        return int_age >= 18 and int_age < 110
-
-    def check_address(self, address: str) -> bool:
-
-        pattern = ".+[0-9]+"
-
-        if re.match(pattern, address):
-            return True
-        return False
-
-    def check_university(self, university: str) -> bool:
-
-        pattern = "[а-яА-Я]+"
-
-        if re.match(pattern, university):
-            return True
-        return False
-
-    def check_degree(self, degree: str) -> bool:
-
-        pattern = "[a-zA-Zа-яА-Я]+"
-
-        if re.match(pattern, degree):
-            return True
-        return False
-
-    def check_worldview(self, worldview: str) -> bool:
-
-        pattern = "[a-zA-Zа-яА-Я]+"
-
-        if re.match(pattern, worldview):
-            return True
-        return False
