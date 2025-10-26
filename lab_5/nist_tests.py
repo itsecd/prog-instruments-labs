@@ -38,7 +38,8 @@ def runs_test(binary_sequence):
 
     n = len(binary_sequence)
     if n < 2:
-        logging.error("Ошибка валидации: слишком короткая последовательность для runs_test (<2 бит)")
+        logging.error("Ошибка валидации: слишком короткая "
+                      "последовательность для runs_test (<2 бит)")
         return None
 
     ones_count = binary_sequence.count('1')
@@ -46,7 +47,8 @@ def runs_test(binary_sequence):
     logging.debug(f"Количество единиц: {ones_count}, доля zeta: {zeta}")
 
     if abs(zeta - 0.5) >= (2 / math.sqrt(n)):
-        logging.error("Ошибка валидации: последовательность не прошла предварительную проверку в runs_test")
+        logging.error("Ошибка валидации: последовательность не прошла "
+                      "предварительную проверку в runs_test")
         return 0  # Последовательность не прошла проверку
 
     series = 0
@@ -76,7 +78,8 @@ def longest_run_test(binary_sequence, block_size=8):
 
     n = len(binary_sequence)
     if n % block_size != 0:
-        logging.error(f"Ошибка валидации: длина последовательности ({n}) не кратна размеру блока {block_size}")
+        logging.error(f"Ошибка валидации: длина последовательности ({n}) "
+                      f"не кратна размеру блока {block_size}")
         return None
 
     num_blocks = n // block_size
@@ -109,7 +112,8 @@ def longest_run_test(binary_sequence, block_size=8):
 
     logging.debug(f"Подсчёт блоков по категориям v: {v}")
 
-    hi_square = sum((v[i] - num_blocks * pi[i]) ** 2 / (num_blocks * pi[i]) for i in range(4))
+    hi_square = sum((v[i] - num_blocks * pi[i]) ** 2 /
+                    (num_blocks * pi[i]) for i in range(4))
     logging.debug(f"Вычислено x2: {hi_square}")
 
     p_value = gammaincc(1.5, hi_square / 2)

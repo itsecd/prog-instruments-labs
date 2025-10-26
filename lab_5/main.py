@@ -1,7 +1,7 @@
 import argparse
-import nist_tests
-import os
 import logging
+import os
+import nist_tests
 
 
 LOG_FILE = "app.log"
@@ -15,7 +15,7 @@ logging.basicConfig(
     ]
 )
 
-logging.info(" Запуск программы сравнения последовательностей ")
+logging.info("Запуск программы сравнения последовательностей")
 
 
 def parse_arguments():
@@ -23,10 +23,16 @@ def parse_arguments():
     Парсинг аргументов
     :return: Объект argparse
     """
-    parser = argparse.ArgumentParser(description="Сравнение последовательностей C++ и Java кода")
-    parser.add_argument("cpp_file", help="Путь C++ к файлу с сгенерированной последовательностью")
-    parser.add_argument("java_file", help="Путь к Java файлу с сгенерированной последовательностью")
-    parser.add_argument("results", help="Файл для сохранения результатов тестов")
+    parser = argparse.ArgumentParser(
+        description="Сравнение последовательностей C++ и Java кода")
+    parser.add_argument(
+        "cpp_file", help="Путь C++ к файлу "
+                         "с сгенерированной последовательностью")
+    parser.add_argument(
+        "java_file", help="Путь к Java файлу "
+                          "с сгенерированной последовательностью")
+    parser.add_argument(
+        "results", help="Файл для сохранения результатов тестов")
     return parser.parse_args()
 
 
@@ -47,12 +53,18 @@ def write_results(freq_cpp, freq_java,
                  results: str):
     """
     Сохранение результатов тестов в файл
-    :param freq_cpp: P-значение частотного побитового теста последовательности из cpp файла
-    :param freq_java: P-значение частотного побитового теста последовательности из java файла
-    :param runs_cpp: P-значение теста на одинаковые подряд идущие биты последовательности из cpp файла
-    :param runs_java: P-значение теста на одинаковые подряд идущие биты последовательности из java файла
-    :param long_cpp: P-значение теста на самую длинную послежовательность единиц в блоке последовательности из cpp файла
-    :param long_java: P-значение теста на самую длинную послежовательность единиц в блоке последовательности из java файла
+    :param freq_cpp: P-значение частотного побитового теста
+    последовательности из cpp файла
+    :param freq_java: P-значение частотного побитового теста
+    последовательности из java файла
+    :param runs_cpp: P-значение теста на одинаковые подряд
+    идущие биты последовательности из cpp файла
+    :param runs_java: P-значение теста на одинаковые подряд
+    идущие биты последовательности из java файла
+    :param long_cpp: P-значение теста на самую длинную
+    последовательность единиц в блоке последовательности из cpp файла
+    :param long_java: P-значение теста на самую длинную
+    последовательность единиц в блоке последовательности из java файла
     :param results: Путь к файлу для записи результатов
     :return:
     """
@@ -72,7 +84,8 @@ def write_results(freq_cpp, freq_java,
 
 def main():
     args = parse_arguments()
-    logging.debug(f"Аргументы командной строки: cpp_file={args.cpp_file}, java_file={args.java_file}, results={args.results}")
+    logging.debug(f"Аргументы командной строки: cpp_file={args.cpp_file}, "
+                  f"java_file={args.java_file}, results={args.results}")
 
     if not os.path.exists(args.cpp_file):
         logging.error(f"Файл {args.cpp_file} не найден")
@@ -88,7 +101,8 @@ def main():
 
         if len(seq_cpp) != 128 or len(seq_java) != 128:
             logging.warning(
-                f"Несоответствие длины: cpp={len(seq_cpp)} бит, java={len(seq_java)} бит. "
+                f"Несоответствие длины: "
+                f"cpp={len(seq_cpp)} бит, java={len(seq_java)} бит. "
                 f"Ожидается 128 бит."
             )
             raise ValueError("Последовательности должны быть длиной 128 бит!")
@@ -97,15 +111,18 @@ def main():
 
         freq_cpp = nist_tests.frequency_monobit_test(seq_cpp)
         freq_java = nist_tests.frequency_monobit_test(seq_java)
-        logging.debug(f"Результаты выполнения frequency_monobit_test: cpp={freq_cpp}, java={freq_java}")
+        logging.debug(f"Результаты выполнения "
+                      f"frequency_monobit_test: cpp={freq_cpp}, java={freq_java}")
 
         runs_cpp = nist_tests.runs_test(seq_cpp)
         runs_java = nist_tests.runs_test(seq_java)
-        logging.debug(f"Результаты выполнения runs_test: cpp={runs_cpp}, java={runs_java}")
+        logging.debug(f"Результаты выполнения "
+                      f"runs_test: cpp={runs_cpp}, java={runs_java}")
 
         long_cpp = nist_tests.longest_run_test(seq_cpp)
         long_java = nist_tests.longest_run_test(seq_java)
-        logging.debug(f"Результаты выполнения longest_run_test: cpp={long_cpp}, java={long_java}")
+        logging.debug(f"Результаты выполнения "
+                      f"longest_run_test: cpp={long_cpp}, java={long_java}")
 
         write_results(freq_cpp, freq_java,
                      runs_cpp, runs_java,
