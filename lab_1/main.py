@@ -22,12 +22,14 @@ from PyQt5.QtWidgets import (
 )
 
 
-SCREEN_SIZE=[300, 300, 335, 300]
+SCREEN_SIZE = [300, 300, 335, 300]
+
 
 class Example(QWidget):
     def __init__(self):
         super().__init__()
         self.init_ui()
+
     def init_ui(self):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Instruction')
@@ -35,7 +37,7 @@ class Example(QWidget):
         self.playBtn = QPushButton('Воспроизвести', self)
         self.playBtn.move(70, 180)
         self.playBtn.clicked.connect(self.player.play)
-        self.pauseBtn=QPushButton('Пауза', self)
+        self.pauseBtn = QPushButton('Пауза', self)
         self.pauseBtn.move(210, 180)
         self.pauseBtn.clicked.connect(self.player.pause)
         self.stopBtn = QPushButton('Стоп', self)
@@ -54,16 +56,19 @@ class Example(QWidget):
     def open_types_of_files_form(self):
         self.types_of_files_form = TypesOfFilesForm(self, "Данные для второй формы")
         self.types_of_files_form.show()
+
     def load_mp3(self, filename):
         media = QtCore.QUrl.fromLocalFile(filename)
         content = QtMultimedia.QMediaContent(media)
         self.player = QtMultimedia.QMediaPlayer()
         self.player.setMedia(content)
 
+
 class TypesOfFilesForm(QWidget):
     def __init__(self, *args):
         super().__init__()
         self.init_ui(args)
+
     def init_ui(self, args):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager')
@@ -89,11 +94,10 @@ class TypesOfFilesForm(QWidget):
         if filename:
             doc = docx.Document(filename)
             for par in doc.paragraphs:
-                self.text_input+=par.text
+                self.text_input += par.text
             self.open_question_form()
         else:
             QMessageBox.warning(self, 'Error', "Файл не выбран.")
-
 
     def open_question_form(self):
         self.question_form = QuestionForm(self, "", self.text_input)
@@ -102,10 +106,13 @@ class TypesOfFilesForm(QWidget):
     def open_text_form(self):
         self.text_form = TextForm(self, "")
         self.text_form.show()
+
+
 class TextForm(QWidget):
     def __init__(self, *args):
         super().__init__()
         self.init_ui(args)
+
     def init_ui(self, args):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Text file')
@@ -124,11 +131,13 @@ class TextForm(QWidget):
         self.question_form = QuestionForm(self, "", self.text_input.text())
         self.question_form.show()
 
+
 class QuestionForm(QWidget):
     def __init__(self, *args):
         super().__init__()
         self.text1 = str(args[2])
         self.init_ui(args)
+
     def init_ui(self, args):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Question Form')
@@ -148,10 +157,12 @@ class QuestionForm(QWidget):
         self.analysis_form = AnalysisForm(self, "", self.text1, self.question)
         self.analysis_form.show()
 
+
 class AnalysisForm(QMainWindow):
     def __init__(self, *args):
         super().__init__()
         self.text_analysis(args)
+
     def text_analysis(self, args):
         text, question = args[2], args[3]
         morph = pymorphy2.MorphAnalyzer()
@@ -191,15 +202,18 @@ class AnalysisForm(QMainWindow):
     def open_result_form(self):
         self.result_form = ResultForm(self, "", self.text_output)
         self.result_form.show()
+
     def open_bad_result_form(self):
         self.bad_result_form = BadResultForm(self, "")
         self.bad_result_form.show()
+
 
 class ResultForm(QMainWindow):
     def __init__(self, *args):
         super().__init__()
         self.text_output = args[2]
         self.init_ui(args)
+
     def init_ui(self, args):
         self.setGeometry(300, 300, 600, 400)
         self.setWindowTitle('Text manager Good Answer')
@@ -209,16 +223,19 @@ class ResultForm(QMainWindow):
         self.listWidget.addItems(self.text_output)
         self.setCentralWidget(self.centralwidget)
 
+
 class BadResultForm(QWidget):
     def __init__(self, *args):
         super().__init__()
         self.init_ui(args)
+
     def init_ui(self, args):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Bad Answer')
         self.text_label1 = QLabel(self)
         self.text_label1.setText("К сожалению результатов по вашему запросу не найдено.")
         self.text_label1.move(20, 90)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
