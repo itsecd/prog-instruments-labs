@@ -4,6 +4,7 @@ from Validator import Validator
 
 
 def create_parser():
+    """argparser"""
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', default='input.txt')
     parser.add_argument('--output', default='output.txt')
