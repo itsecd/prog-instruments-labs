@@ -89,6 +89,8 @@ def main():
         if len(seq_cpp) != 128 or len(seq_java) != 128:
             raise ValueError("Последовательности должны быть длиной 128 бит!")
 
+        logging.info("Файлы успешно прочитаны.")
+
         freq_cpp = nist_tests.frequency_monobit_test(seq_cpp)
         freq_java = nist_tests.frequency_monobit_test(seq_java)
 
