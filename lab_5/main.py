@@ -75,8 +75,11 @@ def main():
     logging.debug(f"Аргументы командной строки: cpp_file={args.cpp_file}, java_file={args.java_file}, results={args.results}")
 
     if not os.path.exists(args.cpp_file):
+        logging.error(f"Файл {args.cpp_file} не найден")
         raise FileNotFoundError(f"Файл {args.cpp_file} не найден")
+
     if not os.path.exists(args.java_file):
+        logging.error(f"Файл {args.java_file} не найден")
         raise FileNotFoundError(f"Файл {args.java_file} не найден")
 
     try:
