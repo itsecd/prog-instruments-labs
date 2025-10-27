@@ -70,3 +70,16 @@ def test_frequency_bit_parametrized(ones_count, zeros_count, expected_behavior):
         assert result >= 0.01
     else:
         assert result < 0.01
+
+
+def test_longest_sequence_test_with_mock(monkeypatch):
+    def mock_gammainc(a, x):
+        return 0.5
+
+    monkeypatch.setattr('spicy.special.gammainc', mock_gammainc)
+
+    data = "11001001011011010001100100011100111101101111011010101110101001100100000000011111011110101100011110001011110010000000111100011100"
+    result = longest_sequence_test(data)
+
+    assert result == 0.5
+    assert result >= 0.01
