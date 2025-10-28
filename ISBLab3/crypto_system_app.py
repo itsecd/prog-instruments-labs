@@ -53,7 +53,7 @@ class Cryptosys:
                         log.info("keys generated")
                         print("Ключи сгенерированы")
                     except Exception as e:
-                        print(f"Не удалось сгенерировать ключи: {e}")
+                        print(f"Failed to generate keys: {e}")
                 case "2":
                     try:
                         log.info("init encrypt the text using a symmetric key")
@@ -76,7 +76,7 @@ class Cryptosys:
                         log.info("text encrypted by symmetric key")
                         print("Текст зашифрован")
                     except Exception as e:
-                        print(f"Не удалось зашифровать текст: {e}")
+                        print(f"Couldn't encrypt the text: {e}")
                 case "3":
                     try:
                         log.info("init decrypt the encrypted text")
@@ -102,10 +102,11 @@ class Cryptosys:
                         log.info("text decrypted")
                         print("Текст расшифрован")
                     except Exception as e:
-                        print(f"Не удалось расшифровать текст: {e}")
+                        print(f"Couldn't decipher the text: {e}")
                 case "4":
                     log.info("program is completed")
                     self._flag = False
                 case _:
                     log.info("user input incorrect number")
                     print("Пожалуйста, выберите номер от 1 до 5")
+
