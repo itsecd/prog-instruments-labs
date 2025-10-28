@@ -27,7 +27,7 @@ def serialization_public_key(path: str, public_key: rsa.RSAPublicKey) -> None:
         log.info(f"Public key successfully serialized and saved to: {path}")
     except Exception as e:
         log.error(f"Error during public key serialization to {path}: {e}")
-        raise Exception(f"Возникла ошибка при сериализации public key: {e}")
+        raise Exception(f"An error occurred during public key serialization: {e}")
 
 
 def serialization_private_key(path: str, private_key: rsa.RSAPrivateKey) -> None:
@@ -51,7 +51,7 @@ def serialization_private_key(path: str, private_key: rsa.RSAPrivateKey) -> None
         log.info(f"Private key successfully serialized and saved to: {path}")
     except Exception as e:
         log.error(f"Error during private key serialization to {path}: {e}")
-        raise Exception(f"Возникла ошибка при сериализации private key: {e}")
+        raise Exception(f"An error occurred during serialization of the private key: {e}")
 
 
 def serialization_symmetrical(path: str, symmetrical_key: bytes) -> None:
@@ -70,7 +70,7 @@ def serialization_symmetrical(path: str, symmetrical_key: bytes) -> None:
         log.info(f"Symmetric key successfully serialized and saved to: {path}")
     except Exception as e:
         log.error(f"Error during symmetric key serialization to {path}: {e}")
-        raise Exception(f"Возникла ошибка при сериализации symmetric key: {e}")
+        raise Exception(f"An error occurred while serializing the symmetric key: {e}")
 
 
 def deserialization_public_key(path: str) -> rsa.RSAPublicKey:
@@ -90,7 +90,7 @@ def deserialization_public_key(path: str) -> rsa.RSAPublicKey:
         return d_public_key
     except Exception as e:
         log.error(f"Error during public key deserialization from {path}: {e}")
-        raise Exception(f"Возникла ошибка при десериализации public key: {e}")
+        raise Exception(f"An error occurred during public key deserialization: {e}")
 
 
 def deserialization_private_key(path: str) -> rsa.RSAPrivateKey:
@@ -110,7 +110,7 @@ def deserialization_private_key(path: str) -> rsa.RSAPrivateKey:
         return d_public_key
     except Exception as exc:
         log.error(f"Error during private key deserialization from {path}: {exc}")
-        raise Exception(f"Возникла ошибка при десериализации private key: {exc}")
+        raise Exception(f"An error occurred while deserializing the private key: {exc}")
 
 
 def deserialization_symmetrical(path: str) -> bytes:
@@ -129,4 +129,5 @@ def deserialization_symmetrical(path: str) -> bytes:
         return key_data
     except Exception as e:
         log.error(f"Error during symmetric key deserialization from {path}: {e}")
-        raise Exception(f"Возникла ошибка при десериализации symmetric key: {e}")
+        raise Exception(f"An error occurred while deserializing the symmetric key: {e}")
+        
