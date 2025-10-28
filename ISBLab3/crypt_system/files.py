@@ -22,7 +22,7 @@ def txt_file_open(text: str) -> bytes:
         raise FileNotFoundError(f"Файл не найден: {not_found}")
     except Exception as e:
         log.error(f"Fail for open text file: {e}")
-        raise Exception(f"Не удалось открыть текстовый файл {e}")
+        raise Exception(f"The text file could not be opened {e}")
 
 
 def txt_file_save(text: str, path: str) -> None:
@@ -42,10 +42,10 @@ def txt_file_save(text: str, path: str) -> None:
         log.info(f"text file save successfully: {path}")
     except FileNotFoundError as not_found:
         log.error(f"Txt file not found (save): {not_found}")
-        raise FileNotFoundError(f"Файл не найден: {not_found}")
+        raise FileNotFoundError(f"File not found: {not_found}")
     except Exception as e:
         log.error(f"Fail to save txt file: {e}")
-        raise Exception(f"Не удалось сохранить текстовый файл {e}")
+        raise Exception(f"Couldn't save text file {e}")
 
 
 def json_file_open(path: str) -> dict:
@@ -66,13 +66,13 @@ def json_file_open(path: str) -> dict:
             return data
     except FileNotFoundError as not_found:
         log.error(f"JSON file not found: {not_found}")
-        raise FileNotFoundError(f"Файл не найден: {not_found}")
+        raise FileNotFoundError(f"File not found: {not_found}")
     except json.JSONDecodeError as decode_error:
         log.error(f"JSON decode error in file {path}: {decode_error}")
-        raise ValueError(f"Возникли проблемы с декодированием файла: {decode_error}")
+        raise ValueError(f"There are problems with decoding the file: {decode_error}")
     except Exception as e:
         log.error(f"Fail to open JSON file {path}: {e}")
-        raise Exception(f"Не удалось открыть файл {e}")
+        raise Exception(f"Couldn't open the file {e}")
 
 
 def json_file_save(path: str, info) -> None:
@@ -91,7 +91,7 @@ def json_file_save(path: str, info) -> None:
         log.info(f"JSON file saved successfully: {path}")
     except Exception as e:
         log.error(f"Fail to save JSON file {path}: {e}")
-        print(f"Не удалось сохранить файл json: {e}")
+        print(f"Couldn't save json file: {e}")
 
 
 def bytes_file_save(path: str, text: bytes) -> None:
@@ -111,7 +111,8 @@ def bytes_file_save(path: str, text: bytes) -> None:
         log.info(f"binary file save successfully: {path}")
     except FileNotFoundError as not_found:
         log.error(f"Bytes file not found: {not_found}")
-        raise FileNotFoundError(f"Файл не найден: {not_found}")
+        raise FileNotFoundError(f"File not found: {not_found}")
     except Exception as e:
         log.error(f"Fail to save bytes file: {e}")
-        raise Exception(f"Не удалось записать файл bytes {e}")
+        raise Exception(f"Failed to write bytes file {e}")
+        
