@@ -47,7 +47,7 @@ class Symmetric:
         """
         if len(key) != 16:
             log.error("Invalid len of symmetrical key")
-            raise ValueError("Ключ должен быть длиной 16 байт (128 бит)")
+            raise ValueError("Invalid len of key. Key shoud be 16 byte (128 bit)")
         init_vec = os.urandom(16)
         padded_text = Symmetric.padding(text)
         cipher = Cipher(algorithms.SM4(key), modes.CBC(init_vec))
@@ -66,10 +66,10 @@ class Symmetric:
         """
         if len(key) != 16:
             log.error("Invalid len of key")
-            raise ValueError("Ключ должен быть длиной 16 байт (128 бит)")
+            raise ValueError("Invalid len of key. Key shoud be 16 byte (128 bit)")
         if len(ciphertext) < 16:
             log.error("ciphertext is too short")
-            raise ValueError("Зашифрованный текст слишком короткий")
+            raise ValueError("The ciphertext is too short")
         iv = ciphertext[:16]
         actual_ciphertext = ciphertext[16:]
         cipher = Cipher(algorithms.SM4(key), modes.CBC(iv))
@@ -77,3 +77,4 @@ class Symmetric:
         padded_text = decryptor.update(actual_ciphertext) + decryptor.finalize()
         log.info("text decrypted by symmetrical algorithm")
         return Symmetric.delete_padding(padded_text)
+
