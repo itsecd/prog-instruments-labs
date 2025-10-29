@@ -24,19 +24,13 @@ VALIDATION_RULES = {
     },
 
     "latitude": {
-        "type": 'range',
-        "min": -90,
-        "max": 90
+        "type": 'regex',
+        "pattern": r'^-?(90(\.0+)?|[0-8]?\d(\.\d+)?)$'
     },
 
     "blood_type": {
-        "type": "enum",
-        "values": [
-            "A+", "A−",
-            "B+", "B−",
-            "AB+", "AB−",
-            "O+", "O−"
-        ]
+        "type": 'regex',
+        "pattern": r'^(A|B|AB|O)(\+|\u2212)$'
     },
 
     "isbn": {
