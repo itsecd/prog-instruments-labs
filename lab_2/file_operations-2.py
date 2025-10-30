@@ -130,8 +130,8 @@ class FileManager:
         except Exception as e:
             print(f"Ошибка загрузки настроек: {e}")
             return {}
-        except FileNotFoundError:
-            print("Ошибка: файл настроек не найден")
+        except FileNotFoundError as e:
+            print(f"Файл настроек не найден: {e}")
             return {}
 
     def backup_keys(self, settings):
