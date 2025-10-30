@@ -134,7 +134,7 @@ class MainWindow(QMainWindow):
             TripleDES,
             self.__dialog.get_key_length()
         )
-        logger.debug(f"Selected key length: {self.__dialog.get_key_length()}")
+        logger.debug("Selected key length: %d", self.__dialog.get_key_length())
 
     def open_settings(self):
         """Upload the settings file"""

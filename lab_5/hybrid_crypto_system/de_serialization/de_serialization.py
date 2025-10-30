@@ -23,7 +23,7 @@ class DeSerialization:
         :param key_type: type of key - private or public
         :return: serialized key
         """
-        logger.info(f"Starting asymmetric key serialization - key type: {key_type}")
+        logger.info("Starting asymmetric key serialization - key type: %s", key_type)
         try:
             serialized_key = None
             match key_type:
@@ -41,10 +41,10 @@ class DeSerialization:
                     )
                     logger.debug("Serializing public key")
             logger.info("Asymmetric key serialized successfully")
-            logger.debug(f"Serialized key length: {len(serialized_key)} bytes")
+            logger.debug("Serialized key length: %d bytes", len(serialized_key))
             return serialized_key
         except Exception as e:
-            logger.error(f"Failed to serialize key: {str(e)}")
+            logger.error("Failed to serialize key: %s", str(e))
             raise
 
     @staticmethod
@@ -58,8 +58,8 @@ class DeSerialization:
         :param key_type: type of key - private or public
         :return: deserialized key
         """
-        logger.info(f"Starting asymmetric key deserialization - key type: {key_type}")
-        logger.debug(f"Input key data length: {len(key)} bytes")
+        logger.info("Starting asymmetric key deserialization - key type: %s", key_type)
+        logger.debug("Input key data length: %d bytes", len(key))
         try:
             deserialized_key = None
             match key_type:
@@ -70,10 +70,10 @@ class DeSerialization:
                     deserialized_key = serialization.load_pem_public_key(key)
                     logger.debug("Public key deserialized")
 
-            logger.info(f"Asymmetric key deserialized successfully - key type: {key_type}")
+            logger.info("Asymmetric key deserialized successfully - key type: %s", key_type)
             return deserialized_key
         except Exception as e:
-            logger.error(f"Failed to deserialize key: {str(e)}")
+            logger.error("Failed to deserialize key: %s", str(e))
             raise
 
     @staticmethod
@@ -90,12 +90,12 @@ class DeSerialization:
         logger.info("Starting data serialization")
         try:
             FileHandler.save_data(data_dir, data, "wb")
-            logger.debug(f"File operation completed - write binary mode")
+            logger.debug("File operation completed - write binary mode")
         except FileNotFoundError:
-            logger.error(f"File not found during serialization: {data_dir}")
+            logger.error("File not found during serialization: %s", data_dir)
             raise
         except Exception as e:
-            logger.error(f"Failed to serialize data: {str(e)}")
+            logger.error("Failed to serialize data: %s", str(e))
             raise
 
 
@@ -112,11 +112,11 @@ class DeSerialization:
         try:
             data = FileHandler.read_data(data_dir, "rb")
             logger.info("Data deserialization successful")
-            logger.debug(f"File operation completed - read binary mode")
+            logger.debug("File operation completed - read binary mode")
             return data
         except FileNotFoundError:
-            logger.error(f"File not found during deserialization: {data_dir}")
+            logger.error("File not found during deserialization: %s", data_dir)
             raise
         except Exception as e:
-            logger.error(f"Failed to deserialize data: {str(e)}")
+            logger.error("Failed to deserialize data: %s", str(e))
             raise

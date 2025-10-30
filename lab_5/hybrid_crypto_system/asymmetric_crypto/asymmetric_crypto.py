@@ -22,7 +22,7 @@ class AsymmetricCrypto:
             logger.info(f"Asymmetric keys generated successfully")
             return private_key, public_key
         except Exception as e:
-            logger.error(f"Failed to generate asymmetric keys: {str(e)}")
+            logger.error("Failed to generate asymmetric keys: %s", str(e))
             raise
 
     @staticmethod
@@ -49,7 +49,7 @@ class AsymmetricCrypto:
             logger.info("Symmetric key encrypted successfully")
             return encrypted_key
         except Exception as e:
-            logger.error(f"Failed to encrypt symmetric key: {str(e)}")
+            logger.error("Failed to encrypt symmetric key: %s", str(e))
             raise
 
     @staticmethod
@@ -76,5 +76,5 @@ class AsymmetricCrypto:
             logger.info("Symmetric key decrypted successfully")
             return decrypted_key
         except Exception as e:
-            logger.error(f"Failed to decrypt symmetric key: {str(e)}")
+            logger.error("Failed to decrypt symmetric key: %s", str(e))
             raise
