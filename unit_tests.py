@@ -7,6 +7,7 @@ from cryptosistem import CryptoSistem
 TEST_KEY = b"test_symmetric_key"
 TEST_TEXT = b"Hello, this is a secret message!"
 key_len = 256 # for cryptosistem
+len_iv = 16
 
 
 def test_generate_asymmetric_keys():
@@ -65,6 +66,19 @@ def test_encrypt_decrypt_text():
 
     assert decrypted_text == TEST_TEXT
     assert encrypted_text != TEST_TEXT
+
+def test_cryptosistem_initialization():
+
+    '''
+    Test if cryptosistem initialized/initialized correctly
+    :return: None
+    '''
+
+    crypto = CryptoSistem(key_len)
+
+    assert crypto._key_len == key_len
+    assert crypto._iv is not None
+    assert len(crypto._iv) == len_iv
 
 def test_cryptosistem_generate_hybrid_keys():
 
