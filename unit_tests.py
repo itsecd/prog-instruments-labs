@@ -5,7 +5,7 @@ from cryptosistem import CryptoSistem
 
 
 TEST_KEY = b"test_symmetric_key"
-TEST_TEXT = b"Hello, this is a secret message!"
+TEST_TEXT = b"Text for testing"
 key_len = 256 # for cryptosistem
 len_iv = 16
 
@@ -117,3 +117,29 @@ def test_encrypt_decrypt_different_texts(texts):
     decrypted = Symmetric.decrypt_text(encrypted, key, iv)
 
     assert decrypted == texts
+
+
+def test_generate_hybrid_keys(monkeypatch):
+
+    '''
+    Test of generate_hybrid_keys function working
+    :return: None
+    '''
+
+    def mock_gen_symmetric(len_key):
+        return b'mock_symmetric_key'
+
+    def mock_gen_asymmetric():
+        return ('mock_private', 'mock_public')
+
+    def mock_encrypt_symmetric(public_key, symmetric_key):
+        return b'mock_encrypted_key'
+
+    monkeypatch.setattr('symmetric.Symmetric.generate_symmetric_key', mock_gen_symmetric)
+    monkeypatch.setattr('asymmetric.Asymmetric.generate_asymmetric_keys', mock_gen_asymmetric)
+    monkeypatch.setattr('asymmetric.Asymmetric.encrypt_symmetric_key', mock_encrypt_symmetric)
+
+    crypto = CryptoSistem(key_len)
+    result = crypto.generate_hybrid_keys()
+
+    assert result == (b'mock_encrypted_key', 'mock_public', 'mock_private')
