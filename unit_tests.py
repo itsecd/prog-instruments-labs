@@ -95,3 +95,25 @@ def test_cryptosistem_generate_hybrid_keys():
     assert public_key is not None
     assert private_key is not None
     assert len(c_symmetric_key) == key_len
+
+@pytest.mark.parametrize("texts", [
+    b"Short",
+    b"Medium length text",
+    b"Very long text " * 10,
+    b""
+])
+def test_encrypt_decrypt_different_texts(texts):
+
+    '''
+    Test encryption/decryption text of different length
+    :param text_input: Texts with different lengths
+    :return: None
+    '''
+
+    key = Symmetric.generate_symmetric_key(256)
+    iv = Symmetric.iv()
+
+    encrypted = Symmetric.encrypt_text(texts, key, iv)
+    decrypted = Symmetric.decrypt_text(encrypted, key, iv)
+
+    assert decrypted == texts
