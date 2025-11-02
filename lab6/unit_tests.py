@@ -37,3 +37,17 @@ def test_text_encryption_decryption_basic():
     encrypted_text = text_encryption(TEST_TEXT, TEST_KEY, ALPHABET)
     result = text_decryption(encrypted_text, TEST_KEY, ALPHABET)
     assert result == TEST_TEXT
+
+@pytest.mark.parametrize("input_text", [
+    "hello",
+    "abracadabra",
+    "mississippi",
+    "programming",
+])
+def test_frequency_sorted_descending(input_text):
+
+    result = calculate_symbol_frequency(input_text)
+    total = sum(result.values())
+
+    assert abs(total - 1.0) < 0.000001
+
