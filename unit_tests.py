@@ -31,3 +31,17 @@ def test_encrypt_decrypt_symmetric_key():
 
     assert decrypted_key == test_key
     assert encrypted_key != test_key
+
+def test_generate_symmetric_key():
+
+    '''
+    Test generating different length keys
+    :return:
+    '''
+
+    key_128 = Symmetric.generate_symmetric_key(128)
+    key_256 = Symmetric.generate_symmetric_key(256)
+
+    assert len(key_128) == 16
+    assert len(key_256) == 32
+    assert key_128 != key_256
