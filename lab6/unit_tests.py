@@ -2,10 +2,15 @@ import pytest
 from module_for_tests import calculate_symbol_frequency, make_key, decryption_cod3, text_encryption, text_decryption
 
 TEST_TEXT = "aabbcc"
+
 FREQ_DATA = {'a': 0.3, 'b': 0.3, 'c': 0.4}
 FREQ_TASK = {'x': 0.4, 'y': 0.3, 'z': 0.3}
+
 DECRYPTION_DATA = "x!y"
 DECRYPTION_KEY = {'x': 'a', 'y': 'b'}
+
+TEST_KEY = "key"
+ALPHABET = "abcdefghijklmnopqrstuvwxyz"
 
 
 EXPECTED_FREQ_BASIC = {'a': 1/3, 'b': 1/3, 'c': 1/3}
@@ -26,3 +31,9 @@ def test_make_key_creation():
 def test_decryption_cod3_simple():
     result = decryption_cod3(DECRYPTION_DATA, DECRYPTION_KEY)
     assert result == EXPECTED_DECRYPTION
+
+
+def test_text_encryption_decryption_basic():
+    encrypted_text = text_encryption(TEST_TEXT, TEST_KEY, ALPHABET)
+    result = text_decryption(encrypted_text, TEST_KEY, ALPHABET)
+    assert result == TEST_TEXT
