@@ -38,14 +38,24 @@ def main():
     и записывает результат в JSON.
     """
     invalid_rows_indices = []
-    with open(CSV_FILE_PATH, "r", encoding="utf-16") as csv_file:
-        reader = csv.DictReader(csv_file, delimiter=";")
+    try:
+        with open(CSV_FILE_PATH, "r", encoding="utf-16") as csv_file:
+            reader = csv.DictReader(csv_file, delimiter=";")
+            for i, row in enumerate(reader):
+                if not validate_row(row):
+                    invalid_rows_indices.append(i)
 
-        for i, row in enumerate(reader):
-            if not validate_row(row):
-                invalid_rows_indices.append(i)
+    except FileNotFoundError:
+        print(f"Ошибка: Файл '{CSV_FILE_PATH}' не найден.")
+        return
+    except Exception as e:
+        print(f"Произошла ошибка при чтении или обработке файла: {e}")
+        return
 
     checksum = calculate_checksum(invalid_rows_indices)
+
+    print(f"Найдено невалидных строк: {len(invalid_rows_indices)}")
+    print(f"Контрольная сумма: {checksum}")
 
     result_data = {
         "variant": VARIANT_NUMBER,
@@ -54,7 +64,7 @@ def main():
     with open("result.json", "w") as json_file:
         json.dump(result_data, json_file, indent=4)
 
-    print(f"Контрольная сумма: {checksum}")
+    print(f"Результат успешно записан в файл 'result.json'")
 
 
 if __name__ == "__main__":
