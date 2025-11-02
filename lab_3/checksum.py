@@ -38,7 +38,15 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    try:
+        data = {"variant": variant, "checksum": checksum}
+        with open('result.json', mode="w", encoding="utf-8") as file:
+            return json.dump(data, file)
+
+    except FileNotFoundError as not_found:
+        raise FileNotFoundError(f"File was not found: {not_found}")
+    except Exception as e:
+        raise Exception(f"An error occurred when opening the file {e}")
 
 
 if __name__ == "__main__":
