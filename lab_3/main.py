@@ -4,118 +4,74 @@ import json
 from checksum import calculate_checksum, serialize_result
 
 
-def validate_email(email):
-    """Email validity check"""
-    pattern = r'^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    return bool(re.match(pattern, email))
+with open('patterns.json', 'r', encoding='utf-8') as f:
+    PATTERNS = json.load(f)
 
 
-def validate_http_status(status):
-    """HTTP status validity check"""
-    pattern = r'^\d{3} [A-Za-z ]+$'
-    if not re.match(pattern, status):
+def validate_field(field_name, value):
+    """Function for validating a field by its name"""
+
+    # Regular expression check
+    if not re.match(PATTERNS[field_name], value):
         return False
 
-    # Additional status code check
-    code = status.split()[0]
-    return code.isdigit() and 100 <= int(code) <= 599
+    # Additional checks for specific fields
+    if field_name == "http_status":
+        code = value.split()[0]
+        return code.isdigit() and 100 <= int(code) <= 599
 
+    elif field_name == "ip_v4":
+        blocks = value.split('.')
+        for block in blocks:
+            if not block.isdigit() or not (0 <= int(block) <= 255):
+                return False
+        return True
 
-def validate_inn(inn):
-    """INN  validity check(12 numbers)"""
-    pattern = r'^\d{12}$'
-    return bool(re.match(pattern, inn))
-
-
-def validate_passport(passport):
-    """Passport  validity check(format: XX XX XXXXXX)"""
-    pattern = r'^\d{2} \d{2} \d{6}$'
-    return bool(re.match(pattern, passport))
-
-
-def validate_ip_v4(ip):
-    """IPv4 adress validity check"""
-    pattern = r'^(\d{1,3}\.){3}\d{1,3}$'
-    if not re.match(pattern, ip):
-        return False
-
-    # Check that each block is in the range 0-255
-    blocks = ip.split('.')
-    for block in blocks:
-        if not (0 <= int(block) <= 255):
+    elif field_name == "latitude":
+        try:
+            lat_float = float(value)
+            return -90.0 <= lat_float <= 90.0
+        except (ValueError, TypeError):
             return False
-    return True
 
-
-def validate_latitude(lat):
-    """Latitude  validity check(-90 to 90)"""
-    try:
-        lat_float = float(lat)
-        return -90.0 <= lat_float <= 90.0
-    except (ValueError, TypeError):
-        return False
-
-
-def validate_hex_color(color):
-    """HEX color validity check"""
-    pattern = r'^#[0-9a-fA-F]{6}$'
-    return bool(re.match(pattern, color))
-
-
-def validate_isbn(isbn):
-    """ISBN  validity check"""
-    pattern = r'^\d{1,5}-\d-\d{5}-\d{3}-\d$|' \
-              r'^\d{1,5}-\d{5}-\d{3}-\d$|' \
-              r'^\d{3}-\d-\d{3}-\d{5}-\d$'
-    if re.match(pattern, isbn):
-        # Check the count of numbers
-        digits = re.sub(r'[^\d]', '', isbn)
+    elif field_name == "isbn":
+        clean_isbn = value.replace(' ', '')
+        digits = re.sub(r'[^\d]', '', clean_isbn)
         return len(digits) in [10, 13]
 
+    elif field_name == "time":
+        parts = value.split(':')
+        hours = int(parts[0])
+        minutes = int(parts[1])
+        seconds_part = parts[2]
 
-def validate_uuid(uuid_str):
-    """UUID validity check"""
-    pattern = r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
-    return bool(re.match(pattern, uuid_str))
+        if '.' in seconds_part:
+            seconds = int(seconds_part.split('.')[0])
+        else:
+            seconds = int(seconds_part)
 
+        return (0 <= hours <= 23) and (0 <= minutes <= 59) and (0 <= seconds <= 59)
 
-def validate_time(time_str):
-    """Time validity check"""
-    pattern = r'^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.[0-9]{1,6})?$'
-    if not re.match(pattern, time_str):
-        return False
-
-    # Additional check of time components
-    parts = time_str.split(':')
-    hours = int(parts[0])
-    minutes = int(parts[1])
-    seconds_part = parts[2]
-
-    if '.' in seconds_part:
-        seconds = int(seconds_part.split('.')[0])
-    else:
-        seconds = int(seconds_part)
-
-    return (0 <= hours <= 23) and (0 <= minutes <= 59) and (0 <= seconds <= 59)
+    return True
 
 
 def validate_row(row):
     """Checking the entire string for validity"""
-    validators = [
-        validate_email,
-        validate_http_status,
-        validate_inn,
-        validate_passport,
-        validate_ip_v4,
-        validate_latitude,
-        validate_hex_color,
-        validate_isbn,
-        validate_uuid,
-        validate_time
+    field_names = [
+        "email",
+        "http_status",
+        "inn",
+        "passport",
+        "ip_v4",
+        "latitude",
+        "hex_color",
+        "isbn",
+        "uuid",
+        "time"
     ]
 
-    for i, validator in enumerate(validators):
-        if not validator(row[i]):
+    for i, field_name in enumerate(field_names):
+        if not validate_field(field_name, row[i]):
             return False
     return True
 
@@ -156,8 +112,8 @@ def main():
         "checksum": checksum
     }
 
-    with open('result.json', 'w', encoding='utf-8') as f:
-        json.dump(result_data, f, indent=2, ensure_ascii=False)
+    with open('result.json', 'w', encoding='utf-8') as file:
+        json.dump(result_data, file, indent=2)
 
 
 if __name__ == "__main__":
