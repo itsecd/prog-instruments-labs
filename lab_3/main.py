@@ -22,13 +22,12 @@ REGEX_PATTERNS = {
 }
 
 
-def validate_row(row: list, headers: list) -> bool:
+def validate_row(row_data: dict) -> bool:
     """
     Проверяет, что все поля в строке соответствуют своим регулярным выражениям.
     """
-    for i, value in enumerate(row):
-        header_name = headers[i]
-        if not re.match(REGEX_PATTERNS[header_name], value):
+    for key, value in row_data.items():
+        if not re.match(REGEX_PATTERNS[key], value):
             return False
     return True
 
@@ -39,21 +38,12 @@ def main():
     и записывает результат в JSON.
     """
     invalid_rows_indices = []
-    try:
-        with open(CSV_FILE_PATH, "r", encoding="utf-16") as csv_file:
-            # НАМЕРЕННАЯ ОШИБКА: Используем csv.reader, который может
-            # некорректно обрабатывать данные, заключенные в кавычки.
-            reader = csv.reader(csv_file, delimiter=";")
-            headers = next(reader)  # Считываем заголовки отдельно
+    with open(CSV_FILE_PATH, "r", encoding="utf-16") as csv_file:
+        reader = csv.DictReader(csv_file, delimiter=";")
 
-            for i, row in enumerate(reader):
-                if len(row) == len(headers):  # Проверка на случай пустых строк в конце файла
-                    if not validate_row(row, headers):
-                        invalid_rows_indices.append(i)
-
-    except FileNotFoundError:
-        print(f"Ошибка: Файл {CSV_FILE_PATH} не найден.")
-        return
+        for i, row in enumerate(reader):
+            if not validate_row(row):
+                invalid_rows_indices.append(i)
 
     checksum = calculate_checksum(invalid_rows_indices)
 
