@@ -33,7 +33,11 @@ def test_decryption_cod3_simple():
     assert result == EXPECTED_DECRYPTION
 
 
-def test_text_encryption_decryption_basic():
+def test_text_encryption_basic():
+    encrypted_text = text_encryption(TEST_TEXT, TEST_KEY, ALPHABET)
+    assert encrypted_text != TEST_TEXT
+
+def test_text_decryption_basic():
     encrypted_text = text_encryption(TEST_TEXT, TEST_KEY, ALPHABET)
     result = text_decryption(encrypted_text, TEST_KEY, ALPHABET)
     assert result == TEST_TEXT
@@ -51,3 +55,10 @@ def test_frequency_sorted_descending(input_text):
 
     assert abs(total - 1.0) < 0.000001
 
+
+def test_text_decryption_with_exceptions():
+    with pytest.raises(ValueError):
+        text_decryption("", TEST_KEY, ALPHABET)
+
+    with pytest.raises(ValueError):
+        text_decryption(TEST_TEXT, "", ALPHABET)
