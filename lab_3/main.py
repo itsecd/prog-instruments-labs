@@ -21,4 +21,51 @@ REGEX_PATTERNS = {
     "date": r"^(19|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$"
 }
 
-# Тут будет основная логика
+
+def validate_row(row: list, headers: list) -> bool:
+    """
+    Проверяет, что все поля в строке соответствуют своим регулярным выражениям.
+    """
+    for i, value in enumerate(row):
+        header_name = headers[i]
+        if not re.match(REGEX_PATTERNS[header_name], value):
+            return False
+    return True
+
+
+def main():
+    """
+    Основная функция: читает CSV, валидирует строки, считает контрольную сумму
+    и записывает результат в JSON.
+    """
+    invalid_rows_indices = []
+    try:
+        with open(CSV_FILE_PATH, "r", encoding="utf-16") as csv_file:
+            # НАМЕРЕННАЯ ОШИБКА: Используем csv.reader, который может
+            # некорректно обрабатывать данные, заключенные в кавычки.
+            reader = csv.reader(csv_file, delimiter=";")
+            headers = next(reader)  # Считываем заголовки отдельно
+
+            for i, row in enumerate(reader):
+                if len(row) == len(headers):  # Проверка на случай пустых строк в конце файла
+                    if not validate_row(row, headers):
+                        invalid_rows_indices.append(i)
+
+    except FileNotFoundError:
+        print(f"Ошибка: Файл {CSV_FILE_PATH} не найден.")
+        return
+
+    checksum = calculate_checksum(invalid_rows_indices)
+
+    result_data = {
+        "variant": VARIANT_NUMBER,
+        "checksum": checksum
+    }
+    with open("result.json", "w") as json_file:
+        json.dump(result_data, json_file, indent=4)
+
+    print(f"Контрольная сумма: {checksum}")
+
+
+if __name__ == "__main__":
+    main()
