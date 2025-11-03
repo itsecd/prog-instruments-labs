@@ -81,3 +81,24 @@ def test_hybrid_generate_keys():
     assert private_key is not None
     assert public_key is not None
     assert isinstance(symmetric_key, bytes)
+
+
+# 9. Тест CLI режима generate с моками файлов
+@patch("main.FileHandler")
+@patch("main.Asymmetrical")
+@patch("main.Hybrid")
+def test_main_generate_mode(mock_hybrid, mock_asym, mock_filehandler, tmp_path, monkeypatch):
+    mock_args = MagicMock(mode="generate", key_length=128)
+    monkeypatch.setattr("main.parse_arguments", lambda: mock_args)
+
+    mock_hybrid.generate_keys.return_value = ("priv", "pub", b"sym")
+    mock_asym.encrypt_by_public_key.return_value = b"encrypted"
+    mock_filehandler.serialize_public_key.return_value = None
+    mock_filehandler.serialize_private_key.return_value = None
+    mock_filehandler.serialize_symmetric_key.return_value = None
+
+    monkeypatch.setattr("main.SETTINGS_FILE", str(tmp_path / "settings.json"))
+    monkeypatch.setattr("main.FileHandler.write_json", lambda f, d: None)
+    main.create_default_settings_if_needed()
+
+    main.main()
