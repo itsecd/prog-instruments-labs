@@ -65,3 +65,13 @@ class GameBoard:
             self.board[head_r][head_c] = "@"
         for r, c in self.food:
             self.board[r][c] = "$"
+            
+    def __str__(self) -> str:
+        """Return a string representation of the board."""
+        score = f"Score: {len(self.snake) - 2}"
+        lines = [f"{'#' * (self.cols - len(score))} {score} ##"]
+        for r in range(self.rows):
+            row_str = "#" + "".join(self.board[r]) + "#"
+            lines.append(row_str)
+        lines.append("#" * (self.cols + 2))
+        return "\n".join(lines)
