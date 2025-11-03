@@ -62,6 +62,7 @@ class TestPlayer:
 
         assert sample_player.hand_value() == expected_value
 
+
 class TestDealer:
     @pytest.mark.parametrize("cards, expected_value", [
         (("Ace", "King"), 21),
