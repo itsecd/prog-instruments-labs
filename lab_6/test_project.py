@@ -25,3 +25,10 @@ def test_generate_symmetrical_key_valid(bits):
     key = Symmetrical.generate_key(bits)
     assert isinstance(key, bytes)
     assert len(key) == bits // 8
+
+
+# 3. Тест некорректной длины ключей
+@pytest.mark.parametrize("bits", [0, 39, 129])
+def test_generate_symmetrical_key_invalid(bits):
+    with pytest.raises(ValueError):
+        Symmetrical.generate_key(bits)
