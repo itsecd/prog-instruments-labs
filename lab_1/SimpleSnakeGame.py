@@ -21,20 +21,19 @@ KEY = {"UP":1 , "DOWN":2 , "LEFT":3, "RIGHT":4}
 
 
 
-screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),pygame.HWSURFACE)
 
-score_font = pygame.font.Font(None,38)
-score_numb_font = pygame.font.Font(None,28)
-game_over_font = pygame.font.Font(None,46)
-play_again_font = score_numb_font
-score_msg = score_font.render("Score : ",1,pygame.Color("yellow"))
-score_msg_size = score_font.size("Score")
-background_color = pygame.Color(0,0,0)    
-black = pygame.Color(0,0,0)
+SCORE_FONT = pygame.font.Font(None,38)
+SCORE_NUMB_FONT = pygame.font.Font(None,28)
+GAME_OVER_FONT = pygame.font.Font(None,46)
+PLAY_AGAIN_FONT = SCORE_NUMB_FONT
+SCORE_MSG = SCORE_FONT.render("Score : ",1,pygame.Color("yellow"))
+SCORE_MSG_SIZE = SCORE_FONT.size("Score")
+BACKGROUND_COLOR = pygame.Color(0,0,0)
 
 
 
-gameClock = pygame.time.Clock()
+SCREEN = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT),pygame.HWSURFACE)
+GAME_CLOCK = pygame.time.Clock()
 
 def checkCollision(posA,As ,posB , Bs):    
     if(posA.x < posB.x+Bs and posA.x+As > posB.x and posA.y < posB.y+Bs and posA.y+As > posB.y):
@@ -213,10 +212,10 @@ def getKey():
             sys.exit(0)
 
 def endGame():
-    message = game_over_font.render("Gsme Over",1,pygame.Color("white"))
-    message_play_again = play_again_font.render("Play Again ? (Y/N)",1,pygame.Color("green"))
-    screen.blit(message,(320,240))
-    screen.blit(message_play_again,(320+12,240+40))
+    message = GAME_OVER_FONT.render("Gsme Over",1,pygame.Color("white"))
+    message_play_again = PLAY_AGAIN_FONT.render("Play Again ? (Y/N)",1,pygame.Color("green"))
+    SCREEN.blit(message,(320,240))
+    SCREEN.blit(message_play_again,(320+12,240+40))
 
     pygame.display.flip()
     pygame.display.update()
@@ -228,19 +227,19 @@ def endGame():
         elif(mKey == "no"):
             break
         mKey = getKey()
-        gameClock.tick(FPS)
+        GAME_CLOCK.tick(FPS)
     sys.exit(0)
 
 def drawScore(score):
-    score_numb = score_numb_font.render(str(score),1,pygame.Color("red"))
-    screen.blit(score_msg, (SCREEN_WIDTH - score_msg_size[0]-60,10))
-    screen.blit(score_numb,(SCREEN_WIDTH - 45,14))
+    score_numb = SCORE_NUMB_FONT.render(str(score),1,pygame.Color("red"))
+    SCREEN.blit(SCORE_MSG, (SCREEN_WIDTH - SCORE_MSG_SIZE[0]-60,10))
+    SCREEN.blit(score_numb,(SCREEN_WIDTH - 45,14))
 
 def drawGameTime(gameTime):
-    game_time = score_font.render("Time:" , 1, pygame.Color("white"))
-    game_time_numb = score_numb_font.render(str(gameTime/1000),1,pygame.Color("white"))
-    screen.blit(game_time,(30,10))
-    screen.blit(game_time_numb,(105,14))
+    game_time = SCORE_FONT.render("Time:" , 1, pygame.Color("white"))
+    game_time_numb = SCORE_NUMB_FONT.render(str(gameTime/1000),1,pygame.Color("white"))
+    SCREEN.blit(game_time,(30,10))
+    SCREEN.blit(game_time_numb,(105,14))
 
 def exitScreen():
     pass
@@ -301,7 +300,7 @@ def main():
     endgame = 0
 
     while(endgame != 1):
-        gameClock.tick(FPS)
+        GAME_CLOCK.tick(FPS)
 
        
         keyPress = getKey()
@@ -332,12 +331,12 @@ def main():
             respawnApple(apples , 0 , mySnake.getHead().x , mySnake.getHead().y)
 
         
-        screen.fill(background_color)
+        SCREEN.fill(BACKGROUND_COLOR)
         for myApple in apples:
             if(myApple.state == 1):
-                myApple.draw(screen)
+                myApple.draw(SCREEN)
         
-        mySnake.draw(screen)
+        mySnake.draw(SCREEN)
         drawScore(score)
         gameTime = pygame.time.get_ticks() - startTime
         drawGameTime(gameTime)
