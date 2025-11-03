@@ -20,7 +20,8 @@ def get_parse() -> tuple:
 
         logger.info("ARGUMENTS_PARSED - Image path: %s, Save path: %s", 
             args.img_path, 
-            args.save_path)
+            args.save_path
+            )
         
         return args.img_path, args.save_path
     except Exception as e:
@@ -38,7 +39,8 @@ def validate_paths(img_path: str, save_path: str) -> bool:
     logger.debug(
         "VALIDATING_PATHS - Input: %s, Output: %s", 
         img_path, 
-        save_path)
+        save_path
+        )
     
     if not img_path or not save_path:
         logger.error("EMPTY_PATHS - One or both paths are empty")
