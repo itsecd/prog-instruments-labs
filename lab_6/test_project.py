@@ -32,3 +32,12 @@ def test_generate_symmetrical_key_valid(bits):
 def test_generate_symmetrical_key_invalid(bits):
     with pytest.raises(ValueError):
         Symmetrical.generate_key(bits)
+
+
+# 4. Тест шифрования и расшифровки симметричным алгоритмом
+def test_symmetrical_encrypt_decrypt_roundtrip():
+    key = Symmetrical.generate_key(128)
+    text = "Hello, CAST5!"
+    encrypted = Symmetrical.encrypt_text(key, text)
+    decrypted = Symmetrical.decrypt_text(key, encrypted)
+    assert decrypted == text
