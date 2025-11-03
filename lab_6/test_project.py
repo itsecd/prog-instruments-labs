@@ -41,3 +41,11 @@ def test_symmetrical_encrypt_decrypt_roundtrip():
     encrypted = Symmetrical.encrypt_text(key, text)
     decrypted = Symmetrical.decrypt_text(key, encrypted)
     assert decrypted == text
+
+
+# 5. Проверка, что пустой текст вызывает ошибку
+def test_encrypt_empty_text_error():
+    key = Symmetrical.generate_key(128)
+    with pytest.raises(ValueError):
+        Symmetrical.encrypt_text(key, "")
+
