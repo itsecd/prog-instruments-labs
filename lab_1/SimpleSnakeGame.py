@@ -63,7 +63,7 @@ class Apple:
     def draw(self,screen):
         pygame.draw.rect(screen,self.color,(self.x,self.y,APPLE_SIZE,APPLE_SIZE),0)
 
-class segment:
+class Segment:
     
     def __init__(self,x,y):
         self.x = x
@@ -71,14 +71,14 @@ class segment:
         self.direction = KEY["UP"]
         self.color = "white"
 
-class snake:
+class Snake:
     def __init__(self,x,y):
         self.x = x
         self.y = y
         self.direction = KEY["UP"]
         self.stack =[]   
         self.stack.append(self)
-        black_box = segment(self.x , self.y + SEPARATION)
+        black_box = Segment(self.x , self.y + SEPARATION)
         black_box.direction = KEY["UP"]
         black_box.color = "NULL"
         self.stack.append(black_box)
@@ -114,20 +114,20 @@ class snake:
         last_element = len(self.stack) -1
         self.stack[last_element].direction = self.stack[last_element].direction
         if(self.stack[last_element].direction == KEY["UP"]):
-            new_segment = segment(self.stack[last_element].x, self.stack[last_element].y -SNAKE_SIZE)
-            black_box = segment(new_segment.x , new_segment.y-SEPARATION)
+            new_segment = Segment(self.stack[last_element].x, self.stack[last_element].y -SNAKE_SIZE)
+            black_box = Segment(new_segment.x , new_segment.y-SEPARATION)
         
         elif(self.stack[last_element].direction == KEY["DOWN"]):
-            new_segment = segment(self.stack[last_element].x, self.stack[last_element].y +SNAKE_SIZE)
-            black_box = segment(new_segment.x , new_segment.y+SEPARATION)
+            new_segment = Segment(self.stack[last_element].x, self.stack[last_element].y +SNAKE_SIZE)
+            black_box = Segment(new_segment.x , new_segment.y+SEPARATION)
 
         elif(self.stack[last_element].direction == KEY["LEFT"]):
-            new_segment = segment(self.stack[last_element].x - SNAKE_SIZE, self.stack[last_element].y)
-            black_box = segment(new_segment.x - SEPARATION , new_segment.y)
+            new_segment = Segment(self.stack[last_element].x - SNAKE_SIZE, self.stack[last_element].y)
+            black_box = Segment(new_segment.x - SEPARATION , new_segment.y)
         
         elif(self.stack[last_element].direction == KEY["RIGHT"]):
-            new_segment = segment(self.stack[last_element].x + SNAKE_SIZE, self.stack[last_element].y)
-            black_box = segment(new_segment.x + SEPARATION , new_segment.y)
+            new_segment = Segment(self.stack[last_element].x + SNAKE_SIZE, self.stack[last_element].y)
+            black_box = Segment(new_segment.x + SEPARATION , new_segment.y)
 
         black_box.color = "NULL"
         self.stack.append(new_segment)
@@ -280,7 +280,7 @@ def main():
 
     
 
-    my_snake = snake(SCREEN_WIDTH/2,SCREEN_HEIGHT/2)
+    my_snake = Snake(SCREEN_WIDTH/2,SCREEN_HEIGHT/2)
     my_snake.set_direction(KEY["UP"])
     my_snake.move()
     start_segments = 3   
