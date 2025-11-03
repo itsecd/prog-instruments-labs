@@ -73,3 +73,11 @@ def test_filehandler_json_read_write(tmp_path):
     FileHandler.write_json(json_path, data)
     loaded = FileHandler.get_json(json_path)
     assert loaded == data
+
+
+# 8. Тест гибридной генерации ключей
+def test_hybrid_generate_keys():
+    private_key, public_key, symmetric_key = Hybrid.generate_keys()
+    assert private_key is not None
+    assert public_key is not None
+    assert isinstance(symmetric_key, bytes)
