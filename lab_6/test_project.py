@@ -18,3 +18,10 @@ def test_generate_asymmetrical_keys():
     assert public_key is not None
     assert private_key.key_size == 2048
 
+
+# 2. Тест генерации симметричных ключей
+@pytest.mark.parametrize("bits", [40, 64, 128])
+def test_generate_symmetrical_key_valid(bits):
+    key = Symmetrical.generate_key(bits)
+    assert isinstance(key, bytes)
+    assert len(key) == bits // 8
