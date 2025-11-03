@@ -1,22 +1,19 @@
-class GameBoard(object):
-    def __init__(self, row, col, size=2):
+from enum import Enum
+
+class Direction(Enum):
+    UP = 1
+    RIGHT = 2
+    DOWN = 3
+    LEFT = 4
+
+class GameBoard:
+    """Game state and logic for Snake."""
+    def __init__(self, rows: int, cols: int, size: int = 2):
+        self.rows = rows
+        self.cols = cols
         self.size = size
-        self.col = col
-        self.row = row
-
         self.finished = False
-
-        # inititalize empty board
-        self.board = [[" " for _ in range(col)] for _ in range(row)]
-
-        # initialize snake positions
-        head = (int(row / 2), int(col / 2))
-        self.snake = [((head[0] + i), head[1]) for i in range(size)]
-
-        # put food
-        self.food = []
-        food = Thread(target=self.putFood)
-        food.start()
-
-        # 1- up, 2-right, 3-down, 4- left
-        self.move = 4
+        self.board = [[" " for _ in range(cols)] for _ in range(rows)]
+        self.snake = [((rows // 2) + i, cols // 2) for i in range(size)]
+        self.food: list[tuple[int, int]] = []
+        self.direction = Direction.LEFT
