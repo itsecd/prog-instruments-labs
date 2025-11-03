@@ -1,35 +1,38 @@
-def initialize(window):
-    global board
-    if len(sys.argv) > 2:
-        if int(sys.argv[1]) < 20 or int(sys.argv[2]) < 50:
-            curses.endwin()
-            sys.stderr.write("\nError[1] : minimum val for row,column is 20,50 respectively\n")
-            return
-        else:
-            board = GameBoard(int(sys.argv[1]), int(sys.argv[2]))
-    else:
-        board = GameBoard(35, 70)
-    game = True
-    while game:
-        window.clear()
-        window.insstr(0, 0, str(board))
-        window.refresh()
-        status = True
-        control = Thread(target=controller, args=(board, window))
-        control.start()
-        while status:
-            window.clear()
-            window.insstr(0, 0, str(board))
-            window.refresh()
-            speed = (10 / (len(board.snake) + 8))
-            time.sleep(speed)
-            status = board.refreshBoard()
-        (game, board) = gameOver(window, board)
-    curses.endwin()
-    print("""
-		Thank You for playing
-		Credits:
-			Name  : Aditya Jain
-			Email : adityajn105@gmail.com
-			Github: https://github.com/Adityajn
-		""")
+import curses
+import time
+from game import GameBoard, Direction
+
+def draw_board(window, board: GameBoard) -> None:
+    window.clear()
+    window.addstr(0, 0, str(board))
+    window.refresh()
+
+def handle_input(ch: int, board: GameBoard) -> None:
+    mapping = {
+        curses.KEY_UP: Direction.UP,
+        curses.KEY_DOWN: Direction.DOWN,
+        curses.KEY_LEFT: Direction.LEFT,
+        curses.KEY_RIGHT: Direction.RIGHT
+    }
+    new_dir = mapping.get(ch)
+    if new_dir and abs(board.direction.value - new_dir.value) != 2:
+        board.direction = new_dir
+
+def play(window, board: GameBoard) -> None:
+    window.nodelay(True)
+    while not board.finished:
+        draw_board(window, board)
+        time.sleep(0.1)
+        board.move_snake()
+        board.maybe_spawn_food()
+        key = window.getch()
+        if key != -1:
+            handle_input(key, board)
+
+def show_game_over(window, board: GameBoard) -> bool:
+    msg = f"Game Over! Score: {len(board.snake) - 2}\nPress 'n' to restart or any key to quit."
+    window.clear()
+    window.addstr(0, 0, msg)
+    window.refresh()
+    key = window.getch()
+    return chr(key).lower() == "n"
