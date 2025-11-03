@@ -1,3 +1,4 @@
+import random
 from enum import Enum
 
 class Direction(Enum):
@@ -45,3 +46,22 @@ class GameBoard:
         else:
             self.snake.pop()
         return True
+    
+    def maybe_spawn_food(self) -> None:
+        """Occasionally place new food."""
+        if len(self.food) < 3 and random.random() < 0.05:
+            r = random.randint(0, self.rows - 1)
+            c = random.randint(0, self.cols - 1)
+            if (r, c) not in self.snake and (r, c) not in self.food:
+                self.food.append((r, c))
+
+    def refresh_board(self) -> None:
+        """Rebuild game board based on current state."""
+        self.board = [[" " for _ in range(self.cols)] for _ in range(self.rows)]
+        for r, c in self.snake:
+            self.board[r][c] = "*"
+        if self.snake:
+            head_r, head_c = self.snake[0]
+            self.board[head_r][head_c] = "@"
+        for r, c in self.food:
+            self.board[r][c] = "$"
