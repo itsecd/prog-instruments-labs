@@ -102,3 +102,21 @@ def test_main_generate_mode(mock_hybrid, mock_asym, mock_filehandler, tmp_path, 
     main.create_default_settings_if_needed()
 
     main.main()
+
+
+# 10. Тест CLI режима encrypt с отсутствующим файлом
+def test_main_encrypt_missing_files(monkeypatch):
+
+    args = MagicMock(mode="encrypt", key_length=128)
+    monkeypatch.setattr("main.parse_arguments", lambda: args)
+    settings = {
+        "public_key": "no/key.pem",
+        "private_key": "no/key.pem",
+        "symmetric_key": "no/key.pem",
+        "initial_text": "no/text.txt",
+        "encrypted_text": "no/encrypted.txt"
+    }
+    monkeypatch.setattr("main.load_settings", lambda: settings)
+
+    with pytest.raises(SystemExit):
+        main.main()
