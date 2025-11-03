@@ -64,3 +64,12 @@ def test_filehandler_serialize_deserialize_keys(tmp_path):
 
     assert loaded_priv.key_size == private_key.key_size
     assert loaded_pub.public_numbers() == public_key.public_numbers()
+
+
+# 7. Тест записи и чтения JSON-файла
+def test_filehandler_json_read_write(tmp_path):
+    json_path = tmp_path / "settings.json"
+    data = {"a": "b"}
+    FileHandler.write_json(json_path, data)
+    loaded = FileHandler.get_json(json_path)
+    assert loaded == data
