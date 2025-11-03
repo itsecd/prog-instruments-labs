@@ -49,3 +49,18 @@ def test_encrypt_empty_text_error():
     with pytest.raises(ValueError):
         Symmetrical.encrypt_text(key, "")
 
+
+# 6. Тест сериализации и десериализации ключей
+def test_filehandler_serialize_deserialize_keys(tmp_path):
+    private_key, public_key = Asymmetrical.generate_asymmetrical_keys()
+    priv_path = tmp_path / "priv.pem"
+    pub_path = tmp_path / "pub.pem"
+
+    FileHandler.serialize_private_key(priv_path, private_key)
+    FileHandler.serialize_public_key(pub_path, public_key)
+
+    loaded_priv = FileHandler.deserialization_private_key(priv_path)
+    loaded_pub = FileHandler.deserialization_public_key(pub_path)
+
+    assert loaded_priv.key_size == private_key.key_size
+    assert loaded_pub.public_numbers() == public_key.public_numbers()
