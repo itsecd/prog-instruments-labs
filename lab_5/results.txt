@@ -1,0 +1,11 @@
+Frequency bitwise test:
+cpp: 0.4795001221869535
+java: 0.1572992070502852
+
+A test for identical consecutive bits:
+cpp: 0.8941123552527624
+java: 0.5900607320214112
+
+Test for the longest sequence of units in a block:
+cpp: 0.7890269501666896
+java: 0.20836983149469077
