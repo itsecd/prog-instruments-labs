@@ -1,8 +1,7 @@
-import pygame
-import sys
-import os
-import random 
 import math
+import pygame
+import random
+import sys
 
 pygame.init()
 pygame.display.set_caption("Simple Snake Game")
