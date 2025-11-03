@@ -1,9 +1,11 @@
 import cv2
 import logging
+import time
 
 import matplotlib.pyplot as plt
 import numpy as np
 
+from audit import audit_log
 from process_image import *
 
 
@@ -16,7 +18,12 @@ def make_hist(img: np.ndarray) -> tuple:
     :param img: original image
     :return: list with histograms
     """
-    logger.info("HISTOGRAM_CALCULATION_STARTED - Calculating histograms for BGR channels")
+    hist_start = time.time()
+    logger.info("HISTOGRAM_CALCULATION_STARTED")
+    audit_log("HISTOGRAM_ANALYSIS_STARTED", extra_data={
+        "channels_to_analyze": ["blue", "green", "red"],
+        "bins_count": 256
+    })
 
     try:
         if img.size == 0:
@@ -39,6 +46,10 @@ def make_hist(img: np.ndarray) -> tuple:
         
     except Exception as e:
         logger.error("HISTOGRAM_CALCULATION_FAILED - Error: %s", str(e))
+        audit_log("HISTOGRAM_ANALYSIS_FAILED", extra_data={
+            "error_type": type(e).__name__,
+            "error_message": str(e)
+        })
         raise
 
 
@@ -47,7 +58,9 @@ def print_hist(hist: tuple) -> None:
     build and show histogram
     :param hist: tuple with histograms for blue, green and red colours
     """
+    display_start = time.time()
     logger.info("HISTOGRAM_DISPLAY_STARTED - Displaying histogram plot")
+    audit_log("HISTOGRAM_DISPLAY_STARTED")
 
     plt.figure()
     plt.title("Histogram of image")
@@ -65,3 +78,6 @@ def print_hist(hist: tuple) -> None:
     plt.show()
 
     logger.info("HISTOGRAM_DISPLAYED_SUCCESSFULLY - Histogram shown to user")
+    audit_log("HISTOGRAM_DISPLAY_COMPLETED", extra_data={
+            "display_duration_ms": round((time.time() - display_start) * 1000, 2)
+        })

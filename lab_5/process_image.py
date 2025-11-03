@@ -1,7 +1,13 @@
 import cv2
+import datetime
 import logging
+import os
+import sys
+import time
 
 import numpy as np
+
+from audit import audit_log
 
 
 logger = logging.getLogger("image_processing")
@@ -13,22 +19,35 @@ def read_image(img_path: str) -> np.ndarray:
     :param img_path: path to image
     :return: image
     """
+    read_start = time.time()
     logger.info("IMAGE_READ_STARTED - Reading image from: %s", img_path)
+    audit_log("IMAGE_READING_STARTED", extra_data={
+        "source_file_path": img_path,
+        "source_file_size_bytes": os.path.getsize(img_path)
+    })
 
     try:
         img = cv2.imread(img_path)
         if img is None:
             logger.error("IMAGE_READ_FAILED - Cannot read image from: %s", img_path)
+            audit_log("IMAGE_READING_FAILED", extra_data={
+                "error": "cv2_imread_returned_none"
+            })
             raise FileNotFoundError(f"Cannot read image from {img_path}")
         
         logger.info(
             "IMAGE_READ_SUCCESSFUL - Image loaded successfully, shape: %s", 
             img.shape
         )
+        
         return img
     
     except Exception as e:
         logger.error("IMAGE_READ_ERROR - Unexpected error: %s", str(e))
+        audit_log("IMAGE_READING_ERROR", extra_data={
+            "error_type": type(e).__name__,
+            "error_message": str(e)
+        })
 
 
 def get_size(img: np.ndarray) -> tuple:
@@ -37,7 +56,10 @@ def get_size(img: np.ndarray) -> tuple:
     :param img: image
     :return: width and height of image
     """
+    analysis_start = time.time()
+    
     logger.debug("GETTING_IMAGE_SIZE - Image shape: %s", img.shape)
+    audit_log("IMAGE_DIMENSION_ANALYSIS_STARTED")
     
     height, width = img.shape[0], img.shape[1]
     logger.info("IMAGE_SIZE - Width: %d, Height: %d", width, height)
@@ -95,7 +117,15 @@ def save_data(path: str, img: np.ndarray) -> None:
     :param path: Path to file
     :param img: Saving image
     """
+    save_start = time.time()
     logger.info("IMAGE_SAVE_STARTED - Saving image to: %s", path)
+    audit_log("IMAGE_SAVING_STARTED", extra_data={
+        "output_path": path,
+        "image_properties": {
+            "shape": str(img.shape),
+            "dtype": str(img.dtype)
+        }
+    })
 
     try:
         success = cv2.imwrite(path, img)
@@ -107,24 +137,8 @@ def save_data(path: str, img: np.ndarray) -> None:
         
     except Exception as e:
         logger.error("IMAGE_SAVE_ERROR - Error: %s", str(e))
+        audit_log("IMAGE_SAVING_ERROR", extra_data={
+            "error_type": type(e).__name__,
+            "error_message": str(e)
+        })
         raise
-
-
-def get_image_info(img: np.ndarray) -> dict:
-    """
-    Get information about image
-    param img: image
-    :return: image info
-    """
-    logger.debug("GETTING_IMAGE_INFO - Analyzing image properties")
-    
-    info = {
-        'shape': img.shape,
-        'dtype': str(img.dtype),
-        'min_value': np.min(img),
-        'max_value': np.max(img),
-        'mean_value': np.mean(img)
-    }
-    
-    logger.info("IMAGE_INFO_RETRIEVED - Image analysis completed")
-    return info

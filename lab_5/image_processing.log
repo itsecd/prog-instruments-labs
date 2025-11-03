@@ -1,0 +1,16 @@
+2025-11-03 18:09:36,867 - image_processing.parser - INFO - FUNCTION_STARTED - Parsing command line arguments
+2025-11-03 18:09:36,882 - image_processing.parser - INFO - ARGUMENTS_PARSED - Image path: image.jpg, Save path: inverted_image.jpg
+2025-11-03 18:09:36,882 - image_processing.parser - INFO - PATHS_VALIDATED - Paths are valid
+2025-11-03 18:09:36,882 - image_processing - INFO - IMAGE_READ_STARTED - Reading image from: image.jpg
+2025-11-03 18:09:36,894 - image_processing - INFO - IMAGE_READ_SUCCESSFUL - Image loaded successfully, shape: (794, 1200, 3)
+2025-11-03 18:09:36,894 - image_processing - INFO - IMAGE_SIZE - Width: 1200, Height: 794
+2025-11-03 18:09:36,901 - histogram - INFO - HISTOGRAM_CALCULATION_STARTED
+2025-11-03 18:09:36,905 - histogram - INFO - HISTOGRAM_CALCULATION_COMPLETED - Histograms calculated successfully
+2025-11-03 18:09:36,905 - histogram - INFO - HISTOGRAM_DISPLAY_STARTED - Displaying histogram plot
+2025-11-03 18:09:38,870 - histogram - INFO - HISTOGRAM_DISPLAYED_SUCCESSFULLY - Histogram shown to user
+2025-11-03 18:09:38,872 - image_processing - INFO - IMAGE_INVERSION_STARTED - Inverting image pixels
+2025-11-03 18:09:38,873 - image_processing - INFO - IMAGE_INVERSION_COMPLETED - Image inverted successfully
+2025-11-03 18:09:38,873 - image_processing - INFO - IMAGE_DISPLAY_STARTED - Displaying original and processed images
+2025-11-03 18:09:40,485 - image_processing - INFO - IMAGE_DISPLAY_COMPLETED - Images displayed successfully
+2025-11-03 18:09:40,487 - image_processing - INFO - IMAGE_SAVE_STARTED - Saving image to: inverted_image.jpg
+2025-11-03 18:09:40,506 - image_processing - INFO - IMAGE_SAVE_SUCCESSFUL - Image saved successfully to: inverted_image.jpg
