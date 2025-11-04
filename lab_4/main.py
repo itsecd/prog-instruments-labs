@@ -3,73 +3,96 @@ from random import randint
 import pygame as pg
 import sqlite3
 
+# --- Константы ---
+SCREEN_WIDTH, SCREEN_HEIGHT = 420, 600
 BLOCK_SIZE = 60
-game_over = False
-pg.font.init()
-font_style = pg.font.SysFont(None, 25)
-balls = []
-volume = 0.4
-music = True
-pg.init()
+FPS = 100
+BALL_RADIUS = 10
+FONT_SIZE = 25
+DEFAULT_VOLUME = 0.4
 
+# --- Инициализация ---
+pg.init()
+pg.font.init()
+
+# --- Настройка Экрана и Шрифта ---
+screen = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pg.display.set_caption("Balls and blocks")
+font_style = pg.font.SysFont(None, FONT_SIZE)
+
+# --- Глобальные переменные состояния (временно) ---
+game_over = False
+balls = []
+volume = DEFAULT_VOLUME
+music = True
 game_is_started = False
 levels = {'level_1': 0, 'level_2': 0, 'level_infinity': 0}
 game_win = False
+block_list = []
+color_list = [()] * 70
 
-width, height = 420, 600
+# --- Настройка звука ---
 pg.mixer.music.load('LHS-RLD10.mp3')
-# pg.mixer.music.play(99999)
 pg.mixer.music.set_volume(volume)
-# volume отвечает за уровень громкости
 sound1 = pg.mixer.Sound('shoot.mp3')
 sound2 = pg.mixer.Sound('Game over.mp3')
 sound3 = pg.mixer.Sound('winsound.mp3')
 sound2.set_volume(0.2)
-pg.display.set_caption("Balls and blocks")
-block_list = []
-fps = 100
-screen = pg.display.set_mode((width, height))
+
+# --- Настройка времени и событий ---
 clock = pg.time.Clock()
 move = pg.USEREVENT
 pg.time.set_timer(move, 2)
-pg.init()
-arrow = pg.image.load("arrow1.png")
-r = arrow.get_rect()
-pg.mouse.set_visible(False)
-dis = pg.display.set_mode((width, width))
-color_list = [()] * 70
 
+# --- Загрузка изображений ---
+arrow = pg.image.load("arrow1.png")
 img = pg.image.load('112.jpg').convert()
 img2 = pg.image.load('menu1.png').convert()
-for i in range(0, height, BLOCK_SIZE):
-    for j in range(0, width, BLOCK_SIZE):
+image1 = pg.image.load('win.png')
+image_game_over = pg.image.load("game_over1.jpg") # Переименовано, чтобы не конфликтовать с переменной
+
+# --- Создание игровых объектов ---
+r = arrow.get_rect()
+pg.mouse.set_visible(False)
+
+# Создание списка блоков
+for i in range(0, SCREEN_HEIGHT, BLOCK_SIZE):
+    for j in range(0, SCREEN_WIDTH, BLOCK_SIZE):
         rect = pg.Rect(j, i, BLOCK_SIZE - 1, BLOCK_SIZE - 1)
         block_list.append(rect)
 
-sc = pg.display.set_mode((width, height))
-background = pg.Surface((420, 600))
-
+# Устаревшие вызовы, которые дублируются (пока оставляем, уберем на след. шаге)
+sc = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+background = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 sc.blit(background, (0, 0))
-x2 = 210
-y2 = 590
-ball_radius = 10
-ball_rect = int(ball_radius * 2)
+dis = pg.display.set_mode((SCREEN_WIDTH, SCREEN_WIDTH)) # Этот вызов выглядит странно, но оставляем
+
+# Инициализация шара
+x2 = SCREEN_WIDTH // 2
+y2 = SCREEN_HEIGHT - 10
+ball_rect = int(BALL_RADIUS * 2)
 ball = pg.Rect(x2, y2, ball_rect, ball_rect)
 
+# --- Настройка Базы Данных ---
 con = sqlite3.connect('records.sqlite3')
 cur = con.cursor()
 
-image1 = pg.image.load('win.png')
+# --- Создание спрайтов для экранов ---
 win = pg.sprite.Sprite()
-win.image = pg.Surface((420, 600))
+win.image = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 win.image = image1
 win.rect = win.image.get_rect()
 win.rect.x = 0
 win.rect.y = 0
 
+gameover = pg.sprite.Sprite()
+gameover.image = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+gameover.image = image_game_over
+gameover.rect = gameover.image.get_rect()
+gameover.rect.x = 0
+gameover.rect.y = 0
 
 class Button(pg.sprite.Sprite):
-
     def __init__(self, imeg, imeg2, y, level=None, back=0, *group, ):
         super().__init__(*group)
         self.image = pg.Surface((66, 218))
@@ -118,7 +141,6 @@ class Button(pg.sprite.Sprite):
             re = 1
             pg.mixer.music.set_volume(volume)
 
-
 all_sprites = pg.sprite.Group()
 backing = pg.sprite.Group()
 Button('button1.png', 'button1.1.png', 350, 'level_1', 0, all_sprites)
@@ -126,7 +148,6 @@ Button('button2.png', 'button2.1.png', 426, 'level_2', 0, all_sprites)
 Button('infinity.png', 'infinity.1.png', 502, 'level_infinity', 0, all_sprites)
 Button('back.png', 'back1.png', 290, None, 0, backing)
 Button('menupic.png', 'menupic1.png', 200, None, 1, backing)
-
 
 class Ball:
     def __init__(self, obj, x, y, v, t):
@@ -158,25 +179,17 @@ class Ball:
             elif delta_y > delta_x:
                 self.dx = -self.dx
         else:
-            if self.obj.centerx < ball_radius or self.obj.centerx > width - ball_radius:
+            # Используем константы для проверки границ
+            if self.obj.centerx < BALL_RADIUS or self.obj.centerx > SCREEN_WIDTH - BALL_RADIUS:
                 self.dx = -self.dx
             # collision top
-            if self.obj.centery < ball_radius:
+            if self.obj.centery < BALL_RADIUS:
                 self.dy = -self.dy
 
         self.x += self.dx
         self.y += self.dy
 
-
-image = pg.image.load("game_over1.jpg")
-
-gameover = pg.sprite.Sprite()
-gameover.image = pg.Surface((420, 600))
-gameover.image = image
-gameover.rect = gameover.image.get_rect()
-gameover.rect.x = 0
-gameover.rect.y = 0
-
+# Устаревший вызов, который не нужен (пока оставляем)
 pg.display.update()
 
 result = cur.execute("""
@@ -184,11 +197,9 @@ SELECT счёт from the_best_score""").fetchall()
 result1 = cur.execute("""
 SELECT num_of_wins from the_best_score""").fetchall()
 
-
 def message(msg, x, y, color, font_style1=font_style):
     mesg2 = font_style1.render(msg, True, color)
     sc.blit(mesg2, (x, y))
-
 
 def painter(colors, blocks, n1=0, n_max=100000000):
     global game_win
@@ -201,23 +212,21 @@ def painter(colors, blocks, n1=0, n_max=100000000):
     if n1 <= n_max:
         for le in range(5):
             for g, rect1 in enumerate(blocks[:7]):
-                if rect1.collidepoint(randint(0, 420), 58):
-
+                if rect1.collidepoint(randint(0, SCREEN_WIDTH), 58):
                     if not colors[g]:
                         colors[g] = (randint(1, 255), randint(1, 255), randint(1, 255))
     return colors
-
 
 def if_win(colors, n1, n_max=100000000):
     global game_win
     if not any(colors) and n1 >= n_max:
         game_win = True
 
-
 re = 0
 k = 0
 n = 0
 d = 0
+
 while not game_over:
     if game_is_started:
         pg.mouse.set_visible(False)
@@ -238,12 +247,10 @@ while not game_over:
                         y2 = b.y
                         ball.x = x2
                         ball.y = y2
-                        if b.y >= 590:
+                        if b.y >= SCREEN_HEIGHT - 10:
                             balls = []
 
                 elif event.type == pg.KEYUP:
-
-                    # при нажатии на кнопку 1 музыка ставится либо на паузу либо включается
                     if event.key == pg.K_1:
                         if music:
                             pg.mixer.music.pause()
@@ -251,8 +258,6 @@ while not game_over:
                         else:
                             pg.mixer.music.unpause()
                             music = True
-                    # при нажатии на кнопку 2 громкость увеличивается
-                    # а при нажатии на 3 громкость уменьшается
                     elif event.key == pg.K_2 and volume < 1:
                         if volume < 1:
                             volume += 0.1
@@ -278,25 +283,22 @@ while not game_over:
                                     sys.exit()
                                 backing.update(event_2)
                                 pg.mouse.set_visible(True)
-                                screen.fill(pg.Color("black"))
+                                screen.fill((0, 0, 0)) # Используем кортеж вместо строки
                                 backing.draw(sc)
 
                             pg.display.flip()
-                            clock.tick(fps)
+                            clock.tick(FPS)
                             if re == 1:
                                 re = 0
                                 break
 
                     if KEY != 2 and not any(color_list[63:]):
                         pos = pg.mouse.get_pos()
-                        a = [pos[0], 590, 1]
+                        a = [pos[0], SCREEN_HEIGHT - 10, 1]
                         balls.append(Ball(ball, *a, KEY))
                         sound1.play()
-
-                        # n = ceil(n + 0.5)
                         n += 1
 
-                        # if n % 2 == 1:
                         if levels['level_infinity']:
                             color_list = painter(color_list, block_list).copy()
                         elif levels['level_1']:
@@ -318,7 +320,7 @@ while not game_over:
                     b.move(hit_rect)
                 color_list[hit_index] = ()
                 d = 1
-        screen.fill(pg.Color("black"))
+        screen.fill((0, 0, 0)) # Используем кортеж вместо строки
 
         sc.blit(img, (0, 0))
         if not any(color_list[63:]) and not game_win:
@@ -332,14 +334,14 @@ while not game_over:
             background.blit(sc, (x2, y2))
             sc.blit(arrow, (x1, y1))
 
-            pg.draw.circle(sc, pg.Color('snow'), (x2, y2), ball_radius)
+            pg.draw.circle(sc, (255, 250, 250), (x2, y2), BALL_RADIUS) # Используем кортеж
 
             if hit_index != -1:
                 if d:
                     k += 1
                     d = 0
                 message(f'Score: {k}', 342, 10, 'snow')
-            clock.tick(fps)
+            clock.tick(FPS)
             pg.display.flip()
 
         else:
@@ -355,7 +357,6 @@ while not game_over:
                 cur.execute("""UPDATE the_best_score
                     SET счёт = {} WHERE номер = {}""".format(k, list(levels.values()).index(1) + 1)).fetchall()
                 con.commit()
-                # game_over = True
             while True:
                 if not game_win:
                     sc.blit(gameover.image, (0, -100))
@@ -363,7 +364,6 @@ while not game_over:
                     sc.blit(win.image, (0, 0))
                 pg.mouse.set_visible(True)
                 balls = []
-                # message(f'Your score: {k}', 500, 100, 'snow')
                 for event in pg.event.get():
                     if event.type == pg.QUIT:
                         con.commit()
@@ -381,7 +381,7 @@ while not game_over:
                             levels['level_1'] = 0
                             levels['level_2'] = 0
                 pg.display.flip()
-                clock.tick(fps)
+                clock.tick(FPS)
                 if not game_is_started:
                     break
     else:
@@ -391,7 +391,7 @@ while not game_over:
             all_sprites.update(event)
 
         pg.mouse.set_visible(True)
-        screen.fill(pg.Color("black"))
+        screen.fill((0, 0, 0)) # Используем кортеж
         sc.blit(img2, (0, 0))
         message('Best scores', 40, 235, 'snow', pg.font.SysFont(None, 40))
         message(f'1st LEVEL: {result[0][0]}', 40, 270, 'gray', pg.font.SysFont(None, 30))
@@ -405,8 +405,6 @@ while not game_over:
         all_sprites.draw(sc)
 
     pg.display.flip()
-    clock.tick(fps)
+    clock.tick(FPS)
     pg.display.update()
-    clock.tick(fps)
-
-
+    clock.tick(FPS)

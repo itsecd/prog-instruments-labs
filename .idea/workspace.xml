@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="db559da8-3507-43ac-a045-1bb011349713" name="Changes" comment="">
+    <list default="true" id="db559da8-3507-43ac-a045-1bb011349713" name="Changes" comment="Подключение исходных файлов программы">
+      <change beforePath="$PROJECT_DIR$/.idea/TMP-labs.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/TMP-labs.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lab_4/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab_4/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,7 +43,8 @@
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "lab4"
+    "git-widget-placeholder": "lab4",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
   <component name="RunManager">
@@ -81,6 +87,19 @@
       <option name="presentableId" value="Default" />
       <updated>1762263976452</updated>
     </task>
+    <task id="LOCAL-00001" summary="Подключение исходных файлов программы">
+      <option name="closed" value="true" />
+      <created>1762265651682</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1762265651682</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Подключение исходных файлов программы" />
+    <option name="LAST_COMMIT_MESSAGE" value="Подключение исходных файлов программы" />
   </component>
 </project>
