@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="db559da8-3507-43ac-a045-1bb011349713" name="Changes" comment="Удаление избыточного и мертвого кода">
+    <list default="true" id="db559da8-3507-43ac-a045-1bb011349713" name="Changes" comment="Улучшена работа с путями к файлам ресурсов">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lab_4/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab_4/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -109,13 +110,22 @@
       <option name="project" value="LOCAL" />
       <updated>1762268300439</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Улучшена работа с путями к файлам ресурсов">
+      <option name="closed" value="true" />
+      <created>1762268744505</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1762268744505</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Подключение исходных файлов программы" />
     <MESSAGE value="Избавление от «магических чисел»" />
     <MESSAGE value="Удаление избыточного и мертвого кода" />
-    <option name="LAST_COMMIT_MESSAGE" value="Удаление избыточного и мертвого кода" />
+    <MESSAGE value="Улучшена работа с путями к файлам ресурсов" />
+    <option name="LAST_COMMIT_MESSAGE" value="Улучшена работа с путями к файлам ресурсов" />
   </component>
 </project>
