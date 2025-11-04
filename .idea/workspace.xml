@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="db559da8-3507-43ac-a045-1bb011349713" name="Changes" comment="Упрощена логика отрисовки спрайта игрока">
+    <list default="true" id="db559da8-3507-43ac-a045-1bb011349713" name="Changes" comment="Инкапсуляция всей логики в класс Game">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lab_4/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab_4/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -133,7 +134,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762269571487</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Инкапсуляция всей логики в класс Game">
+      <option name="closed" value="true" />
+      <created>1762269909564</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1762269909564</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -143,6 +152,7 @@
     <MESSAGE value="Улучшена работа с путями к файлам ресурсов" />
     <MESSAGE value="Переименованы переменные и улучшена стилистика кода" />
     <MESSAGE value="Упрощена логика отрисовки спрайта игрока" />
-    <option name="LAST_COMMIT_MESSAGE" value="Упрощена логика отрисовки спрайта игрока" />
+    <MESSAGE value="Инкапсуляция всей логики в класс Game" />
+    <option name="LAST_COMMIT_MESSAGE" value="Инкапсуляция всей логики в класс Game" />
   </component>
 </project>

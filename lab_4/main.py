@@ -140,6 +140,21 @@ class Game:
         self.high_scores = self.cur.execute("SELECT счёт from the_best_score").fetchall()
         self.win_counts = self.cur.execute("SELECT num_of_wins from the_best_score").fetchall()
 
+    # --- ДОБАВЛЕННЫЕ МЕТОДЫ ---
+    def _update_win_count_in_db(self):
+        active_level_index = list(self.levels.values()).index(1)
+        self.cur.execute("UPDATE the_best_score SET num_of_wins = num_of_wins + 1 WHERE номер = ?",
+                         (active_level_index + 1,))
+        self.con.commit()
+
+    def _update_high_score_in_db(self):
+        active_level_index = list(self.levels.values()).index(1)
+        if self.score > self.high_scores[active_level_index][0]:
+            self.cur.execute("UPDATE the_best_score SET счёт = ? WHERE номер = ?",
+                             (self.score, active_level_index + 1))
+            self.con.commit()
+    # --------------------------
+
     def _create_objects(self):
         self.move_event = pg.USEREVENT
         pg.time.set_timer(self.move_event, 2)
@@ -320,17 +335,10 @@ class Game:
                         self.sound_game_over.play()
                     else:
                         self.sound_win.play()
-                        active_level_index = list(self.levels.values()).index(1)
-                        self.cur.execute("UPDATE the_best_score SET num_of_wins = num_of_wins + 1 WHERE номер = ?",
-                                         (active_level_index + 1,))
-                        self.con.commit()
+                        self._update_win_count_in_db()  # <-- ЗАМЕНА
                     pg.mixer.music.stop()
 
-                    active_level_index = list(self.levels.values()).index(1)
-                    if self.score > self.high_scores[active_level_index][0]:
-                        self.cur.execute("UPDATE the_best_score SET счёт = ? WHERE номер = ?",
-                                         (self.score, active_level_index + 1))
-                        self.con.commit()
+                    self._update_high_score_in_db()  # <-- ЗАМЕНА
 
                     end_screen_running = True
                     while end_screen_running:
