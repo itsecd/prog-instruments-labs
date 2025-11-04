@@ -305,9 +305,12 @@ while not game_over:
                 if color_list[i]:
                     pg.draw.rect(screen, color_list[i], rect)
 
-            replaced_text = ((str(arrow_rect).replace('<rect(', '')).replace(')>', '')).split(", ")
-            x1, y1 = int(replaced_text[0]), int(replaced_text[1])
-            screen.blit(arrow_img, (x1, y1))
+            # --- УПРОЩЕННАЯ ЛОГИКА ---
+            # Было: replaced_text = ((str(arrow_rect).replace('<rect(', ''))...
+            # Стало:
+            screen.blit(arrow_img, arrow_rect)  # <-- Pygame может рисовать прямо по Rect
+            # ---------------------------
+
             pg.draw.circle(screen, (255, 250, 250), (x2, y2), BALL_RADIUS)
 
             if hit_index != -1:

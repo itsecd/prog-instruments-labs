@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="db559da8-3507-43ac-a045-1bb011349713" name="Changes" comment="Улучшена работа с путями к файлам ресурсов">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="db559da8-3507-43ac-a045-1bb011349713" name="Changes" comment="Переименованы переменные и улучшена стилистика кода">
       <change beforePath="$PROJECT_DIR$/lab_4/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab_4/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -118,7 +117,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762268744505</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Переименованы переменные и улучшена стилистика кода">
+      <option name="closed" value="true" />
+      <created>1762269239215</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1762269239215</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -126,6 +133,7 @@
     <MESSAGE value="Избавление от «магических чисел»" />
     <MESSAGE value="Удаление избыточного и мертвого кода" />
     <MESSAGE value="Улучшена работа с путями к файлам ресурсов" />
-    <option name="LAST_COMMIT_MESSAGE" value="Улучшена работа с путями к файлам ресурсов" />
+    <MESSAGE value="Переименованы переменные и улучшена стилистика кода" />
+    <option name="LAST_COMMIT_MESSAGE" value="Переименованы переменные и улучшена стилистика кода" />
   </component>
 </project>
