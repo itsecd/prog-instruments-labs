@@ -49,7 +49,7 @@ arrow = pg.image.load("arrow1.png")
 img = pg.image.load('112.jpg').convert()
 img2 = pg.image.load('menu1.png').convert()
 image1 = pg.image.load('win.png')
-image_game_over = pg.image.load("game_over1.jpg") # Переименовано, чтобы не конфликтовать с переменной
+image_game_over = pg.image.load("game_over1.jpg")
 
 # --- Создание игровых объектов ---
 r = arrow.get_rect()
@@ -60,12 +60,6 @@ for i in range(0, SCREEN_HEIGHT, BLOCK_SIZE):
     for j in range(0, SCREEN_WIDTH, BLOCK_SIZE):
         rect = pg.Rect(j, i, BLOCK_SIZE - 1, BLOCK_SIZE - 1)
         block_list.append(rect)
-
-# Устаревшие вызовы, которые дублируются (пока оставляем, уберем на след. шаге)
-sc = pg.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-background = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-sc.blit(background, (0, 0))
-dis = pg.display.set_mode((SCREEN_WIDTH, SCREEN_WIDTH)) # Этот вызов выглядит странно, но оставляем
 
 # Инициализация шара
 x2 = SCREEN_WIDTH // 2
@@ -79,18 +73,12 @@ cur = con.cursor()
 
 # --- Создание спрайтов для экранов ---
 win = pg.sprite.Sprite()
-win.image = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 win.image = image1
 win.rect = win.image.get_rect()
-win.rect.x = 0
-win.rect.y = 0
 
 gameover = pg.sprite.Sprite()
-gameover.image = pg.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 gameover.image = image_game_over
 gameover.rect = gameover.image.get_rect()
-gameover.rect.x = 0
-gameover.rect.y = 0
 
 class Button(pg.sprite.Sprite):
     def __init__(self, imeg, imeg2, y, level=None, back=0, *group, ):
@@ -156,9 +144,6 @@ class Ball:
         self.y = y
         self.dx = -v * t
         self.dy = -v
-        # dх отвечает за направление движение вдоль оси ох
-        # нужно сделать 3 варианта dx = v/ -v/ 0
-        # то есть движение вправо влево и  вертикально вверх
 
     def move(self, block=None):
         if block:
@@ -179,18 +164,13 @@ class Ball:
             elif delta_y > delta_x:
                 self.dx = -self.dx
         else:
-            # Используем константы для проверки границ
             if self.obj.centerx < BALL_RADIUS or self.obj.centerx > SCREEN_WIDTH - BALL_RADIUS:
                 self.dx = -self.dx
-            # collision top
             if self.obj.centery < BALL_RADIUS:
                 self.dy = -self.dy
 
         self.x += self.dx
         self.y += self.dy
-
-# Устаревший вызов, который не нужен (пока оставляем)
-pg.display.update()
 
 result = cur.execute("""
 SELECT счёт from the_best_score""").fetchall()
@@ -199,7 +179,7 @@ SELECT num_of_wins from the_best_score""").fetchall()
 
 def message(msg, x, y, color, font_style1=font_style):
     mesg2 = font_style1.render(msg, True, color)
-    sc.blit(mesg2, (x, y))
+    screen.blit(mesg2, (x, y)) # Заменено sc на screen
 
 def painter(colors, blocks, n1=0, n_max=100000000):
     global game_win
@@ -283,8 +263,8 @@ while not game_over:
                                     sys.exit()
                                 backing.update(event_2)
                                 pg.mouse.set_visible(True)
-                                screen.fill((0, 0, 0)) # Используем кортеж вместо строки
-                                backing.draw(sc)
+                                screen.fill((0, 0, 0))
+                                backing.draw(screen) # Заменено sc на screen
 
                             pg.display.flip()
                             clock.tick(FPS)
@@ -320,21 +300,21 @@ while not game_over:
                     b.move(hit_rect)
                 color_list[hit_index] = ()
                 d = 1
-        screen.fill((0, 0, 0)) # Используем кортеж вместо строки
+        screen.fill((0, 0, 0))
 
-        sc.blit(img, (0, 0))
+        screen.blit(img, (0, 0)) # Заменено sc на screen
         if not any(color_list[63:]) and not game_win:
 
             for i, rect in enumerate(block_list):
                 if color_list[i] != ():
-                    pg.draw.rect(sc, color_list[i], rect)
+                    pg.draw.rect(screen, color_list[i], rect) # Заменено sc на screen
 
             replaced_text = ((str(r).replace('<rect(', '')).replace(')>', '')).split(", ")
             x1, y1 = int(replaced_text[0]), int(replaced_text[1])
-            background.blit(sc, (x2, y2))
-            sc.blit(arrow, (x1, y1))
+            # background.blit(screen, (x2, y2)) # Эта строка была бессмысленной
+            screen.blit(arrow, (x1, y1)) # Заменено sc на screen
 
-            pg.draw.circle(sc, (255, 250, 250), (x2, y2), BALL_RADIUS) # Используем кортеж
+            pg.draw.circle(screen, (255, 250, 250), (x2, y2), BALL_RADIUS) # Заменено sc на screen
 
             if hit_index != -1:
                 if d:
@@ -359,9 +339,9 @@ while not game_over:
                 con.commit()
             while True:
                 if not game_win:
-                    sc.blit(gameover.image, (0, -100))
+                    screen.blit(gameover.image, (0, -100)) # Заменено sc на screen
                 else:
-                    sc.blit(win.image, (0, 0))
+                    screen.blit(win.image, (0, 0)) # Заменено sc на screen
                 pg.mouse.set_visible(True)
                 balls = []
                 for event in pg.event.get():
@@ -391,8 +371,8 @@ while not game_over:
             all_sprites.update(event)
 
         pg.mouse.set_visible(True)
-        screen.fill((0, 0, 0)) # Используем кортеж
-        sc.blit(img2, (0, 0))
+        screen.fill((0, 0, 0))
+        screen.blit(img2, (0, 0)) # Заменено sc на screen
         message('Best scores', 40, 235, 'snow', pg.font.SysFont(None, 40))
         message(f'1st LEVEL: {result[0][0]}', 40, 270, 'gray', pg.font.SysFont(None, 30))
         message(f'2nd LEVEL: {result[1][0]}', 40, 295, 'gray', pg.font.SysFont(None, 30))
@@ -402,7 +382,7 @@ while not game_over:
         message(f'2nd LEVEL: {result1[1][0]}', 220, 295, 'gray', pg.font.SysFont(None, 30))
         if k != 0:
             message(f'Your score: {k}', 100, 190, 'gold', pg.font.SysFont(None, 50))
-        all_sprites.draw(sc)
+        all_sprites.draw(screen) # Заменено sc на screen
 
     pg.display.flip()
     clock.tick(FPS)

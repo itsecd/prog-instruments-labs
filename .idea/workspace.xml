@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="db559da8-3507-43ac-a045-1bb011349713" name="Changes" comment="Подключение исходных файлов программы">
-      <change beforePath="$PROJECT_DIR$/.idea/TMP-labs.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/TMP-labs.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="db559da8-3507-43ac-a045-1bb011349713" name="Changes" comment="Избавление от «магических чисел»">
       <change beforePath="$PROJECT_DIR$/lab_4/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/lab_4/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -95,11 +93,20 @@
       <option name="project" value="LOCAL" />
       <updated>1762265651682</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Избавление от «магических чисел»">
+      <option name="closed" value="true" />
+      <created>1762267979635</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1762267979635</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Подключение исходных файлов программы" />
-    <option name="LAST_COMMIT_MESSAGE" value="Подключение исходных файлов программы" />
+    <MESSAGE value="Избавление от «магических чисел»" />
+    <option name="LAST_COMMIT_MESSAGE" value="Избавление от «магических чисел»" />
   </component>
 </project>
