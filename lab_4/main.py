@@ -1,4 +1,5 @@
 import sys
+import os # <-- Добавлен импорт
 from random import randint
 import pygame as pg
 import sqlite3
@@ -10,6 +11,9 @@ FPS = 100
 BALL_RADIUS = 10
 FONT_SIZE = 25
 DEFAULT_VOLUME = 0.4
+# --- Путь к папке с ресурсами ---
+# Это позволяет запускать скрипт из любой директории
+ASSETS_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # --- Инициализация ---
 pg.init()
@@ -32,11 +36,11 @@ block_list = []
 color_list = [()] * 70
 
 # --- Настройка звука ---
-pg.mixer.music.load('LHS-RLD10.mp3')
+pg.mixer.music.load(os.path.join(ASSETS_DIR, 'LHS-RLD10.mp3'))
 pg.mixer.music.set_volume(volume)
-sound1 = pg.mixer.Sound('shoot.mp3')
-sound2 = pg.mixer.Sound('Game over.mp3')
-sound3 = pg.mixer.Sound('winsound.mp3')
+sound1 = pg.mixer.Sound(os.path.join(ASSETS_DIR, 'shoot.mp3'))
+sound2 = pg.mixer.Sound(os.path.join(ASSETS_DIR, 'Game over.mp3'))
+sound3 = pg.mixer.Sound(os.path.join(ASSETS_DIR, 'winsound.mp3'))
 sound2.set_volume(0.2)
 
 # --- Настройка времени и событий ---
@@ -45,11 +49,11 @@ move = pg.USEREVENT
 pg.time.set_timer(move, 2)
 
 # --- Загрузка изображений ---
-arrow = pg.image.load("arrow1.png")
-img = pg.image.load('112.jpg').convert()
-img2 = pg.image.load('menu1.png').convert()
-image1 = pg.image.load('win.png')
-image_game_over = pg.image.load("game_over1.jpg")
+arrow = pg.image.load(os.path.join(ASSETS_DIR, "arrow1.png"))
+img = pg.image.load(os.path.join(ASSETS_DIR, '112.jpg')).convert()
+img2 = pg.image.load(os.path.join(ASSETS_DIR, 'menu1.png')).convert()
+image1 = pg.image.load(os.path.join(ASSETS_DIR, 'win.png'))
+image_game_over = pg.image.load(os.path.join(ASSETS_DIR, "game_over1.jpg"))
 
 # --- Создание игровых объектов ---
 r = arrow.get_rect()
@@ -68,7 +72,7 @@ ball_rect = int(BALL_RADIUS * 2)
 ball = pg.Rect(x2, y2, ball_rect, ball_rect)
 
 # --- Настройка Базы Данных ---
-con = sqlite3.connect('records.sqlite3')
+con = sqlite3.connect(os.path.join(ASSETS_DIR, 'records.sqlite3'))
 cur = con.cursor()
 
 # --- Создание спрайтов для экранов ---
@@ -84,13 +88,13 @@ class Button(pg.sprite.Sprite):
     def __init__(self, imeg, imeg2, y, level=None, back=0, *group, ):
         super().__init__(*group)
         self.image = pg.Surface((66, 218))
-        self.imeg = pg.image.load(imeg)
+        self.imeg = pg.image.load(os.path.join(ASSETS_DIR, imeg))
         self.image = self.imeg
         self.rect = self.image.get_rect()
         self.rect.x = 101
         self.rect.y = y
         self.level = level
-        self.img = pg.image.load(imeg2)
+        self.img = pg.image.load(os.path.join(ASSETS_DIR, imeg2))
         self.back = back
 
     def update(self, *args):
@@ -179,7 +183,7 @@ SELECT num_of_wins from the_best_score""").fetchall()
 
 def message(msg, x, y, color, font_style1=font_style):
     mesg2 = font_style1.render(msg, True, color)
-    screen.blit(mesg2, (x, y)) # Заменено sc на screen
+    screen.blit(mesg2, (x, y))
 
 def painter(colors, blocks, n1=0, n_max=100000000):
     global game_win
@@ -264,7 +268,7 @@ while not game_over:
                                 backing.update(event_2)
                                 pg.mouse.set_visible(True)
                                 screen.fill((0, 0, 0))
-                                backing.draw(screen) # Заменено sc на screen
+                                backing.draw(screen)
 
                             pg.display.flip()
                             clock.tick(FPS)
@@ -302,19 +306,18 @@ while not game_over:
                 d = 1
         screen.fill((0, 0, 0))
 
-        screen.blit(img, (0, 0)) # Заменено sc на screen
+        screen.blit(img, (0, 0))
         if not any(color_list[63:]) and not game_win:
 
             for i, rect in enumerate(block_list):
                 if color_list[i] != ():
-                    pg.draw.rect(screen, color_list[i], rect) # Заменено sc на screen
+                    pg.draw.rect(screen, color_list[i], rect)
 
             replaced_text = ((str(r).replace('<rect(', '')).replace(')>', '')).split(", ")
             x1, y1 = int(replaced_text[0]), int(replaced_text[1])
-            # background.blit(screen, (x2, y2)) # Эта строка была бессмысленной
-            screen.blit(arrow, (x1, y1)) # Заменено sc на screen
+            screen.blit(arrow, (x1, y1))
 
-            pg.draw.circle(screen, (255, 250, 250), (x2, y2), BALL_RADIUS) # Заменено sc на screen
+            pg.draw.circle(screen, (255, 250, 250), (x2, y2), BALL_RADIUS)
 
             if hit_index != -1:
                 if d:
@@ -339,9 +342,9 @@ while not game_over:
                 con.commit()
             while True:
                 if not game_win:
-                    screen.blit(gameover.image, (0, -100)) # Заменено sc на screen
+                    screen.blit(gameover.image, (0, -100))
                 else:
-                    screen.blit(win.image, (0, 0)) # Заменено sc на screen
+                    screen.blit(win.image, (0, 0))
                 pg.mouse.set_visible(True)
                 balls = []
                 for event in pg.event.get():
@@ -372,7 +375,7 @@ while not game_over:
 
         pg.mouse.set_visible(True)
         screen.fill((0, 0, 0))
-        screen.blit(img2, (0, 0)) # Заменено sc на screen
+        screen.blit(img2, (0, 0))
         message('Best scores', 40, 235, 'snow', pg.font.SysFont(None, 40))
         message(f'1st LEVEL: {result[0][0]}', 40, 270, 'gray', pg.font.SysFont(None, 30))
         message(f'2nd LEVEL: {result[1][0]}', 40, 295, 'gray', pg.font.SysFont(None, 30))
@@ -382,7 +385,7 @@ while not game_over:
         message(f'2nd LEVEL: {result1[1][0]}', 220, 295, 'gray', pg.font.SysFont(None, 30))
         if k != 0:
             message(f'Your score: {k}', 100, 190, 'gold', pg.font.SysFont(None, 50))
-        all_sprites.draw(screen) # Заменено sc на screen
+        all_sprites.draw(screen)
 
     pg.display.flip()
     clock.tick(FPS)
