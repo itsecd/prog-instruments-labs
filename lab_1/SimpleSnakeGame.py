@@ -31,7 +31,8 @@ GAME_CLOCK = pygame.time.Clock()
 
 
 def check_collision(pos_a, a_s, pos_b, b_s):
-    if pos_a.x < pos_b.x + b_s and pos_a.x + a_s > pos_b.x and pos_a.y < pos_b.y + b_s and pos_a.y + a_s > pos_b.y:
+    if pos_a.x < pos_b.x + b_s and pos_a.x + a_s > pos_b.x and \
+            pos_a.y < pos_b.y + b_s and pos_a.y + a_s > pos_b.y:
         return True
 
     return False
@@ -99,10 +100,13 @@ class Snake:
 
         if self.stack[0].direction == KEY["UP"]:
             last_segment.y = self.stack[0].y - (SPEED * FPS)
+
         elif self.stack[0].direction == KEY["DOWN"]:
             last_segment.y = self.stack[0].y + (SPEED * FPS)
+
         elif self.stack[0].direction == KEY["LEFT"]:
             last_segment.x = self.stack[0].x - (SPEED * FPS)
+
         elif self.stack[0].direction == KEY["RIGHT"]:
             last_segment.x = self.stack[0].x + (SPEED * FPS)
 
@@ -135,17 +139,11 @@ class Snake:
         self.stack.append(new_segment)
         self.stack.append(black_box)
 
-    def iterate_segments(self, delta):
-        pass
-
     def set_direction(self, direction):
-        if self.direction == KEY["RIGHT"] and direction == KEY["LEFT"] or self.direction == KEY["LEFT"] and \
-                direction == KEY["RIGHT"]:
-            pass
-        elif self.direction == KEY["UP"] and direction == KEY["DOWN"] or self.direction == KEY["UP"] and \
-                direction == KEY["DOWN"]:
-            pass
-        else:
+        if not ((self.direction == KEY["RIGHT"] and direction == KEY["LEFT"] or
+                 self.direction == KEY["LEFT"] and direction == KEY["RIGHT"]) or
+                (self.direction == KEY["UP"] and direction == KEY["DOWN"] or
+                 self.direction == KEY["UP"] and direction == KEY["DOWN"])):
             self.direction = direction
 
     def get_rect(self):
@@ -168,7 +166,7 @@ class Snake:
         counter = 1
         while counter < len(self.stack) - 1:
             if check_collision(self.stack[0], SNAKE_SIZE, self.stack[counter], SNAKE_SIZE) and \
-                        self.stack[counter].color != "NULL":
+                    self.stack[counter].color != "NULL":
                 return True
 
             counter += 1
@@ -176,8 +174,8 @@ class Snake:
         return False
     
     def draw(self, screen):
-        pygame.draw.rect(screen, pygame.color.Color("green"), (self.stack[0].x, self.stack[0].y,
-                SNAKE_SIZE, SNAKE_SIZE), 0)
+        pygame.draw.rect(screen, pygame.color.Color("green"),
+                         (self.stack[0].x, self.stack[0].y, SNAKE_SIZE, SNAKE_SIZE), 0)
         counter = 1
 
         while counter < len(self.stack):
@@ -185,8 +183,8 @@ class Snake:
                 counter += 1
                 continue
 
-            pygame.draw.rect(screen, pygame.color.Color("yellow"), (self.stack[counter].x,
-                self.stack[counter].y, SNAKE_SIZE, SNAKE_SIZE), 0)
+            pygame.draw.rect(screen, pygame.color.Color("yellow"),
+                             (self.stack[counter].x, self.stack[counter].y, SNAKE_SIZE, SNAKE_SIZE), 0)
             counter += 1
 
 
@@ -253,10 +251,6 @@ def draw_game_time(time_of_game):
     SCREEN.blit(game_time_numb, (105, 14))
 
 
-def exit_screen():
-    pass
-
-
 def respawn_apple(apples, index, sx, sy):
     radius = math.sqrt((SCREEN_WIDTH / 2 * SCREEN_WIDTH / 2 + SCREEN_HEIGHT / 2 * SCREEN_HEIGHT / 2)) / 2
     angle = 999
@@ -266,7 +260,7 @@ def respawn_apple(apples, index, sx, sy):
         x = SCREEN_WIDTH / 2 + radius * math.cos(angle)
         y = SCREEN_HEIGHT / 2 + radius * math.sin(angle)
         if x == sx and y == sy:
-            continue
+            break
 
     new_apple = Apple(x, y, 1)
     apples[index] = new_apple
@@ -283,9 +277,10 @@ def respawn_apples(apples, quantity, sx, sy):
             angle = random.uniform(0, 800) * math.pi * 2
             x = SCREEN_WIDTH / 2 + radius * math.cos(angle)
             y = SCREEN_HEIGHT / 2 + radius * math.sin(angle)
-            if (x - APPLE_SIZE == sx or x + APPLE_SIZE == sx) and (y - APPLE_SIZE == sy or y + APPLE_SIZE == sy) \
-                    or radius - angle <= 10:
-                    continue
+            if (x - APPLE_SIZE == sx or x + APPLE_SIZE == sx) and \
+                    (y - APPLE_SIZE == sy or y + APPLE_SIZE == sy) or \
+                    radius - angle <= 10:
+                break
 
         apples.append(Apple(x, y, 1))
         angle = 999
