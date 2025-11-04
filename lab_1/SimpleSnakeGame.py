@@ -118,6 +118,8 @@ class Snake:
     def grow(self):
         last_element = len(self.stack) - 1
         self.stack[last_element].direction = self.stack[last_element].direction
+        new_segment = Segment(0, 0)
+        black_box = Segment(0, 0)
 
         if self.stack[last_element].direction == KEY["UP"]:
             new_segment = Segment(self.stack[last_element].x, self.stack[last_element].y - SNAKE_SIZE)
@@ -254,6 +256,8 @@ def draw_game_time(time_of_game):
 def respawn_apple(apples, index, sx, sy):
     radius = math.sqrt((SCREEN_WIDTH / 2 * SCREEN_WIDTH / 2 + SCREEN_HEIGHT / 2 * SCREEN_HEIGHT / 2)) / 2
     angle = 999
+    x = 0
+    y = 0
 
     while angle > radius:
         angle = random.uniform(0, 800) * math.pi * 2
@@ -271,6 +275,8 @@ def respawn_apples(apples, quantity, sx, sy):
     del apples[:]
     radius = math.sqrt((SCREEN_WIDTH / 2 * SCREEN_WIDTH / 2 + SCREEN_HEIGHT / 2 * SCREEN_HEIGHT / 2)) / 2
     angle = 999
+    x = 0
+    y = 0
 
     while counter < quantity:
         while angle > radius:
@@ -316,12 +322,12 @@ def main():
             end_of_game = 1
         
         check_limits(my_snake)
-        if my_snake.check_crashing() == True:
+        if my_snake.check_crashing():
             end_game()
 
         for my_apple in apples:
             if my_apple.state == 1:
-                if check_collision(my_snake.get_head(), SNAKE_SIZE, my_apple, APPLE_SIZE) == True:
+                if check_collision(my_snake.get_head(), SNAKE_SIZE, my_apple, APPLE_SIZE):
                     my_snake.grow()
                     my_apple.state = 0
                     score += 10
@@ -331,7 +337,7 @@ def main():
             my_snake.set_direction(key_press)
         my_snake.move()
 
-        if eaten_apple == True:
+        if eaten_apple:
             eaten_apple = False
             respawn_apple(apples, 0, my_snake.get_head().x, my_snake.get_head().y)
         
@@ -349,4 +355,5 @@ def main():
         pygame.display.update()
 
 
-main()
+if __name__ == "__main__":
+    main()
