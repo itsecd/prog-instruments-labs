@@ -1,6 +1,5 @@
-import datetime
-import json
-from typing import Dict, List, Optional, Union
+import json, datetime
+from typing import List, Dict, Optional, Union
 
 
 class Book:
