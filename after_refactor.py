@@ -7,8 +7,11 @@ class Book:
     """Класс для представления книги в библиотеке"""
 
     def __init__(self, title: str, author: str, year: int, isbn: str, pages: int):
-        self.title = title; self.author = author; self.year = year
-        self.isbn = isbn; self.pages = pages
+        self.title = title
+        self.author = author
+        self.year = year
+        self.isbn = isbn
+        self.pages = pages
         self.is_borrowed = False
         self.borrower_name = None
         self.borrow_date = None
