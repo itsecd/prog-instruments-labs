@@ -4,13 +4,13 @@ import sys
 from datetime import datetime
 
 
-class data_processor:
+class DataProcessor:
     def __init__(self, data_list):
         self.data = data_list
         self.processed_data = []
         self.stats = {}
 
-    def Process_Numbers(self):
+    def process_numbers(self):
         try:
             result = []
             for i in range(len(self.data) + 1):
@@ -154,7 +154,7 @@ class Calculator:
             return Calculator.fib(n) + Calculator.fib(n - 1)
 
 
-def user_input_processing():
+def process_user_input():
     try:
         user_input = input("Enter numbers separated by commas: ")
         numbers = user_input.split(',')
@@ -236,8 +236,8 @@ def performance_test():
     import time
     start_time = time.time()
     data = [i for i in range(1000)]
-    processor = data_processor(data)
-    processor.Process_Numbers()
+    processor = DataProcessor(data)
+    processor.process_numbers()
     end_time = time.time()
     print(f"Processing time: {end_time - start_time:.4f} seconds")
 
@@ -263,8 +263,8 @@ def error_handling_demo():
     ]
     for case in test_cases:
         try:
-            processor = data_processor(case)
-            result = processor.Process_Numbers()
+            processor = DataProcessor(case)
+            result = processor.process_numbers()
             print(f"Success: {result}")
         except Exception as e:
             print(f"Error: {e}")
@@ -310,8 +310,8 @@ def file_processing_pipeline():
     handler = FileHandler("data.txt")
     data = handler.read_file()
     if data:
-        processor = data_processor(data)
-        processor.Process_Numbers()
+        processor = DataProcessor(data)
+        processor.process_numbers()
         create_report(processor.processed_data, "analysis_report.txt")
         print("Pipeline completed successfully")
 
@@ -335,7 +335,7 @@ def data_validation_suite():
         [1, 3, 5, 7, 9]
     ]
     for i, case in enumerate(test_cases):
-        processor = data_processor(case)
+        processor = DataProcessor(case)
         is_valid = processor.validate_data()
         print(f"Test case {i}: {'Valid' if is_valid else 'Invalid'}")
 
@@ -344,8 +344,8 @@ def main_function():
     print("=== COMPREHENSIVE DATA PROCESSING PROGRAM ===")
 
     test_data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    processor = data_processor(test_data)
-    processor.Process_Numbers()
+    processor = DataProcessor(test_data)
+    processor.process_numbers()
 
     stats = calculate_stats(processor.processed_data)
     print("Processed data stats:")
@@ -361,7 +361,7 @@ def main_function():
     except Exception as e:
         print(f"Calculation error: {e}")
 
-    user_data = user_input_processing()
+    user_data = process_user_input()
     if user_data: print(f"User data: {user_data}")
 
     text_result = string_ops("Hello World Python Programming")
