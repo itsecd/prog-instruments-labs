@@ -7,24 +7,54 @@ def is_invalid_data(pattern: Pattern, value: str) -> bool:
     """
     Проверяет значение на невалидность по регулярному выражению.
 
-    :param pattern: скомпилированный regex паттерн для проверки
-    :param value: значение для проверки (преобразуется в строку)
-    :return: True если значение невалидно, False если валидно
+    Значение считается невалидным, если оно не соответствует
+    заданному regex паттерну. None и NaN значения также считаются невалидными.
+
+    Args:
+        pattern (Pattern): Скомпилированный regex паттерн для валидации
+        value (str): Значение для проверки (будет преобразовано в строку)
+
+    Returns:
+        bool: True если значение невалидно, False если валидно
+
+    Examples:
+        >>> pattern = re.compile(r'^\\d{3} [A-Z][A-Za-z ]+$')
+        >>> is_invalid_data(pattern, "200 OK")
+        False
+        >>> is_invalid_data(pattern, "404_Not_Found")
+        True
     """
     return not bool(pattern.fullmatch(str(value)))
 
 
 def find_invalid_rows(validation_patterns: Dict[str, str], data: DataFrame) -> List[int]:
     """
-    Находит индексы строк с невалидными данными на основе regex паттернов.
+    Находит индексы строк DataFrame, содержащих невалидные данные.
 
-    Проверяет каждую колонку DataFrame согласно предоставленным regex паттернам
-    и возвращает список индексов строк, содержащих хотя бы одно невалидное значение.
+    Функция проверяет каждую колонку DataFrame по соответствующему regex паттерну
+    и возвращает список индексов строк, где хотя бы одно значение невалидно.
 
-    :param validation_patterns: Словарь с паттернами валидации, 
-                               где ключ - название колонки, значение - regex паттерн
-    :param data: DataFrame для проверки
-    :return: Отсортированный список индексов строк с невалидными данными
+    Args:
+        validation_patterns (Dict[str, str]): Словарь с паттернами валидации.
+            Ключи - названия колонок, значения - regex строки для валидации.
+        data (DataFrame): DataFrame для проверки данных.
+
+    Returns:
+        List[int]: Отсортированный список индексов строк с невалидными данными.
+
+    Raises:
+        ValueError: Если validation_patterns пустой или data не является DataFrame
+
+    Examples:
+        >>> patterns = {'phone': r'^\\+7\\d{10}$', 'email': r'^[^@]+@[^@]+\\.[^@]+$'}
+        >>> df = DataFrame({'phone': ['+79123456789', 'invalid'], 'email': ['test@mail.ru', 'test@mail.ru']})
+        >>> find_invalid_rows(patterns, df)
+        [1]
+
+    Note:
+        - Колонки, отсутствующие в validation_patterns, не проверяются
+        - Колонки, отсутствующие в DataFrame, игнорируются
+        - Возвращаются только уникальные индексы строк с ошибками
     """
     invalid_rows = set()
     compiled_patterns = {
@@ -40,5 +70,4 @@ def find_invalid_rows(validation_patterns: Dict[str, str], data: DataFrame) -> L
             if is_invalid_data(pattern, value):
                 invalid_rows.add(index)
 
-    print(f"Всего найдено невалидных строк: {len(invalid_rows)}")
     return sorted(invalid_rows)
