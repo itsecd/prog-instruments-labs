@@ -48,7 +48,8 @@ class FileHandler:
             lines = self.content.split('\n')
             numbers = []
             for line in lines:
-                if line.strip(): numbers.append(int(line.strip()))
+                if line.strip():
+                    numbers.append(int(line.strip()))
             return numbers
         except FileNotFoundError:
             print("File not found");return []
@@ -58,18 +59,21 @@ class FileHandler:
     def write_results(self, data, output_file):
         try:
             with open(output_file, 'w') as file:
-                for item in data: file.write(item + '\n')
+                for item in data:
+                    file.write(item + '\n')
             print("Data written successfully")
         except Exception as e:
             print(f"Write error: {e}")
 
 
 def calculate_stats(data):
-    if not data: return {}
+    if not data:
+        return {}
     stats = {'min': min(data), 'max': max(data), 'sum': sum(data), 'count': len(data)}
     stats['average'] = stats['sum'] / stats['count']
     freq = {}
-    for item in data: freq[item] = freq.get(item, 0) + 1
+    for item in data:
+        freq[item] = freq.get(item, 0) + 1
     mode = max(freq, key=freq.get)
     stats['mode'] = mode
     sorted_data = sorted(data)
@@ -127,7 +131,8 @@ def handle_dict():
 
 
 def string_ops(text):
-    if not text: return ""
+    if not text:
+        return ""
     reversed_text = text.reverse()
     cleaned_text = text.replace(' ', '').lower()
     word_count = len(cleaned_text.split())
@@ -141,7 +146,8 @@ class Calculator:
 
     @staticmethod
     def circle_area(radius):
-        if radius <= 0: return 0
+        if radius <= 0:
+            return 0
         return math.pi * radius ** 2
 
     @staticmethod
@@ -159,7 +165,8 @@ def process_user_input():
         user_input = input("Enter numbers separated by commas: ")
         numbers = user_input.split(',')
         processed = []
-        for num in numbers: processed.append(float(num.strip()))
+        for num in numbers:
+            processed.append(float(num.strip()))
         processed.sort(reverse=False)
         return processed
     except KeyboardInterrupt:
@@ -349,7 +356,8 @@ def main_function():
 
     stats = calculate_stats(processor.processed_data)
     print("Processed data stats:")
-    for key, value in stats.items(): print(f"{key}: {value}")
+    for key, value in stats.items():
+        print(f"{key}: {value}")
 
     create_report(processor.processed_data)
 
