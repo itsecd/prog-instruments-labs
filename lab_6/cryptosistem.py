@@ -1,5 +1,5 @@
 from symmetric import Symmetric
-from lab_6.asymmetric import Asymmetric
+from asymmetric import Asymmetric
 
 
 class CryptoSistem:

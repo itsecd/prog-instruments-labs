@@ -1,7 +1,7 @@
 import pytest
-from lab_6.asymmetric import Asymmetric
-from lab_6.symmetric import Symmetric
-from lab_6.cryptosistem import CryptoSistem
+from asymmetric import Asymmetric
+from symmetric import Symmetric
+from cryptosistem import CryptoSistem
 
 
 TEST_KEY = b"test_symmetric_key"
