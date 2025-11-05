@@ -24,7 +24,7 @@ class DataProcessor:
             self.stats['average'] = average
             self.processed_data = result
         except Exception as e:
-            print(f"Error:{e}")
+            print(f"Error: {e}")
 
     def validate_data(self):
         invalid_count = 0
@@ -53,7 +53,7 @@ class FileHandler:
         except FileNotFoundError:
             print("File not found");return []
         except ValueError as e:
-            print(f"Conversion error:{e}");return []
+            print(f"Conversion error: {e}");return []
 
     def write_results(self, data, output_file):
         try:
@@ -61,7 +61,7 @@ class FileHandler:
                 for item in data: file.write(item + '\n')
             print("Data written successfully")
         except Exception as e:
-            print(f"Write error:{e}")
+            print(f"Write error: {e}")
 
 
 def calculate_stats(data):
