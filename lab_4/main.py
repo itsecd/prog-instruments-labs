@@ -195,6 +195,187 @@ class PoetryTrainer:
                 print(f"⚠️ Ошибка загрузки модели: {e}. Создаем новую модель.")
                 self._setup_model()
 
+    def train(self):
+        """
+        Запускает полный цикл обучения модели
+        """
+        model_path = self.config['model_path']
+
+        if self._is_model_trained():
+            print("✅ Модель уже обучена. Пропускаем обучение.")
+            return
+
+        print("🚀 Начало обучения...")
+        print(f"📈 Эпох: {self.config['epochs']}, Batch size: {self.config['batch_size']}")
+
+        patience_counter = 0
+        self.best_loss = float('inf')
+
+        for epoch in range(self.config['epochs']):
+            self.current_epoch = epoch
+
+            train_loss = self.train_epoch(epoch)
+            self.train_losses.append(train_loss)
+
+            self._log_progress(epoch, train_loss)
+
+            if self._should_save_model(train_loss):
+                self._save_model(train_loss)
+                patience_counter = 0
+            else:
+                patience_counter += 1
+
+            if self._should_stop_early(patience_counter):
+                print(f"🛑 Ранняя остановка на эпохе {epoch}")
+                break
+
+        print("✅ Обучение завершено!")
+        self._print_training_summary()
+
+    def _is_model_trained(self):
+        """
+        Проверяет, обучена ли уже модель
+
+        Returns:
+            bool: True если модель уже обучена
+        """
+        model_path = self.config['model_path']
+        if os.path.exists(model_path) and not self.config['debug']:
+            return True
+        return False
+
+    def train_epoch(self, epoch):
+        """
+        Обучение на одной эпохе
+
+        Args:
+            epoch: номер текущей эпохи
+
+        Returns:
+            float: средние потери на эпохе
+        """
+        self.model.train()
+        total_loss = 0
+        total_batches = len(self.train_loader)
+
+        progress_bar = tqdm(
+            self.train_loader,
+            desc=f'Epoch {epoch + 1}/{self.config["epochs"]}',
+            leave=False
+        )
+
+        for batch_idx, batch in enumerate(progress_bar):
+            try:
+                self.optimizer.zero_grad()
+
+                sentences = batch.sent.t().to(self.device)
+                x, y = sentences[:, :-1], sentences[:, 1:]
+
+                x_one_hot = self.one_hot_embedding(x).float()
+
+                init_hidden = torch.zeros(1, len(x), self.config['hidden_size']).to(self.device)
+                output, _ = self.model(x_one_hot, init_hidden)
+
+                output_flat = output.reshape(-1, output.shape[-1])
+                y_flat = y.flatten()
+                loss = self.criterion(output_flat, y_flat)
+
+                loss.backward()
+
+                if self.config['gradient_clip'] > 0:
+                    torch.nn.utils.clip_grad_norm_(
+                        self.model.parameters(),
+                        self.config['gradient_clip']
+                    )
+
+                self.optimizer.step()
+
+                total_loss += loss.item()
+
+                current_loss = total_loss / (batch_idx + 1)
+                progress_bar.set_postfix({
+                    'loss': f'{current_loss:.4f}',
+                    'batch': f'{batch_idx + 1}/{total_batches}'
+                })
+
+            except Exception as e:
+                print(f"❌ Ошибка в батче {batch_idx}: {e}")
+                continue
+
+        avg_loss = total_loss / total_batches
+        return avg_loss
+
+    def _log_progress(self, epoch, train_loss):
+        """
+        Логирует прогресс обучения
+
+        Args:
+            epoch: номер эпохи
+            train_loss: потери на обучении
+        """
+        log_interval = self.config['log_interval']
+
+        if (epoch + 1) % log_interval == 0 or epoch == 0:
+            print(f"📊 Эпоха {epoch + 1}/{self.config['epochs']} - Потери: {train_loss:.4f}")
+
+    def _should_save_model(self, current_loss):
+        """
+        Определяет, нужно ли сохранять модель
+
+        Args:
+            current_loss: текущие потери
+
+        Returns:
+            bool: True если модель нужно сохранить
+        """
+        if not self.config['save_best_only']:
+            return True
+
+        return current_loss < self.best_loss
+
+    def _save_model(self, current_loss):
+        """
+        Сохраняет модель
+
+        Args:
+            current_loss: текущие потери
+        """
+        model_path = self.config['model_path']
+
+        try:
+            torch.save(self.model, model_path)
+            self.best_loss = current_loss
+            print(f"💾 Модель сохранена (потери: {current_loss:.4f})")
+
+        except Exception as e:
+            print(f"❌ Ошибка сохранения модели: {e}")
+
+    def _should_stop_early(self, patience_counter):
+        """
+        Проверяет условия для ранней остановки
+
+        Args:
+            patience_counter: счетчик терпения
+
+        Returns:
+            bool: True если нужно остановиться
+        """
+        patience = self.config['early_stopping_patience']
+        return patience > 0 and patience_counter >= patience
+
+    def _print_training_summary(self):
+        """Выводит сводку по обучению"""
+        if self.train_losses:
+            initial_loss = self.train_losses[0]
+            final_loss = self.train_losses[-1]
+            improvement = initial_loss - final_loss
+
+            print(f"\n📈 Сводка обучения:")
+            print(f"   Начальные потери: {initial_loss:.4f}")
+            print(f"   Финальные потери: {final_loss:.4f}")
+            print(f"   Улучшение: {improvement:.4f}")
+            print(f"   Лучшие потери: {self.best_loss:.4f}")
+
 
 if __name__ == "__main__":
     batch_size = 32
