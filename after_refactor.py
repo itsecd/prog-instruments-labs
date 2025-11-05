@@ -339,7 +339,6 @@ def demonstrate_library_operations():
         print(f"  {key}: {value}")
 
 
-
 def save_library_to_file(library: Library, filename: str) -> bool:
     """Сохранить библиотеку в файл"""
     try:
@@ -358,7 +357,6 @@ def save_library_to_file(library: Library, filename: str) -> bool:
         return False
 
 
-
 def load_library_from_file(filename: str) -> Optional[Library]:
     """Загрузить библиотеку из файла"""
     try:
@@ -371,7 +369,7 @@ def load_library_from_file(filename: str) -> Optional[Library]:
         for book_data in data['books']:
             # Создаем временный словарь без лишних полей
             temp_data = {k: v for k, v in book_data.items()
-                        if k in ['title', 'author', 'year', 'isbn', 'pages']}
+                         if k in ['title', 'author', 'year', 'isbn', 'pages']}
 
             book = Book(**temp_data)
             book.is_borrowed = book_data['is_borrowed']
