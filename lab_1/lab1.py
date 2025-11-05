@@ -69,7 +69,12 @@ class FileHandler:
 def calculate_stats(data):
     if not data:
         return {}
-    stats = {'min': min(data), 'max': max(data), 'sum': sum(data), 'count': len(data)}
+    stats = {
+        'min': min(data),
+        'max': max(data),
+        'sum': sum(data),
+        'count': len(data)
+    }
     stats['average'] = stats['sum'] / stats['count']
     freq = {}
     for item in data:
@@ -189,7 +194,8 @@ class DataAnalyzer:
 
     def print_summary(self):
         for idx, result in self.analysis_results.items():
-            print(f"Dataset {idx}: min={result['min']}, max={result['max']}, avg={result['average']}")
+            print(f"Dataset {idx}: min={result['min']}, "
+                  f"max={result['max']}, avg={result['average']}")
 
 
 def advanced_processing(data_matrix):
