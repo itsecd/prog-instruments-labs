@@ -1,18 +1,12 @@
-#!/usr/bin/env python
-# -*- encoding: utf-8 -*-
-"""
-Created on 2020/6/18 12:14
-@author: phil
-"""
-from tqdm import tqdm
-
-from dataloader import dataset2dataloader
-from torch.optim import Adam
-from models import PoetryModel
+import os
 import torch
 import torch.nn as nn
 import numpy as np
-import os
+from tqdm import tqdm
+from torch.optim import Adam
+
+from dataloader import create_dataloader
+from models import PoetryModel, PoetryType
 
 
 class PoetryTrainer:
@@ -376,57 +370,173 @@ class PoetryTrainer:
             print(f"   Улучшение: {improvement:.4f}")
             print(f"   Лучшие потери: {self.best_loss:.4f}")
 
+    def generate_poetry(self, input_text, poetry_type=PoetryType.HIDDEN_HEAD, max_length=15):
+        """
+        Генерирует стихотворение на основе входного текста
+
+        Args:
+            input_text: входной текст (для藏头诗- строка символов)
+            poetry_type: тип стихотворения
+            max_length: максимальная длина предложения
+
+        Returns:
+            str: сгенерированное стихотворение
+
+        Raises:
+            ValueError: если входные данные некорректны
+        """
+        self.model.eval()
+
+        if not input_text and poetry_type == PoetryType.HIDDEN_HEAD:
+            raise ValueError("Для藏头诗необходимо указать входной текст")
+
+        print(f"🎨 Генерация стиха...")
+        print(f"   Вход: '{input_text}', Тип: {poetry_type.value}")
+
+        try:
+            input_tensor = self._prepare_input_tensor(input_text)
+
+            with torch.no_grad():
+                result = self.model.generate(
+                    x=input_tensor,
+                    vocab=self.vocab,
+                    poetry_type=poetry_type,
+                    sentence_count=len(input_text) if input_text else 4,
+                    max_length=max_length
+                )
+
+            print(f"✅ Сгенерировано: {result}")
+            return result
+
+        except Exception as e:
+            print(f"❌ Ошибка генерации: {e}")
+            raise
+
+    def _prepare_input_tensor(self, input_text):
+        """
+        Подготавливает входной тензор из текста
+
+        Args:
+            input_text: входной текст
+
+        Returns:
+            torch.Tensor: подготовленный тензор
+        """
+        if not input_text:
+            random_idx = torch.randint(0, self.vocab_size, (1, 1))
+            input_tensor = random_idx.to(self.device)
+        else:
+
+            try:
+                char_indices = [self.vocab.stoi[char] for char in input_text]
+            except KeyError as e:
+                raise ValueError(f"Неизвестный символ в входном тексте: {e}")
+
+            input_tensor = torch.tensor(char_indices).unsqueeze(0).to(self.device)
+
+        input_one_hot = self.one_hot_embedding(input_tensor).float()
+        return input_one_hot
+
+    def interactive_generation(self):
+        """
+        Интерактивный режим генерации стихов
+        """
+        print("\n🎭 Интерактивная генерация стихов")
+        print("   Команды:")
+        print("   - Введите текст для藏头诗")
+        print("   - Нажмите Enter для случайного стиха")
+        print("   - Введите 'quit' для выхода")
+
+        while True:
+            try:
+                user_input = input("\n📝 Введите текст: ").strip()
+
+                if user_input.lower() == 'quit':
+                    print("👋 До свидания!")
+                    break
+
+                if user_input == '':
+                    # Случайная генерация
+                    result = self.generate_poetry(
+                        "",
+                        poetry_type=PoetryType.BEGIN,
+                        max_length=12
+                    )
+                else:
+                    # Генерация藏头诗
+                    result = self.generate_poetry(
+                        user_input,
+                        poetry_type=PoetryType.HIDDEN_HEAD,
+                        max_length=15
+                    )
+
+            except KeyboardInterrupt:
+                print("\n👋 До свидания!")
+                break
+            except Exception as e:
+                print(f"❌ Ошибка: {e}")
+
+
+def main():
+    """
+    Основная функция для обучения и тестирования модели
+    """
+    # Конфигурация обучения
+    config = {
+        'batch_size': 32,
+        'learning_rate': 0.001,
+        'hidden_size': 128,
+        'epochs': 200,
+        'dropout': 0.5,
+        'model_path': 'model.pkl',
+        'debug': False,  # Установите True для быстрой отладки
+        'save_best_only': True,
+        'early_stopping_patience': 10,
+        'log_interval': 10,
+        'gradient_clip': 1.0,
+        'shuffle': True
+    }
+
+    print("=" * 50)
+    print("🎭 Генератор китайской поэзии")
+    print("=" * 50)
+
+    try:
+        # Инициализация тренера
+        trainer = PoetryTrainer(config)
+
+        # Обучение модели
+        trainer.train()
+
+        # Тестирование генерации
+        test_cases = [
+            ("花开有情", PoetryType.HIDDEN_HEAD),
+            ("明月清风", PoetryType.HIDDEN_HEAD),
+            ("", PoetryType.BEGIN)  # Случайная генерация
+        ]
+
+        print("\n🧪 Тестирование генерации:")
+        print("-" * 30)
+
+        for input_text, poetry_type in test_cases:
+            try:
+                result = trainer.generate_poetry(
+                    input_text,
+                    poetry_type,
+                    max_length=15
+                )
+                print(f"✅ Успех: '{input_text}' → {result}")
+            except Exception as e:
+                print(f"❌ Ошибка для '{input_text}': {e}")
+
+        # Запуск интерактивного режима
+        trainer.interactive_generation()
+
+    except Exception as e:
+        print(f"💥 Критическая ошибка: {e}")
+        import traceback
+        traceback.print_exc()
+
 
 if __name__ == "__main__":
-    batch_size = 32
-    learning_rate = 0.001
-    hidden_size = 128
-    epoch = 200
-
-    train_iter, vocab = dataset2dataloader(batch_size=batch_size)
-
-    vocab_size = len(vocab.stoi)
-    # print(vocab_size, hidden_size, batch_size)
-    model = PoetryModel(vocab_size=vocab_size, hidden_size=hidden_size, output_size=vocab_size)
-    optimizer = Adam(model.parameters(), lr=learning_rate)
-    criterion = nn.CrossEntropyLoss()
-
-    one_hot_embedding = nn.Embedding(vocab_size, vocab_size, _weight=torch.from_numpy(np.eye(vocab_size)))
-
-    model_path = "model.pkl"
-    if os.path.exists(model_path):
-        model = torch.load(model_path)
-    else:
-        for ep in tqdm(range(epoch)):
-            model.train()
-            total_loss = 0
-            for i, batch in enumerate(train_iter):
-                optimizer.zero_grad()
-                sent = batch.sent.t()
-                x, y = sent[:, :-1], sent[:, 1:]
-                x = one_hot_embedding(x).float()
-                init_hidden = torch.zeros(1, len(x), hidden_size)
-                output, _ = model(x, init_hidden)
-                output = output.reshape(-1, output.shape[-1])
-                y = y.flatten()
-                loss = criterion(output, y)
-                loss.backward()
-                optimizer.step()
-                total_loss += loss.item()
-            if ep % (epoch // 10) == 0:
-                print("loss: ", total_loss)
-        torch.save(model, model_path)
-
-    model.eval()
-    # test = ["我好可爱"]  我病恨无我，。好一解颜色。可怜王经行自远，一解颜色。爱绿溪阴。
-    # test = ["花开有情"]  花边行县柳，河桥晚泊船。开远树，山鸟助酣歌。有情何处，箫管凤初来。情何处所，风吹青珊瑚，可怜王孙立
-    test = [""]
-    for sent in test:
-        sent = list(map(lambda x: vocab.stoi[x], list(sent)))
-        x = torch.tensor(sent).unsqueeze(0)
-        x = one_hot_embedding(x).float()
-        with torch.no_grad():
-            output = model.generate(x, stoi=vocab.stoi, poetry_type="hidden head")
-    ans = torch.cat(output, dim=1).argmax(-1).squeeze(0)
-    for word_id in ans:
-        print(vocab.itos[word_id.item()], end="")
+    main()
