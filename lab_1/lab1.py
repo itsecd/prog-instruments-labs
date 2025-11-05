@@ -1,7 +1,8 @@
-from datetime import datetime
 import math
 import os
 import sys
+from datetime import datetime
+
 
 class data_processor:
     def __init__(self, data_list):
