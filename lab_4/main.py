@@ -26,7 +26,6 @@ class PoetryTrainer:
         self.config = self._validate_config(config)
         self.device = self._setup_device()
 
-        # Инициализация компонентов
         self.model = None
         self.optimizer = None
         self.criterion = None
@@ -61,7 +60,6 @@ class PoetryTrainer:
             if param not in config:
                 raise ValueError(f"Обязательный параметр '{param}' отсутствует в конфигурации")
 
-        # Значения по умолчанию для опциональных параметров
         default_config = {
             'dropout': 0.5,
             'model_path': 'model.pkl',
@@ -74,10 +72,8 @@ class PoetryTrainer:
             'gradient_clip': 1.0
         }
 
-        # Объединяем с пользовательской конфигурацией
         merged_config = {**default_config, **config}
 
-        # Дополнительная валидация значений
         if merged_config['batch_size'] <= 0:
             raise ValueError(f"batch_size должен быть положительным, получен: {merged_config['batch_size']}")
 
@@ -105,6 +101,100 @@ class PoetryTrainer:
             print("✅ Используется CPU")
 
         return device
+
+    def _setup(self):
+        """
+        Инициализирует все компоненты для обучения
+        """
+        print("🔄 Инициализация компонентов обучения...")
+
+        try:
+            self._setup_data()
+
+            self._setup_model()
+
+            self._setup_training_components()
+
+            self._load_existing_model()
+
+            print("✅ Все компоненты инициализированы успешно")
+
+        except Exception as e:
+            raise RuntimeError(f"Ошибка инициализации компонентов: {e}")
+
+    def _setup_data(self):
+        """
+        Загружает и подготавливает данные
+        """
+        print("📊 Загрузка данных...")
+
+        self.train_loader, self.vocab = create_dataloader(
+            batch_size=self.config['batch_size'],
+            debug=self.config['debug'],
+            shuffle=self.config['shuffle']
+        )
+
+        self.vocab_size = len(self.vocab.stoi)
+        print(f"✅ Данные загружены. Размер словаря: {self.vocab_size}")
+
+        self.one_hot_embedding = nn.Embedding(
+            self.vocab_size,
+            self.vocab_size,
+            _weight=torch.from_numpy(np.eye(self.vocab_size))
+        ).to(self.device)
+
+    def _setup_model(self):
+        """
+        Создает и настраивает модель
+        """
+        print("🧠 Создание модели...")
+
+        self.model = PoetryModel(
+            vocab_size=self.vocab_size,
+            hidden_size=self.config['hidden_size'],
+            output_size=self.vocab_size,
+            dropout=self.config['dropout']
+        ).to(self.device)
+
+        # Вывод информации о модели
+        total_params = sum(p.numel() for p in self.model.parameters())
+        trainable_params = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
+
+        print(f"✅ Модель создана. Параметры: {total_params:,} (обучаемые: {trainable_params:,})")
+
+    def _setup_training_components(self):
+        """
+        Настраивает оптимизатор и функцию потерь
+        """
+        print("⚙️ Настройка компонентов обучения...")
+
+        self.optimizer = Adam(
+            self.model.parameters(),
+            lr=self.config['learning_rate']
+        )
+
+        self.criterion = nn.CrossEntropyLoss()
+
+        print(f"✅ Оптимизатор: Adam(lr={self.config['learning_rate']})")
+        print(f"✅ Функция потерь: CrossEntropyLoss")
+
+    def _load_existing_model(self):
+        """
+        Загружает существующую модель если она есть
+        """
+        model_path = self.config['model_path']
+
+        if os.path.exists(model_path):
+            print(f"🔄 Загрузка существующей модели из {model_path}...")
+
+            try:
+                self.model = torch.load(model_path, map_location=self.device)
+                print("✅ Модель загружена успешно")
+
+            except Exception as e:
+                print(f"⚠️ Ошибка загрузки модели: {e}. Создаем новую модель.")
+                self._setup_model()
+
 
 if __name__ == "__main__":
     batch_size = 32
