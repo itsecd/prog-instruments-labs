@@ -340,7 +340,7 @@ def save_library_to_file(library: Library, filename: str) -> bool:
         }
 
         with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(data,f,ensure_ascii=False,indent=2,default=str)
+            json.dump(data, f, ensure_ascii=False, indent=2, default=str)
 
         return True
     except Exception as e:
