@@ -3,6 +3,20 @@ from typing import List, Union, Optional
 
 
 def calculate(a: float, b: float, operation: str) -> Union[float, str]:
+    """
+    Perform basic arithmetic operations on two numbers.
+
+    Args:
+        a: First operand
+        b: Second operand
+        operation: Arithmetic operation (+, -, *, /)
+
+    Returns:
+        Result of the operation or error message
+
+    Raises:
+        ValueError: If operation is invalid or division by zero
+    """
     if operation == '+':
         result: float = a + b
     elif operation == '-':
@@ -20,27 +34,63 @@ def calculate(a: float, b: float, operation: str) -> Union[float, str]:
 
 
 class Calculator:
+    """A simple calculator with basic operations and history tracking."""
+
     def __init__(self, value: float = 0) -> None:
+        """
+        Initialize the calculator with an initial value.
+
+        Args:
+            value: Starting value for the calculator
+        """
         self.value: float = value
         self.history: List[str] = []
 
     def reset(self) -> None:
+        """Reset the calculator value to zero and clear history."""
         self.value = 0
         self.history.clear()
 
     def add(self, x: float) -> None:
+        """
+        Add a number to the current value.
+
+        Args:
+            x: Number to add
+        """
         self.value = self.value + x
         self.history.append(f"added {x}")
 
     def subtract(self, x: float) -> None:
+        """
+        Subtract a number from the current value.
+
+        Args:
+            x: Number to subtract
+        """
         self.value = self.value - x
         self.history.append(f"subtracted {x}")
 
     def multiply(self, x: float) -> None:
+        """
+        Multiply the current value by a number.
+
+        Args:
+            x: Number to multiply by
+        """
         self.value = self.value * x
         self.history.append(f"Multiplied by {x}")
 
     def divide(self, x: float) -> Optional[str]:
+        """
+        Divide the current value by a number.
+
+        Args:
+            x: Number to divide by
+
+        Returns:
+            Error message if division by zero, None otherwise
+        """
         if x == 0:
             return "Cannot divide by zero"
         self.value = self.value / x
@@ -48,16 +98,40 @@ class Calculator:
         return None
 
     def get_value(self) -> float:
+        """
+        Get the current value of the calculator.
+
+        Returns:
+            Current calculator value
+        """
         return self.value
 
     def get_history(self) -> List[str]:
+        """
+        Get the operation history.
+
+        Returns:
+            List of operation descriptions
+        """
         return self.history
 
     def power(self, exponent: float) -> None:
+        """
+        Raise the current value to a power.
+
+        Args:
+            exponent: The exponent to raise to
+        """
         self.value = math.pow(self.value, exponent)
         self.history.append(f"Powered to {exponent}")
 
     def square_root(self) -> Optional[str]:
+        """
+        Calculate the square root of the current value.
+
+        Returns:
+            Error message for negative numbers, None otherwise
+        """
         if self.value < 0:
             return "Cannot calculate square root of negative number"
         self.value = math.sqrt(self.value)
@@ -66,25 +140,52 @@ class Calculator:
 
 
 class AdvancedCalculator(Calculator):
+    """An advanced calculator with memory and constants functionality."""
+
     def __init__(self, value: float = 0) -> None:
+        """
+        Initialize advanced calculator with memory and constants.
+
+        Args:
+            value: Starting value for the calculator
+        """
         super().__init__(value)
         self.memory: float = 0
         self.constants: dict[str, float] = {"pi": 3.14159, "e": 2.71828}
 
     def store_to_memory(self) -> None:
+        """Store the current value to memory."""
         self.memory = self.value
 
     def recall_from_memory(self) -> None:
+        """Recall the value from memory to the current value."""
         self.value = self.memory
         self.history.append("Recalled from memory")
 
     def clear_memory(self) -> None:
+        """Clear the memory by setting it to zero."""
         self.memory = 0
 
     def add_constant(self, name: str, value: float) -> None:
+        """
+        Add a custom constant to the calculator.
+
+        Args:
+            name: Name of the constant
+            value: Value of the constant
+        """
         self.constants[name] = value
 
     def use_constant(self, name: str) -> Optional[str]:
+        """
+        Use a predefined constant as the current value.
+
+        Args:
+            name: Name of the constant to use
+
+        Returns:
+            Error message if constant not found, None otherwise
+        """
         if name in self.constants:
             self.value = self.constants[name]
             self.history.append(f"Used constant {name}")
@@ -93,6 +194,12 @@ class AdvancedCalculator(Calculator):
             return f"Constant {name} not found"
 
     def factorial(self) -> Optional[str]:
+        """
+        Calculate factorial of the current integer value.
+
+        Returns:
+            Error message for invalid input, None otherwise
+        """
         if self.value < 0 or self.value != int(self.value):
             return "Cannot calculate factorial"
         result: int = 1
@@ -104,6 +211,7 @@ class AdvancedCalculator(Calculator):
 
 
 def process_user_input() -> None:
+    """Process user input for interactive calculator mode."""
     calc: Calculator = Calculator()
     while True:
         print("Current value:", calc.get_value())
@@ -152,6 +260,7 @@ def process_user_input() -> None:
 
 
 def test_calculator() -> None:
+    """Run tests to verify calculator functionality."""
     # Test basic operations
     calc: Calculator = Calculator(10)
     calc.add(5)
@@ -174,8 +283,19 @@ def test_calculator() -> None:
 
 
 class MathUtils:
+    """A collection of mathematical utility functions."""
+
     @staticmethod
     def is_prime(n: int) -> bool:
+        """
+        Check if a number is prime.
+
+        Args:
+            n: Number to check
+
+        Returns:
+            True if prime, False otherwise
+        """
         if n < 2:
             return False
         for i in range(2, int(math.sqrt(n)) + 1):
@@ -185,6 +305,15 @@ class MathUtils:
 
     @staticmethod
     def fibonacci(n: int) -> int:
+        """
+        Calculate the nth Fibonacci number.
+
+        Args:
+            n: Position in Fibonacci sequence
+
+        Returns:
+            The nth Fibonacci number
+        """
         if n <= 0:
             return 0
         elif n == 1:
@@ -198,16 +327,37 @@ class MathUtils:
 
     @staticmethod
     def gcd(a: int, b: int) -> int:
+        """
+        Calculate The Greatest Common Divisor of two numbers.
+
+        Args:
+            a: First number
+            b: Second number
+
+        Returns:
+            GCD of a and b
+        """
         while b:
             a, b = b, a % b
         return a
 
     @staticmethod
     def lcm(a: int, b: int) -> int:
+        """
+        Calculate The Least Common Multiple of two numbers.
+
+        Args:
+            a: First number
+            b: Second number
+
+        Returns:
+            LCM of a and b
+        """
         return abs(a * b) // MathUtils.gcd(a, b)
 
 
 def demonstrate_math_utils() -> None:
+    """Demonstrate the mathematical utility functions."""
     print("Prime check for 17:", MathUtils.is_prime(17))
     print("Prime check for 15:", MathUtils.is_prime(15))
     print("10th Fibonacci number:", MathUtils.fibonacci(10))
@@ -216,6 +366,7 @@ def demonstrate_math_utils() -> None:
 
 
 def main() -> None:
+    """Main function to run the calculator demo application."""
     print("Welcome to the Calculator Demo!")
     print("Choose mode:")
     print("1. Interactive calculator")
