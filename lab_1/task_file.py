@@ -1,16 +1,17 @@
 import math
+from typing import List, Union, Optional
 
 
-def calculate(a, b, operation):
+def calculate(a: float, b: float, operation: str) -> Union[float, str]:
     if operation == '+':
-        result = a + b
+        result: float = a + b
     elif operation == '-':
-        result = a - b
+        result: float = a - b
     elif operation == '*':
-        result = a * b
+        result: float = a * b
     elif operation == '/':
         if b != 0:
-            result = a / b
+            result: float = a / b
         else:
             return "Error: Division by zero"
     else:
@@ -19,103 +20,107 @@ def calculate(a, b, operation):
 
 
 class Calculator:
-    def __init__(self, value=0):
-        self.value = value
-        self.history = []
+    def __init__(self, value: float = 0) -> None:
+        self.value: float = value
+        self.history: List[str] = []
 
-    def reset(self):
+    def reset(self) -> None:
         self.value = 0
         self.history.clear()
 
-    def add(self, x):
+    def add(self, x: float) -> None:
         self.value = self.value + x
         self.history.append(f"added {x}")
 
-    def subtract(self, x):
+    def subtract(self, x: float) -> None:
         self.value = self.value - x
         self.history.append(f"subtracted {x}")
 
-    def multiply(self, x):
+    def multiply(self, x: float) -> None:
         self.value = self.value * x
         self.history.append(f"Multiplied by {x}")
 
-    def divide(self, x):
+    def divide(self, x: float) -> Optional[str]:
         if x == 0:
             return "Cannot divide by zero"
         self.value = self.value / x
         self.history.append(f"divided by {x}")
+        return None
 
-    def get_value(self):
+    def get_value(self) -> float:
         return self.value
 
-    def get_history(self):
+    def get_history(self) -> List[str]:
         return self.history
 
-    def power(self, exponent):
+    def power(self, exponent: float) -> None:
         self.value = math.pow(self.value, exponent)
         self.history.append(f"Powered to {exponent}")
 
-    def square_root(self):
+    def square_root(self) -> Optional[str]:
         if self.value < 0:
             return "Cannot calculate square root of negative number"
         self.value = math.sqrt(self.value)
         self.history.append("Square root calculated")
+        return None
 
 
 class AdvancedCalculator(Calculator):
-    def __init__(self, value=0):
+    def __init__(self, value: float = 0) -> None:
         super().__init__(value)
-        self.memory = 0
-        self.constants = {"pi": 3.14159, "e": 2.71828}
+        self.memory: float = 0
+        self.constants: dict[str, float] = {"pi": 3.14159, "e": 2.71828}
 
-    def store_to_memory(self):
+    def store_to_memory(self) -> None:
         self.memory = self.value
 
-    def recall_from_memory(self):
+    def recall_from_memory(self) -> None:
         self.value = self.memory
         self.history.append("Recalled from memory")
 
-    def clear_memory(self):
+    def clear_memory(self) -> None:
         self.memory = 0
 
-    def add_constant(self, name, value):
+    def add_constant(self, name: str, value: float) -> None:
         self.constants[name] = value
 
-    def use_constant(self, name):
+    def use_constant(self, name: str) -> Optional[str]:
         if name in self.constants:
             self.value = self.constants[name]
             self.history.append(f"Used constant {name}")
+            return None
         else:
             return f"Constant {name} not found"
 
-    def factorial(self):
+    def factorial(self) -> Optional[str]:
         if self.value < 0 or self.value != int(self.value):
             return "Cannot calculate factorial"
-        result = 1
+        result: int = 1
         for i in range(1, int(self.value) + 1):
             result *= i
         self.value = result
         self.history.append("Factorial calculated")
+        return None
 
 
-def process_user_input():
-    calc = Calculator()
+def process_user_input() -> None:
+    calc: Calculator = Calculator()
     while True:
         print("Current value:", calc.get_value())
         print("Available operations: +, -, *, /, p (power), s (sqrt), f (factorial), r (reset), h (history), q (quit)")
-        operation = input("Enter operation: ")
+        operation: str = input("Enter operation: ")
 
         if operation == 'q':
             break
         elif operation == 'r':
             calc.reset()
         elif operation == 'h':
-            history = calc.get_history()
+            history: List[str] = calc.get_history()
             for i, item in enumerate(history):
                 print(f"{i + 1}. {item}")
         elif operation in ['+', '-', '*', '/']:
             try:
-                num = float(input("Enter number: "))
+                num: float = float(input("Enter number: "))
                 if operation == '+':
                     calc.add(num)
                 elif operation == '-':
@@ -123,32 +128,32 @@ def process_user_input():
                 elif operation == '*':
                     calc.multiply(num)
                 elif operation == '/':
-                    result = calc.divide(num)
+                    result: Optional[str] = calc.divide(num)
                     if result:
                         print(result)
             except ValueError:
                 print("Invalid number input")
         elif operation == 'p':
             try:
-                exp = float(input("Enter exponent: "))
+                exp: float = float(input("Enter exponent: "))
                 calc.power(exp)
             except ValueError:
                 print("Invalid exponent")
         elif operation == 's':
-            result = calc.square_root()
+            result: Optional[str] = calc.square_root()
             if result:
                 print(result)
         elif operation == 'f':
-            result = calc.factorial()
+            result: Optional[str] = calc.factorial()
             if result:
                 print(result)
         else:
             print("Unknown operation")
 
 
-def test_calculator():
+def test_calculator() -> None:
     # Test basic operations
-    calc = Calculator(10)
+    calc: Calculator = Calculator(10)
     calc.add(5)
     calc.subtract(3)
     calc.multiply(2)
@@ -156,7 +161,7 @@ def test_calculator():
     assert calc.get_value() == 6, f"Expected 6, got {calc.get_value()}"
 
     # Test advanced calculator
-    adv = AdvancedCalculator(5)
+    adv: AdvancedCalculator = AdvancedCalculator(5)
     adv.factorial()
     assert adv.get_value() == 120, f"Expected 120, got {adv.get_value()}"
 
@@ -170,7 +175,7 @@ def test_calculator():
 
 class MathUtils:
     @staticmethod
-    def is_prime(n):
+    def is_prime(n: int) -> bool:
         if n < 2:
             return False
         for i in range(2, int(math.sqrt(n)) + 1):
@@ -179,30 +184,30 @@ class MathUtils:
         return True
 
     @staticmethod
-    def fibonacci(n):
+    def fibonacci(n: int) -> int:
         if n <= 0:
             return 0
         elif n == 1:
             return 1
         else:
-            a, b = 0, 1
+            a: int = 0
+            b: int = 1
             for _ in range(2, n + 1):
                 a, b = b, a + b
             return b
 
     @staticmethod
-    def gcd(a, b):
+    def gcd(a: int, b: int) -> int:
         while b:
             a, b = b, a % b
         return a
 
     @staticmethod
-    def lcm(a, b):
+    def lcm(a: int, b: int) -> int:
         return abs(a * b) // MathUtils.gcd(a, b)
 
 
-def demonstrate_math_utils():
-    utils = MathUtils()
+def demonstrate_math_utils() -> None:
     print("Prime check for 17:", MathUtils.is_prime(17))
     print("Prime check for 15:", MathUtils.is_prime(15))
     print("10th Fibonacci number:", MathUtils.fibonacci(10))
@@ -210,14 +215,14 @@ def demonstrate_math_utils():
     print("LCM of 12 and 18:", MathUtils.lcm(12, 18))
 
 
-def main():
+def main() -> None:
     print("Welcome to the Calculator Demo!")
     print("Choose mode:")
     print("1. Interactive calculator")
     print("2. Run tests")
     print("3. Math utilities demo")
 
-    choice = input("Enter choice (1-3): ")
+    choice: str = input("Enter choice (1-3): ")
 
     if choice == '1':
         process_user_input()
