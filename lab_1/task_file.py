@@ -215,7 +215,9 @@ def process_user_input() -> None:
     calc: Calculator = Calculator()
     while True:
         print("Current value:", calc.get_value())
-        print("Available operations: +, -, *, /, p (power), s (sqrt), f (factorial), r (reset), h (history), q (quit)")
+        print("Available operations: +, -, *, /,"
+              " p (power), s (sqrt), f (factorial),"
+              " r (reset), h (history), q (quit)")
         operation: str = input("Enter operation: ")
 
         if operation == 'q':
