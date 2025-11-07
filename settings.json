@@ -1,0 +1,6 @@
+{
+  "cpp_sequence": "C:\\Users\\Liza\\PycharmProjects\\TiMP_Lab6\\sequences\\cpp_sequence.txt",
+  "java_sequence": "C:\\Users\\Liza\\PycharmProjects\\TiMP_Lab6\\sequences\\java_sequence.txt",
+  "result": "result.json",
+  "pi_values": [0.2148, 0.3672, 0.2305, 0.1875]
+}
