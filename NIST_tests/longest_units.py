@@ -12,6 +12,8 @@ def longest_units_test(sequence:str,pi_values:list)->float:
 
     if length == 0:
         raise ValueError("Sequence must not be empty")
+    if not all(bit in '01' for bit in sequence):
+        raise ValueError("Sequence must contain only binary digits (0 and 1)")
     v = [0, 0, 0, 0]
 
     for i in range(0, len(sequence), m):
