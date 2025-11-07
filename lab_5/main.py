@@ -4,6 +4,16 @@ from random import randint
 import pygame as pg
 import sqlite3
 
+from loguru import logger
+
+# --- Настройка Логирования ---
+logger.add("debug.log", format="{time} {level} {message}",
+           level="DEBUG", rotation="10 MB", compression="zip")
+logger.add(sys.stdout,
+           format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | "
+                  "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> "
+                  "- <level>{message}</level>", level="INFO")
+
 # --- Константы ---
 SCREEN_WIDTH, SCREEN_HEIGHT = 420, 600
 BLOCK_SIZE = 60
@@ -153,6 +163,7 @@ class Game:
             self.cur.execute("UPDATE the_best_score SET счёт = ? WHERE номер = ?",
                              (self.score, active_level_index + 1))
             self.con.commit()
+
     # --------------------------
 
     def _create_objects(self):
