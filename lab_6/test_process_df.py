@@ -20,18 +20,21 @@ def test_add_columns(monkeypatch: pytest.MonkeyPatch) -> None:
     result: pd.DataFrame = add_columns(df)
     assert 'Height' in result.columns
     assert result['Height'].iloc[0] == 100
+    assert result['Width'].iloc[0] == 150
+    assert result['Depth'].iloc[0] == 3
 
 
 def test_sorted_df_filtering() -> None:
     """
     Test filtering by height and width
     """
-    df: pd.DataFrame = pd.DataFrame( { 'Height': [500, 1200], 
-                                      'Width': [600, 900] } )
+    df: pd.DataFrame = pd.DataFrame( { 'Height': [500, 1200, 800], 
+                                      'Width': [600, 900, 700] } )
     
     result: pd.DataFrame = sorted_df(df, 1000, 1000)
-    assert len(result) == 1
-    assert result['Height'].iloc[0] == 500
+    assert len(result) == 2
+    assert all(result['Height'] < 1000)
+    assert all(result['Width'] < 1000)
 
 
 def test_add_area_column() -> None:
@@ -70,6 +73,8 @@ def test_add_columns_with_invalid(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr('process_df.cv2.imread', mock_imread)
     result: pd.DataFrame = add_columns(df)
     assert result['Height'].iloc[0] == 0
+    assert result['Width'].iloc[0] == 0
+    assert result['Depth'].iloc[0] == 0
 
 
 def test_area_edge_cases() -> None:
@@ -92,3 +97,4 @@ def test_empty_dataframe() -> None:
 
     result: pd.DataFrame = add_area_column(empty_df)
     assert 'Area' in result.columns
+    assert len(result) == 0
