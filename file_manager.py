@@ -1,51 +1,59 @@
-from typing import Union
+import json
+import pandas as pd
 
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey, RSAPublicKey
-from cryptography.hazmat.primitives.serialization import load_pem_private_key, load_pem_public_key
+from pandas import DataFrame
 
 
-class FileManager:
-    """Класс для работы с файлами криптографических ключей и данных"""
+def read_csv(file_path: str, encoding: str = 'utf-16', delimiter: str = ';') -> DataFrame:
+    """
+    Чтение данных из CSV файла
+    :param file_path: Путь к файлу
+    :param encoding: Кодировка файла
+    :param delimiter: Разделитель столбцов в CSV файле
+    :return: DataFrame
+    """
+    try:
+        return pd.read_csv(file_path, encoding=encoding, delimiter=delimiter)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Файл не найден: {file_path}")
+    except pd.errors.EmptyDataError:
+        raise ValueError(f"Файл пустой: {file_path}")
+    except Exception as e:
+        raise Exception(f"Ошибка при чтении CSV файла: {e}")
 
-    @staticmethod
-    def save_file(path: str, data: bytes) -> None:
-        """Сохраняет данные в файл"""
-        with open(path, 'wb') as f:
-            f.write(data)
 
-    @staticmethod
-    def load_file(path: str) -> bytes:
-        """Загружает данные из файла"""
-        with open(path, 'rb') as f:
-            return f.read()
+def read_json(file_path: str, encoding: str = 'utf-8') -> dict:
+    """
+    Чтение данных из JSON файла
+    :param file_path: Путь к файлу
+    :param encoding: Кодировка файла
+    :return: Данные в виде словаря
+    """
+    try:
+        with open(file_path, 'r', encoding=encoding) as file:
+            return json.load(file)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"JSON файл не найден: {file_path}")
+    except json.JSONDecodeError as e:
+        raise json.JSONDecodeError(f"Ошибка декодирования JSON в файле {file_path}: {e}")
+    except UnicodeDecodeError:
+        raise ValueError(f"Ошибка кодировки в файле {file_path}.")
+    except Exception as e:
+        raise Exception(f"Ошибка при чтении JSON файла {file_path}: {e}")
 
-    @staticmethod
-    def save_key(key: Union[RSAPrivateKey, RSAPublicKey], path: str) -> None:
-        """Сохраняет криптографический ключ в файл"""
-        with open(path, 'wb') as f:
-            if isinstance(key, RSAPrivateKey):
-                private_bytes = key.private_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PrivateFormat.TraditionalOpenSSL,
-                    encryption_algorithm=serialization.NoEncryption()
-                )
-                f.write(private_bytes)
-            else:
-                public_bytes = key.public_bytes(
-                    encoding=serialization.Encoding.PEM,
-                    format=serialization.PublicFormat.SubjectPublicKeyInfo
-                )
-                f.write(public_bytes)
 
-    @staticmethod
-    def load_private_key(path: str) -> RSAPrivateKey:
-        """Загружает приватный RSA ключ из файла"""
-        with open(path, 'rb') as f:
-            return load_pem_private_key(f.read(), password=None)
-
-    @staticmethod
-    def load_public_key(path: str) -> RSAPublicKey:
-        """Загружает публичный RSA ключ из файла"""
-        with open(path, 'rb') as f:
-            return load_pem_public_key(f.read())
+def write_json(file_path: str, data: dict, encoding: str = 'utf-8') -> None:
+    """
+    Запись данных в JSON файл
+    :param file_path: Путь к файлу для записи
+    :param data: Данные для записи
+    :param encoding: Кодировка файла
+    :return: None
+    """
+    try:
+        with open(file_path, 'w', encoding=encoding) as file:
+            json.dump(data, file, ensure_ascii=False, indent=2)
+    except Exception as e:
+        raise Exception(f"Ошибка записи JSON файла {file_path}: {e}")
+    except FileNotFoundError as e:
+        raise Exception(f"Путь не найден: {file_path}: {e}")
