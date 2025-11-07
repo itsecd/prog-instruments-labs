@@ -3,16 +3,14 @@ import os
 from random import randint
 import pygame as pg
 import sqlite3
-
 from loguru import logger
 
 # --- Настройка Логирования ---
-logger.add("debug.log", format="{time} {level} {message}",
-           level="DEBUG", rotation="10 MB", compression="zip")
+logger.add("debug.log", format="{time} {level} {message}", level="DEBUG", rotation="10 MB", compression="zip")
 logger.add(sys.stdout,
-           format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | "
-                  "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> "
-                  "- <level>{message}</level>", level="INFO")
+           format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level>"
+                  " | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
+           level="INFO")
 
 # --- Константы ---
 SCREEN_WIDTH, SCREEN_HEIGHT = 420, 600
@@ -64,8 +62,13 @@ class Ball:
 class Button(pg.sprite.Sprite):
     def __init__(self, image_path, hover_image_path, y, level=None, is_back_button=False, *group):
         super().__init__(*group)
-        self.default_image = pg.image.load(os.path.join(ASSETS_DIR, image_path))
-        self.hover_image = pg.image.load(os.path.join(ASSETS_DIR, hover_image_path))
+        try:
+            self.default_image = pg.image.load(os.path.join(ASSETS_DIR, image_path))
+            self.hover_image = pg.image.load(os.path.join(ASSETS_DIR, hover_image_path))
+        except pg.error as e:
+            logger.error(
+                f"Не удалось загрузить изображение для кнопки: {image_path} или {hover_image_path}. Ошибка: {e}")
+            sys.exit()
 
         self.image = self.default_image
         self.rect = self.image.get_rect()
@@ -74,7 +77,7 @@ class Button(pg.sprite.Sprite):
         self.level = level
         self.is_back_button = is_back_button
 
-    def update(self, event, game):  # Теперь метод принимает объект игры
+    def update(self, event, game):
         mouse_pos = pg.mouse.get_pos()
 
         if self.rect.collidepoint(mouse_pos):
@@ -84,6 +87,7 @@ class Button(pg.sprite.Sprite):
 
         if event and event.type == pg.MOUSEBUTTONUP and self.rect.collidepoint(mouse_pos):
             if not game.game_is_started:
+                logger.info(f"Игра началась. Выбран уровень: {self.level}")
                 pg.mixer.music.set_volume(game.volume)
                 pg.mixer.music.play(99999)
                 game.game_is_started = True
@@ -103,6 +107,7 @@ class Button(pg.sprite.Sprite):
 
 class Game:
     def __init__(self):
+        logger.info("Инициализация игры...")
         pg.init()
         pg.font.init()
 
@@ -128,6 +133,7 @@ class Game:
         self._load_images()
         self._setup_db()
         self._create_objects()
+        logger.info("Игра успешно инициализирована.")
 
     def _load_sounds(self):
         pg.mixer.music.load(os.path.join(ASSETS_DIR, 'LHS-RLD10.mp3'))
@@ -150,7 +156,6 @@ class Game:
         self.high_scores = self.cur.execute("SELECT счёт from the_best_score").fetchall()
         self.win_counts = self.cur.execute("SELECT num_of_wins from the_best_score").fetchall()
 
-    # --- ДОБАВЛЕННЫЕ МЕТОДЫ ---
     def _update_win_count_in_db(self):
         active_level_index = list(self.levels.values()).index(1)
         self.cur.execute("UPDATE the_best_score SET num_of_wins = num_of_wins + 1 WHERE номер = ?",
@@ -163,8 +168,6 @@ class Game:
             self.cur.execute("UPDATE the_best_score SET счёт = ? WHERE номер = ?",
                              (self.score, active_level_index + 1))
             self.con.commit()
-
-    # --------------------------
 
     def _create_objects(self):
         self.move_event = pg.USEREVENT
@@ -222,6 +225,8 @@ class Game:
 
     def check_win_condition(self, colors, current_shots, max_shots=100000000):
         if not any(colors) and current_shots >= max_shots:
+            if not self.game_win:
+                logger.info("Условие победы выполнено!")
             self.game_win = True
 
     def run(self):
@@ -232,8 +237,6 @@ class Game:
                 if not any(self.color_list[63:]):
                     for event in pg.event.get():
                         if event.type == pg.QUIT:
-                            self.con.commit()
-                            self.con.close()
                             is_running = False
 
                         elif event.type == pg.MOUSEMOTION:
@@ -262,6 +265,11 @@ class Game:
                             elif event.key == pg.K_3 and self.volume > 0:
                                 self.volume = max(0.0, self.volume - 0.1)
                                 pg.mixer.music.set_volume(self.volume)
+                            elif (event.key == pg.K_2 and self.volume >= 1) or \
+                                    (event.key == pg.K_3 and self.volume <= 0):
+                                logger.warning(
+                                    "Попытка изменить громкость за пределами допустимого диапазона (0.0-1.0)")
+
 
                         elif event.type == pg.KEYDOWN and not self.balls:
                             direction_key = None
@@ -276,11 +284,8 @@ class Game:
                                     pg.mixer.music.set_volume(0.1)
                                     menu_event = pg.event.wait()
                                     if menu_event.type == pg.QUIT:
-                                        self.con.commit()
-                                        self.con.close()
                                         is_running = False
                                         break
-
                                     self.backing.update(menu_event, self)
                                     pg.mouse.set_visible(True)
                                     self.screen.fill((0, 0, 0))
@@ -295,6 +300,7 @@ class Game:
                             if direction_key is not None and not any(self.color_list[63:]):
                                 pos = pg.mouse.get_pos()
                                 ball_params = [pos[0], SCREEN_HEIGHT - 10, 1, direction_key]
+                                logger.debug(f"Создан новый шар с параметрами: {ball_params}")
                                 self.balls.append(Ball(self.ball, *ball_params))
                                 self.sound_shoot.play()
                                 self.shots_fired += 1
@@ -317,6 +323,7 @@ class Game:
 
                 hit_index = self.ball.collidelist(self.block_list)
                 if hit_index != -1 and self.color_list[hit_index]:
+                    logger.debug(f"Шар попал в блок с индексом {hit_index}")
                     hit_rect = self.block_list[hit_index]
                     for b in self.balls:
                         b.move(hit_rect)
@@ -343,13 +350,15 @@ class Game:
 
                 else:
                     if not self.game_win:
+                        logger.info(f"Игра окончена. Поражение. Финальный счет: {self.score}")
                         self.sound_game_over.play()
                     else:
+                        logger.info(f"Игра окончена. Победа! Финальный счет: {self.score}")
                         self.sound_win.play()
-                        self._update_win_count_in_db()  # <-- ЗАМЕНА
+                        self._update_win_count_in_db()
                     pg.mixer.music.stop()
 
-                    self._update_high_score_in_db()  # <-- ЗАМЕНА
+                    self._update_high_score_in_db()
 
                     end_screen_running = True
                     while end_screen_running:
@@ -361,8 +370,6 @@ class Game:
                         self.balls = []
                         for event in pg.event.get():
                             if event.type == pg.QUIT:
-                                self.con.commit()
-                                self.con.close()
                                 is_running = False
                                 end_screen_running = False
                             elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
@@ -400,6 +407,9 @@ class Game:
             pg.display.flip()
             self.clock.tick(FPS)
 
+        logger.info("Приложение завершает работу.")
+        self.con.commit()
+        self.con.close()
         pg.quit()
         sys.exit()
 
