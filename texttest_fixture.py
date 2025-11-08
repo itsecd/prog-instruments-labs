@@ -13,6 +13,8 @@ from shopping_cart import ShoppingCart
 from teller import Teller
 from tests.fake_catalog import FakeCatalog
 
+from consts import CATALOG_PATH, OFFERS_PATH, CART_PATH
+
 
 def read_catalog(catalog_file):
     catalog = FakeCatalog()
@@ -57,10 +59,10 @@ def read_basket(cart_file, catalog):
 
 
 def main(args):
-    catalog = read_catalog(Path("catalog.csv"))
+    catalog = read_catalog(Path(CATALOG_PATH))
     teller = Teller(catalog)
-    read_offers(Path("offers.csv"), teller)
-    basket = read_basket(Path("cart.csv"), catalog)
+    read_offers(Path(OFFERS_PATH), teller)
+    basket = read_basket(Path(CART_PATH), catalog)
     receipt = teller.checks_out_articles_from(basket)
     print(ReceiptPrinter().print_receipt(receipt))
 
