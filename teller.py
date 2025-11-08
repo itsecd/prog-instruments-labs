@@ -27,7 +27,7 @@ class Teller:
         return receipt
       
     
-    def handle_special_offers(self, offer, quantity, unit_price, p)->int:
+    def handle_special_offers(self, offer, quantity, unit_price, p):
         if offer.offer_type == SpecialOfferType.THREE_FOR_TWO and quantity<=2:
             return None
         if offer.offer_type == SpecialOfferType.TWO_FOR_AMOUNT and quantity<2:
@@ -40,7 +40,7 @@ class Teller:
             number_of_x = quantity//x
             discount_amount = quantity * unit_price - ((number_of_x * 2 * unit_price) + quantity % 3 * unit_price)
             discount = Discount(p, "3 for 2", -discount_amount)
-            
+
         elif offer.offer_type == SpecialOfferType.TWO_FOR_AMOUNT:
             x = 2
             number_of_x = quantity//x
