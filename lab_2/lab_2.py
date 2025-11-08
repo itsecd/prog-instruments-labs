@@ -5,6 +5,23 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from scipy.stats import linregress
 
+def _filter_negative_themes(df):
+    """Универсальная функция фильтрации негативных обращений"""
+    return df[df["Тема обращения"].str.contains("Недовольство", na=False)].copy()
+
+def _extract_negative_theme_details(negative_df):
+    """Извлечение деталей тем из негативных обращений"""
+    negative_df = negative_df.copy()
+    negative_df.loc[:, "Тема"] = negative_df["Тема обращения"].str.extract(
+        r"Недовольство/(.+)"
+    )
+    return negative_df
+
+def _get_negative_themes_with_details(df):
+    """Получение негативных обращений с извлеченными темами"""
+    negative_df = _filter_negative_themes(df)
+    return _extract_negative_theme_details(negative_df)
+
 
 def total_served(df):
     """Количество обслуженных клиентов"""
@@ -47,8 +64,10 @@ def forecastNegativeThemes(df, return_type="both"):
     """
     result = {}
     try:
+        negative_df = _filter_negative_themes(df)
+
         negative_count_daily = (
-            df[df["Тема обращения"].str.contains("Недовольство", na=False)]
+            negative_df
             .groupby(df["Дата обращения"])
             .size()
             .reset_index(name="Количество обращений")
@@ -226,9 +245,7 @@ def arpu_negative_themes(df, segment="Все"):
         Словарь с SVG изображением графика или None при ошибке
     """
     try:
-        negative_df = df[
-            df["Тема обращения"].str.contains("Недовольство", na=False)
-        ].copy()
+        negative_df = df[df["Тема обращения"].str.contains("Недовольство", na=False)].copy()
 
         # Применение фильтра по сегменту, если выбран не "Все"
         if segment != "Все":
@@ -329,9 +346,7 @@ def regionDistrictAnalysis(df, region=None, district=None, theme=None):
     """
     try:
         # Фильтрация негативных обращений
-        negative_df = df[
-            df["Тема обращения"].str.contains("Недовольство", na=False)
-        ].copy()
+        negative_df = df[df["Тема обращения"].str.contains("Недовольство", na=False)].copy()
 
         # Извлечение конкретных тем
         negative_df.loc[:, "Тема"] = negative_df["Тема обращения"].str.extract(
