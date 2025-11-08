@@ -8,16 +8,14 @@ class ReceiptPrinter:
     def print_receipt(self, receipt):
         result = ""
         for item in receipt.items:
-            receipt_item = self.print_receipt_item(item)
-            result += receipt_item
+            result += self.print_receipt_item(item)
 
         for discount in receipt.discounts:
-            discount_presentation = self.print_discount(discount)
-            result += discount_presentation
+            result += self.print_discount(discount)
 
         result += "\n"
         result += self.present_total(receipt)
-        return str(result)
+        return result
 
     def print_receipt_item(self, item):
         total_price_printed = self.print_price(item.total_price)
