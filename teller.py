@@ -64,8 +64,7 @@ class Teller:
     
 
     def handle_offers(self, receipt, cart):
-        for p in cart.product_quantities.keys():
-            quantity = cart.product_quantities[p]
+        for p, quantity in cart.product_quantities.items():
             if p in self.offers.keys():
                 offer = self.offers[p]
                 unit_price = self.catalog.unit_price(p)
