@@ -16,42 +16,12 @@ def validate_field(field_name, value):
         return False
 
     # Additional checks for specific fields
-    if field_name == "http_status":
-        code = value.split()[0]
-        return code.isdigit() and 100 <= int(code) <= 599
-
     elif field_name == "ip_v4":
         blocks = value.split('.')
         for block in blocks:
             if not block.isdigit() or not (0 <= int(block) <= 255):
                 return False
         return True
-
-    elif field_name == "latitude":
-        try:
-            lat_float = float(value)
-            return -90.0 <= lat_float <= 90.0
-        except (ValueError, TypeError):
-            return False
-
-    elif field_name == "isbn":
-        clean_isbn = value.replace(' ', '')
-        digits = re.sub(r'[^\d]', '', clean_isbn)
-        return len(digits) in [10, 13]
-
-    elif field_name == "time":
-        parts = value.split(':')
-        hours = int(parts[0])
-        minutes = int(parts[1])
-        seconds_part = parts[2]
-
-        if '.' in seconds_part:
-            seconds = int(seconds_part.split('.')[0])
-        else:
-            seconds = int(seconds_part)
-
-        return (0 <= hours <= 23) and (0 <= minutes <= 59) and (0 <= seconds <= 59)
-
     return True
 
 
