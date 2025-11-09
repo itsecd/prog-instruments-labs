@@ -4,6 +4,7 @@ import json
 import os
 import sys
 
+
 MONEY = 100.0
 DAY = 1
 INVENT = {}
@@ -13,7 +14,6 @@ PLAYER_NAME = "Farmer"
 GAME_OVER = False
 MSG = ""
 SAVE_FILE = "bad_farm_save.json"
-
 PLANTS = [
     {"id": 1, "name": "Carrot", "grow": 3, "water_need": 1, "price": 2.5},
     {"id": 2, "name": "Potato", "grow": 5, "water_need": 2, "price": 4.0},
@@ -21,11 +21,11 @@ PLANTS = [
     {"id": 4, "name": "Corn", "grow": 7, "water_need": 3, "price": 7.5},
     {"id": 5, "name": "Pumpkin", "grow": 10, "water_need": 4, "price": 15.0},
 ]
-
 MAX_PLOTS = 6
 x = 0
 y = 1
 z = 2
+
 
 def get_plant_by_id(pid):
     for p in PLANTS:
