@@ -33,6 +33,7 @@ def get_plant_by_id(pid):
             return p
     return None
 
+
 def init_farm():
     global FARM, INVENT, MONEY, DAY, PLAYER_NAME
     FARM = []
@@ -43,7 +44,7 @@ def init_farm():
     DAY = 1
     PLAYER_NAME = "Farmer"
 
-# show farm ascii
+
 def show_farm():
     global FARM, DAY, MONEY, WEATHER, MSG, INVENT
     print("\n" + "=" * 40)
@@ -69,6 +70,7 @@ def show_farm():
     if MSG:
         print(">>>", MSG)
     print("=" * 40)
+
 
 def plant_seed():
     global FARM, MSG, MONEY
@@ -101,6 +103,7 @@ def plant_seed():
     FARM[plot]["watered"] = 0
     MSG = "Посадили {} в грядку {} (стоимость ${:.2f}).".format(p["name"], plot, cost)
 
+
 def water_plot():
     global FARM, MSG
     try:
@@ -115,6 +118,7 @@ def water_plot():
         return
     FARM[plot]["watered"] += 1
     MSG = "Полили грядку {}.".format(plot)
+
 
 def harvest_plot():
     global FARM, MONEY, INVENT, MSG
@@ -139,6 +143,7 @@ def harvest_plot():
     MSG = "Собрали {} x{}.".format(name, amount)
     if random.random() < 0.05:
         MSG += " Лопата сломалась (ничего не делает)."
+
 
 def sell_items():
     global INVENT, MONEY, MSG
@@ -168,6 +173,7 @@ def sell_items():
     if INVENT[item] == 0:
         del INVENT[item]
     MSG = "Продали {} x{} за ${:.2f}.".format(item, cnt, price * cnt)
+
 
 def rest_day():
     global DAY, FARM, WEATHER, MSG
@@ -209,6 +215,7 @@ def rest_day():
             pass
     MSG = "Прошёл день."
 
+
 def buy_seeds_quick():
     global MONEY, MSG
     print("Семена в магазине:")
@@ -238,6 +245,7 @@ def buy_seeds_quick():
     INVENT[name + "_seed"] = INVENT.get(name + "_seed", 0) + cnt
     MSG = "Купили {} x{} семян.".format(name, cnt)
 
+
 def buy_seeds_shop():
     global MONEY, MSG
     print("Добро пожаловать в магазин семян.")
@@ -264,6 +272,7 @@ def buy_seeds_shop():
     MONEY -= cost
     INVENT[p["name"] + "_seed"] = INVENT.get(p["name"] + "_seed", 0) + cnt
     MSG = "Куплено семян: {} x{}".format(p["name"], cnt)
+
 
 def plant_from_invent():
     global INVENT, FARM, MSG
@@ -303,6 +312,7 @@ def plant_from_invent():
     FARM[plot]["watered"] = 0
     MSG = "Посадили семя {}.".format(p["name"])
 
+
 def save_game():
     global SAVE_FILE, DAY, MONEY, INVENT, FARM, PLAYER_NAME, WEATHER, MSG
     data = {
@@ -319,6 +329,7 @@ def save_game():
         MSG = "Игра сохранена."
     except Exception as e:
         MSG = "Ошибка сохранения: {}".format(e)
+
 
 def load_game():
     global SAVE_FILE, DAY, MONEY, INVENT, FARM, PLAYER_NAME, WEATHER, MSG
@@ -338,6 +349,7 @@ def load_game():
     except Exception:
         MSG = "Ошибка загрузки."
 
+
 def random_events():
     global MONEY, INVENT, MSG
     r = random.random()
@@ -356,6 +368,7 @@ def random_events():
     else:
         MSG = "Тихий день."
 
+
 def market_prices():
     global PLANTS, DAY
     print("Рыночные цены (меняются):")
@@ -363,12 +376,14 @@ def market_prices():
         pr = p["price"] * (0.9 + (DAY % 7) * 0.02)
         print(p["name"], "${:.2f}".format(pr))
 
+
 def stats():
     global DAY, MONEY, INVENT, FARM
     total_planted = sum(1 for f in FARM if f["state"] in ("planted", "ready"))
     total_ready = sum(1 for f in FARM if f["state"] == "ready")
     print("Статистика --- День {}. Деньги: ${:.2f}".format(DAY, MONEY))
     print("Посажено:", total_planted, "Грядок готово:", total_ready, "Инвентарь:", INVENT)
+
 
 def help_menu():
     print("""
@@ -388,6 +403,7 @@ def help_menu():
 13 - Выйти
 h - Помощь
 """)
+
 
 def handle_choice(c):
     global GAME_OVER, MSG
@@ -422,6 +438,7 @@ def handle_choice(c):
         help_menu()
     else:
         MSG = "Неизвестная команда."
+
 
 def main_loop():
     global GAME_OVER, MSG, PLAYER_NAME, MONEY
@@ -465,6 +482,7 @@ def main_loop():
         except:
             pass
 
+
 def autopilot(turns=20):
     global MESSAGE, MSG
     for i in range(turns):
@@ -502,6 +520,7 @@ def autopilot(turns=20):
                     del INVENT[it]
         time.sleep(0.05)
 
+
 def cheat_menu():
     global MONEY, INVENT, FARM, MSG
     print("ЧИТ-МЕНЮ: (1) +$100, (2) заполнить грядки, (3) удалить инвентарь, (4) выйти")
@@ -523,6 +542,7 @@ def cheat_menu():
     else:
         MSG = "Выход из чита."
 
+
 def dumb_duplicate_of_stats():
     global DAY, MONEY, INVENT, FARM
     total = 0
@@ -537,6 +557,7 @@ def dumb_duplicate_of_stats():
     print("Посажено:", total, "Готово:", ready)
     print("Инвентарь:", INVENT)
 
+
 def startup():
     global SAVE_FILE, MSG
     if os.path.exists(SAVE_FILE):
@@ -548,6 +569,7 @@ def startup():
     else:
         init_farm()
 
+
 def quick_test():
     init_farm()
     assert len(FARM) == MAX_PLOTS
@@ -558,6 +580,7 @@ def quick_test():
     FARM[0]["watered"] = p["water_need"]
     rest_day()
     return True
+
 
 if __name__ == "__main__":
     startup()
