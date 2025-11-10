@@ -1,18 +1,24 @@
+# Стандартные библиотеки
+import argparse
+import importlib
+import glob
+import os
+import time
+import warnings
+
+# Сторонние библиотеки
+import numpy as np
+import tensorflow as tf
+import scipy.io as sio
+from tqdm import tqdm
+import pynvml
+
+# Локальные модули
 from utils.log import Log
 from utils.input_pipeline import get_batch
 from datasets.dataset_factory import get_dataset
 from nets.nets_factory import get_net_fn
-import numpy as np
-import time
-import os
-import tensorflow as tf
-import scipy.io as sio
-from tqdm import tqdm
-import glob
-import argparse
-import importlib
-import pynvml
-import warnings
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--opts', '-o', default='opts', help='options file name')
