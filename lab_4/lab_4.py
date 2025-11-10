@@ -216,62 +216,67 @@ def rest_day():
     MSG = "Прошёл день."
 
 
-def buy_seeds_quick():
+# helper function to calculate seed cost
+def calculate_seed_cost(plant, use_quick_calculation=True):
+    if use_quick_calculation:
+        return plant["price"] * 0.5 + plant["grow"] * 0.1
+    else:
+        return plant["price"] * 0.5
+
+
+# unified seed purchase function
+def buy_seeds(use_quick_calculation=True):
     global MONEY, MSG
-    print("Семена в магазине:")
-    for p in PLANTS:
-        print(p["id"], p["name"], "цена семян ~", p["price"] * 0.5 + p["grow"] * 0.1)
+    if use_quick_calculation:
+        print("Семена в магазине:")
+        for p in PLANTS:
+            cost = calculate_seed_cost(p, True)
+            print(p["id"], p["name"], "цена семян ~", cost)
+    else:
+        print("Добро пожаловать в магазин семян.")
+        for p in PLANTS:
+            cost = calculate_seed_cost(p, False)
+            print("{} - {} - ${:.2f}".format(p["id"], p["name"], cost))
+
     try:
-        pid = int(input("ID семян: "))
+        pid = int(input("ID семян: " if use_quick_calculation else "Введите ID: "))
     except:
         pid = -1
+
     p = get_plant_by_id(pid)
     if not p:
-        MSG = "Не выбран тип семян."
+        MSG = "Не выбран тип семян." if use_quick_calculation else "Неверный выбор."
         return
+
     try:
-        cnt = int(input("Сколько семян купить: "))
+        cnt = int(input("Сколько семян купить: " if use_quick_calculation else "Кол-во: "))
     except:
         cnt = 0
-    cost = (p["price"] * 0.5 + p["grow"] * 0.1) * cnt
+
+    cost = calculate_seed_cost(p, use_quick_calculation) * cnt
+
     if cnt <= 0:
         MSG = "Ничего не купили."
         return
+
     if MONEY < cost:
-        MSG = "Недостаточно денег."
+        MSG = "Недостаточно денег." if use_quick_calculation else "Не хватает денег."
         return
+
     MONEY -= cost
     name = p["name"]
     INVENT[name + "_seed"] = INVENT.get(name + "_seed", 0) + cnt
     MSG = "Купили {} x{} семян.".format(name, cnt)
 
 
+# quick purchase menu
+def buy_seeds_quick():
+    buy_seeds(use_quick_calculation=True)
+
+
+# shop purchase function
 def buy_seeds_shop():
-    global MONEY, MSG
-    print("Добро пожаловать в магазин семян.")
-    for p in PLANTS:
-        print("{} - {} - ${:.2f}".format(p["id"], p["name"], p["price"]))
-    try:
-        s = input("Введите ID: ")
-        pid = int(s)
-    except:
-        pid = -1
-    p = get_plant_by_id(pid)
-    if not p:
-        MSG = "Неверный выбор."
-        return
-    try:
-        s2 = input("Кол-во: ")
-        cnt = int(s2)
-    except:
-        cnt = 0
-    cost = cnt * (p["price"] * 0.5)
-    if MONEY < cost:
-        MSG = "Не хватает денег."
-        return
-    MONEY -= cost
-    INVENT[p["name"] + "_seed"] = INVENT.get(p["name"] + "_seed", 0) + cnt
-    MSG = "Куплено семян: {} x{}".format(p["name"], cnt)
+    buy_seeds(use_quick_calculation=False)
 
 
 def plant_from_invent():
