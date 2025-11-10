@@ -34,6 +34,11 @@ if __name__ == "__main__":
         "unit_tests.py"
     ]
     
-    cmd: list[str] = ["pytest", "-v", "--junit-xml=test-results.xml"] + test_files
+    cmd: list[str] = [
+        "pytest", 
+        "-v", 
+        "--junit-xml=test-results.xml",
+        "--ignore=config-*.py", 
+    ] + test_files
     result: subprocess.CompletedProcess = subprocess.run(cmd)
     sys.exit(result.returncode)
