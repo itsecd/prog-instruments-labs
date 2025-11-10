@@ -18,6 +18,7 @@ from utils.log import Log
 from utils.input_pipeline import get_batch
 from datasets.dataset_factory import get_dataset
 from nets.nets_factory import get_net_fn
+#correct commit
 
 
 parser = argparse.ArgumentParser()
