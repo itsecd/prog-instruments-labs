@@ -1,370 +1,208 @@
-"""
-Created on Thu Nov 22 09:48:54 2018
-
-@author: om
-"""
 import sys
 
-print("Welcome to the two player mode of tictactoe")
-print("press 1 be O and 2 to be X")
-m = int(input("enter here"))
-if m == 1:
-    m = "O"
-    n = "X"
-elif m == 2:
-    m = "X"
-    n = "O"
-c = []
-r1 = ["", "", ""]
-r2 = ["", "", ""]
-r3 = ["", "", ""]
-r = []
 
+class TicTacToe:
+    def __init__(self):
+        self.board = [["", "", ""] for _ in range(3)]
+        self.used_positions = []
+        self.player_symbol = ""
+        self.computer_symbol = ""
+        self.current_player = ""
 
-def gameCONCLUDER():
-    a = int(input("Enter 1 to terminate the game"))
-    if a == 1:
-        sys.exit()
+    def print_board(self):
+        """Print the current game board"""
+        for i, row in enumerate(self.board):
+            print(" | ".join(cell if cell else " " for cell in row))
+            if i < 2:
+                print("---------")
 
+    def setup_game(self):
+        """Initialize game settings"""
+        print("Welcome to the two player mode of Tic-Tac-Toe")
+        print("Press 1 to be O and 2 to be X")
 
-def firstinitialiser():
-    global n1
-    n1 = int(input("PLAYER1 TURN (1-9)"))
-    tictactoe(n1)
-
-
-def tictactoe(a):
-    if a not in range(1, 10):
-        print("INVALID ENTRY")
-        return firstinitialiser()
-    if a in r:
-        print("ENTRY ALREADY EXISTS")
-        return firstinitialiser()
-    if a == 1 and a not in r:
-        r1[0] = m
-    elif a == 2 and a not in r:
-        r1[1] = m
-    elif a == 3 and a not in r:
-        r1[2] = m
-    elif a == 4 and a not in r:
-        r2[0] = m
-    elif a == 5 and a not in r:
-        r2[1] = m
-    elif a == 6 and a not in r:
-        r2[2] = m
-    elif a == 7 and a not in r:
-        r3[0] = m
-    elif a == 8 and a not in r:
-        r3[1] = m
-    elif a == 9 and a not in r:
-        r3[2] = m
-    r.append(n1)
-    print(" | ".join(r1))
-    print("_.", "_.", "_.")
-    print(" | ".join(r2))
-    print("_.", "_.", "_.")
-    print(" | ".join(r3))
-    if r1.count(m) == 3:
-        print("PLAYER1 HAS WON")
-        return gameCONCLUDER()
-    elif r2.count(m) == 3:
-        print("PLAYER1 HAS WON")
-        return gameCONCLUDER()
-    elif r3.count(m) == 3:
-        print("PLAYER1 HAS WON")
-        return gameCONCLUDER()
-    elif r1[0] == r2[0] == r3[0] == m:
-        print("PLAYER1 HAS WON")
-        return gameCONCLUDER()
-    elif r1[1] == r2[1] == r3[1] == m:
-        print("PLAYER1 HAS WON")
-        return gameCONCLUDER()
-    elif r1[2] == r2[2] == r3[2] == m:
-        print("PLAYER1 HAS WON")
-        return gameCONCLUDER()
-    elif r1[0] == r2[1] == r3[2] == m:
-        print("PLAYER1 HAS WON")
-        return gameCONCLUDER()
-    elif r1[2] == r2[1] == r3[0] == m:
-        print("PLAYER1 HAS WON")
-        return gameCONCLUDER()
-    if (
-        "" not in r1
-        and "" not in r2
-        and "" not in r3
-        and len(r1) == len(r2) == len(r3) == 3
-    ):
-        print("The game has been a tie")
-    else:
-        compPLAY()
-
-
-def compPLAY():
-    def compCOMPLETER(a):
-        r.append(a)
-        print("computers move is", a)
-        print(" | ".join(r1))
-        print("_.", "_.", "_.")
-        print(" | ".join(r2))
-        print("_.", "_.", "_.")
-        print(" | ".join(r3))
-        if r1.count(n) == 3:
-            print("computer  HAS WON")
-            return gameCONCLUDER()
-        elif r2.count(n) == 3:
-            print("computer  HAS WON")
-            return gameCONCLUDER()
-        elif r3.count(n) == 3:
-            print("computer  HAS WON")
-            return gameCONCLUDER()
-        elif r1[0] == r2[0] == r3[0] == n:
-            print("computer  HAS WON")
-            return gameCONCLUDER()
-        elif r1[1] == r2[1] == r3[1] == n:
-            print("computer  HAS WON")
-            return gameCONCLUDER()
-        elif r1[2] == r2[2] == r3[2] == n:
-            print("computer  HAS WON")
-            return gameCONCLUDER()
-        elif r1[0] == r2[1] == r3[2] == n:
-            print("computer  HAS WON")
-            return gameCONCLUDER()
-        elif r1[2] == r2[1] == r3[0] == n:
-            print("computer HAS WON")
-            return gameCONCLUDER()
-        if (
-            "" not in r1
-            and "" not in r2
-            and "" not in r3
-            and len(r1) == len(r2) == len(r3) == 3
-        ):
-            print("The game has been a tie")
-            return gameCONCLUDER()
+        choice = int(input("Enter here: "))
+        if choice == 1:
+            self.player_symbol = "O"
+            self.computer_symbol = "X"
         else:
-            firstinitialiser()
+            self.player_symbol = "X"
+            self.computer_symbol = "O"
 
-    def selfwinCHECKER():
-        if r1.count(n) == 2:
-            for i in range(len(r1)):
-                if r1[i] == "":
-                    r1[i] = n
-                    print("selfwin has worked at r1")
-                    compCOMPLETER(i + i)
-        elif r2.count(n) == 2:
-            for i in range(len(r2)):
-                if r2[i] == "":
-                    r2[i] = n
-                    print("selfwin has worked at r2")
-                    compCOMPLETER(i + 4)
-        elif r3.count(n) == 2:
-            for i in range(len(r3)):
-                if r3[i] == "":
-                    r3[i] = n
-                    print("selfwin has worked at r3")
-                    compCOMPLETER(i + 7)
-        for i in range(3):
-            o = [r1[i], r2[i], r3[i]]
-            if o.count(n) == 2:
-                for j in range(3):
-                    if o[j] == "":
-                        if j == 0:
-                            r1[i] = n
-                            print("selfwin has worked at", o[j])
-                            compCOMPLETER(i + 1)
-                        elif j == 1:
-                            r2[i] = n
-                            print("selfwin has worked at", o[j])
-                            compCOMPLETER(i + 4)
-                        elif j == 2:
-                            r3[i] = n
-                            print("selfwin has worked at", o[j])
-                            compCOMPLETER(i + 7)
-        d1 = [r1[0], r2[1], r3[2]]
-        if d1.count(n) == 2:
-            for i in range(3):
-                if d1[i] == "":
-                    if i == 0:
-                        r1[0] = n
-                        print("d1 is", d1, "but r1[0] is", r1[0], "but your i is", i)
+        print("Press 1 to play first, press 2 to let computer play first")
+        first_player = int(input("Enter here: "))
+        self.current_player = "player" if first_player == 1 else "computer"
 
-                        print("selfwin has worked at my doubt")
-                        compCOMPLETER(1)
-                    elif i == 1:
-                        r2[1] = n
-                        print("selfwin has worked")
-                        compCOMPLETER(5)
-                    elif i == 2:
-                        r3[2] = n
-                        print("selfwin has worked")
-                        compCOMPLETER(9)
-        d2 = [r1[2], r2[1], r3[0]]
-        if d2.count(n) == 2:
-            for i in range(3):
-                if d2[i] == "":
-                    if i == 0:
-                        r1[2] = n
-                        print("selfwin has worked")
-                        compCOMPLETER(3)
-                    elif i == 1:
-                        r2[1] = n
-                        print("selfwin has worked")
-                        compCOMPLETER(5)
-                    elif i == 2:
-                        r3[0] = n
-                        print("selfwin has worked")
-                        compCOMPLETER(7)
+    def get_position(self, row, col):
+        """Calculate position number from row and column"""
+        return row * 3 + col + 1
 
-    selfwinCHECKER()
+    def make_move(self, position, symbol):
+        """Place symbol on the board at given position"""
+        if position < 1 or position > 9:
+            return False
 
-    def oppwinCHECKER():
-        if r1.count(m) == 2:
-            for i in range(len(r1)):
-                if r1[i] == "":
-                    r1[i] = n
-                    print("oppwin has worked at r1")
-                    compCOMPLETER(i + 1)
+        if position in self.used_positions:
+            return False
 
-        elif r2.count(m) == 2:
-            for i in range(len(r2)):
-                if r2[i] == "":
-                    print("r2 is ", r2)
-                    r2[i] = n
-                    print("oppwin has worked at r2")
-                    compCOMPLETER(i + 4)
+        row = (position - 1) // 3
+        col = (position - 1) % 3
 
-        elif r3.count(m) == 2:
-            for i in range(len(r3)):
-                if r3[i] == "":
-                    r3[i] = n
-                    print("oppwin has worked at r3")
-                    compCOMPLETER(i + 7)
-        for i in range(3):
-            o = [r1[i], r2[i], r3[i]]
-            if o.count(m) == 2:
-                for j in range(3):
-                    if o[j] == "":
-                        if j == 0:
-                            r1[i] = n
-                            print("oppwin has worked at ", o[j])
-                            compCOMPLETER(i + 1)
-                        elif j == 1:
-                            r2[i] = n
-                            print("oppwin has worked at", o[j])
-                            compCOMPLETER(i + 4)
-                        elif j == 2:
-                            r3[i] = n
-                            print("oppwin has worked at", o[j])
-                            compCOMPLETER(i + 7)
-        d1 = [r1[0], r2[1], r3[2]]
-        if d1.count(m) == 2:
-            for i in range(3):
-                if d1[i] == "":
-                    if i == 0:
-                        r1[0] = n
-                        print("oppwin has worked")
-                        compCOMPLETER(i + 1)
-                    elif i == 1:
-                        r2[1] = n
-                        print("oppwin has worked")
-                        compCOMPLETER(i + 4)
-                    elif i == 2:
-                        r3[2] = n
-                        print("oppwin has worked")
-                        compCOMPLETER(i + 7)
-        d2 = [r1[2], r2[1], r3[0]]
-        if d2.count(m) == 2:
-            for i in range(3):
-                if d2[i] == "":
-                    if i == 0:
-                        r1[2] = n
-                        print("oppwin has worked")
-                        compCOMPLETER(3)
-                    elif i == 1:
-                        r2[1] = n
-                        print("oppwin has worked")
-                        compCOMPLETER(5)
-                    elif i == 2:
-                        r3[0] = n
-                        print("oppwin has worked")
-                        compCOMPLETER(7)
+        self.board[row][col] = symbol
+        self.used_positions.append(position)
+        return True
 
-    oppwinCHECKER()
+    def check_winner(self, symbol):
+        """Check if the given symbol has won"""
+        board = self.board
 
-    def strategy1():
-        if r1[0] == "" and r3[2] == "" or c != []:
-            if r1[0] == "":
-                r1[0] = n
-                print("strategy 1 has worked")
-                c.append(1)
-                compCOMPLETER(1)
-            if r1[0] == n and r3[2] == n:
-                if r1[2] == "":
-                    r1[2] = n
-                    compCOMPLETER(3)
-                elif r3[0] == "":
-                    r3[0] = n
-                    compCOMPLETER(7)
-            elif r3[2] == "":
-                r3[2] = n
-                print("strategy1 has worked")
-                c.append(1)
-                compCOMPLETER(9)
+        # Check rows
+        for row in board:
+            if all(cell == symbol for cell in row):
+                return True
 
-    strategy1()
+        # Check columns
+        for col in range(3):
+            if all(board[row][col] == symbol for row in range(3)):
+                return True
 
-    def middleCHECKER():
-        if r2[1] == "":
-            r2[1] = n
-            print("miidlechecker has worked")
-            compCOMPLETER(5)
+        # Check diagonals
+        if all(board[i][i] == symbol for i in range(3)):
+            return True
+        if all(board[i][2-i] == symbol for i in range(3)):
+            return True
 
-    middleCHECKER()
+        return False
 
-    def endsideCHECKER():
-        if r1[0] == "":
-            r1[0] = n
-            print("endsidechecker has worked")
-            compCOMPLETER(1)
-        elif r1[2] == "":
-            r1[2] = n
-            print("endsidechecker has worked")
-            compCOMPLETER(3)
-        elif r3[0] == "":
-            r3[0] = n
-            print("endsidechecker has worked")
-            compCOMPLETER(7)
-        elif r3[2] == "":
-            r3[2] = n
-            print("endsidechecker has worked")
-            compCOMPLETER(9)
+    def is_board_full(self):
+        """Check if the board is completely filled"""
+        return all(all(cell != "" for cell in row) for row in self.board)
 
-    endsideCHECKER()
+    def game_over(self):
+        """Handle game conclusion"""
+        choice = int(input("Enter 1 to terminate the game: "))
+        if choice == 1:
+            sys.exit()
 
-    def endmiddleCHECKER():
-        if r1[1] == "":
-            r1[1] = n
-            compCOMPLETER(2)
-        elif r2[0] == "":
-            r2[0] = n
-            compCOMPLETER(4)
-            print("endmiddlechecker has worked")
-        elif r2[2] == "":
-            r2[2] = n
-            p = 6
-            print("endmiddlechecker has worked")
-            compCOMPLETER(6)
-        elif r3[1] == "":
-            r3[1] = n
-            print("endmiddlechecker has worked")
-            compCOMPLETER(8)
+    def player_turn(self):
+        """Handle player's turn"""
+        print("\nPLAYER TURN")
+        while True:
+            try:
+                position = int(input("Enter position (1-9): "))
+                if self.make_move(position, self.player_symbol):
+                    break
+                else:
+                    print("Invalid position or position already taken. Try again.")
+            except ValueError:
+                print("Please enter a valid number.")
 
-    endmiddleCHECKER()
+        self.print_board()
+
+        if self.check_winner(self.player_symbol):
+            print("PLAYER HAS WON!")
+            self.game_over()
+            return True
+        elif self.is_board_full():
+            print("The game has been a tie!")
+            self.game_over()
+            return True
+
+        return False
+
+    def computer_turn(self):
+        """Handle computer's turn with strategic moves"""
+        print("\nCOMPUTER TURN")
+
+        # Try to find winning move
+        move = self.find_winning_move(self.computer_symbol)
+        if not move:
+            # Block player's winning move
+            move = self.find_winning_move(self.player_symbol)
+
+        # Strategic moves
+        if not move:
+            move = self.make_strategic_move()
+
+        self.make_move(move, self.computer_symbol)
+        print(f"Computer's move is {move}")
+        self.print_board()
+
+        if self.check_winner(self.computer_symbol):
+            print("COMPUTER HAS WON!")
+            self.game_over()
+            return True
+        elif self.is_board_full():
+            print("The game has been a tie!")
+            self.game_over()
+            return True
+
+        return False
+
+    def find_winning_move(self, symbol):
+        """Find a move that would result in a win for the given symbol"""
+        for position in range(1, 10):
+            if position not in self.used_positions:
+                # Test this move
+                row = (position - 1) // 3
+                col = (position - 1) % 3
+
+                # Save current state
+                original_value = self.board[row][col]
+                self.board[row][col] = symbol
+
+                # Check if this move wins
+                if self.check_winner(symbol):
+                    self.board[row][col] = original_value
+                    return position
+
+                # Restore original state
+                self.board[row][col] = original_value
+
+        return None
+
+    def make_strategic_move(self):
+        """Make a strategic move based on game situation"""
+        # Center is most valuable
+        if 5 not in self.used_positions:
+            return 5
+
+        # Corners are next best
+        corners = [1, 3, 7, 9]
+        available_corners = [pos for pos in corners if pos not in self.used_positions]
+        if available_corners:
+            return available_corners[0]
+
+        # Finally, edges
+        edges = [2, 4, 6, 8]
+        available_edges = [pos for pos in edges if pos not in self.used_positions]
+        if available_edges:
+            return available_edges[0]
+
+        # Fallback - should not happen if board isn't full
+        for position in range(1, 10):
+            if position not in self.used_positions:
+                return position
+
+        return None
+
+    def play_game(self):
+        """Main game loop"""
+        self.setup_game()
+        self.print_board()
+
+        while True:
+            if self.current_player == "player":
+                if self.player_turn():
+                    break
+                self.current_player = "computer"
+            else:
+                if self.computer_turn():
+                    break
+                self.current_player = "player"
 
 
-print("press 1 to play first , press 2 to let computer play first")
-global a
-a = int(input("enter here "))
-if a == 1:
-    firstinitialiser()
-elif a == 2:
-    compPLAY()
+if __name__ == "__main__":
+    game = TicTacToe()
+    game.play_game()
+    
