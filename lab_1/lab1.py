@@ -25,7 +25,6 @@ parser.add_argument('--opts', '-o', default='opts', help='options file name')
 args = parser.parse_args()
 OPTIONS_FILE = args.opts
 
-
 def get_cpu_id(cpu_core):
   if cpu_core is None:
     return '0-39'
@@ -36,7 +35,6 @@ def get_cpu_id(cpu_core):
     cpu_id = cpu_id + '%d,%d,' % (core, core + 20)
   cpu_id = cpu_id[:-1]
   return cpu_id
-
 
 def get_variable(key=None):
   vars = tf.global_variables()
@@ -49,13 +47,11 @@ def get_variable(key=None):
       vars_return.append(var)
   return vars_return
 
-
 def get_current_time(time_format=None):
   if time_format is None:
     return time.time()
   time_str = time.strftime(time_format, time.localtime())
   return time_str
-
 
 def set_seed(seed=None):
   if seed is None:
@@ -64,14 +60,11 @@ def set_seed(seed=None):
   tf.set_random_seed(seed)
   return seed
 
-
 def set_log(path):
   Log(path, 'w+', 1)  # set log file
 
-
 def print_separator():
   print('-'*100)
-
 
 def print_opts(path):
   print_separator()
@@ -85,7 +78,6 @@ def print_opts(path):
     if line.find('#'): line = line[:line.find('#')]
     print(line)
 
-
 def create_config_proto():
   # Build an initialization operation to run below.
   config = tf.ConfigProto()
@@ -96,12 +88,10 @@ def create_config_proto():
   config.log_device_placement = False
   return config
 
-
 def get_session():
   sess = tf.InteractiveSession(config=create_config_proto())
   sess.run(tf.global_variables_initializer())
   return sess
-
 
 def export(list_of_numpy, name='W'):
   mat_dict = {}
@@ -109,7 +99,6 @@ def export(list_of_numpy, name='W'):
     mat_dict[name + '%d' % i] = list_of_numpy[i]
   sio.savemat('../model/' + name + '.mat', mat_dict)
   print('exported')
-
 
 def aggregate_gradients(tower_grads):
   mean_grads = []
@@ -132,13 +121,11 @@ def aggregate_gradients(tower_grads):
       mean_grads.append((mean_grad, var))
   return mean_grads
 
-
 def aggregate_statistics(tower_statistics):
   if len(tower_statistics) > 1:
     return tf.reduce_mean(tower_statistics)
   else:
     return tower_statistics[0]
-
 
 def delay4gpus(delay, gpu_list):
   if isinstance(delay, (int, float)):
@@ -210,7 +197,6 @@ def main():
   print_separator()
 
   ##########################
-
   print(time_tag)
   print('SEED = %d' % seed)
 
@@ -218,7 +204,6 @@ def main():
   print_separator()
 
   ##########################
-
   model_dir = '../model/'
 
   if isinstance(path_save, bool):
@@ -242,7 +227,6 @@ def main():
     print('Find model in', path_load)
 
   ##########################
-
   os.environ['CUDA_VISIBLE_DEVICES'] = ''.join(str(gpu) + ','
                                                for gpu in gpu_list)
   num_worker = max(len(gpu_list), 1)
@@ -261,7 +245,6 @@ def main():
   iterator_test = get_batch(dataset_test, preprocess, False, 100, seed=seed)
 
   ##########################
-
   if mode in ['input_train', 'input_test']:
     if mode == 'input_train':
       num_batch = num_batch_train
@@ -278,7 +261,6 @@ def main():
         sess.run(batch_input)
 
   ##########################
-
   nets = []
   net = get_net_fn(network)
 
@@ -415,7 +397,6 @@ def main():
       train_op = optimizer.apply_gradients(grad_batch_train, global_step=learning_step)
 
   ##########################
-
   if hasattr(opts, 'delay'):
     delay4gpus(opts.delay, gpu_list=gpu_list)
 
@@ -490,7 +471,6 @@ def main():
   print_separator()
 
   ##########################
-
   while True:
     # update learning rate
     lr_epoch = sess.run(lr_decay)
@@ -542,12 +522,9 @@ def main():
   print_separator()
 
   ##########################
-
   sess.close()
   print('Optimization ended at ' + get_current_time('%y-%m-%d %X'))
   return 0
-
-  ##########################
 
 
 if __name__ == '__main__':
