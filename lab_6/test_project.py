@@ -1,14 +1,11 @@
-import os
-import json
 import pytest
-import tempfile
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
+import main
 from asymmetrical import Asymmetrical
-from symmetrical import Symmetrical
 from filehandler import FileHandler
 from hybrid import Hybrid
-import main
+from symmetrical import Symmetrical
 
 
 def test_generate_asymmetrical_keys():
