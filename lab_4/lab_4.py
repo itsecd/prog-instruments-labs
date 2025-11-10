@@ -45,27 +45,42 @@ def init_farm():
     PLAYER_NAME = "Farmer"
 
 
+def get_plot_display_string(plot_data):
+    """Формирует строку для отображения состояния грядки"""
+    plot_num = plot_data["plot"]
+    state = plot_data["state"]
+
+    display_string = "[{}]".format(plot_num)
+
+    if state == "empty":
+        display_string += " Пусто"
+    elif state == "planted":
+        p = plot_data["plant"]
+        display_string += " {} ({}/{}) вода:{}/{}".format(
+            p["name"], plot_data["age"], p["grow"],
+            plot_data["watered"], p["water_need"]
+        )
+    elif state == "ready":
+        p = plot_data["plant"]
+        display_string += " {} (Готов)".format(p["name"])
+    elif state == "withered":
+        display_string += " Завяли"
+    else:
+        display_string += " ???"
+
+    return display_string
+
+
 def show_farm():
     global FARM, DAY, MONEY, WEATHER, MSG, INVENT
     print("\n" + "=" * 40)
-    print("День:", DAY, " | Деньги: ${:.2f}".format(MONEY), " | Погода:", WEATHER)
+    print("День: {} | Деньги: ${:.2f} | Погода: {}".format(DAY, MONEY, WEATHER))
     print("Инвентарь:", INVENT)
     print("-" * 40)
-    for f in FARM:
-        s = "[{}]".format(f["plot"])
-        if f["state"] == "empty":
-            s += " Пусто"
-        elif f["state"] == "planted":
-            p = f["plant"]
-            s += " {} ({}/{}) вода:{}/{} ".format(p["name"], f["age"], p["grow"], f["watered"], p["water_need"])
-        elif f["state"] == "ready":
-            p = f["plant"]
-            s += " {} (Готов) ".format(p["name"])
-        elif f["state"] == "withered":
-            s += " Завяли "
-        else:
-            s += " ??? "
-        print(s)
+
+    for plot in FARM:
+        print(get_plot_display_string(plot))
+
     print("-" * 40)
     if MSG:
         print(">>>", MSG)
