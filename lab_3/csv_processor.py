@@ -3,9 +3,6 @@ from typing import Any, Dict, List, Set
 from validators import validate_cell
 
 def read_csv(filename, delimiter) -> List[Dict[str, Any]]:
-    """
-    Reading a CSV file and returning data
-    """
     try:
         with open(filename, 'r', encoding='utf-16') as file:
             reader = csv.DictReader(file, delimiter=delimiter)
