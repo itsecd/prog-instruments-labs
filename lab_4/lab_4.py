@@ -443,6 +443,8 @@ def handle_choice(c):
         plant_seed()
     elif c == "3":
         buy_seeds_quick()
+    elif c == "shop":
+        buy_seeds_shop()
     elif c == "4":
         plant_from_invent()
     elif c == "5":
