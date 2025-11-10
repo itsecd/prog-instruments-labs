@@ -23,7 +23,7 @@ from nets.nets_factory import get_net_fn
 parser = argparse.ArgumentParser()
 parser.add_argument('--opts', '-o', default='opts', help='options file name')
 args = parser.parse_args()
-OPTION = args.opts
+OPTIONS_FILE = args.opts
 
 
 def get_cpu_id(cpu_core):
@@ -50,7 +50,7 @@ def get_variable(key=None):
   return vars_return
 
 
-def get_time(time_format=None):
+def get_current_time(time_format=None):
   if time_format is None:
     return time.time()
   time_str = time.strftime(time_format, time.localtime())
@@ -59,7 +59,7 @@ def get_time(time_format=None):
 
 def set_seed(seed=None):
   if seed is None:
-    seed = int(get_time())
+    seed = int(get_current_time())
   np.random.seed(seed)
   tf.set_random_seed(seed)
   return seed
@@ -69,12 +69,12 @@ def set_log(path):
   Log(path, 'w+', 1)  # set log file
 
 
-def print_line():
+def print_separator():
   print('-'*100)
 
 
 def print_opts(path):
-  print_line()
+  print_separator()
   lines = open(path).readlines()
   # filter out unused opts
   for line in lines:
@@ -185,11 +185,11 @@ def main():
   path_load = opts.path_load
   path_save = opts.path_save
 
-  print_line()
+  print_separator()
 
   ####################################################################################################
 
-  time_tag = get_time('%y-%m-%d %X')
+  time_tag = get_current_time('%y-%m-%d %X')
   time_tag_short = time_tag[:8]
   seed = set_seed(seed)
 
@@ -207,15 +207,15 @@ def main():
 
   print('title: ' + title)
   set_log(path_log)
-  print_line()
+  print_separator()
 
   ####################################################################################################
 
   print(time_tag)
   print('SEED = %d' % seed)
 
-  print_opts('options/' + OPTION + '.py')
-  print_line()
+  print_opts('options/' + OPTIONS_FILE + '.py')
+  print_separator()
 
   ####################################################################################################
 
@@ -452,7 +452,7 @@ def main():
   if mode in ['test', 'export', 'attack']:
     exit(0)
 
-  print_line()
+  print_separator()
 
   ####################################################################################################
 
@@ -466,7 +466,7 @@ def main():
 
     loss_epoch = 0.
     error_epoch = 0.
-    t0 = get_time()
+    t0 = get_current_time()
     for batch in tqdm(range(num_batch_train), desc='Epoch: %03d' % epoch, leave=False, smoothing=0.1):
 
       if mode == 'debug':
@@ -481,7 +481,7 @@ def main():
       error_epoch += error_delta
 
     print('Loss: %.6f Train: %.4f' % (loss_epoch / num_batch_train, error_epoch / num_batch_train), end=' ')
-    FPS = num_batch_train * batch_size / (get_time() - t0)
+    FPS = num_batch_train * batch_size / (get_current_time() - t0)
 
     error_test = evaluate()
     assert error_test > 1e-4, ('Invalid test error %f, something goes wrong' % error_test)
@@ -499,19 +499,19 @@ def main():
 
     print('')
 
-  print_line()
+  print_separator()
 
   ####################################################################################################
 
   sess.close()
-  print('Optimization ended at ' + get_time('%y-%m-%d %X'))
+  print('Optimization ended at ' + get_current_time('%y-%m-%d %X'))
   return 0
 
   ####################################################################################################
 
 
 if __name__ == '__main__':
-  opts = importlib.import_module('options.' + OPTION)
+  opts = importlib.import_module('options.' + OPTIONS_FILE)
   repeat = opts.repeat
   if repeat > 1:
     print('multiple runs, DO NOT EDIT the option file until the last run starts !!!')
