@@ -1,0 +1,16 @@
+[run]
+source = .
+branch = true
+
+[report]
+omit = 
+    /tmp/*
+    */tmp/*
+    */temp/*
+    config-*.py
+    *.cfg
+ignore_errors = true
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    pass
