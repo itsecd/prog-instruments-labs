@@ -11,15 +11,42 @@ def make_dataframe(csv_path: str) -> pd.DataFrame:
     data_frame.columns = ['abs_path', 'rel_path']
     return data_frame
 
-def add_columns(data_frame: pd.DataFrame) -> None:
+
+def add_columns(data_frame: pd.DataFrame) -> pd.DataFrame:
     """
     Add columns (height, width, depth)
     :param data_frame: DataFrame
+    :return: Updated DataFrame
     """
-    images = [cv2.imread(img) for img in data_frame['abs_path']]
-    data_frame['Height'] = [img.shape[0] for img in images]
-    data_frame['Width'] = [img.shape[1] for img in images]
-    data_frame['Depth'] = [img.shape[2] for img in images]
+    result_df = data_frame.copy()
+    heights = []
+    widths = []
+    depths = []
+    
+    for img_path in result_df['abs_path']:
+        try:
+            img = cv2.imread(img_path)
+            if img is not None:
+                heights.append(img.shape[0])
+                widths.append(img.shape[1])
+                depths.append(img.shape[2])
+            else:
+                print(f"Warning: Could not read image {img_path}")
+                heights.append(0)
+                widths.append(0)
+                depths.append(0)
+        except Exception as e:
+            print(f"Error reading image {img_path}: {e}")
+            heights.append(0)
+            widths.append(0)
+            depths.append(0)
+    
+    result_df['Height'] = heights
+    result_df['Width'] = widths
+    result_df['Depth'] = depths
+    
+    return result_df
+
 
 def get_stat_info(data_frame: pd.DataFrame):
     """
@@ -28,6 +55,7 @@ def get_stat_info(data_frame: pd.DataFrame):
     :return: statistic information
     """    
     return data_frame[['Height', 'Width', 'Depth']].describe()
+
 
 def sorted_df(data_frame: pd.DataFrame, max_height: int, max_width: int) -> pd.DataFrame:
     """
@@ -47,6 +75,7 @@ def add_area_column(data_frame: pd.DataFrame) -> None:
     :return: New DataFrame with area column
     """
     data_frame['Area'] = data_frame['Height'] * data_frame['Width']
+
 
 def sort_areas(data_frame: pd.DataFrame) -> pd.DataFrame:
     """

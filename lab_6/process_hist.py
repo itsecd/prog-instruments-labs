@@ -3,15 +3,21 @@ import pandas as pd
 
 from process_df import *
 
-def make_hist(data_frame: pd.DataFrame) -> None:
+
+def make_hist(data_frame: pd.DataFrame) -> plt.Figure:
     """
     Create histogram of area of images
     :param data_frame: DataFrame
     """
-    plt.figure()
-    data_frame['Area'].dropna().hist()
-
-    plt.title('Histogram')
-    plt.xlabel('Area')
-    plt.ylabel('Area count')
-    plt.show()
+    if data_frame.empty or 'Area' not in data_frame.columns:
+        fig, ax = plt.subplots()
+        return fig
+    
+    fig, ax = plt.subplots()
+    data_frame['Area'].dropna().hist(ax = ax)
+    
+    ax.set_title('Histogram')
+    ax.set_xlabel('Area')
+    ax.set_ylabel('Area count')
+    
+    return fig
