@@ -10,7 +10,7 @@ def test_add_columns(monkeypatch: pytest.MonkeyPatch) -> None:
     Test adding image dimension columns
     :param monkeypatch: pytest fixture for modifying objects
     """
-    df: pd.DataFrame = pd.DataFrame( { 'abs.path': ['img1.jpg'],
+    df: pd.DataFrame = pd.DataFrame( { 'abs_path': ['img1.jpg'],
                                       'rel_path': ['rel1'] } )
     
     def mock_imread(path: str) -> np.ndarray:

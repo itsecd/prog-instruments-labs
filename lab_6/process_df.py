@@ -68,13 +68,16 @@ def sorted_df(data_frame: pd.DataFrame, max_height: int, max_width: int) -> pd.D
     sorted_data_frame = data_frame[(data_frame['Height'] < max_height) & (data_frame['Width'] < max_width)]
     return sorted_data_frame
 
-def add_area_column(data_frame: pd.DataFrame) -> None:
+
+def add_area_column(data_frame: pd.DataFrame) -> pd.DataFrame:
     """
     Add column with areas
     :param data_frame: Old DataFrame
     :return: New DataFrame with area column
     """
-    data_frame['Area'] = data_frame['Height'] * data_frame['Width']
+    result_df = data_frame.copy()
+    result_df['Area'] = result_df['Height'] * result_df['Width']
+    return result_df
 
 
 def sort_areas(data_frame: pd.DataFrame) -> pd.DataFrame:
