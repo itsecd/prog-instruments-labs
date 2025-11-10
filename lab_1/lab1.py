@@ -72,11 +72,16 @@ def print_opts(path):
   lines = open(path).readlines()
   # filter out unused opts
   for line in lines:
-    if line == '\n': continue
-    if line[:7] == 'import ': continue
-    if line[:5] == 'from ': continue
-    if line[0] == '#': continue
-    if line.find('#'): line = line[:line.find('#')]
+    if line == '\n':
+        continue
+    if line[:7] == 'import ':
+        continue
+    if line[:5] == 'from ':
+        continue
+    if line[0] == '#':
+        continue
+    if line.find('#'):
+        line = line[:line.find('#')]
     print(line)
 
 def create_config_proto():
