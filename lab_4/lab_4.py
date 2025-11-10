@@ -72,36 +72,46 @@ def show_farm():
     print("=" * 40)
 
 
+def get_valid_input(prompt, input_type=int, validation_func=None):
+    """Универсальная функция для получения и валидации ввода"""
+    try:
+        value = input_type(input(prompt))
+        if validation_func and not validation_func(value):
+            return None
+        return value
+    except (ValueError, TypeError):
+        return None
+
+
 def plant_seed():
     global FARM, MSG, MONEY
-    try:
-        pid = int(input("Введите ID растения для посадки (1-5): "))
-    except:
-        pid = -1
+
+    pid = get_valid_input(
+        "Введите ID растения для посадки (1-5): ",
+        int,
+        lambda x: 1 <= x <= 5
+    )
+    if pid is None:
+        MSG = "Неправильный ID."
+        return
+
     p = get_plant_by_id(pid)
     if not p:
         MSG = "Неправильный ID."
         return
-    try:
-        plot = int(input("В какую грядку (0-{}): ".format(MAX_PLOTS - 1)))
-    except:
-        plot = -1
-    if plot < 0 or plot >= MAX_PLOTS:
+
+    plot = get_valid_input(
+        "В какую грядку (0-{}): ".format(MAX_PLOTS - 1),
+        int,
+        lambda x: 0 <= x < MAX_PLOTS
+    )
+    if plot is None:
         MSG = "Неправильная грядка."
         return
+
     if FARM[plot]["state"] != "empty":
         MSG = "Грядка уже занята."
         return
-    cost = p["price"] * 0.5 + p["grow"] * 0.1
-    if MONEY < cost:
-        MSG = "Не хватает денег на семена (${:.2f} нужно).".format(cost)
-        return
-    MONEY -= cost
-    FARM[plot]["state"] = "planted"
-    FARM[plot]["plant"] = p
-    FARM[plot]["age"] = 0
-    FARM[plot]["watered"] = 0
-    MSG = "Посадили {} в грядку {} (стоимость ${:.2f}).".format(p["name"], plot, cost)
 
 
 def water_plot():
