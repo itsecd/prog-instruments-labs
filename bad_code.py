@@ -1,16 +1,15 @@
- import sys
-import re
-import pymorphy2
 import docx
+import pymorphy2
+import re
+import sys
 
-from PyQt5.QtWidgets import QLineEdit
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QPushButton
-from PyQt5 import QtMultimedia
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow
+from PyQt5 import QtCore, QtMultimedia, QtWidgets
+from PyQt5.QtCore import QSize, QUrl
+from PyQt5.QtGui import QFont, QIcon, QPixmap
+from PyQt5.QtWidgets import (
+    QApplication, QFileDialog, QLabel, QLineEdit, QListWidget,
+    QListWidgetItem, QMainWindow, QMessageBox, QPushButton, QWidget
+)
 
 SCREEN_SIZE = [300, 300, 335, 300]
 
@@ -23,24 +22,29 @@ class Example(QWidget):
     def initUI(self):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Instruction')
-        """прикрепление аудио файла"""
+
+        # Прикрепление аудио файла
         self.load_mp3('media.mp3')
-        """создание кнопки для воспроизведения аудио файла"""
+
+        # Создание кнопки для воспроизведения аудио файла
         self.playBtn = QPushButton('Воспроизвести', self)
         self.playBtn.resize(self.playBtn.sizeHint())
         self.playBtn.move(70, 180)
         self.playBtn.clicked.connect(self.player.play)
-        """создание кнопки для приостановки аудио файла"""
+
+        # Создание кнопки для приостановки аудио файла
         self.pauseBtn = QPushButton('Пауза', self)
         self.pauseBtn.resize(self.pauseBtn.sizeHint())
         self.pauseBtn.move(210, 180)
         self.pauseBtn.clicked.connect(self.player.pause)
-        """создание кнопки для выключения аудио файла"""
+
+        # Создание кнопки для выключения аудио файла
         self.stopBtn = QPushButton('Стоп', self)
         self.stopBtn.resize(self.stopBtn.sizeHint())
         self.stopBtn.move(70, 220)
         self.stopBtn.clicked.connect(self.player.stop)
-        """создание кнопки для перехода на следующую страницу"""
+
+        # Создание кнопки для перехода на следующую страницу
         self.btn = QPushButton('Дальше', self)
         self.btn.resize(self.btn.sizeHint())
         self.btn.move(210, 220)
@@ -73,7 +77,6 @@ class Example(QWidget):
         self.text_label.setText(" нажав на кнопку 'Воспроизвести'.")
         self.text_label.move(60, 120)
 
-
     def open_types_of_files_form(self):
         self.types_of_files_form = TypesOfFilesForm(self, "Данные для второй формы")
         self.types_of_files_form.show()
@@ -93,32 +96,37 @@ class TypesOfFilesForm(QWidget):
     def initUI(self, args):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager')
-        """создание кнопки для прикрепления word файла"""
+
+        # Создание кнопки для прикрепления word файла
         self.btn_word_file = QPushButton(self)
         self.btn_word_file.clicked.connect(self.wordForm)
         self.btn_word_file.setIcon(QIcon('word_file.jpg'))
         self.btn_word_file.move(170, 140)
         self.btn_word_file.setIconSize(QSize(100, 100))
-        """создание кнопки для прикрепления text файла"""
+
+        # Создание кнопки для прикрепления text файла
         self.btn_text_file = QPushButton(self)
         self.btn_text_file.clicked.connect(self.open_text_form)
         self.btn_text_file.setIcon(QIcon('text_file.jpg'))
         self.btn_text_file.move(30, 140)
         self.btn_text_file.setIconSize(QSize(100, 100))
+
         self.name_label = QLabel(self)
         self.name_label.setText("Выберите формат файла,")
         self.name_label.move(60, 90)
         self.name_label.setFont(QFont('Times New Roman', 10))
+
         self.name_label1 = QLabel(self)
         self.name_label1.setText("который хотите прикрепить.")
         self.name_label1.move(60, 105)
         self.name_label1.setFont(QFont('Times New Roman', 10))
+
         self.show()
 
     def wordForm(self):
         filename = QFileDialog.getOpenFileName(self, 'Load file', '', "Word File (*.docx)")
         name = filename[0]
-        """получение имени файла"""
+        # Получение имени файла
 
         self.text_input = ''
 
@@ -148,19 +156,24 @@ class TextForm(QWidget):
     def initUI(self, args):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Text file')
-        """создание кнопки для загрузки введенного текста"""
+
+        # Создание кнопки для загрузки введенного текста
         self.btn_download1 = QPushButton('Отправить', self)
         self.btn_download1.resize(self.btn_download1.sizeHint())
         self.btn_download1.move(100, 150)
         self.btn_download1.clicked.connect(self.open_question_form)
+
         self.label = QLabel(self)
         self.label.move(40, 30)
+
         self.text_label = QLabel(self)
         self.text_label.setText("Пожалуйста введите текст.")
         self.text_label.move(100, 90)
         self.text_label.setFont(QFont('Times New Roman', 10))
+
         self.text_input = QLineEdit(self)
         self.text_input.move(100, 110)
+
         self.lbl = QLabel(args[-1], self)
         self.lbl.adjustSize()
 
@@ -181,22 +194,28 @@ class QuestionForm(QWidget):
         self.text1 = str(length)
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Question Form')
-        """создание кнопки для загрузки введенного текста"""
+
+        # Создание кнопки для загрузки введенного текста
         self.btn_download2 = QPushButton('Отправить', self)
         self.btn_download2.resize(self.btn_download2.sizeHint())
         self.btn_download2.move(100, 150)
-        """если есть ответ навопрос то есть длина списа с ответами не равно 0"""
-        """тогда можно открывать класс вывода ответов иначе открыть класс"""
-        """в котором программа говорит о том что  совпадений нет"""
+
+        # Если есть ответ на вопрос то есть длина списка с ответами не равно 0
+        # тогда можно открывать класс вывода ответов иначе открыть класс
+        # в котором программа говорит о том что совпадений нет
         self.btn_download2.clicked.connect(self.open_analysis_form)
+
         self.label = QLabel(self)
         self.label.move(40, 30)
+
         self.text_label = QLabel(self)
         self.text_label.setText("Пожалуйста введите текст вопроса.")
         self.text_label.move(100, 90)
         self.text_label.setFont(QFont('Times New Roman', 10))
+
         self.question_input = QLineEdit(self)
         self.question_input.move(100, 110)
+
         self.lbl = QLabel(args[-1], self)
         self.lbl.adjustSize()
 
@@ -225,51 +244,53 @@ class AnalysisForm(QMainWindow):
         analysis_question = []
         analysis_question1 = []
         suggestions = []
-        """разбиение введенного текста для анализа 
-        и текста вопроса на предложения и слова путем создания вложенных списков"""
+
+        # Разбиение введенного текста для анализа
+        # и текста вопроса на предложения и слова путем создания вложенных списков
         split_regex = re.compile(r'[.|!|?|…]')
         for i in c:
             sentences = filter(lambda t: t, [t.strip() for t in split_regex.split(i)])
             for s in sentences:
-                """создание списка с предложениями для 
-                дальнейшего вывода слов в той форме в которой они были изначально"""
+                # Создание списка с предложениями для
+                # дальнейшего вывода слов в той форме в которой они были изначально
                 suggestions.append(s)
                 g = s.split()
                 for t in g:
                     res = morph.parse(t)[0]
-                    """во вложенные списки попадают только те части речи,
-                     которые не являются частицами, местоимениями, местоимениями, союзами, предлогами """
+                    # Во вложенные списки попадают только те части речи,
+                    # которые не являются частицами, местоимениями, местоимениями, союзами, предлогами
                     if ("CONJ" not in res.tag) and ("NPRO" not in res.tag) and ("PREP" not in res.tag) and (
                             "PRCL" not in res.tag):
-                        """причем слова изменются и попадают в список в начальной форме и внижнем регистре"""
+                        # Причем слова изменяются и попадают в список в начальной форме и в нижнем регистре
                         b.append((morph.parse(t)[0].normal_form).lower())
                         a.append(b)
                         b = []
                 if i == self.text:
-                    """вложенный список с текстом для анализа"""
+                    # Вложенный список с текстом для анализа
                     analysis_text.append(a)
                 if i == self.question:
-                    """вложенный список с вопросами"""
-                    """можно будет добавить возможность ввода сразу нескольких вопросов вместо одного"""
+                    # Вложенный список с вопросами
+                    # Можно будет добавить возможность ввода сразу нескольких вопросов вместо одного
                     analysis_question1.append(a)
                 a = []
         numbers = []
         for i in analysis_question1:
             for j in i:
                 analysis_question.append(''.join(j))
-        """сравниваются слова из введенного текста и слова из текста вопроса """
+
+        # Сравниваются слова из введенного текста и слова из текста вопроса
         for i in analysis_text:
             for j in i:
                 e = ''.join(j)
                 for k in analysis_question:
                     if k == e:
-                        """и добаляются индексы предложений в новый список"""
+                        # И добавляются индексы предложений в новый список
                         numbers.append(analysis_text.index(i))
                         continue
         numbers1 = []
         for i in numbers:
-            """если в предложении и вопросе 2 и больше одинаковых слов, 
-            то индексы этих предложений попадают в новый список """
+            # Если в предложении и вопросе 2 и больше одинаковых слов,
+            # то индексы этих предложений попадают в новый список
             if numbers.count(i) >= 2:
                 numbers1.append(i)
         numbers2 = []
@@ -282,7 +303,8 @@ class AnalysisForm(QMainWindow):
                 (((str((suggestions[int(i)]))).replace("['", "")).replace("'],", "")).replace("']]", "")).replace(
                 "[", "")
             self.text_output.append(text_output1)
-        """запись результатов в файл"""
+
+        # Запись результатов в файл
         f = open("text manager answer.txt", 'w')
         for i in self.text_output:
             f.write(i + '\n')
@@ -290,9 +312,10 @@ class AnalysisForm(QMainWindow):
         f = open("text manager answer.txt", 'r')
         print(f.read())
         f.close()
-        """добавление предложений в список результатов"""
+
+        # Добавление предложений в список результатов
         if self.text_output == []:
-            """если результаты есть то открывается одна форма если нет то другая"""
+            # Если результаты есть то открывается одна форма если нет то другая
             self.open_bad_result_form()
         else:
             self.open_result_form()
