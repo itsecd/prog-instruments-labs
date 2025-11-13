@@ -284,7 +284,7 @@ class AnalysisForm(QMainWindow):
         self.question_text = args[3]
         morph = pymorphy2.MorphAnalyzer()
 
-        # Очистка текста
+        # Очистка текста от запятых
         self.text_content = self.text_content.replace(',', '')
 
         analysis_data = self._prepare_analysis_data(morph)
