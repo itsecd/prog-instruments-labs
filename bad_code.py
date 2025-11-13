@@ -24,16 +24,16 @@ from PyQt5.QtWidgets import (
 
 # Константы приложения
 SCREEN_SIZE = [300, 300, 335, 300]
-ANSWER_FILE_NAME = "text_manager_answer.txt"
-AUDIO_FILE_NAME = "media.mp3"
-WORD_ICON_FILE = "word_file.jpg"
-TEXT_ICON_FILE = "text_file.jpg"
-BACKGROUND_IMAGE_FILE = "text.jpg"
+ANSWER_FILE_NAME = 'text_manager_answer.txt'
+AUDIO_FILE_NAME = 'media.mp3'
+WORD_ICON_FILE = 'word_file.jpg'
+TEXT_ICON_FILE = 'text_file.jpg'
+BACKGROUND_IMAGE_FILE = 'text.jpg'
 
 FONT_FAMILY = 'Times New Roman'
 FONT_SIZE = 10
 
-WORD_FILE_FILTER = "Word File (*.docx)"
+WORD_FILE_FILTER = 'Word File (*.docx)'
 FILE_ENCODING = 'utf-8'
 
 
@@ -80,12 +80,12 @@ class Example(QWidget):
     def create_instruction_labels(self):
         """Создает текстовые метки с инструкцией для пользователя."""
         labels_data = [
-            ("Вас приветствует Text manager.", 70, 20),
-            ("Text manager - это программа для анализа содержания", 10, 40),
-            ("текста и поиска ответа на заданный вами вопрос.", 10, 60),
-            ("Чтобы получше познакомится с функциями Text manager,", 10, 80),
-            (" вы можите прослушать аудиоинструкцию,", 40, 100),
-            (" нажав на кнопку 'Воспроизвести'.", 60, 120)
+            ('Вас приветствует Text manager.', 70, 20),
+            ('Text manager - это программа для анализа содержания', 10, 40),
+            ('текста и поиска ответа на заданный вами вопрос.', 10, 60),
+            ('Чтобы получше познакомится с функциями Text manager,', 10, 80),
+            (' вы можите прослушать аудиоинструкцию,', 40, 100),
+            (' нажав на кнопку "Воспроизвести".', 60, 120)
         ]
 
         for text, x, y in labels_data:
@@ -96,7 +96,7 @@ class Example(QWidget):
 
     def open_types_of_files_form(self):
         """Открывает форму выбора типа файла."""
-        self.types_of_files_form = TypesOfFilesForm(self, "Данные для второй формы")
+        self.types_of_files_form = TypesOfFilesForm(self, 'Данные для второй формы')
         self.types_of_files_form.show()
 
     def load_mp3(self, filename):
@@ -147,12 +147,12 @@ class TypesOfFilesForm(QWidget):
     def create_info_labels(self):
         """Создает информационные метки формы."""
         self.name_label = QLabel(self)
-        self.name_label.setText("Выберите формат файла,")
+        self.name_label.setText('Выберите формат файла,')
         self.name_label.move(60, 90)
         self.name_label.setFont(QFont(FONT_FAMILY, FONT_SIZE))
 
         self.name_label_second = QLabel(self)
-        self.name_label_second.setText("который хотите прикрепить.")
+        self.name_label_second.setText('который хотите прикрепить.')
         self.name_label_second.move(60, 105)
         self.name_label_second.setFont(QFont(FONT_FAMILY, FONT_SIZE))
 
@@ -170,18 +170,18 @@ class TypesOfFilesForm(QWidget):
             for paragraph in doc.paragraphs:
                 self.text_input += paragraph.text
         else:
-            QMessageBox.warning(self, 'Error', "Файл не выбран.")
+            QMessageBox.warning(self, 'Error', 'Файл не выбран.')
 
         self.open_question_form()
 
     def open_question_form(self):
         """Открывает форму для ввода вопроса."""
-        self.question_form = QuestionForm(self, "", self.text_input)
+        self.question_form = QuestionForm(self, '', self.text_input)
         self.question_form.show()
 
     def open_text_form(self):
         """Открывает форму для ввода текста."""
-        self.text_form = TextForm(self, "")
+        self.text_form = TextForm(self, '')
         self.text_form.show()
 
 
@@ -205,7 +205,7 @@ class TextForm(QWidget):
         self.submit_btn.clicked.connect(self.open_question_form)
 
         self.text_label = QLabel(self)
-        self.text_label.setText("Пожалуйста введите текст.")
+        self.text_label.setText('Пожалуйста введите текст.')
         self.text_label.move(100, 90)
         self.text_label.setFont(QFont(FONT_FAMILY, FONT_SIZE))
 
@@ -217,7 +217,7 @@ class TextForm(QWidget):
 
     def open_question_form(self):
         """Открывает форму для ввода вопроса с переданным текстом."""
-        self.question_form = QuestionForm(self, "", self.text_input.text())
+        self.question_form = QuestionForm(self, '', self.text_input.text())
         self.question_form.show()
 
 
@@ -244,7 +244,7 @@ class QuestionForm(QWidget):
         self.submit_btn.clicked.connect(self.open_analysis_form)
 
         self.text_label = QLabel(self)
-        self.text_label.setText("Пожалуйста введите текст вопроса.")
+        self.text_label.setText('Пожалуйста введите текст вопроса.')
         self.text_label.move(100, 90)
         self.text_label.setFont(QFont(FONT_FAMILY, FONT_SIZE))
 
@@ -257,7 +257,9 @@ class QuestionForm(QWidget):
     def open_analysis_form(self):
         """Открывает форму анализа текста с вопросом."""
         question_text = self.question_input.text()
-        self.analysis_form = AnalysisForm(self, "", self.additional_label.text(), question_text)
+        self.analysis_form = AnalysisForm(
+            self, '', self.additional_label.text(), question_text
+        )
         self.analysis_form.show()
 
 
@@ -313,7 +315,9 @@ class AnalysisForm(QMainWindow):
         original_sentences = []
 
         for text in texts_to_analyze:
-            sentences = filter(lambda t: t, [t.strip() for t in split_regex.split(text)])
+            sentences = filter(
+                lambda t: t, [t.strip() for t in split_regex.split(text)]
+            )
 
             for sentence in sentences:
                 original_sentences.append(sentence)
@@ -348,10 +352,10 @@ class AnalysisForm(QMainWindow):
             bool: True если слово значимое, False если служебное
         """
         return (
-                "CONJ" not in parsed_word.tag and
-                "NPRO" not in parsed_word.tag and
-                "PREP" not in parsed_word.tag and
-                "PRCL" not in parsed_word.tag
+            'CONJ' not in parsed_word.tag and
+            'NPRO' not in parsed_word.tag and
+            'PREP' not in parsed_word.tag and
+            'PRCL' not in parsed_word.tag
         )
 
     def _find_matching_sentences(self, analysis_data):
@@ -395,7 +399,9 @@ class AnalysisForm(QMainWindow):
         result_sentences = []
         for index in unique_significant_matches:
             if index < len(original_sentences):
-                cleaned_sentence = self._clean_sentence_text(str(original_sentences[index]))
+                cleaned_sentence = self._clean_sentence_text(
+                    str(original_sentences[index])
+                )
                 result_sentences.append(cleaned_sentence)
 
         return result_sentences
@@ -410,7 +416,7 @@ class AnalysisForm(QMainWindow):
         Returns:
             str: Очищенное предложение
         """
-        return sentence.replace("['", "").replace("'],", "").replace("']]", "").replace("[", "")
+        return sentence.replace("['", '').replace("'],", '').replace("']]", '').replace('[', '')
 
     def _save_results(self, sentences):
         """
@@ -428,12 +434,12 @@ class AnalysisForm(QMainWindow):
 
     def open_result_form(self, sentences):
         """Открывает форму с результатами поиска."""
-        self.result_form = ResultForm(self, "", sentences)
+        self.result_form = ResultForm(self, '', sentences)
         self.result_form.show()
 
     def open_bad_result_form(self):
         """Открывает форму с сообщением об отсутствии результатов."""
-        self.bad_result_form = BadResultForm(self, "")
+        self.bad_result_form = BadResultForm(self, '')
         self.bad_result_form.show()
 
 
@@ -444,7 +450,7 @@ class ResultForm(QMainWindow):
         """Инициализирует форму результатов."""
         super().__init__()
         self.init_ui(args)
-        self.text_output = ""
+        self.text_output = ''
 
     def init_ui(self, args):
         """Настраивает пользовательский интерфейс формы результатов."""
@@ -487,10 +493,10 @@ class BadResultForm(QWidget):
         self.setWindowTitle('Text manager Bad Answer')
 
         messages = [
-            "К сожалению результатов по вашему запросу ",
-            "не найдено. Попробуйте еще раз сформулировав",
-            "более точный вопрос или приложите больше",
-            "информации для поиска."
+            'К сожалению результатов по вашему запросу ',
+            'не найдено. Попробуйте еще раз сформулировав',
+            'более точный вопрос или приложите больше',
+            'информации для поиска.'
         ]
 
         y_position = 90
