@@ -1,17 +1,40 @@
-import docx
-import pymorphy2
+# Стандартные библиотеки
 import re
 import sys
 
+# Сторонние библиотеки
+import docx
+import pymorphy2
 from PyQt5 import QtCore, QtMultimedia, QtWidgets
 from PyQt5.QtCore import QSize, QUrl
 from PyQt5.QtGui import QFont, QIcon, QPixmap
 from PyQt5.QtWidgets import (
-    QApplication, QFileDialog, QLabel, QLineEdit, QListWidget,
-    QListWidgetItem, QMainWindow, QMessageBox, QPushButton, QWidget
+    QApplication,
+    QFileDialog,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QMainWindow,
+    QMessageBox,
+    QPushButton,
+    QWidget
 )
 
+
+# Константы приложения
 SCREEN_SIZE = [300, 300, 335, 300]
+ANSWER_FILE_NAME = "text_manager_answer.txt"
+AUDIO_FILE_NAME = "media.mp3"
+WORD_ICON_FILE = "word_file.jpg"
+TEXT_ICON_FILE = "text_file.jpg"
+BACKGROUND_IMAGE_FILE = "text.jpg"
+
+FONT_FAMILY = 'Times New Roman'
+FONT_SIZE = 10
+
+WORD_FILE_FILTER = "Word File (*.docx)"
+FILE_ENCODING = 'utf-8'
 
 
 class Example(QWidget):
@@ -28,8 +51,12 @@ class Example(QWidget):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager Instruction')
 
-        self.load_mp3('media.mp3')
+        self.load_mp3(AUDIO_FILE_NAME)
+        self.create_buttons()
+        self.create_instruction_labels()
 
+    def create_buttons(self):
+        """Создает кнопки управления для главного окна."""
         self.play_btn = QPushButton('Воспроизвести', self)
         self.play_btn.resize(self.play_btn.sizeHint())
         self.play_btn.move(70, 180)
@@ -50,8 +77,6 @@ class Example(QWidget):
         self.next_btn.move(210, 220)
         self.next_btn.clicked.connect(self.open_types_of_files_form)
 
-        self.create_instruction_labels()
-
     def create_instruction_labels(self):
         """Создает текстовые метки с инструкцией для пользователя."""
         labels_data = [
@@ -65,7 +90,7 @@ class Example(QWidget):
 
         for text, x, y in labels_data:
             label = QLabel(self)
-            label.setFont(QFont('Times New Roman', 10))
+            label.setFont(QFont(FONT_FAMILY, FONT_SIZE))
             label.setText(text)
             label.move(x, y)
 
@@ -101,34 +126,40 @@ class TypesOfFilesForm(QWidget):
         self.setGeometry(*SCREEN_SIZE)
         self.setWindowTitle('Text manager')
 
+        self.create_file_buttons()
+        self.create_info_labels()
+        self.show()
+
+    def create_file_buttons(self):
+        """Создает кнопки для выбора типа файла."""
         self.btn_word_file = QPushButton(self)
         self.btn_word_file.clicked.connect(self.process_word_file)
-        self.btn_word_file.setIcon(QIcon('word_file.jpg'))
+        self.btn_word_file.setIcon(QIcon(WORD_ICON_FILE))
         self.btn_word_file.move(170, 140)
         self.btn_word_file.setIconSize(QSize(100, 100))
 
         self.btn_text_file = QPushButton(self)
         self.btn_text_file.clicked.connect(self.open_text_form)
-        self.btn_text_file.setIcon(QIcon('text_file.jpg'))
+        self.btn_text_file.setIcon(QIcon(TEXT_ICON_FILE))
         self.btn_text_file.move(30, 140)
         self.btn_text_file.setIconSize(QSize(100, 100))
 
+    def create_info_labels(self):
+        """Создает информационные метки формы."""
         self.name_label = QLabel(self)
         self.name_label.setText("Выберите формат файла,")
         self.name_label.move(60, 90)
-        self.name_label.setFont(QFont('Times New Roman', 10))
+        self.name_label.setFont(QFont(FONT_FAMILY, FONT_SIZE))
 
         self.name_label_second = QLabel(self)
         self.name_label_second.setText("который хотите прикрепить.")
         self.name_label_second.move(60, 105)
-        self.name_label_second.setFont(QFont('Times New Roman', 10))
-
-        self.show()
+        self.name_label_second.setFont(QFont(FONT_FAMILY, FONT_SIZE))
 
     def process_word_file(self):
         """Обрабатывает выбор и загрузку Word файла."""
         filename = QFileDialog.getOpenFileName(
-            self, 'Load file', '', "Word File (*.docx)"
+            self, 'Load file', '', WORD_FILE_FILTER
         )
         file_path = filename[0]
 
@@ -176,7 +207,7 @@ class TextForm(QWidget):
         self.text_label = QLabel(self)
         self.text_label.setText("Пожалуйста введите текст.")
         self.text_label.move(100, 90)
-        self.text_label.setFont(QFont('Times New Roman', 10))
+        self.text_label.setFont(QFont(FONT_FAMILY, FONT_SIZE))
 
         self.text_input = QLineEdit(self)
         self.text_input.move(100, 110)
@@ -215,7 +246,7 @@ class QuestionForm(QWidget):
         self.text_label = QLabel(self)
         self.text_label.setText("Пожалуйста введите текст вопроса.")
         self.text_label.move(100, 90)
-        self.text_label.setFont(QFont('Times New Roman', 10))
+        self.text_label.setFont(QFont(FONT_FAMILY, FONT_SIZE))
 
         self.question_input = QLineEdit(self)
         self.question_input.move(100, 110)
@@ -388,11 +419,11 @@ class AnalysisForm(QMainWindow):
         Args:
             sentences (list): Список релевантных предложений
         """
-        with open("text_manager_answer.txt", 'w', encoding='utf-8') as file:
+        with open(ANSWER_FILE_NAME, 'w', encoding=FILE_ENCODING) as file:
             for sentence in sentences:
                 file.write(sentence + '\n')
 
-        with open("text_manager_answer.txt", 'r', encoding='utf-8') as file:
+        with open(ANSWER_FILE_NAME, 'r', encoding=FILE_ENCODING) as file:
             print(file.read())
 
     def open_result_form(self, sentences):
@@ -422,7 +453,7 @@ class ResultForm(QMainWindow):
         self.setWindowTitle('Text manager Good Answer')
 
         # Установка фонового изображения
-        self.pixmap = QPixmap('text.jpg')
+        self.pixmap = QPixmap(BACKGROUND_IMAGE_FILE)
         self.image = QLabel(self)
         self.image.move(30, 0)
         self.image.resize(400, 30)
