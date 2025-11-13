@@ -18,7 +18,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPushButton,
-    QWidget
+    QWidget,
 )
 
 
@@ -57,25 +57,18 @@ class Example(QWidget):
 
     def create_buttons(self):
         """Создает кнопки управления для главного окна."""
-        self.play_btn = QPushButton('Воспроизвести', self)
-        self.play_btn.resize(self.play_btn.sizeHint())
-        self.play_btn.move(70, 180)
-        self.play_btn.clicked.connect(self.player.play)
+        button_configs = [
+            ('Воспроизвести', 70, 180, self.player.play),
+            ('Пауза', 210, 180, self.player.pause),
+            ('Стоп', 70, 220, self.player.stop),
+            ('Дальше', 210, 220, self.open_types_of_files_form),
+        ]
 
-        self.pause_btn = QPushButton('Пауза', self)
-        self.pause_btn.resize(self.pause_btn.sizeHint())
-        self.pause_btn.move(210, 180)
-        self.pause_btn.clicked.connect(self.player.pause)
-
-        self.stop_btn = QPushButton('Стоп', self)
-        self.stop_btn.resize(self.stop_btn.sizeHint())
-        self.stop_btn.move(70, 220)
-        self.stop_btn.clicked.connect(self.player.stop)
-
-        self.next_btn = QPushButton('Дальше', self)
-        self.next_btn.resize(self.next_btn.sizeHint())
-        self.next_btn.move(210, 220)
-        self.next_btn.clicked.connect(self.open_types_of_files_form)
+        for text, x, y, slot in button_configs:
+            button = QPushButton(text, self)
+            button.resize(button.sizeHint())
+            button.move(x, y)
+            button.clicked.connect(slot)
 
     def create_instruction_labels(self):
         """Создает текстовые метки с инструкцией для пользователя."""
@@ -85,7 +78,7 @@ class Example(QWidget):
             ('текста и поиска ответа на заданный вами вопрос.', 10, 60),
             ('Чтобы получше познакомится с функциями Text manager,', 10, 80),
             (' вы можите прослушать аудиоинструкцию,', 40, 100),
-            (' нажав на кнопку "Воспроизвести".', 60, 120)
+            (' нажав на кнопку "Воспроизвести".', 60, 120),
         ]
 
         for text, x, y in labels_data:
@@ -96,7 +89,9 @@ class Example(QWidget):
 
     def open_types_of_files_form(self):
         """Открывает форму выбора типа файла."""
-        self.types_of_files_form = TypesOfFilesForm(self, 'Данные для второй формы')
+        self.types_of_files_form = TypesOfFilesForm(
+            self, 'Данные для второй формы'
+        )
         self.types_of_files_form.show()
 
     def load_mp3(self, filename):
@@ -132,29 +127,30 @@ class TypesOfFilesForm(QWidget):
 
     def create_file_buttons(self):
         """Создает кнопки для выбора типа файла."""
-        self.btn_word_file = QPushButton(self)
-        self.btn_word_file.clicked.connect(self.process_word_file)
-        self.btn_word_file.setIcon(QIcon(WORD_ICON_FILE))
-        self.btn_word_file.move(170, 140)
-        self.btn_word_file.setIconSize(QSize(100, 100))
+        button_configs = [
+            (WORD_ICON_FILE, 170, 140, self.process_word_file),
+            (TEXT_ICON_FILE, 30, 140, self.open_text_form),
+        ]
 
-        self.btn_text_file = QPushButton(self)
-        self.btn_text_file.clicked.connect(self.open_text_form)
-        self.btn_text_file.setIcon(QIcon(TEXT_ICON_FILE))
-        self.btn_text_file.move(30, 140)
-        self.btn_text_file.setIconSize(QSize(100, 100))
+        for icon_file, x, y, slot in button_configs:
+            button = QPushButton(self)
+            button.clicked.connect(slot)
+            button.setIcon(QIcon(icon_file))
+            button.move(x, y)
+            button.setIconSize(QSize(100, 100))
 
     def create_info_labels(self):
         """Создает информационные метки формы."""
-        self.name_label = QLabel(self)
-        self.name_label.setText('Выберите формат файла,')
-        self.name_label.move(60, 90)
-        self.name_label.setFont(QFont(FONT_FAMILY, FONT_SIZE))
+        label_texts = [
+            ('Выберите формат файла,', 60, 90),
+            ('который хотите прикрепить.', 60, 105),
+        ]
 
-        self.name_label_second = QLabel(self)
-        self.name_label_second.setText('который хотите прикрепить.')
-        self.name_label_second.move(60, 105)
-        self.name_label_second.setFont(QFont(FONT_FAMILY, FONT_SIZE))
+        for text, x, y in label_texts:
+            label = QLabel(self)
+            label.setText(text)
+            label.move(x, y)
+            label.setFont(QFont(FONT_FAMILY, FONT_SIZE))
 
     def process_word_file(self):
         """Обрабатывает выбор и загрузку Word файла."""
@@ -299,7 +295,9 @@ class AnalysisForm(QMainWindow):
 
     def _prepare_analysis_data(self, morph):
         """
-        Подготавливает данные для анализа: нормализует слова и разбивает на предложения.
+        Подготавливает данные для анализа.
+
+        Нормализует слова и разбивает на предложения.
 
         Args:
             morph: Морфологический анализатор pymorphy2
@@ -321,14 +319,9 @@ class AnalysisForm(QMainWindow):
 
             for sentence in sentences:
                 original_sentences.append(sentence)
-                words = sentence.split()
-                normalized_words = []
-
-                for word in words:
-                    parsed_word = morph.parse(word)[0]
-                    if self._is_content_word(parsed_word):
-                        normalized_form = parsed_word.normal_form.lower()
-                        normalized_words.append([normalized_form])
+                normalized_words = self._normalize_sentence_words(
+                    sentence, morph
+                )
 
                 if text == self.text_content:
                     analysis_text.append(normalized_words)
@@ -338,12 +331,34 @@ class AnalysisForm(QMainWindow):
         return {
             'analysis_text': analysis_text,
             'analysis_question': analysis_question,
-            'original_sentences': original_sentences
+            'original_sentences': original_sentences,
         }
+
+    def _normalize_sentence_words(self, sentence, morph):
+        """
+        Нормализует слова в предложении.
+
+        Args:
+            sentence (str): Предложение для обработки
+            morph: Морфологический анализатор
+
+        Returns:
+            list: Список нормализованных слов
+        """
+        words = sentence.split()
+        normalized_words = []
+
+        for word in words:
+            parsed_word = morph.parse(word)[0]
+            if self._is_content_word(parsed_word):
+                normalized_form = parsed_word.normal_form.lower()
+                normalized_words.append([normalized_form])
+
+        return normalized_words
 
     def _is_content_word(self, parsed_word):
         """
-        Проверяет, является ли слово значимым (не служебной частью речи).
+        Проверяет, является ли слово значимым.
 
         Args:
             parsed_word: Результат морфологического разбора слова
@@ -351,12 +366,8 @@ class AnalysisForm(QMainWindow):
         Returns:
             bool: True если слово значимое, False если служебное
         """
-        return (
-            'CONJ' not in parsed_word.tag and
-            'NPRO' not in parsed_word.tag and
-            'PREP' not in parsed_word.tag and
-            'PRCL' not in parsed_word.tag
-        )
+        excluded_tags = {'CONJ', 'NPRO', 'PREP', 'PRCL'}
+        return not any(tag in parsed_word.tag for tag in excluded_tags)
 
     def _find_matching_sentences(self, analysis_data):
         """
@@ -372,38 +383,84 @@ class AnalysisForm(QMainWindow):
         analysis_question = analysis_data['analysis_question']
         original_sentences = analysis_data['original_sentences']
 
-        # Преобразуем вложенные списки в плоский список слов вопроса
+        question_words = self._extract_question_words(analysis_question)
+        matching_indices = self._find_matching_indices(
+            analysis_text, question_words
+        )
+        significant_matches = self._filter_significant_matches(matching_indices)
+        return self._build_result_sentences(
+            significant_matches, original_sentences
+        )
+
+    def _extract_question_words(self, analysis_question):
+        """
+        Извлекает слова из вопроса.
+
+        Args:
+            analysis_question (list): Обработанные данные вопроса
+
+        Returns:
+            list: Список слов вопроса
+        """
         question_words = []
         for sentence_words in analysis_question:
             for word_list in sentence_words:
                 question_words.append(''.join(word_list))
+        return question_words
 
-        # Находим индексы предложений с совпадениями
+    def _find_matching_indices(self, analysis_text, question_words):
+        """
+        Находит индексы предложений с совпадениями.
+
+        Args:
+            analysis_text (list): Обработанные данные текста
+            question_words (list): Слова вопроса
+
+        Returns:
+            list: Индексы совпадающих предложений
+        """
         matching_indices = []
         for i, sentence_words in enumerate(analysis_text):
             for word_list in sentence_words:
                 word = ''.join(word_list)
                 if word in question_words:
                     matching_indices.append(i)
+        return matching_indices
 
-        # Фильтруем предложения с несколькими совпадениями
+    def _filter_significant_matches(self, matching_indices):
+        """
+        Фильтрует значимые совпадения.
+
+        Args:
+            matching_indices (list): Индексы совпадающих предложений
+
+        Returns:
+            list: Уникальные индексы значимых совпадений
+        """
         significant_matches = []
         for index in matching_indices:
             if matching_indices.count(index) >= 2:
                 significant_matches.append(index)
+        return list(set(significant_matches))
 
-        # Убираем дубликаты
-        unique_significant_matches = list(set(significant_matches))
+    def _build_result_sentences(self, significant_matches, original_sentences):
+        """
+        Формирует итоговые предложения.
 
-        # Формируем результат
+        Args:
+            significant_matches (list): Индексы значимых предложений
+            original_sentences (list): Оригинальные предложения
+
+        Returns:
+            list: Очищенные релевантные предложения
+        """
         result_sentences = []
-        for index in unique_significant_matches:
+        for index in significant_matches:
             if index < len(original_sentences):
                 cleaned_sentence = self._clean_sentence_text(
                     str(original_sentences[index])
                 )
                 result_sentences.append(cleaned_sentence)
-
         return result_sentences
 
     def _clean_sentence_text(self, sentence):
@@ -416,7 +473,16 @@ class AnalysisForm(QMainWindow):
         Returns:
             str: Очищенное предложение
         """
-        return sentence.replace("['", '').replace("'],", '').replace("']]", '').replace('[', '')
+        replacements = [
+            ("['", ''),
+            ("'],", ''),
+            ("']]", ''),
+            ('[', ''),
+        ]
+
+        for old, new in replacements:
+            sentence = sentence.replace(old, new)
+        return sentence
 
     def _save_results(self, sentences):
         """
@@ -496,7 +562,7 @@ class BadResultForm(QWidget):
             'К сожалению результатов по вашему запросу ',
             'не найдено. Попробуйте еще раз сформулировав',
             'более точный вопрос или приложите больше',
-            'информации для поиска.'
+            'информации для поиска.',
         ]
 
         y_position = 90
