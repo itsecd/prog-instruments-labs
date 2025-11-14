@@ -203,13 +203,13 @@ def status_msgs(*msgs):
 
 def compiler_test(
     compiler,
-    flagname=None,
-    link_executable=False,
-    link_shared_lib=False,
-    include='',
-    body='',
-    compile_postargs=None,
-    link_postargs=None,
+    flagname = None,
+    link_executable = False,
+    link_shared_lib = False,
+    include = '',
+    body = '',
+    compile_postargs = None,
+    link_postargs = None,
 ):  # pylint: disable=too-many-arguments,too-many-branches
     """Return a boolean indicating whether a flag name is supported
      on the specified compiler."""
