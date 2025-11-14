@@ -44,3 +44,18 @@ def test_get_key_symb_param(key, index, expected):
 )
 def test_get_encrypted_symb_basic(old_sym, key_sym, expected):
     assert vmodule.get_encrypted_symb(old_sym, key_sym) == expected
+
+
+@pytest.mark.parametrize(
+    "encrypted_sym, key_sym, expected",
+    [
+        ("б", "б", "а"),
+        ("Б", "б", "А"),
+        ("!", "б", "!"),
+        ("х", "ю", "ч"),
+        ("Ь", "я", "Э"),
+        (" ", "е", " ")
+    ]
+)
+def test_get_decrypted_symb_basic(encrypted_sym, key_sym, expected):
+    assert vmodule.get_decrypted_symb(encrypted_sym, key_sym) == expected
