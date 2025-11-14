@@ -1,5 +1,7 @@
-import pandas as pd
 import re
+
+import pandas as pd
+
 
 def find_invalid_rows(df: pd.DataFrame, patterns: dict) -> list:
     """

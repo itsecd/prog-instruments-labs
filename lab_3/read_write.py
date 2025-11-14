@@ -1,6 +1,7 @@
+import json
+
 import pandas
 import pandas as pd
-import json
 
 
 def read_csv(csv_path: str) -> pandas.DataFrame:
