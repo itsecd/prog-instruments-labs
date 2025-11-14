@@ -4,11 +4,19 @@
 # A mini-framework for autograding
 ################################################################################
 
+import contextlib
 import optparse
-import pickle
-import random
 import sys
+import time
 import traceback
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+import backend
+import models
+import nn
+
 
 class WritableNull:
     def write(self, string):
@@ -98,7 +106,6 @@ class Tracker(object):
         self.possible_points_remaining = None
 
     def finalize(self):
-        import time
         print('\nFinished at %d:%02d:%02d' % time.localtime()[3:6])
         print("\nProvisional grades\n==================")
 
@@ -223,16 +230,8 @@ def main():
 # Tests begin here
 ################################################################################
 
-import numpy as np
-import matplotlib
-import contextlib
-
-import nn
-import backend
 
 def check_dependencies():
-    import matplotlib.pyplot as plt
-    import time
     fig, ax = plt.subplots(1, 1)
     ax.set_xlim([-1, 1])
     ax.set_ylim([-1, 1])
@@ -304,7 +303,6 @@ def trace_node(node_to_trace):
 
 @test('q1', points=6)
 def check_perceptron(tracker):
-    import models
 
     print("Sanity checking perceptron...")
     np_random = np.random.RandomState(0)
@@ -406,7 +404,6 @@ def check_perceptron(tracker):
 
 @test('q2', points=6)
 def check_regression(tracker):
-    import models
     model = models.RegressionModel()
     dataset = backend.RegressionDataset(model)
 
@@ -469,7 +466,6 @@ def check_regression(tracker):
 
 @test('q3', points=6)
 def check_digit_classification(tracker):
-    import models
     model = models.DigitClassificationModel()
     dataset = backend.DigitClassificationDataset(model)
 
@@ -519,7 +515,6 @@ def check_digit_classification(tracker):
 
 @test('q4', points=7)
 def check_lang_id(tracker):
-    import models
     model = models.LanguageIDModel()
     dataset = backend.LanguageIDDataset(model)
 
