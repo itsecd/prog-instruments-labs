@@ -6,7 +6,7 @@ on:
     branches:
       - 'main'
     paths:
-      - 'lab_6/**'
+      - 'lab_6/test_lab_6.py'
 
 permissions:
   contents: read
