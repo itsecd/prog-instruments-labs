@@ -164,8 +164,6 @@ except ImportError:
 
 # ==================================================================
 # Helper functions and classes
-
-
 class Pybind11Include:  # pylint: disable=too-few-public-methods
     """
     Helper class to determine the pybind11 include path.
@@ -283,9 +281,6 @@ def _fix_macosx_header_paths(*args):
                                                   _MACOSX_XCODE_REF_PATH)
 
 
-# =====================================================================
-
-
 class BuildFailed(Exception):
     """Extension raised if the build fails for any reason."""
 
@@ -323,8 +318,6 @@ ext_modules = [
         language='c++',
     ),
 ]
-
-# ================================================================
 
 
 class BuildExt(build_ext):
@@ -683,9 +676,6 @@ class BuildExt(build_ext):
         self.compiler.linker_so.extend(flags)
 
 
-# ------------------------------------------------------------------
-
-
 class ClangTidy(Command):
     """A custom command to run Clang-Tidy on all C/C++ source files."""
 
@@ -730,9 +720,6 @@ class ClangTidy(Command):
         for ext in self.distribution.ext_modules:
             command.extend(os.path.abspath(p) for p in ext.sources)
         spawn(command, dry_run=self.dry_run)
-
-
-# -----------------------------------------------------------
 
 
 class GenerateRequirementFile(Command):
@@ -781,9 +768,6 @@ class GenerateRequirementFile(Command):
                 req_file.write(f'{pkg}\n')
 
 
-# ---------------------------------------------------------------
-
-
 class Distribution(_Distribution):
     """Distribution class."""
 
@@ -801,9 +785,6 @@ class Distribution(_Distribution):
         # build output is
         # platform specific.
         return True
-
-
-# ==============================================================
 
 
 def run_setup(with_cext):
