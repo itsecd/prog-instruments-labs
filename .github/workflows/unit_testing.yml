@@ -1,0 +1,47 @@
+name: Unit testing for lab 6
+
+on:
+  pull_request_target:
+    types: [assigned, opened, synchronize, reopened]
+    branches:
+      - 'main'
+    paths:
+      - 'lab_6/**'
+      
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout your fork
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+        
+    - name: Set env path
+      run: |
+        export PYTHONPATH=.:$PYTHONPATH:lab_6/
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f lab_6/requirements.txt ]; then pip install -r lab_6/requirements.txt; fi
+        pip install pytest
+        pip install coverage
+             
+    - name: Run tests
+      run: |
+       coverage run -m pytest
+
+    - name: Calculate code coverage
+      run: |
+       coverage report
