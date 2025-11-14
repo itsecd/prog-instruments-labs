@@ -92,3 +92,19 @@ def test_vigenere_cipher_encrypt_with_mock():
         encrypted = vmodule.vigenere_cipher_encrypt(text, key)
         assert encrypted == text
         assert mock_func.call_count == len(text)
+
+
+def test_vigenere_cipher_encrypt_symb():
+    text = ("Альберт Эйнштейн — швейцарский, немецкий и американский"
+            " физик-теоретик и общественный деятель-гуманист, один из"
+            " основателей современной теоретической физики. Лауреат Нобелевской"
+            " премии по физике 1921 года.")
+    key = "фильм"
+
+    def stub(old_sym, key_sym):
+        return "*"
+
+    with patch("vigenere.get_encrypted_symb", side_effect=stub):
+        encrypted = vmodule.vigenere_cipher_encrypt(text, key)
+
+    assert encrypted == "*" * len(text)
