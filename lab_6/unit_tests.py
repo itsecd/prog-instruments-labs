@@ -9,6 +9,7 @@ sys.path.append('.')
 from lab_6 import AnalysisConfig, totalServed, negativeCount, negativeShare
 from lab_6 import _filter_negative_themes, _extract_negative_theme_details, _get_negative_themes_with_details
 from lab_6 import csiIndex
+from lab_6 import arpuSegments, arpuNegativeThemes
 
 class TestAnalysisConfig:
     """Тесты для класса конфигурации"""
@@ -166,3 +167,52 @@ class TestBasicMetrics:
             result = csiIndex(test_data)
             assert expected_range[0] <= result <= expected_range[1]
 
+
+class TestARPUFunctions:
+    """Тесты для функций работы с ARPU сегментами"""
+
+    @pytest.fixture
+    def arpu_data(self):
+        """Фикстура с данными для тестирования ARPU"""
+        return pd.DataFrame({
+            'Тема обращения': [
+                'Недовольство/Качество', 'Недовольство/Тарифы', 'Поддержка',
+                'Недовольство/Обслуживание', 'Консультация', 'Недовольство/Качество'
+            ],
+            'ARPU': ['B2C Low', 'B2C Mid', 'B2C Low', 'VIP', 'VIP adv', 'Platinum']
+        })
+
+
+    def test_arpu_segments(self, arpu_data):
+        """Тест подсчета обращений по ARPU сегментам"""
+        result = arpuSegments(arpu_data)
+
+        # Проверяем что все ожидаемые ключи присутствуют
+        expected_keys = [
+            'negative_b2c_low', 'total_b2c_low',
+            'negative_b2c_mid', 'total_b2c_mid',
+            'negative_vip', 'total_vip',
+            'negative_vip_adv', 'total_vip_adv',
+            'negative_platinum', 'total_platinum'
+        ]
+
+        for key in expected_keys:
+            assert key in result
+            assert isinstance(result[key], int)
+
+
+    def test_arpu_negative_themes_all_segments(self, arpu_data):
+        """Тест построения графика тем для всех сегментов"""
+        result = arpuNegativeThemes(arpu_data, segment="Все")
+
+        assert 'plot' in result
+        assert 'svg' in result['plot']
+
+
+    @pytest.mark.parametrize("segment", ["B2C Low", "B2C Mid", "VIP", "VIP adv", "Platinum"])
+    def test_arpu_negative_themes_by_segment(self, arpu_data, segment):
+        """Параметризованный тест построения графиков по разным сегментам"""
+        result = arpuNegativeThemes(arpu_data, segment=segment)
+
+        assert 'plot' in result
+        assert 'svg' in result['plot']
