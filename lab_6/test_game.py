@@ -5,9 +5,9 @@ import pygame as pg
 # Важно: импортируем классы из нашего основного файла main
 from lab_6.main import Ball, Game, SCREEN_WIDTH, BALL_RADIUS
 
+
 # Инициализация Pygame для тестов.
 # pygame-ce должен справиться с этим в CI/CD без экрана.
-pg.init()
 
 
 # --- 6 простых тестов ---
