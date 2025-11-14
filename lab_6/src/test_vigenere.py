@@ -82,3 +82,13 @@ def test_vigenere_cipher_decrypt(original_text, key):
     encrypted = vmodule.vigenere_cipher_encrypt(original_text, key)
     decrypted = vmodule.vigenere_cipher_decrypt(encrypted, key)
     assert decrypted == original_text
+
+
+def test_vigenere_cipher_encrypt_with_mock():
+    text = "тестовый текст для проверки"
+    key = "привет"
+
+    with patch("vigenere.get_encrypted_symb", side_effect=lambda old, k: old) as mock_func:
+        encrypted = vmodule.vigenere_cipher_encrypt(text, key)
+        assert encrypted == text
+        assert mock_func.call_count == len(text)
