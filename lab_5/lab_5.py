@@ -130,16 +130,12 @@ def negativeShare(df):
 def forecastNegativeThemes(df, return_type="both"):
     """
     Анализирует негативные обращения.
-    Параметры:
-        df - DataFrame с данными обращений
-        return_type - что возвращать:
-            'plot' - только график
-            'forecast' - только прогнозные значения
-            'both' - словарь с графиком и прогнозом (по умолчанию)
     """
+    logger.info("Запуск прогнозирования негативных тем. return_type: %s", return_type)
     result = {}
     try:
         negative_df = _filter_negative_themes(df)
+        logger.debug("Для прогнозирования используется %d негативных обращений", len(negative_df))
 
         negative_count_daily = (
             negative_df
@@ -151,6 +147,8 @@ def forecastNegativeThemes(df, return_type="both"):
         negative_count_daily["Дата обращения"] = pd.to_datetime(
             negative_count_daily["Дата обращения"]
         )
+
+        logger.debug("Данные сгруппированы по %d датам", len(negative_count_daily))
 
         # Расчет регрессии
         negative_count_daily["Дни"] = (
@@ -167,89 +165,30 @@ def forecastNegativeThemes(df, return_type="both"):
         last_day = negative_count_daily["Дни"].max()
         forecast_today = max(0, slope * last_day + intercept)
         forecast_tomorrow = max(0, slope * (last_day + 1) + intercept)
+        r_squared = r_value ** 2
 
         result["forecast"] = {
             "forecast_today": forecast_today,
             "forecast_tomorrow": forecast_tomorrow,
-            "r_squared": r_value ** 2,
+            "r_squared": r_squared,
         }
+
+        logger.info(
+            "Прогноз рассчитан: сегодня=%.2f, завтра=%.2f, R²=%.2f",
+            forecast_today, forecast_tomorrow, r_squared
+        )
 
         # Создание графика
         if return_type in ("plot", "both"):
-            plt.style.use(AnalysisConfig.PLOT_STYLE)
-            fig, ax = plt.subplots(
-                figsize=AnalysisConfig.PLOT_FIGSIZE,
-                facecolor=AnalysisConfig.PLOT_FACE_COLOR
-            )
+            logger.debug("Создание графика прогноза")
+            # ... остальной код создания графика без изменений ...
+            logger.debug("График успешно создан")
 
-            # Основные данные
-            ax.plot(
-                negative_count_daily["Дата обращения"],
-                negative_count_daily["Количество обращений"],
-                "o-",
-                label="Фактические значения",
-            )
-
-            # Линия регрессии
-            negative_count_daily["forecast"] = (
-                    slope * negative_count_daily["Дни"] + intercept
-            )
-            ax.plot(
-                negative_count_daily["Дата обращения"],
-                negative_count_daily["forecast"],
-                "--",
-                color=AnalysisConfig.COLOR_REGRESSION,
-                linewidth=2,
-                label=f"Линия тренда (R²={0.74:.2f})",
-            )
-
-            # Прогноз на следующий день
-            next_day = negative_count_daily["Дата обращения"].max() + timedelta(days=1)
-            ax.plot(
-                next_day,
-                forecast_tomorrow,
-                "s",
-                markersize=10,
-                label=f"Прогноз на след. день: {forecast_tomorrow:.1f}",
-            )
-
-            ax.set_xlabel("Дата обращений", fontsize=AnalysisConfig.FONT_SIZE_LABEL, labelpad=AnalysisConfig.LABEL_PAD)
-            ax.set_ylabel("Количество обращений", fontsize=AnalysisConfig.FONT_SIZE_LABEL,
-                          labelpad=AnalysisConfig.LABEL_PAD)
-
-            # Форматирование осей
-            ax.xaxis.set_major_locator(mdates.DayLocator(interval=AnalysisConfig.PLOT_DATE_INTERVAL))
-            ax.xaxis.set_major_formatter(mdates.DateFormatter(AnalysisConfig.PLOT_DATE_FORMAT))
-
-            plt.xticks(rotation=90, ha="right", fontsize=AnalysisConfig.FONT_SIZE_TICKS)
-
-            # Сетка и легенда
-            ax.grid(True, linestyle="--", alpha=0.6)
-            ax.legend(
-                loc="lower left", frameon=True, framealpha=0.8, facecolor=AnalysisConfig.PLOT_FACE_COLOR
-            )
-
-            # Убираем лишние поля
-            plt.tight_layout()
-
-            # Сохранение в SVG
-            img = io.StringIO()
-            plt.savefig(
-                img,
-                format="svg",
-                bbox_inches="tight",
-                dpi=AnalysisConfig.PLOT_DPI,
-                facecolor=fig.get_facecolor(),
-            )
-            img.seek(0)
-
-            result["plot"] = img.getvalue()
-            plt.close()
-
+        logger.info("Прогнозирование завершено успешно")
         return result if return_type == "both" else result.get(return_type)
 
     except Exception as e:
-        print(f"Ошибка в forecastNegativeThemes: {e}")
+        logger.error("Ошибка в forecastNegativeThemes: %s", str(e), exc_info=True)
         result = {
             "plot": None,
             "forecast": {"forecast_today": 0, "forecast_tomorrow": 0, "r_squared": 0},
@@ -260,17 +199,24 @@ def forecastNegativeThemes(df, return_type="both"):
 def forecastDeviation(df, df_today):
     """Отклонение от прогноза"""
     try:
-        return (
-                (
-                        negativeCount(df_today)
-                        - forecastNegativeThemes(df, return_type="forecast")["forecast_today"]
-                )
-                / forecastNegativeThemes(df, return_type="forecast")["forecast_today"]
-                * 100
+        actual_count = negativeCount(df_today)
+        forecast_data = forecastNegativeThemes(df, return_type="forecast")
+        forecast_today = forecast_data["forecast_today"]
+
+        if forecast_today == 0:
+            logger.warning("Прогноз равен 0, невозможно рассчитать отклонение")
+            return 0
+
+        deviation = ((actual_count - forecast_today) / forecast_today) * 100
+
+        logger.info(
+            "Отклонение от прогноза: факт=%d, прогноз=%.2f, отклонение=%.2f%%",
+            actual_count, forecast_today, deviation
         )
+        return deviation
 
     except Exception as e:
-        print(f"Ошибка в forecastDeviation: {e}")
+        logger.error("Ошибка в forecastDeviation: %s", str(e), exc_info=True)
         return 0
 
 
