@@ -9,9 +9,11 @@ def test_get_key_symb_basic():
     idx = 2
     assert vmodule.get_key_symb(key, idx) == "ш"
 
+
 def test_get_key_symb_empty_key():
     with pytest.raises(ValueError):
         vmodule.get_key_symb("", 6)
+
 
 @pytest.mark.parametrize(
     "key, index, expected",
@@ -28,3 +30,17 @@ def test_get_key_symb_param(key, index, expected):
     if expected is None:
         expected = key[index % len(key)]
     assert vmodule.get_key_symb(key, index) == expected
+
+
+@pytest.mark.parametrize(
+    "old_sym, key_sym, expected",
+    [
+        ("а", "б", "б"),
+        ("А", "б", "Б"),
+        ("!", "б", "!"),
+        ("щ", "ю", "ч"),
+        ("Э", "я", "Ь")
+    ]
+)
+def test_get_encrypted_symb_basic(old_sym, key_sym, expected):
+    assert vmodule.get_encrypted_symb(old_sym, key_sym) == expected
