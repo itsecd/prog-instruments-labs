@@ -73,15 +73,21 @@ logger.info("Модуль analysis инициализирован")
 
 def _filter_negative_themes(df):
     """Универсальная функция фильтрации негативных обращений"""
-    return df[df["Тема обращения"].str.contains(AnalysisConfig.NEGATIVE_THEME_PATTERN, na=False)].copy()
+    logger.debug("Фильтрация негативных обращений. Всего записей: %d", len(df))
+    filtered_df = df[df["Тема обращения"].str.contains(AnalysisConfig.NEGATIVE_THEME_PATTERN, na=False)].copy()
+    logger.debug("Найдено негативных обращений: %d", len(filtered_df))
+    return filtered_df
 
 
 def _extract_negative_theme_details(negative_df):
     """Извлечение деталей тем из негативных обращений"""
+    logger.debug("Извлечение деталей тем из %d негативных обращений", len(negative_df))
     negative_df = negative_df.copy()
     negative_df.loc[:, "Тема"] = negative_df["Тема обращения"].str.extract(
         AnalysisConfig.NEGATIVE_THEME_REGEX
     )
+    extracted_count = negative_df["Тема"].notna().sum()
+    logger.debug("Успешно извлечено тем: %d из %d", extracted_count, len(negative_df))
     return negative_df
 
 
@@ -251,6 +257,7 @@ def csiIndex(df):
 
 def arpuSegments(df):
     """Количество обращений по ARPU сегментам"""
+    logger.info("Расчет обращений по ARPU сегментам")
     result = {}
     negative_df = _filter_negative_themes(df)
 
@@ -261,28 +268,34 @@ def arpuSegments(df):
         result[f"negative_{key}"] = (is_segment & is_negative).sum()
         result[f"total_{key}"] = is_segment.sum()
 
+        logger.debug(
+            "Сегмент %s: всего=%d, негативных=%d",
+            segment, result[f"total_{key}"], result[f"negative_{key}"]
+        )
+
+    logger.info("Расчет ARPU сегментов завершен")
     return result
 
 
 def arpuNegativeThemes(df, segment="Все"):
     """
     Строит гистограмму тем недовольства с фильтрацией по сегменту ARPU
-    Параметры:
-        df - DataFrame с данными обращений
-        segment - сегмент для фильтрации ('Все', 'B2C Low', 'B2C Mid', 'VIP', 'VIP adv', 'Platinum')
-    Возвращает:
-        Словарь с SVG изображением графика или None при ошибке
     """
+    logger.info("Построение гистограммы негативных тем. Сегмент: %s", segment)
     try:
         negative_df = _get_negative_themes_with_details(df)
+        logger.debug("Начальное количество негативных обращений: %d", len(negative_df))
 
         # Применение фильтра по сегменту, если выбран не "Все"
         if segment != "Все":
             negative_df = negative_df[negative_df["ARPU"] == segment].copy()
+            logger.debug("После фильтрации по сегменту '%s': %d обращений", segment, len(negative_df))
 
         # Группировка по темам и подсчет количества
         theme_counts = negative_df["Тема"].value_counts().reset_index()
         theme_counts.columns = ["Тема", "Количество"]
+
+        logger.debug("Найдено уникальных тем: %d", len(theme_counts))
 
         # Создание графика
         plt.style.use(AnalysisConfig.PLOT_STYLE)
@@ -347,10 +360,11 @@ def arpuNegativeThemes(df, segment="Все"):
         plot_svg = img.getvalue()
         plt.close()
 
+        logger.info("Гистограмма успешно построена. Обработано тем: %d", len(theme_counts))
         return {"plot": plot_svg}
 
     except Exception as e:
-        print(f"Ошибка в arpuNegativeThemes: {e}")
+        logger.error("Ошибка в arpuNegativeThemes: %s", str(e), exc_info=True)
         return {"error": str(e)}
 
 
