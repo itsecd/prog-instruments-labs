@@ -97,7 +97,7 @@ except ImportError:
             """Find the index of the start of the next section."""
             return (
                 next(filter(itemgetter(1), enumerate(line.startswith('[')
-                                        for line in lines[start + 1 :])))[0]
+                                        for line in lines[start + 1:])))[0]
                 + start
                 + 1
             )
