@@ -9,11 +9,12 @@ from scipy.stats import linregress
 
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler(),  # Вывод в консоль
-        logging.FileHandler('analysis.log', encoding='utf-8')  # Вывод в файл
+        logging.StreamHandler(level=logging.INFO),
+        logging.FileHandler('analysis.log', encoding='utf-8', level=logging.DEBUG),
+        logging.FileHandler('errors.log', encoding='utf-8', level=logging.ERROR)
     ]
 )
 
