@@ -2,6 +2,7 @@ import pytest
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+from unittest.mock import Mock, patch
 import sys
 
 # Добавляем путь для импорта модуля
@@ -280,3 +281,5 @@ class TestForecastFunctions:
         assert 'forecast_today' in result
         assert 'forecast_tomorrow' in result
         assert 'r_squared' in result
+
+
