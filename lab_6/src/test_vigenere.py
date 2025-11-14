@@ -108,3 +108,29 @@ def test_vigenere_cipher_encrypt_symb():
         encrypted = vmodule.vigenere_cipher_encrypt(text, key)
 
     assert encrypted == "*" * len(text)
+
+
+def test_vigenere_cipher_decrypt_with_mock():
+    text = ("ДжаваСкрипт — мультипарадигменный язык программирования."
+            " Поддерживает объектно-ориентированный, императивный"
+            " и функциональный стили.")
+    key = "виженер"
+    encrypted_text = vmodule.vigenere_cipher_encrypt(text, key)
+
+    calls = []
+
+    def side_effect(enc, k):
+        calls.append((enc, k))
+        return enc
+
+
+    with patch("vigenere.get_decrypted_symb",
+               side_effect=side_effect) as mock_func:
+        decrypted = vmodule.vigenere_cipher_decrypt(encrypted_text, key)
+
+        assert decrypted == encrypted_text
+        assert mock_func.call_count == len(encrypted_text)
+
+        for i, (enc_sym, key_sym) in enumerate(calls):
+            assert enc_sym == encrypted_text[i]
+            assert key_sym == key[i % len(key)]
