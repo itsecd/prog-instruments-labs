@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 import sys
 
 # Добавляем путь для импорта модуля
@@ -12,6 +12,8 @@ from lab_6 import _filter_negative_themes, _extract_negative_theme_details, _get
 from lab_6 import csiIndex
 from lab_6 import arpuSegments, arpuNegativeThemes
 from lab_6 import forecastNegativeThemes, forecastDeviation
+from lab_6 import regionDistrictAnalysis, forecastNegativeThemes, arpuNegativeThemes
+from lab_6 import totalServed, negativeCount, negativeShare, csiIndex, arpuSegments
 
 
 class TestAnalysisConfig:
@@ -283,3 +285,144 @@ class TestForecastFunctions:
         assert 'r_squared' in result
 
 
+class TestRegionAnalysis:
+    """Тесты для анализа по регионам и районам"""
+
+    @pytest.fixture
+    def region_data(self):
+        """Фикстура с региональными данными"""
+        return pd.DataFrame({
+            'Тема обращения': [
+                'Недовольство/Качество', 'Недовольство/Тарифы', 'Недовольство/Обслуживание',
+                'Недовольство/Качество', 'Недовольство/Тарифы', 'Недовольство/Обслуживание'
+            ],
+            'Регион': ['Москва', 'Москва', 'СПб', 'СПб', 'Новосибирск', 'Новосибирск'],
+            'Район': ['Центр', 'Западный', 'Василеостровский', 'Петроградский', 'Центральный', 'Железнодорожный'],
+            'ARPU': ['B2C Low'] * 6
+        })
+
+
+    def test_region_analysis_all(self, region_data):
+        """Тест анализа всех регионов"""
+        result = regionDistrictAnalysis(region_data)
+
+        assert 'regions' in result
+        assert 'themes' in result
+        assert 'table' in result
+        assert 'stats' in result
+        assert len(result['regions']) > 0
+
+
+    def test_region_analysis_with_region_filter(self, region_data):
+        """Тест анализа с фильтром по региону"""
+        result = regionDistrictAnalysis(region_data, region="Москва")
+
+        assert result['current_region'] == "Москва"
+        assert 'districts' in result
+        assert len(result['districts']) > 0
+
+
+    def test_region_analysis_with_theme_filter(self, region_data):
+        """Тест анализа с фильтром по теме"""
+        result = regionDistrictAnalysis(region_data, theme="Качество")
+
+        assert result['current_theme'] == "Качество"
+        assert 'stats' in result
+        assert result['stats']['total'] > 0
+
+
+class TestErrorHandling:
+    """Тесты обработки ошибок"""
+
+
+    def test_functions_with_invalid_data(self):
+        """Тест функций с невалидными данными"""
+        invalid_df = pd.DataFrame({'wrong_column': [1, 2, 3]})
+
+        # Проверяем что функции не падают с ошибкой
+        assert totalServed(invalid_df) == 0
+        assert negativeCount(invalid_df) == 0
+        assert negativeShare(invalid_df) == 0
+
+        csi_result = csiIndex(invalid_df)
+        assert csi_result == 0
+
+        arpu_result = arpuSegments(invalid_df)
+        assert isinstance(arpu_result, dict)
+
+
+    @patch('lab_2.plt')
+    def test_plot_functions_error_handling(self, mock_plt):
+        """Тест обработки ошибок в функциях построения графиков"""
+        # Настраиваем мок чтобы симулировать ошибку
+        mock_plt.subplots.side_effect = Exception("Plot error")
+
+        test_data = pd.DataFrame({
+            'Тема обращения': ['Недовольство/Тест'],
+            'Дата обращения': ['2024-01-01'],
+            'ARPU': ['B2C Low']
+        })
+
+        # Проверяем что функции возвращают ожидаемую структуру при ошибке
+        forecast_result = forecastNegativeThemes(test_data)
+        assert 'plot' in forecast_result
+        assert 'forecast' in forecast_result
+
+        arpu_result = arpuNegativeThemes(test_data)
+        assert 'error' in arpu_result
+
+
+class TestIntegrationScenarios:
+    """Интеграционные тесты"""
+
+    @pytest.fixture
+    def integration_data(self):
+        """Комплексные данные для интеграционного тестирования"""
+        dates = pd.date_range(start='2024-01-01', periods=15, freq='D')
+        return pd.DataFrame({
+            'Тема обращения': [
+                'Недовольство/Качество', 'Недовольство/Тарифы', 'Поддержка',
+                'Недовольство/Обслуживание', 'Консультация', 'Недовольство/Качество',
+                'Недовольство/Тарифы', 'Поддержка', 'Недовольство/Обслуживание',
+                'Консультация', 'Недовольство/Качество', 'Недовольство/Тарифы',
+                'Поддержка', 'Недовольство/Обслуживание', 'Консультация'
+            ],
+            'Дата обращения': dates,
+            'SA': np.random.uniform(3.0, 5.0, 15),
+            'CES': np.random.uniform(3.0, 5.0, 15),
+            'NPS': np.random.randint(5, 11, 15),
+            'ARPU': np.random.choice(['B2C Low', 'B2C Mid', 'VIP', 'VIP adv', 'Platinum'], 15),
+            'Регион': np.random.choice(['Москва', 'СПб', 'Новосибирск'], 15),
+            'Район': ['Район'] * 15
+        })
+
+
+    def test_complete_workflow(self, integration_data):
+        """Тест полного рабочего процесса"""
+        # 1. Базовые метрики
+        total = totalServed(integration_data)
+        negative = negativeCount(integration_data)
+        share = negativeShare(integration_data)
+
+        assert total > 0
+        assert negative > 0
+        assert 0 <= share <= 100
+
+        # 2. CSI расчет
+        csi = csiIndex(integration_data)
+        assert 0 <= csi <= 100
+
+        # 3. ARPU анализ
+        arpu_results = arpuSegments(integration_data)
+        assert isinstance(arpu_results, dict)
+        assert len(arpu_results) > 0
+
+        # 4. Прогнозирование
+        forecast_results = forecastNegativeThemes(integration_data, return_type='both')
+        assert 'plot' in forecast_results
+        assert 'forecast' in forecast_results
+
+        # 5. Региональный анализ
+        region_results = regionDistrictAnalysis(integration_data)
+        assert 'table' in region_results
+        assert 'stats' in region_results
