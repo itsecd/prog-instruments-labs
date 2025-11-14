@@ -10,10 +10,14 @@ def read_csv(csv_path: str) -> pandas.DataFrame:
     :return:  DataFrame в формате pandas.DataFrame
     """
     try:
-        df = pd.read_csv(csv_path)
-        return df
+        with open(csv_path, 'r', encoding='utf-16') as f:
+            df = pd.read_csv(f, delimiter=";")
+            return df
+    except FileNotFoundError:
+        print(f"Файл не найден.")
     except Exception as e:
-        raise Exception(f"Ошибка при загрузке данных: {e}")
+       print(f"Ошибка при загрузке данных: {e}")
+    return pd.DataFrame()
 
 def read_json(filename: str) -> dict:
     """

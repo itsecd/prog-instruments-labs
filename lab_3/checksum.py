@@ -30,4 +30,3 @@ def serialize_result(variant: int, checksum: str) -> None:
         print(f"Результат успешно записан в файл.")
     except Exception as e:
         print(f"Произошла ошибка при записи в файл: {e}")
-
