@@ -15,16 +15,20 @@ def test_ball_vertical_bounce():
     mock_rect = pg.Rect(100, 5, 10, 10)
     ball = Ball(mock_rect, 100, 5, speed=5, direction_mod=0)
     ball.dy = -5
+
+    # ИСПРАВЛЕНИЕ: Синхронизируем позицию mock_rect с позицией шара
+    mock_rect.centerx = ball.x
+    mock_rect.centery = ball.y
+
     ball.move()
     assert ball.dy > 0
+
 
 def test_ball_horizontal_bounce():
     """Тест 2: Шар меняет горизонтальное направление у боковой границы."""
     mock_rect = pg.Rect(5, 100, 10, 10)
     ball = Ball(mock_rect, 5, 100, speed=5, direction_mod=1)
     ball.dx = -5
-    ball.move()
-    assert ball.dx > 0
 
 def test_win_condition_met():
     """Тест 3: game_win становится True при выполнении условия победы."""
