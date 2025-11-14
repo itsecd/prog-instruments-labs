@@ -10,6 +10,8 @@ from lab_6 import AnalysisConfig, totalServed, negativeCount, negativeShare
 from lab_6 import _filter_negative_themes, _extract_negative_theme_details, _get_negative_themes_with_details
 from lab_6 import csiIndex
 from lab_6 import arpuSegments, arpuNegativeThemes
+from lab_6 import forecastNegativeThemes, forecastDeviation
+
 
 class TestAnalysisConfig:
     """Тесты для класса конфигурации"""
@@ -216,3 +218,65 @@ class TestARPUFunctions:
 
         assert 'plot' in result
         assert 'svg' in result['plot']
+
+
+class TestForecastFunctions:
+    """Тесты для функций прогнозирования"""
+
+    @pytest.fixture
+    def forecast_data(self):
+        """Фикстура с данными для прогнозирования"""
+        dates = pd.date_range(start='2024-01-01', end='2024-01-10', freq='D')
+        return pd.DataFrame({
+            'Тема обращения': [
+                'Недовольство/Качество', 'Недовольство/Тарифы', 'Недовольство/Обслуживание',
+                'Недовольство/Качество', 'Недовольство/Тарифы', 'Поддержка',
+                'Недовольство/Обслуживание', 'Консультация', 'Недовольство/Качество', 'Поддержка'
+            ],
+            'Дата обращения': dates
+        })
+
+
+    def test_forecast_negative_themes_plot(self, forecast_data):
+        """Тест функции прогнозирования с возвратом графика"""
+        result = forecastNegativeThemes(forecast_data, return_type='plot')
+        assert result is not None
+        assert 'svg' in result
+
+
+    def test_forecast_negative_themes_forecast(self, forecast_data):
+        """Тест функции прогнозирования с возвратом прогноза"""
+        result = forecastNegativeThemes(forecast_data, return_type='forecast')
+
+        assert 'forecast_today' in result
+        assert 'forecast_tomorrow' in result
+        assert 'r_squared' in result
+        assert isinstance(result['forecast_today'], float)
+        assert isinstance(result['forecast_tomorrow'], float)
+
+
+    def test_forecast_negative_themes_both(self, forecast_data):
+        """Тест функции прогнозирования с возвратом обоих результатов"""
+        result = forecastNegativeThemes(forecast_data, return_type='both')
+
+        assert 'plot' in result
+        assert 'forecast' in result
+        assert 'svg' in result['plot']
+
+
+    @patch('lab_2.linregress')
+    def test_forecast_negative_themes_with_mock(self, mock_linregress, forecast_data):
+        """Тест прогнозирования с моком linregress"""
+        # Настраиваем мок
+        mock_linregress.return_value = Mock(
+            slope=0.5, intercept=1.0, rvalue=0.8, pvalue=0.05, stderr=0.1
+        )
+
+        result = forecastNegativeThemes(forecast_data, return_type='forecast')
+
+        mock_linregress.assert_called_once()
+
+        # Проверяем структуру результата
+        assert 'forecast_today' in result
+        assert 'forecast_tomorrow' in result
+        assert 'r_squared' in result
