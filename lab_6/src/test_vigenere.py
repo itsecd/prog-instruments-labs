@@ -59,3 +59,26 @@ def test_get_encrypted_symb_basic(old_sym, key_sym, expected):
 )
 def test_get_decrypted_symb_basic(encrypted_sym, key_sym, expected):
     assert vmodule.get_decrypted_symb(encrypted_sym, key_sym) == expected
+
+
+@pytest.mark.parametrize(
+    "original_text, key",
+    [
+        ("«Евгений Онегин» — роман в стихах русского поэта Александра"
+         " Сергеевича Пушкина, начат 9 мая 1823 года и закончен 5 октября 1831"
+         " года, одно из самых значительных произведений"
+         " русской словесности.", "кот"),
+        ("это тестовая строка для проверки работы шифра", "секрет"),
+        ("Питон — мультипарадигменный высокоуровневый язык программирования"
+         " общего назначения с динамической строгой типизацией и автоматическим"
+         " управлением памятью", "питон"),
+        ("длинный текст с множеством слов для проверки корректности", "мышь"),
+        ("«Граф Лев Николаевич Толстой — один из наиболее известных русских"
+         " писателей и мыслителей, один из величайших в мире"
+         " писателей-романистов. Участник обороны Севастополя.»", "ноутбук")
+    ]
+)
+def test_vigenere_cipher_decrypt(original_text, key):
+    encrypted = vmodule.vigenere_cipher_encrypt(original_text, key)
+    decrypted = vmodule.vigenere_cipher_decrypt(encrypted, key)
+    assert decrypted == original_text
