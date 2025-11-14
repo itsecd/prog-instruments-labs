@@ -5,15 +5,9 @@ import pygame as pg
 # Важно: импортируем классы из нашего основного файла main
 from lab_6.main import Ball, Game, SCREEN_WIDTH, BALL_RADIUS
 
-# --- МОК для Pygame ---
-@pytest.fixture(autouse=True)
-def mock_pygame(mocker):
-    mocker.patch('pygame.display.set_mode', return_value=Mock())
-    mocker.patch('pygame.image.load', return_value=Mock(convert_alpha=Mock(), get_rect=Mock(return_value=pg.Rect(0,0,10,10))))
-    mocker.patch('pygame.mixer.Sound', return_value=Mock())
-    mocker.patch('pygame.font.SysFont', return_value=Mock())
-    mocker.patch('pygame.mixer.music.load')
-    mocker.patch('pygame.mixer.music.set_volume')
+# Инициализация Pygame для тестов.
+# pygame-ce должен справиться с этим в CI/CD без экрана.
+pg.init()
 
 
 # --- 6 простых тестов ---
@@ -23,18 +17,22 @@ def test_ball_vertical_bounce():
     mock_rect = pg.Rect(100, 5, 10, 10)
     ball = Ball(mock_rect, 100, 5, speed=5, direction_mod=0)
     ball.dy = -5
-    mock_rect.centerx = ball.x; mock_rect.centery = ball.y
+    mock_rect.centerx = ball.x
+    mock_rect.centery = ball.y
     ball.move()
     assert ball.dy > 0
+
 
 def test_ball_horizontal_bounce():
     """Тест 2: Шар меняет горизонтальное направление у боковой границы."""
     mock_rect = pg.Rect(5, 100, 10, 10)
     ball = Ball(mock_rect, 5, 100, speed=5, direction_mod=1)
     ball.dx = -5
-    mock_rect.centerx = ball.x; mock_rect.centery = ball.y
+    mock_rect.centerx = ball.x
+    mock_rect.centery = ball.y
     ball.move()
     assert ball.dx > 0
+
 
 def test_win_condition_met():
     """Тест 3: game_win становится True при выполнении условия победы."""
@@ -42,11 +40,13 @@ def test_win_condition_met():
     game.check_win_condition(colors=[()] * 70, current_shots=10, max_shots=10)
     assert game.game_win is True
 
+
 def test_win_condition_not_met_blocks_left():
     """Тест 4: game_win остается False, если есть блоки."""
     game = Game()
-    game.check_win_condition(colors=[(255,0,0)], current_shots=10, max_shots=10)
+    game.check_win_condition(colors=[(255, 0, 0)], current_shots=10, max_shots=10)
     assert game.game_win is False
+
 
 def test_volume_increase():
     """Тест 5: Громкость увеличивается корректно."""
@@ -55,12 +55,14 @@ def test_volume_increase():
     game.volume = min(1.0, game.volume + 0.1)
     assert game.volume == pytest.approx(0.6)
 
+
 def test_volume_max_limit():
     """Тест 6: Громкость не превышает 1.0."""
     game = Game()
     game.volume = 1.0
     game.volume = min(1.0, game.volume + 0.1)
     assert game.volume == 1.0
+
 
 # --- 2 сложных теста ---
 
@@ -82,11 +84,18 @@ def test_ball_block_collision_bounce(initial_dx, initial_dy, expected_dx_sign, e
         assert (ball.dy > 0 and expected_dy_sign > 0) or (ball.dy < 0 and expected_dy_sign < 0)
 
 
-def test_update_win_count_on_win(mocker):
+def test_update_win_count_on_win():
     """Тест 8 (с Mock): Проверяет, что метод для обновления счета в БД вызывается при победе."""
-    game = Game()
-    mocker.patch.object(game, '_update_win_count_in_db')
-    game.game_win = True
-    if game.game_win:
-        game._update_win_count_in_db()
-    game._update_win_count_in_db.assert_called_once()
+    # Используем `patch` из `unittest.mock`
+    with patch.object(Game, '_update_win_count_in_db') as mock_update:
+        # Arrange
+        game = Game()
+        game.game_win = True
+
+        # Act
+        # Симулируем вызов, который происходит в коде при победе
+        if game.game_win:
+            game._update_win_count_in_db()
+
+        # Assert
+        mock_update.assert_called_once()
