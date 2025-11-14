@@ -1,7 +1,7 @@
 name: Setup PR for code review
 
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, reopened]
 
 permissions: write-all
@@ -53,17 +53,3 @@ jobs:
         labels: |
            ${{ env.LABEL }}
            In progress
-          
-     # - name: Setting reviewer
-     #   if:  env.GROUP == '6311' || env.GROUP == '6313'
-     #   uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
-     #   with:
-     #      reviewers: "IlyaOv"
-     #      token: ${{ secrets.GITHUB_TOKEN }}
-
-     # - name: Setting reviewer
-     #   if: env.GROUP == '6312'
-     #   uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
-     #   with:
-     #      reviewers: "alxmcs"
-     #      token: ${{ secrets.GITHUB_TOKEN }}
