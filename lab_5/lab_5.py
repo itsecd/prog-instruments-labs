@@ -1,11 +1,23 @@
 import io
+import logging
+import logging.config
 from datetime import timedelta
-
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.stats import linregress
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),  # Вывод в консоль
+        logging.FileHandler('analysis.log', encoding='utf-8')  # Вывод в файл
+    ]
+)
+
+logger = logging.getLogger('analysis')
 
 class AnalysisConfig:
     """Класс для хранения конфигураций анализа"""
@@ -54,6 +66,9 @@ class AnalysisConfig:
     LABEL_PAD = 10
     BAR_HEIGHT = 0.7
     BAR_ALPHA = 0.85
+
+# Логирование инициализации модуля
+logger.info("Модуль analysis инициализирован")
 
 
 def _filter_negative_themes(df):
