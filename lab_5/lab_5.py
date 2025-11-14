@@ -94,30 +94,36 @@ def _get_negative_themes_with_details(df):
 def totalServed(df):
     """Количество обслуженных клиентов"""
     try:
-        return len(df)
+        count = len(df)
+        logger.info("Обслужено клиентов: %d", count)
+        return count
 
     except Exception as e:
-        print(f"Ошибка в totalServed: {e}")
+        logger.error("Ошибка в totalServed: %s", str(e), exc_info=True)
         return 0
 
 
 def negativeCount(df):
     """Количество негативных обращений"""
     try:
-        return _filter_negative_themes(df).shape[0]
+        count = _filter_negative_themes(df).shape[0]
+        logger.info("Найдено негативных обращений: %d", count)
+        return count
 
     except Exception as e:
-        print(f"Ошибка в negativeCount: {e}")
+        logger.error("Ошибка в negativeCount: %s", str(e), exc_info=True)
         return 0
 
 
 def negativeShare(df):
     """Доля негативных обращений"""
     try:
-        return (_filter_negative_themes(df).shape[0] / len(df)) * 100
+        share = (_filter_negative_themes(df).shape[0] / len(df)) * 100
+        logger.info("Доля негативных обращений: %.2f%%", share)
+        return share
 
     except Exception as e:
-        print(f"Ошибка в negativeShare: {e}")
+        logger.error("Ошибка в negativeShare: %s", str(e), exc_info=True)
         return 0
 
 
@@ -276,6 +282,8 @@ def csiIndex(df):
         ces = df["CES"].mean()
         nps = df["NPS"].mean()
 
+        logger.debug("Средние значения: SA=%.2f, CES=%.2f, NPS=%.2f", sa, ces, nps)
+
         # Рассчитываем CSI
         csi = (
                 AnalysisConfig.CSI_BASE_VALUE +
@@ -287,10 +295,11 @@ def csiIndex(df):
         # Ограничиваем значение CSI
         result = max(AnalysisConfig.CSI_MIN_VALUE, min(AnalysisConfig.CSI_MAX_VALUE, csi))
 
+        logger.info("Рассчитан CSI индекс: %.2f", result)
         return result
 
     except Exception as e:
-        print(f"Ошибка в csiIndex: {e}")
+        logger.error("Ошибка в csiIndex: %s", str(e), exc_info=True)
         return 0
 
 
