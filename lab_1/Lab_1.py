@@ -25,6 +25,7 @@ class WritableNull:
     def flush(self):
         pass
 
+
 class Tracker(object):
     def __init__(self, questions, maxes, prereqs, mute_output):
         self.questions = questions
@@ -121,16 +122,20 @@ class Tracker(object):
         print('Total: %d/%d' % (sum(self.points.values()),
             sum([self.maxes[q] for q in self.questions])))
 
-        print("""
-Your grades are NOT yet registered.  To register your grades, make sure
-to follow your instructor's guidelines to receive credit on your project.
-""")
+        print(
+            """Your grades are NOT yet registered.
+            To register your grades, make sure to follow your
+            instructor's guidelines to receive credit on your project."""
+        )
 
     def add_points(self, pts):
         self.points[self.current_question] += pts
 
+
 TESTS = []
 PREREQS = {}
+
+
 def add_prereq(q, pre):
     if isinstance(pre, str):
         pre = [pre]
@@ -139,11 +144,13 @@ def add_prereq(q, pre):
         PREREQS[q] = set()
     PREREQS[q] |= set(pre)
 
+
 def test(q, points):
     def deco(fn):
         TESTS.append((q, points, fn))
         return fn
     return deco
+
 
 def parse_options(argv):
     parser = optparse.OptionParser(
@@ -185,6 +192,7 @@ def parse_options(argv):
                                'matplotlib are installed')
     (options, args) = parser.parse_args(argv)
     return options
+
 
 def main():
     options = parse_options(sys.argv)
@@ -258,8 +266,10 @@ def check_dependencies():
         fig.canvas.draw_idle()
         fig.canvas.start_event_loop(1e-3)
 
+
 def disable_graphics():
     backend.use_graphics = False
+
 
 @contextlib.contextmanager
 def no_graphics():
@@ -267,6 +277,7 @@ def no_graphics():
     backend.use_graphics = False
     yield
     backend.use_graphics = old_use_graphics
+
 
 def verify_node(node, expected_type, expected_shape, method_name):
     if expected_type == 'parameter':
@@ -305,6 +316,7 @@ def verify_node(node, expected_type, expected_shape, method_name):
             )
         )
 
+
 def trace_node(node_to_trace):
     """
     Returns a set containing the node and all ancestors in the computation graph
@@ -323,9 +335,9 @@ def trace_node(node_to_trace):
 
     return nodes
 
+
 @test('q1', points=6)
 def check_perceptron(tracker):
-
     print("Sanity checking perceptron...")
     np_random = np.random.RandomState(0)
     # Check that the perceptron weights are initialized
@@ -450,6 +462,7 @@ def check_perceptron(tracker):
 
     tracker.add_points(4)
 
+
 @test('q2', points=6)
 def check_regression(tracker):
     model = models.RegressionModel()
@@ -535,6 +548,7 @@ def check_regression(tracker):
               "this question".format(train_loss, loss_threshold)
               )
 
+
 @test('q3', points=6)
 def check_digit_classification(tracker):
     model = models.DigitClassificationModel()
@@ -612,6 +626,7 @@ def check_digit_classification(tracker):
             test_accuracy, accuracy_threshold
             )
         )
+
 
 @test('q4', points=7)
 def check_lang_id(tracker):
@@ -708,6 +723,7 @@ def check_lang_id(tracker):
             "be at least {:.0%} to receive full points for this "
             "question".format(test_accuracy, accuracy_threshold)
         )
+
 
 if __name__ == '__main__':
     main()
