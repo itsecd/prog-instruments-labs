@@ -442,7 +442,7 @@ def check_perceptron(tracker):
                 )
             )
 
-    tracker.add_points(2) # Partial credit for passing sanity checks
+    tracker.add_points(2)  # Partial credit for passing sanity checks
 
     print("Sanity checking perceptron weight updates...")
 
@@ -600,7 +600,7 @@ def check_regression(tracker):
                 "additional parameters not used by RegressionModel.run()"
             )
 
-    tracker.add_points(2) # Partial credit for passing sanity checks
+    tracker.add_points(2)  # Partial credit for passing sanity checks
 
     model.train(dataset)
     backend.maybe_sleep_and_close(1)
@@ -711,7 +711,7 @@ def check_digit_classification(tracker):
                 " DigitClassificationModel.run()"
             )
 
-    tracker.add_points(2) # Partial credit for passing sanity checks
+    tracker.add_points(2)  # Partial credit for passing sanity checks
 
     model.train(dataset)
 
@@ -811,7 +811,7 @@ def check_lang_id(tracker):
                 " parameters not used by LanguageIDModel.run()"
             )
 
-    tracker.add_points(2) # Partial credit for passing sanity checks
+    tracker.add_points(2)  # Partial credit for passing sanity checks
 
     model.train(dataset)
 
