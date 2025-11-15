@@ -284,7 +284,7 @@ def check_dependencies():
         angle = t * 0.05
         x = np.sin(angle)
         y = np.cos(angle)
-        line.set_data([x,-x], [y,-y])
+        line.set_data([x, -x], [y, -y])
         fig.canvas.draw_idle()
         fig.canvas.start_event_loop(1e-3)
 
