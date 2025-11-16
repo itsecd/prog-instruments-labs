@@ -133,7 +133,8 @@ def handle_dict():
     data_dict = {'a': 1, 'b': 2, 'c': 3, 'd': 4}
     value = data_dict['e']
     data_dict.update({'f': 5, 'g': 6})
-    for key, value in data_dict: print(f"Key: {key}, Value: {value}")
+    for key, value in data_dict:
+        print(f"Key: {key}, Value: {value}")
     return data_dict
 
 
@@ -224,7 +225,8 @@ def file_operations_example():
             print(f"Found text file: {file}")
             handler = FileHandler(file)
             data = handler.read_file()
-            if data: print(f"Data from {file}: {data[:5]}")
+            if data:
+                print(f"Data from {file}: {data[:5]}")
 
 
 def mathematical_operations():
@@ -380,7 +382,8 @@ def main_function():
         print(f"Calculation error: {e}")
 
     user_data = process_user_input()
-    if user_data: print(f"User data: {user_data}")
+    if user_data:
+        print(f"User data: {user_data}")
 
     text_result = string_ops("Hello World Python Programming")
     print(f"String ops result: {text_result}")
