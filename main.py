@@ -333,3 +333,5 @@ class Actions:
             if not walls[next_x][next_y]: possible.append(dir)
 
         return possible
+        
+
