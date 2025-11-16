@@ -69,6 +69,38 @@ def read_file(filename: str) -> str:
         raise
 
 
+def validate_sequence(sequence: str, source: str) -> bool:
+    """
+    Проверяет валидность бинарной последовательности.
+
+    Параметры:
+    sequence (str): последовательность для проверки
+    source (str): источник последовательности (для логирования)
+
+    Возвращает:
+    bool: True если последовательность валидна
+    """
+    logging.debug(f"Валидация последовательности из {source}")
+
+    if not sequence:
+        logging.warning(f"Пустая последовательность из {source}")
+        return False
+
+
+    valid_chars = set('01')
+    if not all(char in valid_chars for char in sequence):
+        invalid_chars = set(sequence) - valid_chars
+        logging.error(f"Обнаружены невалидные символы в последовательности из {source}: {invalid_chars}")
+        return False
+
+    sequence_length = len(sequence)
+    logging.info(f"Последовательность из {source} валидна. Длина: {sequence_length} бит")
+
+    if sequence_length < 100:
+        logging.warning(f"Короткая последовательность из {source}. Всего {sequence_length} бит")
+
+    return True
+
 def write_results(freq_cpp: float, freq_java: float,
                   runs_cpp: float, runs_java: float,
                   long_cpp: float, long_java: float,
@@ -85,10 +117,10 @@ def write_results(freq_cpp: float, freq_java: float,
     long_java (float): результат теста на самую длинную последовательность единиц в блоке для Java.
     results (str): имя файла для записи результатов.
     """
-    logging.info(f"Начало записи результатов в файл: {results}")  # ✅ ДОБАВЛЕНО
+    logging.info(f"Начало записи результатов в файл: {results}")
 
     try:
-        with open(results, 'w', encoding='utf-8') as file:  # ✅ ИЗМЕНЕНО: добавлена кодировка
+        with open(results, 'w', encoding='utf-8') as file:
             file.write("Frequency bitwise test:\n")
             file.write(f"c++: {freq_cpp}\n")
             file.write(f"java: {freq_java}\n\n")
@@ -101,16 +133,57 @@ def write_results(freq_cpp: float, freq_java: float,
             file.write(f"c++: {long_cpp}\n")
             file.write(f"java: {long_java}\n")
 
-        logging.info(f"Результаты успешно записаны в {results}")  # ✅ ДОБАВЛЕНО
-        logging.debug(f"Результаты C++: freq={freq_cpp}, runs={runs_cpp}, long={long_cpp}")  # ✅ ДОБАВЛЕНО
-        logging.debug(f"Результаты Java: freq={freq_java}, runs={runs_java}, long={long_java}")  # ✅ ДОБАВЛЕНО
+        logging.info(f"Результаты успешно записаны в {results}")
+        logging.debug(f"Результаты C++: freq={freq_cpp}, runs={runs_cpp}, long={long_cpp}")
+        logging.debug(f"Результаты Java: freq={freq_java}, runs={runs_java}, long={long_java}")
 
     except IOError as e:
-        logging.error(f"Ошибка записи в файл {results}: {str(e)}")  # ✅ ДОБАВЛЕНО
+        logging.error(f"Ошибка записи в файл {results}: {str(e)}")
         raise
     except Exception as e:
-        logging.exception(f"Непредвиденная ошибка при записи результатов")  # ✅ ДОБАВЛЕНО
+        logging.exception(f"Непредвиденная ошибка при записи результатов")
         raise
+
+
+def perform_tests() -> Tuple[float, float, float, float, float, float]:
+    """
+    Выполняет все тесты для обеих последовательностей.
+
+    Возвращает:
+    Tuple: результаты всех тестов (freq_cpp, freq_java, runs_cpp, runs_java, long_cpp, long_java)
+    """
+    logging.info("Начало выполнения тестов NIST")
+
+    # Чтение и валидация последовательностей
+    seq_cpp = read_file(const.bin_seq_cpp)
+    seq_java = read_file(const.bin_seq_java)
+
+    if not validate_sequence(seq_cpp, "C++"):
+        logging.error("Невалидная последовательность C++")
+        raise ValueError("Невалидная последовательность C++")
+
+    if not validate_sequence(seq_java, "Java"):
+        logging.error("Невалидная последовательность Java")
+        raise ValueError("Невалидная последовательность Java")
+
+    # Выполнение тестов
+    logging.info("Запуск частотного теста")
+    freq_cpp = nist_test.frequency_test(seq_cpp)
+    freq_java = nist_test.frequency_test(seq_java)
+    logging.debug(f"Частотный тест завершен: C++={freq_cpp}, Java={freq_java}")
+
+    logging.info("Запуск теста на одинаковые подряд идущие биты")
+    runs_cpp = nist_test.runs_test(seq_cpp)
+    runs_java = nist_test.runs_test(seq_java)
+    logging.debug(f"Тест на последовательности завершен: C++={runs_cpp}, Java={runs_java}")
+
+    logging.info("Запуск теста на самую длинную последовательность единиц")
+    long_cpp = nist_test.longest_run_test(seq_cpp)
+    long_java = nist_test.longest_run_test(seq_java)
+    logging.debug(f"Тест на длинные последовательности завершен: C++={long_cpp}, Java={long_java}")
+
+    logging.info("Все тесты NIST успешно выполнены")
+    return freq_cpp, freq_java, runs_cpp, runs_java, long_cpp, long_java
 
 def main():
     """
@@ -119,13 +192,35 @@ def main():
     Выполняет тесты NIST для последовательностей из C++ и Java,
     записывает результаты в файл.
     """
-    freq_cpp = nist_test.frequency_test(read_file(const.bin_seq_cpp))
-    freq_java = nist_test.frequency_test(read_file(const.bin_seq_java))
-    runs_cpp = nist_test.runs_test(read_file(const.bin_seq_cpp))
-    runs_java = nist_test.runs_test(read_file(const.bin_seq_java))
-    long_cpp = nist_test.longest_run_test(read_file(const.bin_seq_cpp))
-    long_java = nist_test.longest_run_test(read_file(const.bin_seq_java))
-    write_results(freq_cpp, freq_java, runs_cpp, runs_java, long_cpp, long_java, const.res)
+    setup_logging()
+
+    logging.info("Запуск основной программы анализа последовательностей")
+
+    try:
+
+        test_results = perform_tests()
+
+
+        write_results(*test_results, const.res)
+
+
+        freq_cpp, freq_java, runs_cpp, runs_java, long_cpp, long_java = test_results
+
+
+        logging.info("Анализ завершен успешно")
+        logging.info(f"Итоговые результаты записаны в {const.res}")
+
+
+        if abs(freq_cpp - 0.5) < abs(freq_java - 0.5):
+            logging.info("C++ генератор показал лучшую частотную характеристику")
+        else:
+            logging.info("Java генератор показал лучшую частотную характеристику")
+
+    except Exception as e:
+        logging.critical(f"Критическая ошибка во время выполнения программы: {str(e)}")
+        raise
+
+    logging.info("Программа завершена")
 
 
 if __name__ == "__main__":
