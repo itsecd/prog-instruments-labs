@@ -69,9 +69,9 @@ def read_file(filename: str) -> str:
         raise
 
 
-def write_results(freq_cpp, freq_java,
-                  runs_cpp, runs_java,
-                  long_cpp, long_java,
+def write_results(freq_cpp: float, freq_java: float,
+                  runs_cpp: float, runs_java: float,
+                  long_cpp: float, long_java: float,
                   results: str):
     """
     Записывает результаты тестов в файл.
@@ -85,19 +85,32 @@ def write_results(freq_cpp, freq_java,
     long_java (float): результат теста на самую длинную последовательность единиц в блоке для Java.
     results (str): имя файла для записи результатов.
     """
-    with open(results, 'w') as file:
-        file.write("Frequency bitwise test:\n")
-        file.write(f"c++: {freq_cpp}\n")
-        file.write(f"java: {freq_java}\n\n")
+    logging.info(f"Начало записи результатов в файл: {results}")  # ✅ ДОБАВЛЕНО
 
-        file.write("A test for identical consecutive bits:\n")
-        file.write(f"c++: {runs_cpp}\n")
-        file.write(f"java: {runs_java}\n\n")
+    try:
+        with open(results, 'w', encoding='utf-8') as file:  # ✅ ИЗМЕНЕНО: добавлена кодировка
+            file.write("Frequency bitwise test:\n")
+            file.write(f"c++: {freq_cpp}\n")
+            file.write(f"java: {freq_java}\n\n")
 
-        file.write("Test for the longest sequence of units in a block:\n")
-        file.write(f"c++: {long_cpp}\n")
-        file.write(f"java: {long_java}\n")
+            file.write("A test for identical consecutive bits:\n")
+            file.write(f"c++: {runs_cpp}\n")
+            file.write(f"java: {runs_java}\n\n")
 
+            file.write("Test for the longest sequence of units in a block:\n")
+            file.write(f"c++: {long_cpp}\n")
+            file.write(f"java: {long_java}\n")
+
+        logging.info(f"Результаты успешно записаны в {results}")  # ✅ ДОБАВЛЕНО
+        logging.debug(f"Результаты C++: freq={freq_cpp}, runs={runs_cpp}, long={long_cpp}")  # ✅ ДОБАВЛЕНО
+        logging.debug(f"Результаты Java: freq={freq_java}, runs={runs_java}, long={long_java}")  # ✅ ДОБАВЛЕНО
+
+    except IOError as e:
+        logging.error(f"Ошибка записи в файл {results}: {str(e)}")  # ✅ ДОБАВЛЕНО
+        raise
+    except Exception as e:
+        logging.exception(f"Непредвиденная ошибка при записи результатов")  # ✅ ДОБАВЛЕНО
+        raise
 
 def main():
     """
