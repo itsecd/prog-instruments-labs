@@ -1,5 +1,5 @@
 
-from util import *
+from util import raiseNotDefined
 import time
 import traceback
 import sys
@@ -334,5 +334,6 @@ class Actions:
             next_y = y_int + dy
             next_x = x_int + dx
             if not walls[next_x][next_y]: possible.append(dir)
+
 
         return possible
