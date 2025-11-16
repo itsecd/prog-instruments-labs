@@ -1,10 +1,10 @@
-
 from util import raiseNotDefined
 
 
 #######################
 # Parts worth reading #
 #######################
+
 
 class Agent:
     """
@@ -26,25 +26,17 @@ class Agent:
 
 
 class Directions:
-    NORTH = 'North'
-    SOUTH = 'South'
-    EAST = 'East'
-    WEST = 'West'
-    STOP = 'Stop'
+    NORTH = "North"
+    SOUTH = "South"
+    EAST = "East"
+    WEST = "West"
+    STOP = "Stop"
 
-    LEFT = {NORTH: WEST,
-            SOUTH: EAST,
-            EAST: NORTH,
-            WEST: SOUTH,
-            STOP: STOP}
+    LEFT = {NORTH: WEST, SOUTH: EAST, EAST: NORTH, WEST: SOUTH, STOP: STOP}
 
     RIGHT = dict([(y, x) for x, y in LEFT.items()])
 
-    REVERSE = {NORTH: SOUTH,
-               SOUTH: NORTH,
-               EAST: WEST,
-               WEST: EAST,
-               STOP: STOP}
+    REVERSE = {NORTH: SOUTH, SOUTH: NORTH, EAST: WEST, WEST: EAST, STOP: STOP}
 
 
 class Configuration:
@@ -61,7 +53,7 @@ class Configuration:
         self.direction = direction
 
     def getPosition(self):
-        return (self.pos)
+        return self.pos
 
     def getDirection(self):
         return self.direction
@@ -71,8 +63,9 @@ class Configuration:
         return x == int(x) and y == int(y)
 
     def __eq__(self, other):
-        if other == None: return False
-        return (self.pos == other.pos and self.direction == other.direction)
+        if other == None:
+            return False
+        return self.pos == other.pos and self.direction == other.direction
 
     def __hash__(self):
         x = hash(self.pos)
@@ -120,7 +113,10 @@ class AgentState:
     def __eq__(self, other):
         if other == None:
             return False
-        return self.configuration == other.configuration and self.scaredTimer == other.scaredTimer
+        return (
+            self.configuration == other.configuration
+            and self.scaredTimer == other.scaredTimer
+        )
 
     def __hash__(self):
         return hash(hash(self.configuration) + 13 * hash(self.scaredTimer))
@@ -134,7 +130,8 @@ class AgentState:
         return state
 
     def getPosition(self):
-        if self.configuration == None: return None
+        if self.configuration == None:
+            return None
         return self.configuration.getPosition()
 
     def getDirection(self):
@@ -151,7 +148,8 @@ class Grid:
     """
 
     def __init__(self, width, height, initialValue=False, bitRepresentation=None):
-        if initialValue not in [False, True]: raise Exception('Grids can only contain booleans')
+        if initialValue not in [False, True]:
+            raise Exception("Grids can only contain booleans")
         self.CELLS_PER_INT = 30
 
         self.width = width
@@ -167,12 +165,16 @@ class Grid:
         self.data[key] = item
 
     def __str__(self):
-        out = [[str(self.data[x][y])[0] for x in range(self.width)] for y in range(self.height)]
+        out = [
+            [str(self.data[x][y])[0] for x in range(self.width)]
+            for y in range(self.height)
+        ]
         out.reverse()
-        return '\n'.join([''.join(x) for x in out])
+        return "\n".join(["".join(x) for x in out])
 
     def __eq__(self, other):
-        if other == None: return False
+        if other == None:
+            return False
         return self.data == other.data
 
     def __hash__(self):
@@ -206,7 +208,8 @@ class Grid:
         list = []
         for x in range(self.width):
             for y in range(self.height):
-                if self[x][y] == key: list.append((x, y))
+                if self[x][y] == key:
+                    list.append((x, y))
         return list
 
     def packBits(self):
@@ -221,7 +224,7 @@ class Grid:
             bit = self.CELLS_PER_INT - (i % self.CELLS_PER_INT) - 1
             x, y = self._cellIndexToPosition(i)
             if self[x][y]:
-                currentInt += 2 ** bit
+                currentInt += 2**bit
             if (i + 1) % self.CELLS_PER_INT == 0:
                 bits.append(currentInt)
                 currentInt = 0
@@ -240,14 +243,16 @@ class Grid:
         cell = 0
         for packed in bits:
             for bit in self._unpackInt(packed, self.CELLS_PER_INT):
-                if cell == self.width * self.height: break
+                if cell == self.width * self.height:
+                    break
                 x, y = self._cellIndexToPosition(cell)
                 self[x][y] = bit
                 cell += 1
 
     def _unpackInt(self, packed, size):
         bools = []
-        if packed < 0: raise ValueError("must be a positive integer")
+        if packed < 0:
+            raise ValueError("must be a positive integer")
         for i in range(size):
             n = 2 ** (self.CELLS_PER_INT - i - 1)
             if packed >= n:
@@ -269,20 +274,24 @@ def reconstituteGrid(bitRep):
 # Parts you shouldn't have to read #
 ####################################
 
+
 class Actions:
     """
     A collection of static methods for manipulating move actions.
     """
+
     # Directions
-    _directions = {Directions.NORTH: (0, 1),
-                   Directions.SOUTH: (0, -1),
-                   Directions.EAST: (1, 0),
-                   Directions.WEST: (-1, 0),
-                   Directions.STOP: (0, 0)}
+    _directions = {
+        Directions.NORTH: (0, 1),
+        Directions.SOUTH: (0, -1),
+        Directions.EAST: (1, 0),
+        Directions.WEST: (-1, 0),
+        Directions.STOP: (0, 0),
+    }
 
     _directionsAsList = _directions.items()
 
-    TOLERANCE = .001
+    TOLERANCE = 0.001
 
     def reverseDirection(action):
         if action == Directions.NORTH:
@@ -323,15 +332,14 @@ class Actions:
         x_int, y_int = int(x + 0.5), int(y + 0.5)
 
         # In between grid points, all agents must continue straight
-        if (abs(x - x_int) + abs(y - y_int) > Actions.TOLERANCE):
+        if abs(x - x_int) + abs(y - y_int) > Actions.TOLERANCE:
             return [config.getDirection()]
 
         for dir, vec in Actions._directionsAsList:
             dx, dy = vec
             next_y = y_int + dy
             next_x = x_int + dx
-            if not walls[next_x][next_y]: possible.append(dir)
+            if not walls[next_x][next_y]:
+                possible.append(dir)
 
         return possible
-        
-
