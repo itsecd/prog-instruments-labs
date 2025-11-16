@@ -43,10 +43,8 @@ def frequency_test(bits):
     logger.debug(f"Статистика частотного теста: нули={zero_count}, единицы={one_count}")
     logger.debug(f"Сумма битов (нормализованная): {sum_bit}")
 
-
     abs_normal_sum = abs(sum_bit) / math.sqrt(len(bits))
     logger.debug(f"Абсолютное нормализованное значение: {abs_normal_sum}")
-
 
     p_value = math.erfc(abs_normal_sum / math.sqrt(2))
 
@@ -151,7 +149,6 @@ def longest_run_test(binary_sequence, block_size=8):
     num_blocks = n // block_size
     logger.debug(f"Количество блоков для анализа: {num_blocks}")
 
-
     pi = [0.2148, 0.3672, 0.2305, 0.1875]
     logger.debug(f"Ожидаемые распределения вероятностей: {pi}")
 
@@ -185,7 +182,6 @@ def longest_run_test(binary_sequence, block_size=8):
 
     logger.info(f"Анализ блоков завершен. Распределение серий: v={v}")
     logger.debug(f"Ожидаемое распределение: {[pi_i * num_blocks for pi_i in pi]}")
-
 
     hi_square = 0
     for i in range(4):

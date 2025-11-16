@@ -86,7 +86,6 @@ def validate_sequence(sequence: str, source: str) -> bool:
         logging.warning(f"Пустая последовательность из {source}")
         return False
 
-
     valid_chars = set('01')
     if not all(char in valid_chars for char in sequence):
         invalid_chars = set(sequence) - valid_chars
@@ -100,6 +99,7 @@ def validate_sequence(sequence: str, source: str) -> bool:
         logging.warning(f"Короткая последовательность из {source}. Всего {sequence_length} бит")
 
     return True
+
 
 def write_results(freq_cpp: float, freq_java: float,
                   runs_cpp: float, runs_java: float,
@@ -185,6 +185,7 @@ def perform_tests() -> Tuple[float, float, float, float, float, float]:
     logging.info("Все тесты NIST успешно выполнены")
     return freq_cpp, freq_java, runs_cpp, runs_java, long_cpp, long_java
 
+
 def main():
     """
     Основная функция программы.
@@ -200,16 +201,12 @@ def main():
 
         test_results = perform_tests()
 
-
         write_results(*test_results, const.res)
-
 
         freq_cpp, freq_java, runs_cpp, runs_java, long_cpp, long_java = test_results
 
-
         logging.info("Анализ завершен успешно")
         logging.info(f"Итоговые результаты записаны в {const.res}")
-
 
         if abs(freq_cpp - 0.5) < abs(freq_java - 0.5):
             logging.info("C++ генератор показал лучшую частотную характеристику")
