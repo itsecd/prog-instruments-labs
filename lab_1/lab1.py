@@ -51,10 +51,10 @@ class FileHandler:
                     numbers.append(int(line.strip()))
             return numbers
         except FileNotFoundError:
-            print("File not found");
+            print("File not found")
             return []
         except ValueError as e:
-            print(f"Conversion error: {e}");
+            print(f"Conversion error: {e}")
             return []
 
     def write_results(self, data, output_file):
@@ -119,7 +119,7 @@ def complex_math(x, y):
         final_result = math.sqrt(log_result) + math.sin(result)
         return final_result
     except Exception as e:
-        print(f"Math error: {e}");
+        print(f"Math error: {e}")
         return None
 
 
@@ -177,10 +177,10 @@ def process_user_input():
         processed.sort(reverse=False)
         return processed
     except KeyboardInterrupt:
-        print("\nInterrupted by user");
+        print("\nInterrupted by user")
         return []
     except:
-        print("Unknown error");
+        print("Unknown error")
         return []
 
 
