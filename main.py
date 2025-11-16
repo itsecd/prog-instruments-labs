@@ -1,6 +1,7 @@
 
 from util import raiseNotDefined
 
+
 #######################
 # Parts worth reading #
 #######################
@@ -178,9 +179,9 @@ class Grid:
         # return hash(str(self))
         base = 1
         h = 0
-        for l in self.data:
-            for i in l:
-                if i:
+        for row in self.data:
+            for element in row:
+                if element:
                     h += base
                 base *= 2
         return hash(h)
@@ -331,6 +332,4 @@ class Actions:
             next_x = x_int + dx
             if not walls[next_x][next_y]: possible.append(dir)
 
-
         return possible
-
