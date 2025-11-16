@@ -61,35 +61,65 @@ def frequency_test(bits):
 
 
 def runs_test(bits):
-	"""
-	Тест на одинаковые подряд идущие биты.
+    """
+    Тест на одинаковые подряд идущие биты.
 
-	Проверяет частоту смены знаков в последовательности.
+    Проверяет частоту смены знаков в последовательности.
 
-	Параметры:
-	bits (str): строка, содержащая последовательность нулей и единиц.
+    Параметры:
+    bits (str): строка, содержащая последовательность нулей и единиц.
 
-	Возвращает:
-	float: p-значение теста.
-	"""
-	share_units = 0
-	for bit in bits:
-		if bit == "1":
-			share_units += 1
-	share_units = share_units / len(bits)
+    Возвращает:
+    float: p-значение теста.
+    """
+    logger.info("Запуск теста на серии (runs test)")
+    logger.debug(f"Длина входной последовательности: {len(bits)} бит")
 
-	if abs(share_units - 0.5) >= 2 / math.sqrt(len(bits)):
-		return 0.0
+    if not bits:
+        logger.error("Получена пустая последовательность для теста на серии")
+        raise ValueError("Последовательность не может быть пустой")
 
-	series = 0
-	for i in range(len(bits) - 1):
-		if bits[i] != bits[i + 1]:
-			series += 1
+    valid_bits = [b for b in bits if b in '01']
+    if len(valid_bits) != len(bits):
+        invalid_count = len(bits) - len(valid_bits)
+        logger.warning(f"Обнаружено {invalid_count} невалидных символов в последовательности")
 
-	numerator = abs(series - 2 * len(bits) * share_units * (1 - share_units))
-	denominator = 2 * math.sqrt(2 * len(bits)) * share_units * (1 - share_units)
-	p_value = math.erfc(numerator / denominator)
-	return p_value
+    share_units = 0
+    for bit in bits:
+        if bit == "1":
+            share_units += 1
+    share_units = share_units / len(bits)
+
+    logger.debug(f"Доля единиц в последовательности: {share_units:.4f}")
+
+    tolerance = 2 / math.sqrt(len(bits))
+    if abs(share_units - 0.5) >= tolerance:
+        logger.warning(
+            f"Доля единиц ({share_units:.4f}) выходит за допустимые пределы "
+            f"[{0.5 - tolerance:.4f}, {0.5 + tolerance:.4f}]. Тест может быть невалидным."
+        )
+        return 0.0
+
+    series = 0
+    for i in range(len(bits) - 1):
+        if bits[i] != bits[i + 1]:
+            series += 1
+
+    logger.debug(f"Количество серий (смен): {series}")
+
+    numerator = abs(series - 2 * len(bits) * share_units * (1 - share_units))
+    denominator = 2 * math.sqrt(2 * len(bits)) * share_units * (1 - share_units)
+
+    logger.debug(f"Числитель: {numerator:.4f}, Знаменатель: {denominator:.4f}")
+
+    p_value = math.erfc(numerator / denominator)
+
+    logger.info(f"Тест на серии завершен. p-значение: {p_value}")
+
+    if p_value < 0.01:
+        logger.warning(f"Низкое p-значение в тесте на серии: {p_value}")
+
+    return p_value
 
 
 def longest_run_test(binary_sequence, block_size=8):
