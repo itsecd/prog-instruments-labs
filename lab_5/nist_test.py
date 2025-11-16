@@ -123,51 +123,87 @@ def runs_test(bits):
 
 
 def longest_run_test(binary_sequence, block_size=8):
-	"""
-	Тест на самую длинную последовательность единиц в блоке.
+    """
+    Тест на самую длинную последовательность единиц в блоке.
 
-	Проверяет длину самой длинной последовательности единиц в каждом блоке.
+    Проверяет длину самой длинной последовательности единиц в каждом блоке.
 
-	Параметры:
-	binary_sequence (str): строка, содержащая последовательность нулей и единиц.
-	block_size (int): размер блока (по умолчанию 8).
+    Параметры:
+    binary_sequence (str): строка, содержащая последовательность нулей и единиц.
+    block_size (int): размер блока (по умолчанию 8).
 
-	Возвращает:
-	float: p-значение теста.
-	"""
-	n = len(binary_sequence)
-	if n % block_size != 0:
-		raise ValueError(f"Длина последовательности ({n}) должна быть кратна размеру блока ({block_size})")
+    Возвращает:
+    float: p-значение теста.
+    """
+    logger.info(f"Запуск теста на самую длинную серию (block_size={block_size})")
+    logger.debug(f"Длина входной последовательности: {len(binary_sequence)} бит")
 
-	num_blocks = n // block_size
+    if not binary_sequence:
+        logger.error("Получена пустая последовательность для теста на длинные серии")
+        raise ValueError("Последовательность не может быть пустой")
 
-	pi = [0.2148, 0.3672, 0.2305, 0.1875]
+    n = len(binary_sequence)
+    if n % block_size != 0:
+        error_msg = f"Длина последовательности ({n}) должна быть кратна размеру блока ({block_size})"
+        logger.error(error_msg)
+        raise ValueError(error_msg)
 
-	v = [0, 0, 0, 0]  # v0, v1, v2, v3
+    num_blocks = n // block_size
+    logger.debug(f"Количество блоков для анализа: {num_blocks}")
 
-	for i in range(num_blocks):
-		block = binary_sequence[i * block_size: (i + 1) * block_size]
-		max_run = 0
-		current_run = 0
 
-		for bit in block:
-			if bit == '1':
-				current_run += 1
-				max_run = max(max_run, current_run)
-			else:
-				current_run = 0
+    pi = [0.2148, 0.3672, 0.2305, 0.1875]
+    logger.debug(f"Ожидаемые распределения вероятностей: {pi}")
 
-		if max_run <= 1:
-			v[0] += 1
-		elif max_run == 2:
-			v[1] += 1
-		elif max_run == 3:
-			v[2] += 1
-		else:  # max_run >= 4
-			v[3] += 1
+    v = [0, 0, 0, 0]
 
-	hi_square = sum((v[i] - num_blocks * pi[i]) ** 2 / (num_blocks * pi[i]) for i in range(4))
+    logger.info("Начало анализа блоков на максимальные серии единиц...")
 
-	p_value = gammaincc(1.5, hi_square / 2)
+    for i in range(num_blocks):
+        block = binary_sequence[i * block_size: (i + 1) * block_size]
+        max_run = 0
+        current_run = 0
 
-	return p_value
+        for bit in block:
+            if bit == '1':
+                current_run += 1
+                max_run = max(max_run, current_run)
+            else:
+                current_run = 0
+
+        if max_run <= 1:
+            v[0] += 1
+        elif max_run == 2:
+            v[1] += 1
+        elif max_run == 3:
+            v[2] += 1
+        else:  # max_run >= 4
+            v[3] += 1
+
+        if (i + 1) % 1000 == 0:
+            logger.debug(f"Проанализировано {i + 1} блоков из {num_blocks}")
+
+    logger.info(f"Анализ блоков завершен. Распределение серий: v={v}")
+    logger.debug(f"Ожидаемое распределение: {[pi_i * num_blocks for pi_i in pi]}")
+
+
+    hi_square = 0
+    for i in range(4):
+        expected = num_blocks * pi[i]
+        observed = v[i]
+        component = (observed - expected) ** 2 / expected
+        hi_square += component
+        logger.debug(f"Категория {i}: наблюдено={observed}, ожидаемо={expected:.2f}, вклад={component:.4f}")
+
+    logger.debug(f"Общая статистика хи-квадрат: {hi_square:.4f}")
+
+    p_value = gammaincc(1.5, hi_square / 2)
+
+    logger.info(f"Тест на самую длинную серию завершен. p-значение: {p_value}")
+
+    if p_value < 0.01:
+        logger.warning(f"Низкое p-значение в тесте на длинные серии: {p_value}")
+    elif p_value > 0.99:
+        logger.warning(f"Высокое p-значение в тесте на длинные серии: {p_value}")
+
+    return p_value
