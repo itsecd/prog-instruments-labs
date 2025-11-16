@@ -36,7 +36,7 @@ def setup_logging():
     logging.debug(f"Логи будут записываться в: {log_filename}")
 
 
-def read_file(filename: str):
+def read_file(filename: str) -> str:
     """
     Читает содержимое файла и возвращает его как строку.
 
@@ -46,9 +46,27 @@ def read_file(filename: str):
     Возвращает:
     str: содержимое файла.
     """
-    with open(filename, "r") as file:
-        sequence = file.read()
-    return sequence
+    logging.info(f"Начало чтения файла: {filename}")
+
+    try:
+        with open(filename, "r", encoding='utf-8') as file:
+            sequence = file.read()
+            file_size = len(sequence)
+
+        logging.info(f"Файл {filename} успешно прочитан. Размер: {file_size} символов")
+        logging.debug(f"Первые 50 символов: {sequence[:50]}...")
+
+        return sequence
+
+    except FileNotFoundError:
+        logging.error(f"Файл не найден: {filename}")
+        raise
+    except IOError as e:
+        logging.error(f"Ошибка ввода-вывода при чтении {filename}: {str(e)}")
+        raise
+    except Exception as e:
+        logging.exception(f"Непредвиденная ошибка при чтении {filename}")
+        raise
 
 
 def write_results(freq_cpp, freq_java,
