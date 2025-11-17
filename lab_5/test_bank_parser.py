@@ -2,6 +2,7 @@ import json
 import os
 import pytest
 import tempfile
+from unittest.mock import Mock
 
 
 class TestModels:
@@ -58,3 +59,36 @@ class TestExtractors:
         extractor = JsonLdExtractor()
         result = extractor.extract_from_html(html_content)
         assert len(result) == expected_count
+
+
+class TestProcessors:
+    """Processor tests (with mock)"""
+
+    def test_card_processor_success_with_mocks(self, mocker):
+        from processors import CardProcessor
+
+        mock_response = mocker.Mock()
+        mock_response.text = "<html>test content</html>"
+        mocker.patch('cffi_requests.get', return_value=mock_response)
+        mocker.patch('processors.DataModuleExtractor.extract',
+                     return_value={'data': {'cardName': 'Test Card', 'bankName': 'Test Bank'}})
+        mocker.patch('processors.DataCleaner.clean',
+                     return_value={'name': 'Test Card', 'bank': 'Test Bank'})
+
+        processor = CardProcessor(delay=0)
+        result = processor.process_single_card("https://example.com/card", "debitcards")
+
+        assert result['success'] is True
+        assert result['name'] == 'Test Card'
+        assert result['bank'] == 'Test Bank'
+
+    def test_card_processor_error_with_mocks(self, mocker):
+        from processors import CardProcessor
+
+        mocker.patch('cffi_requests.get', side_effect=Exception("Network error"))
+
+        processor = CardProcessor(delay=0)
+        result = processor.process_single_card("https://example.com/card", "debitcards")
+
+        assert result['success'] is False
+        assert 'error' in result
