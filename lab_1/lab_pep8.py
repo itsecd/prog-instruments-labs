@@ -372,7 +372,11 @@ def get_session_participants(request, session_id):
                         if hasattr(participant.user, 'profile')
                         else ''
                     ),  # E127: Proper indentation
-                    'year_of_study': participant.user.profile.year_of_study if hasattr(participant.user, 'profile') else None
+                    'year_of_study': ( # E131 - continuation line unaligned
+                        participant.user.profile.year_of_study
+                        if hasattr(participant.user, 'profile')
+                        else None
+                    ),
                 },
                 'joined_at': participant.joined_at
             }
@@ -384,3 +388,5 @@ def get_session_participants(request, session_id):
         return Response(
             {'error': 'Session not found'},
             status=status.HTTP_404_NOT_FOUND)  # E501: Line break for long call
+
+# W292: Empty line at end of file
