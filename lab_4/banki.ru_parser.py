@@ -3,84 +3,17 @@ import time
 from bs4 import BeautifulSoup
 from curl_cffi import requests as cffi_requests
 
-BANK_CONFIGS = [
-    {
-        "url": "https://www.banki.ru/products/debitcards/alfabank/",
-        "name": "Альфа-Банк",
-        "product_type": "debitcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/creditcards/alfabank/",
-        "name": "Альфа-Банк",
-        "product_type": "creditcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/creditcards/sovcombank/",
-        "name": "Совкомбанк",
-        "product_type": "creditcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/debitcards/sovcombank/",
-        "name": "Совкомбанк",
-        "product_type": "debitcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/debitcards/tcs/",
-        "name": "Т-Банк",
-        "product_type": "debitcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/creditcards/tcs/",
-        "name": "Т-Банк",
-        "product_type": "creditcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/debitcards/vtb/",
-        "name": "ВТБ",
-        "product_type": "debitcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/creditcards/vtb/",
-        "name": "ВТБ",
-        "product_type": "creditcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/debitcards/gazprombank/",
-        "name": "Газпромбанк",
-        "product_type": "debitcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/creditcards/gazprombank/",
-        "name": "Газпромбанк",
-        "product_type": "creditcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/debitcards/rshb/",
-        "name": "Россельхозбанк",
-        "product_type": "debitcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/creditcards/rshb/",
-        "name": "Россельхозбанк",
-        "product_type": "creditcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/debitcards/domrfbank/",
-        "name": "Банк ДОМ.РФ",
-        "product_type": "debitcards"
-    },
-    {
-        "url": "https://www.banki.ru/products/creditcards/domrfbank/",
-        "name": "Банк ДОМ.РФ",
-        "product_type": "creditcards"
-    },
-]
-
-# Паттерны URL для разных типов карт
-PRODUCT_PATTERNS = {
-    "debitcards": "https://www.banki.ru/products/debitcards/card/",
-    "creditcards": "https://www.banki.ru/products/creditcards/card/"
-}
+from config import (
+    BANK_CONFIGS,
+    PRODUCT_PATTERNS,
+    REQUEST_DELAY,
+    BATCH_DELAY,
+    USER_AGENT,
+    PROMOTIONAL_FIELDS,
+    MAIN_OUTPUT_FILE,
+    DEBIT_CARDS_FILE,
+    CREDIT_CARDS_FILE
+)
 
 
 def parse_json_ld_from_html(html_content):
@@ -178,9 +111,7 @@ def clean_card_data(raw_data, product_type):
 
     data = raw_data.get('data', {})
 
-    # Убираем рекламные предложения вкладов и другие ненужные данные
-    promotional_fields = ['promo_deposit_offers', 'promo_offers', 'special_offers', 'advertising_blocks']
-    for field in promotional_fields:
+    for field in PROMOTIONAL_FIELDS:
         if field in data:
             del data[field]
 
@@ -248,7 +179,7 @@ def clean_card_data(raw_data, product_type):
 
 
 # Универсальная обработка одной карты
-def process_single_card(card_url, product_type, delay=1):
+def process_single_card(card_url, product_type, delay=REQUEST_DELAY):
     try:
         print(f"Обрабатываем карту: {card_url}")
         time.sleep(delay)
@@ -281,7 +212,7 @@ def process_single_card(card_url, product_type, delay=1):
 
 
 # Обработка всех карт банка
-def process_all_cards(card_urls, product_type, delay=2):
+def process_all_cards(card_urls, product_type, delay=BATCH_DELAY):
     all_results = []
     total_count = len(card_urls)
     print(f"\nНачинаем обработку {total_count} карт ({product_type})...\n")
@@ -300,7 +231,7 @@ def process_all_cards(card_urls, product_type, delay=2):
 
 
 # Сохранение в JSON
-def save_results_to_file(results, filename="cards_data.json"):
+def save_results_to_file(results, filename=MAIN_OUTPUT_FILE):
     try:
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(results, f, ensure_ascii=False, indent=2)
@@ -332,10 +263,7 @@ def print_final_statistics(all_cards_data):
                     banks[bank_name]['debit'] += 1
                 else:
                     banks[bank_name]['credit'] += 1
-
-    print(f"\n{'=' * 80}")
     print(f"ИТОГОВАЯ СТАТИСТИКА")
-    print(f"{'=' * 80}")
     print(f"Всего карт собрано: {total_cards}")
     print(f"Успешно обработано: {successful_cards}")
     print(f"С ошибками: {failed_cards}")
@@ -365,10 +293,9 @@ if __name__ == "__main__":
         print(f"ОБРАБАТЫВАЕМ БАНК: {bank_name}")
         print(f"ТИП ПРОДУКТА: {product_type}")
         print(f"URL: {bank_url}")
-        print(f"{'=' * 60}")
 
         try:
-            response = cffi_requests.get(bank_url, impersonate="safari15_5")
+            response = cffi_requests.get(bank_url, impersonate=USER_AGENT)
             response.raise_for_status()
             html_content = response.text
 
@@ -394,29 +321,28 @@ if __name__ == "__main__":
 
         except Exception as e:
             print(f"Ошибка при обработке банка {bank_name} ({product_type}): {e}")
-            print(f"{'=' * 60}")
 
     # Сохраняем ВСЕ данные в один файл
     if all_cards_data:
         # Основной файл со всеми данными
-        save_results_to_file(all_cards_data, "all_cards_combined.json")
+        save_results_to_file(all_cards_data, MAIN_OUTPUT_FILE)
 
         # Дополнительно: разделяем по типам карт для удобства
         debit_cards = [card for card in all_cards_data if card.get('product_type') == 'debitcards']
         credit_cards = [card for card in all_cards_data if card.get('product_type') == 'creditcards']
 
         if debit_cards:
-            save_results_to_file(debit_cards, "debit_cards.json")
+            save_results_to_file(debit_cards, DEBIT_CARDS_FILE)
         if credit_cards:
-            save_results_to_file(credit_cards, "credit_cards.json")
+            save_results_to_file(credit_cards, CREDIT_CARDS_FILE)
 
         # Выводим итоговую статистику
         print_final_statistics(all_cards_data)
 
         print(f"\nОБРАБОТКА ЗАВЕРШЕНА!")
-        print(f"Основной файл: all_cards_combined.json ({len(all_cards_data)} карт)")
-        print(f"Дебетовые карты: debit_cards.json ({len(debit_cards)} карт)")
-        print(f"Кредитные карты: credit_cards.json ({len(credit_cards)} карт)")
+        print(f"Основной файл: {MAIN_OUTPUT_FILE} ({len(all_cards_data)} карт)")
+        print(f"Дебетовые карты: {DEBIT_CARDS_FILE} ({len(debit_cards)} карт)")
+        print(f"Кредитные карты: {CREDIT_CARDS_FILE} ({len(credit_cards)} карт)")
     else:
         print("\nНе удалось собрать данные ни по одной карте")
 
