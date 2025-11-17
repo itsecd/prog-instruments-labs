@@ -1,0 +1,13 @@
+{
+  "settings": {
+    "orig_file": "orig_file.txt",
+    "enc_file": "enc_file.txt",
+    "dec_file": "dec_file.txt",
+    "sym_key": "sym_key.txt",
+    "publ_key": "publ_key.pem",
+    "priv_key": "priv_key.pem",
+
+    "len_key": "128"
+  }
+}
+
