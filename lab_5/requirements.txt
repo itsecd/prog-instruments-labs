@@ -1,0 +1,4 @@
+beautifulsoup4==4.12.2
+curl-cffi==0.5.10
+pytest==7.4.3
+pytest-cov==4.1.0
