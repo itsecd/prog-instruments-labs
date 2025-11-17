@@ -33,12 +33,17 @@ def main():
     csv_file_path = source["CSV_FILE"]
     patterns = read_json(source["PATTERNS"])
     result_path = source["RESULT"]
+    variant = int(csv_file_path[:-4])
 
     rows = read_csv(csv_file_path)
     error_rows = find_error_rows(rows, patterns)
 
+    checksum = calculate_checksum(error_rows)
+    serialize_result(variant, checksum, result_path)
+
     print(f"Всего строк: {len(rows)}")
     print(f"Строк с ошибками: {len(error_rows)}")
+    print(f"Контрольная сумма: {checksum}")
 
 
 if __name__ == "__main__":
