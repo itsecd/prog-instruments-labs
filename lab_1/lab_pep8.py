@@ -1,3 +1,5 @@
+from typing import List, Dict, Any
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -66,7 +68,9 @@ def get_my_sessions(request):
 
     except Exception as e:
         print(f"Error in get_my_sessions: {e}")
-        return Response({'error': 'Internal server error'}, status=500)
+        return Response(
+            {'error': 'Internal server error'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR)  # E501: Line break for long call
 
 
 @api_view(['POST'])  # E306: Added blank lines between functions
@@ -81,16 +85,20 @@ def create_session(request):
             SessionParticipant.objects.create(session=session, user=request.user)
 
             full_session_data = StudySessionSerializer(session).data
-            return Response(full_session_data, status=status.HTTP_201_CREATED)
+            return Response(   # E501: Line break for long call
+                full_session_data,
+                status=status.HTTP_201_CREATED)
 
         except Exception as e:
             print(f"❌ Error creating session: {e}")
             return Response(
                 {'error': f'Error creating session: {str(e)}'},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            )   # E501: Line break for long call
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(
+        serializer.errors,
+        status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
 
 
 @api_view(['POST'])  # E306: Added blank lines between functions
@@ -100,19 +108,27 @@ def join_session(request, session_id):
     try:
         session = StudySession.objects.get(id=session_id, is_active=True)
     except StudySession.DoesNotExist:
-        return Response({'error': 'Session not found'}, status=status.HTTP_404_NOT_FOUND) # N806: English message
+        return Response({
+            'error': 'Session not found'},  # E501: Line break for long call
+            status=status.HTTP_404_NOT_FOUND) # N806: English message
 
     # Check if already joined
     if SessionParticipant.objects.filter(session=session, user=request.user).exists():
-        return Response({'error': 'Already joined this session'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'error': 'Already joined this session'},
+            status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
 
     # Check participants limit
     if session.current_participants_count >= session.max_participants:
-        return Response({'error': 'Participants limit reached'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'error': 'Participants limit reached'},
+            status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
 
     # Check if session hasn't started
     if session.scheduled_time <= timezone.now():
-        return Response({'error': 'Cannot join started session' }, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {'error': 'Cannot join started session' },
+            status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
 
     # Join user to session
     SessionParticipant.objects.create(session=session, user=request.user)
@@ -122,7 +138,7 @@ def join_session(request, session_id):
     return Response({
         'message': 'Successfully joined session',
         'session': updated_session
-    }, status=status.HTTP_201_CREATED)
+    }, status=status.HTTP_201_CREATED)  # E501: Line break for long call
 
 
 @api_view(['POST'])  # E306: Added blank lines between functions
@@ -136,12 +152,15 @@ def leave_session(request, session_id):
             is_active=True
         )
     except SessionParticipant.DoesNotExist:
-        return Response({'error': 'Not a participant of this session'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {'error': 'Not a participant of this session'},
+            status=status.HTTP_404_NOT_FOUND)   # E501: Line break for long call
 
     # Creator cannot leave session (should delete it)
     if participant.session.created_by == request.user:
-        return Response({'error': 'Creator cannot leave session'}, status=status.HTTP_400_BAD_REQUEST)
-
+        return Response(
+            {'error': 'Creator cannot leave session'},
+            status=status.HTTP_400_BAD_REQUEST)   # E501: Line break for long call
     participant.delete()
 
     # Return updated session data
@@ -150,7 +169,7 @@ def leave_session(request, session_id):
     return Response({
         'message': 'Successfully left session',
         'session': updated_session
-    })
+    })   # E501: Line break for long call
 
 
 @api_view(['DELETE'])  # E306: Added blank lines between functions
@@ -160,7 +179,9 @@ def delete_session(request, session_id):
     try:
         session = StudySession.objects.get(id=session_id, created_by=request.user)
     except StudySession.DoesNotExist:
-        return Response({'error': 'Session not found or no permissions'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {'error': 'Session not found or no permissions'},
+            status=status.HTTP_404_NOT_FOUND)   # E501: Line break for long call
 
     session.is_active = False
     session.save()
@@ -205,7 +226,9 @@ def get_invitations(request):
 
     except Exception as e:
         print(f"Error in get_invitations: {e}")
-        return Response({'error': 'Internal server error'}, status=500)
+        return Response(
+            {'error': 'Internal server error'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR)  # E501: Line break for long call
 
 
 @api_view(['POST'])  # E306: Added blank lines between functions
@@ -219,7 +242,7 @@ def send_invitation(request):
         if not session_id or not invitee_id:
             return Response({
                 'error': 'session_id and user_id are required'
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
 
         session = StudySession.objects.get(id=session_id, is_active=True)
         invitee = User.objects.get(id=invitee_id)
@@ -228,19 +251,19 @@ def send_invitation(request):
         if SessionInvitation.objects.filter(session=session, invitee=invitee).exists():
             return Response({
                 'error': 'Invitation already sent to this user'
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
 
-        # Проверяем, что приглашающий - создатель сессии
+        # Check if inviter is session creator
         if session.created_by != request.user:
             return Response({
                 'error': 'Only session creator can send invitations'
-            }, status=status.HTTP_403_FORBIDDEN)
+            }, status=status.HTTP_403_FORBIDDEN)  # E501: Line break for long call
 
-        # Проверяем, что не приглашаем самого себя
+        # Check not inviting self
         if invitee.id == request.user.id:
             return Response({
                 'error': 'Cannot send invitation to yourself'
-            }, status=status.HTTP_400_BAD_REQUEST)
+            }, status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
 
         # Create invitation
         invitation = SessionInvitation.objects.create(
@@ -255,21 +278,21 @@ def send_invitation(request):
             'invitation_id': invitation.id,
             'session_title': session.title,
             'invitee_name': invitee.username
-        }, status=status.HTTP_201_CREATED)
+        }, status=status.HTTP_201_CREATED)  # E501: Line break for long call
 
     except StudySession.DoesNotExist:
         return Response({
             'error': 'Session not found'
-        }, status=status.HTTP_404_NOT_FOUND)
+        }, status=status.HTTP_404_NOT_FOUND)  # E501: Line break for long call
     except User.DoesNotExist:
         return Response({
             'error': 'User not found'
-        }, status=status.HTTP_404_NOT_FOUND)
+        }, status=status.HTTP_404_NOT_FOUND)  # E501: Line break for long call
     except Exception as e:
         print(f"Error in send_invitation: {e}")
         return Response({
             'error': 'Internal server error'
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)  # E501: Line break for long call
 
 
 @api_view(['POST'])  # E306: Added blank lines between functions
@@ -285,7 +308,9 @@ def respond_to_invitation(request, invitation_id):
 
         response = request.data.get('response')
         if response not in ['accepted', 'declined']:
-            return Response({'error': 'Invalid response'}, status=400)
+            return Response(
+                {'error': 'Invalid response'},
+                status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
 
         invitation.status = response
         invitation.responded_at = timezone.now()
@@ -295,7 +320,9 @@ def respond_to_invitation(request, invitation_id):
         if response == 'accepted':
             # Check participants limit
             if invitation.session.current_participants_count >= invitation.session.max_participants:
-                return Response({'error': 'Participants limit reached'}, status=400)
+                return Response({
+                    'error': 'Participants limit reached'},
+                    status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
 
             # Add to participants
             SessionParticipant.objects.get_or_create(
@@ -309,10 +336,14 @@ def respond_to_invitation(request, invitation_id):
         })
 
     except SessionInvitation.DoesNotExist:
-        return Response({'error': 'Invitation not found'}, status=404)
+        return Response(
+            {'error': 'Invitation not found'},
+            status=status.HTTP_404_NOT_FOUND)  # E501: Line break for long call
     except Exception as e:
         print(f"Error in respond_to_invitation: {e}")
-        return Response({'error': 'Internal server error'}, status=500)
+        return Response(
+            {'error': 'Internal server error'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR)  # E501: Line break for long call
 
 
 @api_view(['GET'])  # E306: Added blank lines between function
@@ -342,4 +373,6 @@ def get_session_participants(request, session_id):
         return Response(participants_data)
 
     except StudySession.DoesNotExist:
-        return Response({'error': 'Session not found'}, status=404)
+        return Response(
+            {'error': 'Session not found'},
+            status=status.HTTP_404_NOT_FOUND)  # E501: Line break for long call
