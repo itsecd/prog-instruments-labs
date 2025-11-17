@@ -33,29 +33,29 @@ def get_sessions(request):
 def get_my_sessions(request):
     """Get user sessions (created or participating)."""  # C0103: English docstring
     try:
-        # Сессии созданные пользователем
+        # User created sessions  # N806: English comments
         created_sessions = StudySession.objects.filter(
             created_by=request.user,
             is_active=True
         )
 
-        # Сессии где пользователь участник
+        # Sessions where user is participant
         participant_sessions = StudySession.objects.filter(
             participants__user=request.user,
             participants__is_active=True,
             is_active=True
         )
 
-        # Объединяем и убираем дубликаты
+        # Combine and remove duplicates
         sessions = (created_sessions | participant_sessions).distinct().order_by('scheduled_time')
 
-        # Добавляем информацию об участниках
+        # Add participants info
         sessions_with_participants = []
         for session in sessions:
             session_data = StudySessionSerializer(session).data
-            # Добавляем флаг является ли пользователь создателем
+            # Add creator flag
             session_data['is_creator'] = session.created_by == request.user
-            # Добавляем флаг является ли пользователь участником
+            # Add participant flag
             session_data['is_participant'] = session.participants.filter(
                 user=request.user,
                 is_active=True
@@ -77,7 +77,7 @@ def create_session(request):
     if serializer.is_valid():
         try:
             session = serializer.save(created_by=request.user)
-            # Автоматически добавляем создателя как участника
+            # Automatically add creator as participant
             SessionParticipant.objects.create(session=session, user=request.user)
 
             full_session_data = StudySessionSerializer(session).data
@@ -100,27 +100,27 @@ def join_session(request, session_id):
     try:
         session = StudySession.objects.get(id=session_id, is_active=True)
     except StudySession.DoesNotExist:
-        return Response({'error': 'Сессия не найдена'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Session not found'}, status=status.HTTP_404_NOT_FOUND) # N806: English message
 
-    # Проверяем, не присоединен ли уже
+    # Check if already joined
     if SessionParticipant.objects.filter(session=session, user=request.user).exists():
-        return Response({'error': 'Вы уже присоединены к этой сессии'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Already joined this session'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Проверяем лимит участников
+    # Check participants limit
     if session.current_participants_count >= session.max_participants:
-        return Response({'error': 'Достигнут лимит участников'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Participants limit reached'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Проверяем, что сессия еще не началась
+    # Check if session hasn't started
     if session.scheduled_time <= timezone.now():
-        return Response({'error': 'Нельзя присоединиться к начавшейся сессии'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Cannot join started session' }, status=status.HTTP_400_BAD_REQUEST)
 
-    # Присоединяем пользователя
+    # Join user to session
     SessionParticipant.objects.create(session=session, user=request.user)
 
-    # Возвращаем обновленные данные сессии
+    # Return updated session data
     updated_session = StudySessionSerializer(session).data
     return Response({
-        'message': 'Вы присоединились к сессии',
+        'message': 'Successfully joined session',
         'session': updated_session
     }, status=status.HTTP_201_CREATED)
 
@@ -136,19 +136,19 @@ def leave_session(request, session_id):
             is_active=True
         )
     except SessionParticipant.DoesNotExist:
-        return Response({'error': 'Вы не участник этой сессии'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Not a participant of this session'}, status=status.HTTP_404_NOT_FOUND)
 
-    # Создатель не может покинуть сессию (должен удалить её)
+    # Creator cannot leave session (should delete it)
     if participant.session.created_by == request.user:
-        return Response({'error': 'Создатель не может покинуть сессию'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Creator cannot leave session'}, status=status.HTTP_400_BAD_REQUEST)
 
     participant.delete()
 
-    # Возвращаем обновленные данные сессии
+    # Return updated session data
     session = StudySession.objects.get(id=session_id)
     updated_session = StudySessionSerializer(session).data
     return Response({
-        'message': 'Вы покинули сессию',
+        'message': 'Successfully left session',
         'session': updated_session
     })
 
@@ -160,11 +160,11 @@ def delete_session(request, session_id):
     try:
         session = StudySession.objects.get(id=session_id, created_by=request.user)
     except StudySession.DoesNotExist:
-        return Response({'error': 'Сессия не найдена или у вас нет прав'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'Session not found or no permissions'}, status=status.HTTP_404_NOT_FOUND)
 
     session.is_active = False
     session.save()
-    return Response({'message': 'Сессия удалена'})
+    return Response({'message': 'Session deleted'})
 
 
 @api_view(['GET'])  # E306: Added blank lines between functions
@@ -218,31 +218,31 @@ def send_invitation(request):
 
         if not session_id or not invitee_id:
             return Response({
-                'error': 'session_id и user_id обязательны'
+                'error': 'session_id and user_id are required'
             }, status=status.HTTP_400_BAD_REQUEST)
 
         session = StudySession.objects.get(id=session_id, is_active=True)
         invitee = User.objects.get(id=invitee_id)
 
-        # Проверяем, не отправили ли уже приглашение
+        # Check if invitation already sent
         if SessionInvitation.objects.filter(session=session, invitee=invitee).exists():
             return Response({
-                'error': 'Приглашение уже отправлено этому пользователю'
+                'error': 'Invitation already sent to this user'
             }, status=status.HTTP_400_BAD_REQUEST)
 
         # Проверяем, что приглашающий - создатель сессии
         if session.created_by != request.user:
             return Response({
-                'error': 'Только создатель сессии может отправлять приглашения'
+                'error': 'Only session creator can send invitations'
             }, status=status.HTTP_403_FORBIDDEN)
 
         # Проверяем, что не приглашаем самого себя
         if invitee.id == request.user.id:
             return Response({
-                'error': 'Нельзя отправить приглашение самому себе'
+                'error': 'Cannot send invitation to yourself'
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        # Создаем приглашение
+        # Create invitation
         invitation = SessionInvitation.objects.create(
             session=session,
             inviter=request.user,
@@ -251,7 +251,7 @@ def send_invitation(request):
         )
 
         return Response({
-            'message': 'Приглашение успешно отправлено',
+            'message': 'Invitation sent successfully',
             'invitation_id': invitation.id,
             'session_title': session.title,
             'invitee_name': invitee.username
@@ -259,16 +259,16 @@ def send_invitation(request):
 
     except StudySession.DoesNotExist:
         return Response({
-            'error': 'Сессия не найдена'
+            'error': 'Session not found'
         }, status=status.HTTP_404_NOT_FOUND)
     except User.DoesNotExist:
         return Response({
-            'error': 'Пользователь не найден'
+            'error': 'User not found'
         }, status=status.HTTP_404_NOT_FOUND)
     except Exception as e:
         print(f"Error in send_invitation: {e}")
         return Response({
-            'error': 'Внутренняя ошибка сервера'
+            'error': 'Internal server error'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -285,31 +285,31 @@ def respond_to_invitation(request, invitation_id):
 
         response = request.data.get('response')
         if response not in ['accepted', 'declined']:
-            return Response({'error': 'Неверный ответ'}, status=400)
+            return Response({'error': 'Invalid response'}, status=400)
 
         invitation.status = response
         invitation.responded_at = timezone.now()
         invitation.save()
 
-        # Если приняли приглашение - добавляем в участники
+        # If accepted - add to participants
         if response == 'accepted':
-            # Проверяем лимит участников
+            # Check participants limit
             if invitation.session.current_participants_count >= invitation.session.max_participants:
-                return Response({'error': 'Достигнут лимит участников'}, status=400)
+                return Response({'error': 'Participants limit reached'}, status=400)
 
-            # Добавляем в участники
+            # Add to participants
             SessionParticipant.objects.get_or_create(
                 session=invitation.session,
                 user=request.user
             )
 
         return Response({
-            'message': f'Приглашение {response}',
+            'message': f'Invitation  {response}',
             'invitation_id': invitation.id
         })
 
     except SessionInvitation.DoesNotExist:
-        return Response({'error': 'Приглашение не найдено'}, status=404)
+        return Response({'error': 'Invitation not found'}, status=404)
     except Exception as e:
         print(f"Error in respond_to_invitation: {e}")
         return Response({'error': 'Internal server error'}, status=500)
