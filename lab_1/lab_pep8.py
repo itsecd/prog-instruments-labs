@@ -82,7 +82,10 @@ def create_session(request):
         try:
             session = serializer.save(created_by=request.user)
             # Automatically add creator as participant
-            SessionParticipant.objects.create(session=session, user=request.user)
+            SessionParticipant.objects.create(
+                session=session,
+                user=request.user # E127: Proper indentation
+            )
 
             full_session_data = StudySessionSerializer(session).data
             return Response(   # E501: Line break for long call
@@ -119,7 +122,8 @@ def join_session(request, session_id):
             status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
 
     # Check participants limit
-    if session.current_participants_count >= session.max_participants:
+    if (session.current_participants_count
+            >= session.max_participants):  # E127: Proper indentation
         return Response(
             {'error': 'Participants limit reached'},
             status=status.HTTP_400_BAD_REQUEST)  # E501: Line break for long call
@@ -363,7 +367,11 @@ def get_session_participants(request, session_id):
                     'username': participant.user.username,
                     'first_name': participant.user.first_name,
                     'last_name': participant.user.last_name,
-                    'faculty': participant.user.profile.faculty if hasattr(participant.user, 'profile') else '',
+                    'faculty': (
+                        participant.user.profile.faculty
+                        if hasattr(participant.user, 'profile')
+                        else ''
+                    ),  # E127: Proper indentation
                     'year_of_study': participant.user.profile.year_of_study if hasattr(participant.user, 'profile') else None
                 },
                 'joined_at': participant.joined_at
