@@ -2,7 +2,7 @@ import json
 import os
 import pytest
 import tempfile
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 
 class TestModels:
@@ -64,34 +64,33 @@ class TestExtractors:
 class TestProcessors:
     """Processor tests (with mock)"""
 
-    def test_card_processor_success_with_mocks(self, mocker):
+    def test_card_processor_success_with_mocks(self):
         from processors import CardProcessor
 
-        mock_response = mocker.Mock()
+        mock_response = Mock()
         mock_response.text = "<html>test content</html>"
-        mocker.patch('cffi_requests.get', return_value=mock_response)
-        mocker.patch('processors.DataModuleExtractor.extract',
-                     return_value={'data': {'cardName': 'Test Card', 'bankName': 'Test Bank'}})
-        mocker.patch('processors.DataCleaner.clean',
-                     return_value={'name': 'Test Card', 'bank': 'Test Bank'})
 
-        processor = CardProcessor(delay=0)
-        result = processor.process_single_card("https://example.com/card", "debitcards")
+        with patch('processors.cffi_requests.get', return_value=mock_response), \
+                patch('processors.DataModuleExtractor.extract',
+                      return_value={'data': {'cardName': 'Test Card', 'bankName': 'Test Bank'}}), \
+                patch('processors.DataCleaner.clean',
+                      return_value={'name': 'Test Card', 'bank': 'Test Bank'}):
+            processor = CardProcessor(delay=0)
+            result = processor.process_single_card("https://example.com/card", "debitcards")
 
-        assert result['success'] is True
-        assert result['name'] == 'Test Card'
-        assert result['bank'] == 'Test Bank'
+            assert result['success'] is True
+            assert result['name'] == 'Test Card'
+            assert result['bank'] == 'Test Bank'
 
-    def test_card_processor_error_with_mocks(self, mocker):
+    def test_card_processor_error_with_mocks(self):
         from processors import CardProcessor
 
-        mocker.patch('cffi_requests.get', side_effect=Exception("Network error"))
+        with patch('processors.cffi_requests.get', side_effect=Exception("Network error")):
+            processor = CardProcessor(delay=0)
+            result = processor.process_single_card("https://example.com/card", "debitcards")
 
-        processor = CardProcessor(delay=0)
-        result = processor.process_single_card("https://example.com/card", "debitcards")
-
-        assert result['success'] is False
-        assert 'error' in result
+            assert result['success'] is False
+            assert 'error' in result
 
 
 class TestStatistics:
