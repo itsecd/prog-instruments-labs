@@ -16,7 +16,7 @@ jobs:
           TITLE: ${{ github.event.pull_request.title }}
        run: |
         SUB='Лаб.'
-        for VAR in 1 2 3 4 5 6 7 8
+        for VAR in 1 2 3 4 5 6 7 8 9
         do
             if (echo $TITLE | grep -iqF "$SUB$VAR" )|| (echo $TITLE | grep -iqF "$SUB $VAR"); then
                 echo "LABEL=Lab $VAR" >> "$GITHUB_ENV"
@@ -54,16 +54,17 @@ jobs:
            ${{ env.LABEL }}
            In progress
           
-     # - name: Setting reviewer
-     #   if:  env.GROUP == '6311' || env.GROUP == '6313'
-     #   uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
-     #   with:
-     #      reviewers: "IlyaOv"
-     #      token: ${{ secrets.GITHUB_TOKEN }}
-
-     # - name: Setting reviewer
-     #   if: env.GROUP == '6312'
-     #   uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
-     #   with:
-     #      reviewers: "alxmcs"
-     #      token: ${{ secrets.GITHUB_TOKEN }}
+     - name: Setting reviewer 
+       if:  env.GROUP == '6311' || env.GROUP == '6313' 
+       uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
+       with:
+          reviewers: "IlyaOv"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+     - name: Setting reviewer
+       if: env.GROUP == '6312' 
+       uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
+       with:
+          reviewers: "alxmcs" 
+          token: ${{ secrets.GITHUB_TOKEN }}
+         
