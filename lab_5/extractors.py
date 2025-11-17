@@ -4,6 +4,7 @@ from typing import List, Dict, Set, Optional, Any
 from bs4 import BeautifulSoup
 
 from config import PRODUCT_PATTERNS, PROMOTIONAL_FIELDS
+from logging_config import logger
 
 
 class JsonLdExtractor:
@@ -21,7 +22,7 @@ class JsonLdExtractor:
                 json_data = json.loads(json_text)
                 all_json_ld_data.append(json_data)
             except Exception as e:
-                print(f"Ошибка при обработке блока JSON-LD: {e}")
+                logger.warning("JSON-LD parsing error: %s", e)
         return all_json_ld_data
 
     def extract_card_urls(self, json_ld_data: List[Dict], bank_name: str,
@@ -102,7 +103,7 @@ class DataModuleExtractor:
                 json_text = raw_json.replace('&quot;', '"')
                 return json.loads(json_text)
             except Exception as e:
-                print(f"Ошибка парсинга data-module-options: {e}")
+                logger.error("Failed to parse data-module-options: %s", e)
                 return None
 
 
