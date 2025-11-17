@@ -1,0 +1,18 @@
+# Testing frameworks
+pytest>=7.4.0
+coverage>=7.2.7
+pytest-cov>=4.1.0
+
+# Data analysis
+pandas>=2.0.3
+numpy>=1.24.3
+
+# Scientific computing
+scipy>=1.10.1
+
+# Plotting
+matplotlib>=3.7.1
+
+# Date handling
+python-dateutil>=2.8.2
+pytz>=2023.3
