@@ -17,7 +17,6 @@ def read(filename: str) -> str:
             return content
     except Exception as e:
         logger.error(f"Ошибка при чтении файла {filename}: {e}")
-        print(f"Ошибка при чтении файла {filename}: {e}")
 
 def save(filename: str, text: str) -> None:
     """
@@ -32,4 +31,3 @@ def save(filename: str, text: str) -> None:
         logger.debug(f"Файл {filename} успешно сохранен, размер: {len(text)} символов")
     except Exception as e:
         logger.error(f"Ошибка при записи в файл {filename}: {e}")
-        print(f"Ошибка при записи в файл {filename}: {e}")

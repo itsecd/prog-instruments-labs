@@ -42,7 +42,6 @@ def save_key_to_pem(key, key_path: str, is_private: bool) -> None:
         logger.debug(f"{key_type.capitalize()} ключ успешно сохранен")
     except Exception as e:
         logger.error(f"Ошибка сохранения ключа: {e}")
-        print(f"Ошибка сохранения ключа: {e}")
         raise
 
 def load_key_from_pem(key_path: str, is_private: bool):
@@ -65,7 +64,6 @@ def load_key_from_pem(key_path: str, is_private: bool):
         return key
     except Exception as e:
         logger.error(f"Ошибка загрузки ключа: {e}")
-        print(f"Ошибка загрузки ключа: {e}")
         raise
 
 def rsa_encrypt(public_key, data: bytes) -> bytes:

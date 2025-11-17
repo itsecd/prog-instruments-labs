@@ -80,10 +80,8 @@ def setup_keys(enc_key_path: str, key_size: int,
         logger.debug("Симметричный ключ зашифрован и сохранен")
 
         logger.info("Ключи успешно созданы и сохранены")
-        print("Ключи успешно созданы и сохранены")
     except Exception as e:
         logger.error(f"Ошибка при генерации ключей: {e}")
-        print(f"Ошибка при генерации ключей: {e}")
         sys.exit(1)
 
 
@@ -105,10 +103,8 @@ def encrypt_data(input_path: str, priv_key_path: str,
 
         write_binary_file(output_path, encrypted_data)
         logger.info(f"Данные успешно зашифрованы и сохранены в {output_path}")
-        print("Данные успешно зашифрованы")
     except Exception as e:
         logger.error(f"Ошибка при шифровании: {e}")
-        print(f"Ошибка при шифровании: {e}")
         sys.exit(1)
 
 
@@ -128,10 +124,8 @@ def decrypt_data(input_path: str, priv_key_path: str,
 
         save(output_path, result)
         logger.info(f"Данные успешно расшифрованы и сохранены в {output_path}")
-        print("Данные успешно расшифрованы")
     except Exception as e:
         logger.error(f"Ошибка при дешифровании: {str(e)}")
-        print(f"Ошибка при дешифровании: {str(e)}")
         sys.exit(1)
 
 
@@ -147,10 +141,8 @@ def encrypt_existing_key(key_path: str, pub_key_path: str, output_path: str) -> 
         write_binary_file(output_path, encrypted_key)
 
         logger.info(f"Ключ успешно зашифрован и сохранен в {output_path}")
-        print(f"Ключ успешно зашифрован и сохранен в {output_path}")
     except Exception as e:
         logger.error(f"Ошибка при шифровании ключа: {e}")
-        print(f"Ошибка при шифровании ключа: {e}")
         sys.exit(1)
 
 
@@ -193,12 +185,10 @@ def main():
                 )
             case _:
                 logger.error("Неизвестный режим работы")
-                print("Неизвестный режим работы")
                 sys.exit(1)
         logger.info("Программа завершена успешно")
     except Exception as e:
         logger.error(f"Критическая ошибка: {e}")
-        print(f"Ошибка: {e}")
         sys.exit(1)
 
 
