@@ -180,8 +180,74 @@ class DataRepository:
         self.save_to_file("menu.json", self.menu_items)
         self.save_to_file("users.json", self.users)
 
+    def find_menu_item_by_id(self, item_id):
+        for menu_item in self.menu_items:
+            if menu_item.id == item_id:
+                return menu_item
+        return None
+
+    def find_order_by_id(self, order_id):
+        for order in self.orders_data:
+            if order.id == order_id:
+                return order
+        return None
+
+
+class OrderService:
+    def __init__(self, repository):
+        self.repository = repository
+
+    def create_order(self, customer_name, items, table_number, order_type):
+        # Validate items
+        valid_items = []
+        for item_id in items:
+            menu_item = self.repository.find_menu_item_by_id(item_id)
+            if menu_item and menu_item.available:
+                valid_items.append(menu_item)
+            else:
+                print(f"Item {item_id} not available or not found")
+
+        if len(valid_items) == 0:
+            print("No valid items in order")
+            return None
+
+        # Create order
+        order_id = len(self.repository.orders_data) + 1
+        order = Order(order_id, customer_name, valid_items, OrderType(order_type), table_number)
+
+        self.repository.orders_data.append(order)
+        self.repository.save_all_data()
+        return order
+
+    def update_order_status(self, order_id, new_status):
+        order = self.repository.find_order_by_id(order_id)
+        if order:
+            order.status = OrderStatus(new_status)
+            self.repository.save_all_data()
+            return True
+        return False
+
+    def process_bulk_orders(self, orders_list):
+        results = []
+        for order_data in orders_list:
+            try:
+                order = self.create_order(
+                    order_data["customer_name"],
+                    order_data["items"],
+                    order_data.get("table_number", 0),
+                    order_data.get("order_type", OrderType.DINE_IN.value)
+                )
+                if order:
+                    results.append({"success": True, "order_id": order.id})
+                else:
+                    results.append({"success": False, "error": "Failed to create order"})
+            except Exception as e:
+                results.append({"success": False, "error": str(e)})
+        return results
+
 
 repository = DataRepository()
+order_service = OrderService(repository)
 
 
 def load_data():
@@ -193,38 +259,16 @@ def save_data():
 
 
 def add_order(customer_name, items, table_number, order_type):
-    # Validate items
-    valid_items = []
-    for item_id in items:
-        found = False
-        for menu_item in repository.menu_items:
-            if menu_item.id == item_id and menu_item.available:
-                valid_items.append(menu_item)
-                found = True
-                break
-        if not found:
-            print(f"Item {item_id} not available or not found")
-
-    if len(valid_items) == 0:
-        print("No valid items in order")
-        return False
-
-    # Create order
-    order_id = len(repository.orders_data) + 1
-    order = Order(order_id, customer_name, valid_items, OrderType(order_type), table_number)
-
-    repository.orders_data.append(order)
-    save_data()
-    return order_id
+    order = order_service.create_order(customer_name, items, table_number, order_type)
+    return order.id if order else False
 
 
 def update_order_status(order_id, new_status):
-    for order in repository.orders_data:
-        if order.id == order_id:
-            order.status = OrderStatus(new_status)
-            save_data()
-            return True
-    return False
+    return order_service.update_order_status(order_id, new_status)
+
+
+def process_bulk_orders(orders_list):
+    return order_service.process_bulk_orders(orders_list)
 
 
 def calculate_daily_revenue(date_str):
@@ -324,22 +368,6 @@ def authenticate_user(username, password):
         if user.username == username and user.password == password:
             return user
     return None
-
-
-def process_bulk_orders(orders_list):
-    results = []
-    for order_data in orders_list:
-        try:
-            order_id = add_order(
-                order_data["customer_name"],
-                order_data["items"],
-                order_data.get("table_number", 0),
-                order_data.get("order_type", OrderType.DINE_IN.value)
-            )
-            results.append({"success": True, "order_id": order_id})
-        except Exception as e:
-            results.append({"success": False, "error": str(e)})
-    return results
 
 
 def generate_report(start_date, end_date):
