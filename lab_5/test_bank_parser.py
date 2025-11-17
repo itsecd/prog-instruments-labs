@@ -1,3 +1,8 @@
+import tempfile
+import os
+import json
+
+
 class TestModels:
     """Data Model tests"""
 
@@ -14,3 +19,25 @@ class TestModels:
         assert card.url == "https://example.com/card"
         assert card.name == "Test Card"
         assert card.bank == "Test Bank"
+
+
+class TestUtils:
+    """Utility tests"""
+
+    def test_save_results_to_file(self):
+        from utils import save_results_to_file
+
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as f:
+            temp_path = f.name
+
+        try:
+            test_data = [{'name': 'Test Card', 'bank': 'Test Bank'}]
+            save_results_to_file(test_data, temp_path)
+
+            assert os.path.exists(temp_path)
+            with open(temp_path, 'r', encoding='utf-8') as f:
+                saved_data = json.load(f)
+            assert saved_data == test_data
+        finally:
+            if os.path.exists(temp_path):
+                os.unlink(temp_path)
