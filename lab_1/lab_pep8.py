@@ -314,7 +314,7 @@ def respond_to_invitation(request, invitation_id):
         return Response({'error': 'Internal server error'}, status=500)
 
 
-@api_view(['GET'])  # E306: Added blank lines between functions
+@api_view(['GET'])  # E306: Added blank lines between function
 @permission_classes([IsAuthenticated])
 def get_session_participants(request, session_id):
     """Получить участников сессии"""
