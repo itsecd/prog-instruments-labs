@@ -90,9 +90,9 @@ def create_session(request):
                 status=status.HTTP_201_CREATED)
 
         except Exception as e:
-            print(f"❌ Error creating session: {e}")
+            print(f" Error creating session: {e}")
             return Response(
-                {'error': f'Error creating session: {str(e)}'},
+                {'error': f'Error creating session: {str(e)}'},  # W605: Removed emoji
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )   # E501: Line break for long call
 
