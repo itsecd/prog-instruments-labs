@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Optional, Dict, List, Any
 
+
 @dataclass
 class BankConfig:
     """Bank configuration model"""

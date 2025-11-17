@@ -1,8 +1,9 @@
+from curl_cffi import requests as cffi_requests
+
 from config import BANK_CONFIGS, MAIN_OUTPUT_FILE
 from extractors import JsonLdExtractor
 from processors import BankProcessor
 from utils import save_results_to_file, save_by_product_type, print_final_statistics
-from curl_cffi import requests as cffi_requests
 
 
 def main():
