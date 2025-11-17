@@ -2,6 +2,7 @@ import json
 from typing import List, Dict
 
 from config import MAIN_OUTPUT_FILE, DEBIT_CARDS_FILE, CREDIT_CARDS_FILE
+from logging_config import logger
 
 
 def save_results_to_file(results: List[Dict], filename: str = MAIN_OUTPUT_FILE):
@@ -9,9 +10,9 @@ def save_results_to_file(results: List[Dict], filename: str = MAIN_OUTPUT_FILE):
     try:
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(results, f, ensure_ascii=False, indent=2)
-        print(f"Данные сохранены в файл: {filename}")
+        logger.info("Data saved to file: %s (%d records)", filename, len(results))
     except Exception as e:
-        print(f"Ошибка при сохранении: {e}")
+        logger.error("Failed to save data to %s: %s", filename, e)
 
 
 def save_by_product_type(all_cards_data: List[Dict]):
@@ -32,7 +33,8 @@ def print_final_statistics(all_cards_data: List[Dict]):
     total_cards = len(all_cards_data)
     successful_cards = sum(1 for card in all_cards_data if card.get('success'))
     failed_cards = total_cards - successful_cards
-
+    logger.info("FINAL STATISTICS: Total=%d, Successful=%d, Failed=%d",
+                total_cards, successful_cards, failed_cards)
     debit_cards = [card for card in all_cards_data if card.get('product_type') == 'debitcards']
     credit_cards = [card for card in all_cards_data if card.get('product_type') == 'creditcards']
 
@@ -55,7 +57,7 @@ def print_final_statistics(all_cards_data: List[Dict]):
     print(f"Дебетовых карт: {len(debit_cards)}")
     print(f"Кредитных карт: {len(credit_cards)}")
 
-    print(f"\n🏦 СТАТИСТИКА ПО БАНКАМ:")
+    print(f"\nСТАТИСТИКА ПО БАНКАМ:")
     for bank_name, stats in sorted(banks.items()):
         total = stats['debit'] + stats['credit']
         print(f"  {bank_name}: {total} карт (дебетовых: {stats['debit']}, кредитных: {stats['credit']})")
