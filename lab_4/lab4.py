@@ -117,70 +117,87 @@ class Order:
 
         return total
 
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "customer_name": self.customer_name,
+            "items": [item.to_dict() for item in self.items],
+            "order_type": self.order_type.value,
+            "table_number": self.table_number,
+            "status": self.status.value,
+            "total": self.total,
+            "timestamp": self.timestamp
+        }
 
-orders_data = []
-menu_items: List[MenuItem] = []
-users: List[User] = []
+
+class DataRepository:
+    def __init__(self):
+        self.orders_data = []
+        self.menu_items = []
+        self.users = []
+
+    def load_from_file(self, filename: str, factory_class):
+        filepath = filename
+        if not os.path.exists(filepath):
+            return []
+
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return [factory_class.from_dict(item) for item in data]
+
+    def save_to_file(self, filename: str, data):
+        with open(filename, "w", encoding="utf-8") as f:
+            json_data = [item.to_dict() for item in data]
+            json.dump(json_data, f, ensure_ascii=False, indent=2)
+
+    def load_all_data(self):
+        try:
+            self.orders_data = self.load_from_file("orders.json", Order)
+        except:
+            self.orders_data = []
+
+        try:
+            self.menu_items = self.load_from_file("menu.json", MenuItem)
+            if not self.menu_items:
+                # Default menu
+                self.menu_items = [
+                    MenuItem(1, "Пицца Маргарита", 450, MenuItemType.MAIN, True),
+                    MenuItem(2, "Паста Карбонара", 380, MenuItemType.MAIN, True),
+                    MenuItem(3, "Цезарь", 280, MenuItemType.SALAD, True),
+                    MenuItem(4, "Кока-Кола", 120, MenuItemType.DRINK, True),
+                    MenuItem(5, "Тирамису", 220, MenuItemType.DESSERT, False)
+                ]
+        except:
+            self.menu_items = []
+
+        try:
+            self.users = self.load_from_file("users.json", User)
+        except:
+            self.users = []
+
+    def save_all_data(self):
+        self.save_to_file("orders.json", self.orders_data)
+        self.save_to_file("menu.json", self.menu_items)
+        self.save_to_file("users.json", self.users)
+
+
+repository = DataRepository()
 
 
 def load_data():
-    global orders_data, menu_items, users
-    try:
-        if os.path.exists("orders.json"):
-            with open("orders.json", "r") as f:
-                orders_data = json.load(f)
-        else:
-            orders_data = []
-    except:
-        orders_data = []
-
-    try:
-        if os.path.exists("menu.json"):
-            with open("menu.json", "r") as f:
-                menu_dicts = json.load(f)
-                menu_items = [MenuItem.from_dict(item) for item in menu_dicts]
-        else:
-            # Default menu
-            menu_items = [
-                MenuItem(1, "Пицца Маргарита", 450, MenuItemType.MAIN, True),
-                MenuItem(2, "Паста Карбонара", 380, MenuItemType.MAIN, True),
-                MenuItem(3, "Цезарь", 280, MenuItemType.SALAD, True),
-                MenuItem(4, "Кока-Кола", 120, MenuItemType.DRINK, True),
-                MenuItem(5, "Тирамису", 220, MenuItemType.DESSERT, False)
-            ]
-    except:
-        menu_items = []
-
-    try:
-        if os.path.exists("users.json"):
-            with open("users.json", "r") as f:
-                user_dicts = json.load(f)
-                users = [User.from_dict(user) for user in user_dicts]
-        else:
-            users = []
-    except:
-        users = []
+    repository.load_all_data()
 
 
 def save_data():
-    with open("orders.json", "w") as f:
-        json.dump(orders_data, f)
-    with open("menu.json", "w") as f:
-        menu_dicts = [item.to_dict() for item in menu_items]
-        json.dump(menu_dicts, f)
-    with open("users.json", "w") as f:
-        user_dicts = [user.to_dict() for user in users]
-        json.dump(user_dicts, f)
+    repository.save_all_data()
 
 
 def add_order(customer_name, items, table_number, order_type):
-    global orders_data
-
     # Validate items
     valid_items = []
     for item_id in items:
         found = False
-        for menu_item in menu_items:
+        for menu_item in repository.menu_items:
             if menu_item.id == item_id and menu_item.available:
                 valid_items.append(menu_item)
                 found = True
@@ -193,31 +210,18 @@ def add_order(customer_name, items, table_number, order_type):
         return False
 
     # Create order
-    order_id = len(orders_data) + 1
+    order_id = len(repository.orders_data) + 1
     order = Order(order_id, customer_name, valid_items, OrderType(order_type), table_number)
 
-    order_dict = {
-        "id": order.id,
-        "customer_name": order.customer_name,
-        "items": [item.to_dict() for item in order.items],
-        "table_number": order.table_number,
-        "order_type": order.order_type.value,
-        "total": order.total,
-        "status": order.status.value,
-        "timestamp": order.timestamp
-    }
-
-    orders_data.append(order_dict)
+    repository.orders_data.append(order)
     save_data()
     return order_id
 
 
 def update_order_status(order_id, new_status):
-    global orders_data
-    for order in orders_data:
-        if order["id"] == order_id:
-            order["status"] = new_status
-            order["updated_at"] = datetime.datetime.now().isoformat()
+    for order in repository.orders_data:
+        if order.id == order_id:
+            order.status = OrderStatus(new_status)
             save_data()
             return True
     return False
@@ -226,10 +230,10 @@ def update_order_status(order_id, new_status):
 def calculate_daily_revenue(date_str):
     total_revenue = 0
     completed_orders = 0
-    for order in orders_data:
-        order_date = order["timestamp"][:10]
-        if order_date == date_str and order["status"] == OrderStatus.COMPLETED.value:
-            total_revenue += order["total"]
+    for order in repository.orders_data:
+        order_date = order.timestamp[:10]
+        if order_date == date_str and order.status == OrderStatus.COMPLETED:
+            total_revenue += order.total
             completed_orders += 1
 
     print(f"Date: {date_str}")
@@ -240,15 +244,14 @@ def calculate_daily_revenue(date_str):
 
 def get_orders_by_status(status):
     result = []
-    for order in orders_data:
-        if order["status"] == status:
+    for order in repository.orders_data:
+        if order.status.value == status:
             result.append(order)
     return result
 
 
 def add_menu_item(name, price, item_type):
-    global menu_items
-    new_id = max([item.id for item in menu_items]) + 1 if menu_items else 1
+    new_id = max([item.id for item in repository.menu_items]) + 1 if repository.menu_items else 1
     new_item = MenuItem(
         id=new_id,
         name=name,
@@ -256,14 +259,13 @@ def add_menu_item(name, price, item_type):
         item_type=MenuItemType(item_type),
         available=True
     )
-    menu_items.append(new_item)
+    repository.menu_items.append(new_item)
     save_data()
     return new_id
 
 
 def update_menu_item(item_id, new_price=None, new_availability=None):
-    global menu_items
-    for item in menu_items:
+    for item in repository.menu_items:
         if item.id == item_id:
             if new_price is not None:
                 item.price = new_price
@@ -276,16 +278,16 @@ def update_menu_item(item_id, new_price=None, new_availability=None):
 
 def get_popular_items(limit=5):
     item_count = {}
-    for order in orders_data:
-        if order["status"] == OrderStatus.COMPLETED.value:
-            for item in order["items"]:
-                item_id = item["id"]
+    for order in repository.orders_data:
+        if order.status == OrderStatus.COMPLETED:
+            for item in order.items:
+                item_id = item.id
                 item_count[item_id] = item_count.get(item_id, 0) + 1
 
     # Convert to list and sort
     popular = []
     for item_id, count in item_count.items():
-        for menu_item in menu_items:
+        for menu_item in repository.menu_items:
             if menu_item.id == item_id:
                 popular.append({
                     "item": menu_item,
@@ -298,14 +300,13 @@ def get_popular_items(limit=5):
 
 
 def register_user(username, password, email, user_type="customer"):
-    global users
     # Check if username exists
-    for user in users:
+    for user in repository.users:
         if user.username == username:
             return False
 
     new_user = User(
-        id=len(users) + 1,
+        id=len(repository.users) + 1,
         username=username,
         password=password,
         email=email,
@@ -313,13 +314,13 @@ def register_user(username, password, email, user_type="customer"):
         created_at=datetime.datetime.now().isoformat()
     )
 
-    users.append(new_user)
+    repository.users.append(new_user)
     save_data()
     return True
 
 
 def authenticate_user(username, password):
-    for user in users:
+    for user in repository.users:
         if user.username == username and user.password == password:
             return user
     return None
@@ -351,30 +352,30 @@ def generate_report(start_date, end_date):
         "orders_by_type": {}
     }
 
-    for order in orders_data:
-        order_date = order["timestamp"][:10]
+    for order in repository.orders_data:
+        order_date = order.timestamp[:10]
         if start_date <= order_date <= end_date:
             report["total_orders"] += 1
-            if order["status"] == OrderStatus.COMPLETED.value:
+            if order.status == OrderStatus.COMPLETED:
                 report["completed_orders"] += 1
-                report["total_revenue"] += order["total"]
+                report["total_revenue"] += order.total
 
             # Count by type
-            order_type = order["order_type"]
+            order_type = order.order_type.value
             report["orders_by_type"][order_type] = report["orders_by_type"].get(order_type, 0) + 1
 
     # Get popular items for the period
-    temp_orders = [o for o in orders_data if
-                   start_date <= o["timestamp"][:10] <= end_date and o["status"] == OrderStatus.COMPLETED.value]
+    temp_orders = [o for o in repository.orders_data if
+                   start_date <= o.timestamp[:10] <= end_date and o.status == OrderStatus.COMPLETED]
     item_count = {}
     for order in temp_orders:
-        for item in order["items"]:
-            item_id = item["id"]
+        for item in order.items:
+            item_id = item.id
             item_count[item_id] = item_count.get(item_id, 0) + 1
 
     popular = []
     for item_id, count in item_count.items():
-        for menu_item in menu_items:
+        for menu_item in repository.menu_items:
             if menu_item.id == item_id:
                 popular.append({
                     "item": menu_item.name,
@@ -407,7 +408,7 @@ def handle_add_order():
 
     # Show menu
     print("Available menu items:")
-    for item in menu_items:
+    for item in repository.menu_items:
         if item.available:
             print(f"{item.id}. {item.name} - {item.price} руб.")
 
@@ -431,12 +432,12 @@ def handle_view_orders():
     if status:
         orders = get_orders_by_status(status)
     else:
-        orders = orders_data
+        orders = repository.orders_data
 
     print(f"\n--- Orders ({len(orders)}) ---")
     for order in orders:
-        print(f"ID: {order['id']}, Customer: {order['customer_name']}, "
-              f"Total: {order['total']}, Status: {order['status']}")
+        print(f"ID: {order.id}, Customer: {order.customer_name}, "
+              f"Total: {order.total}, Status: {order.status.value}")
 
 
 def main():
