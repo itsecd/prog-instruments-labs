@@ -92,3 +92,22 @@ class TestProcessors:
 
         assert result['success'] is False
         assert 'error' in result
+
+
+class TestStatistics:
+    """Statistical tests"""
+
+    def test_final_statistics_calculation(self):
+        from utils import print_final_statistics
+
+        test_cards = [
+            {'success': True, 'product_type': 'debitcards', 'bank': 'Bank A'},
+            {'success': False, 'product_type': 'debitcards', 'bank': 'Bank A'},
+            {'success': True, 'product_type': 'creditcards', 'bank': 'Bank B'},
+        ]
+
+        try:
+            print_final_statistics(test_cards)
+            assert True
+        except Exception:
+            assert False
