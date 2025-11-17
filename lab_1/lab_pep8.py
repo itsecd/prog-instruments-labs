@@ -8,12 +8,14 @@ from django.contrib.auth.models import User
 from .models import StudySession, SessionParticipant, SessionInvitation
 from .serializers import StudySessionSerializer, CreateStudySessionSerializer, SessionParticipantSerializer
 
-@api_view(['GET'])
+
+@api_view(['GET'])  # E301: Added blank lines between imports and code
 @permission_classes([AllowAny])
 def health_check(request):
     return Response({"status": "Study Sessions API is working"})
 
-@api_view(['GET'])
+
+@api_view(['GET'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def get_sessions(request):
     """Получить список всех активных учебных сессий"""
@@ -24,7 +26,8 @@ def get_sessions(request):
     serializer = StudySessionSerializer(sessions, many=True)
     return Response(serializer.data)
 
-@api_view(['GET'])
+
+@api_view(['GET'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def get_my_sessions(request):
     """Получить сессии пользователя (созданные или участник)"""
@@ -64,7 +67,8 @@ def get_my_sessions(request):
         print(f"Error in get_my_sessions: {e}")
         return Response({'error': 'Internal server error'}, status=500)
 
-@api_view(['POST'])
+
+@api_view(['POST'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def create_session(request):
     """Создать учебную сессию"""
@@ -87,7 +91,8 @@ def create_session(request):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
+
+@api_view(['POST'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def join_session(request, session_id):
     """Присоединиться к учебной сессии"""
@@ -118,7 +123,8 @@ def join_session(request, session_id):
         'session': updated_session
     }, status=status.HTTP_201_CREATED)
 
-@api_view(['POST'])
+
+@api_view(['POST'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def leave_session(request, session_id):
     """Покинуть учебную сессию"""
@@ -145,7 +151,8 @@ def leave_session(request, session_id):
         'session': updated_session
     })
 
-@api_view(['DELETE'])
+
+@api_view(['DELETE'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def delete_session(request, session_id):
     """Удалить учебную сессию (только создатель)"""
@@ -158,7 +165,8 @@ def delete_session(request, session_id):
     session.save()
     return Response({'message': 'Сессия удалена'})
 
-@api_view(['GET'])
+
+@api_view(['GET'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def get_invitations(request):
     """Получить приглашения пользователя"""
@@ -198,7 +206,8 @@ def get_invitations(request):
         print(f"Error in get_invitations: {e}")
         return Response({'error': 'Internal server error'}, status=500)
 
-@api_view(['POST'])
+
+@api_view(['POST'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def send_invitation(request):
     """Отправить приглашение на сессию"""
@@ -261,7 +270,8 @@ def send_invitation(request):
             'error': 'Внутренняя ошибка сервера'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['POST'])
+
+@api_view(['POST'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def respond_to_invitation(request, invitation_id):
     """Ответить на приглашение"""
@@ -303,7 +313,8 @@ def respond_to_invitation(request, invitation_id):
         print(f"Error in respond_to_invitation: {e}")
         return Response({'error': 'Internal server error'}, status=500)
 
-@api_view(['GET'])
+
+@api_view(['GET'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def get_session_participants(request, session_id):
     """Получить участников сессии"""
