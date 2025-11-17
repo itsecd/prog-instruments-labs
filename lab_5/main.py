@@ -1,6 +1,7 @@
 from curl_cffi import requests as cffi_requests
 
-from config import BANK_CONFIGS, MAIN_OUTPUT_FILE
+from config import BANK_CONFIGS, USER_AGENT
+from logging_config import logger
 from extractors import JsonLdExtractor
 from processors import BankProcessor
 from utils import save_results_to_file, save_by_product_type, print_final_statistics
@@ -8,6 +9,7 @@ from utils import save_results_to_file, save_by_product_type, print_final_statis
 
 def main():
     """Main execution function"""
+    logger.info("Starting bank cards processing pipeline")
     all_cards_data = []
     json_ld_extractor = JsonLdExtractor()
     bank_processor = BankProcessor(json_ld_extractor)
@@ -17,31 +19,29 @@ def main():
         bank_name = bank_config["name"]
         product_type = bank_config["product_type"]
 
-        print(f"\n{'=' * 60}")
-        print(f"ОБРАБАТЫВАЕМ БАНК: {bank_name}")
-        print(f"ТИП ПРОДУКТА: {product_type}")
-        print(f"URL: {bank_url}")
-        print(f"{'=' * 60}")
+        logger.info("Processing bank: %s (%s)", bank_name, product_type)
+        logger.debug("Bank URL: %s", bank_url)
 
         try:
-            response = cffi_requests.get(bank_url, impersonate="safari15_5")
+            response = cffi_requests.get(bank_url, impersonate=USER_AGENT)
             response.raise_for_status()
 
             json_ld_data = json_ld_extractor.extract_from_html(response.text)
             card_urls = json_ld_extractor.extract_card_urls(
                 json_ld_data, bank_name, product_type
             )
-
-            print(f"Найдено {len(card_urls)} карт {bank_name} ({product_type}):")
+            logger.info("Found %d cards for %s (%s)", len(card_urls), bank_name, product_type)
             for url in sorted(card_urls):
-                print(f"  - {url}")
-
+                logger.debug("Card URL: %s", url)
             if card_urls:
                 bank_results = bank_processor.process_all_cards(card_urls, product_type)
                 all_cards_data.extend(bank_results)
+                successful_in_bank = sum(1 for r in bank_results if r.get('success'))
+                logger.info("Bank %s completed: %d/%d successful",
+                            bank_name, successful_in_bank, len(bank_results))
 
         except Exception as e:
-            print(f"Ошибка при обработке банка {bank_name} ({product_type}): {e}")
+            logger.error("Failed to process bank %s: %s", bank_name, str(e))
 
     # Save results
     if all_cards_data:
@@ -49,11 +49,11 @@ def main():
         save_by_product_type(all_cards_data)
         print_final_statistics(all_cards_data)
 
-        print(f"\nОБРАБОТКА ЗАВЕРШЕНА!")
-        # ИСПРАВЛЕНИЕ: используем константу вместо хардкода
-        print(f"Основной файл: {MAIN_OUTPUT_FILE} ({len(all_cards_data)} карт)")
+        successful_cards = sum(1 for card in all_cards_data if card.get('success'))
+        logger.info("Pipeline completed. Total: %d cards, Successful: %d",
+                    len(all_cards_data), successful_cards)
     else:
-        print("\nНе удалось собрать данные ни по одной карте")
+        logger.warning("No cards data collected - pipeline completed with zero results")
 
 
 if __name__ == "__main__":
