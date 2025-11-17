@@ -12,13 +12,14 @@ from .serializers import StudySessionSerializer, CreateStudySessionSerializer, S
 @api_view(['GET'])  # E301: Added blank lines between imports and code
 @permission_classes([AllowAny])
 def health_check(request):
+    """Health check endpoint."""  # C0103: English docstring
     return Response({"status": "Study Sessions API is working"})
 
 
 @api_view(['GET'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def get_sessions(request):
-    """Получить список всех активных учебных сессий"""
+    """Get all active study sessions."""  # C0103: English docstring
     sessions = StudySession.objects.filter(
         is_active=True,
         scheduled_time__gte=timezone.now()
@@ -30,7 +31,7 @@ def get_sessions(request):
 @api_view(['GET'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def get_my_sessions(request):
-    """Получить сессии пользователя (созданные или участник)"""
+    """Get user sessions (created or participating)."""  # C0103: English docstring
     try:
         # Сессии созданные пользователем
         created_sessions = StudySession.objects.filter(
@@ -71,7 +72,7 @@ def get_my_sessions(request):
 @api_view(['POST'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def create_session(request):
-    """Создать учебную сессию"""
+    """Create study session."""  # C0103: English docstring
     serializer = CreateStudySessionSerializer(data=request.data)
     if serializer.is_valid():
         try:
@@ -95,7 +96,7 @@ def create_session(request):
 @api_view(['POST'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def join_session(request, session_id):
-    """Присоединиться к учебной сессии"""
+    """Join study session."""  # C0103: English docstring
     try:
         session = StudySession.objects.get(id=session_id, is_active=True)
     except StudySession.DoesNotExist:
@@ -127,7 +128,7 @@ def join_session(request, session_id):
 @api_view(['POST'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def leave_session(request, session_id):
-    """Покинуть учебную сессию"""
+    """Leave study session."""  # C0103: English docstring
     try:
         participant = SessionParticipant.objects.get(
             session_id=session_id,
@@ -155,7 +156,7 @@ def leave_session(request, session_id):
 @api_view(['DELETE'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def delete_session(request, session_id):
-    """Удалить учебную сессию (только создатель)"""
+    """Delete study session (creator only)."""  # C0103: English docstring
     try:
         session = StudySession.objects.get(id=session_id, created_by=request.user)
     except StudySession.DoesNotExist:
@@ -169,7 +170,7 @@ def delete_session(request, session_id):
 @api_view(['GET'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def get_invitations(request):
-    """Получить приглашения пользователя"""
+     """Get user invitations."""  # C0103: English docstring
     try:
         invitations = SessionInvitation.objects.filter(
             invitee=request.user
@@ -210,7 +211,7 @@ def get_invitations(request):
 @api_view(['POST'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def send_invitation(request):
-    """Отправить приглашение на сессию"""
+    """Send session invitation."""  # C0103: English docstring
     try:
         session_id = request.data.get('session_id')
         invitee_id = request.data.get('user_id')
@@ -274,7 +275,7 @@ def send_invitation(request):
 @api_view(['POST'])  # E306: Added blank lines between functions
 @permission_classes([IsAuthenticated])
 def respond_to_invitation(request, invitation_id):
-    """Ответить на приглашение"""
+    """Respond to invitation."""  # C0103: English docstring
     try:
         invitation = SessionInvitation.objects.get(
             id=invitation_id,
@@ -317,7 +318,7 @@ def respond_to_invitation(request, invitation_id):
 @api_view(['GET'])  # E306: Added blank lines between function
 @permission_classes([IsAuthenticated])
 def get_session_participants(request, session_id):
-    """Получить участников сессии"""
+    """Get session participants."""  # C0103: English docstring
     try:
         session = StudySession.objects.get(id=session_id)
         participants = session.participants.filter(is_active=True).select_related('user', 'user__profile')
