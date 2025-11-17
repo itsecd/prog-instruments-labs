@@ -88,6 +88,35 @@ class User:
         )
 
 
+class Order:
+    def __init__(self, order_id: int, customer_name: str, items: List[MenuItem], order_type: OrderType,
+                 table_number: Optional[int] = None):
+        self.id = order_id
+        self.customer_name = customer_name
+        self.items = items
+        self.order_type = order_type
+        self.table_number = table_number
+        self.status = OrderStatus.PENDING
+        self.total = self._calculate_total()
+        self.timestamp = datetime.datetime.now().isoformat()
+
+    def _calculate_total(self) -> float:
+        total = 0
+        for item in self.items:
+            total += item.price
+
+        # Apply discounts
+        if total > 1000:
+            total = total * 0.9  # 10% discount
+        elif total > 500:
+            total = total * 0.95  # 5% discount
+
+        # Add service charge for dine-in
+        if self.order_type == OrderType.DINE_IN:
+            total = total * 1.1  # 10% service charge
+
+        return total
+
 
 orders_data = []
 menu_items: List[MenuItem] = []
@@ -111,7 +140,7 @@ def load_data():
                 menu_dicts = json.load(f)
                 menu_items = [MenuItem.from_dict(item) for item in menu_dicts]
         else:
-
+            # Default menu
             menu_items = [
                 MenuItem(1, "Пицца Маргарита", 450, MenuItemType.MAIN, True),
                 MenuItem(2, "Паста Карбонара", 380, MenuItemType.MAIN, True),
@@ -136,14 +165,12 @@ def load_data():
 def save_data():
     with open("orders.json", "w") as f:
         json.dump(orders_data, f)
-
     with open("menu.json", "w") as f:
         menu_dicts = [item.to_dict() for item in menu_items]
-        json.dump(menu_dicts, f, ensure_ascii=False, indent=2)
-
+        json.dump(menu_dicts, f)
     with open("users.json", "w") as f:
         user_dicts = [user.to_dict() for user in users]
-        json.dump(user_dicts, f, ensure_ascii=False, indent=2)
+        json.dump(user_dicts, f)
 
 
 def add_order(customer_name, items, table_number, order_type):
@@ -151,13 +178,11 @@ def add_order(customer_name, items, table_number, order_type):
 
     # Validate items
     valid_items = []
-    total = 0
     for item_id in items:
         found = False
         for menu_item in menu_items:
             if menu_item.id == item_id and menu_item.available:
-                valid_items.append(menu_item.to_dict())
-                total += menu_item.price
+                valid_items.append(menu_item)
                 found = True
                 break
         if not found:
@@ -167,30 +192,22 @@ def add_order(customer_name, items, table_number, order_type):
         print("No valid items in order")
         return False
 
-    # Apply discounts
-    if total > 1000:
-        total = total * 0.9  # 10% discount
-    elif total > 500:
-        total = total * 0.95  # 5% discount
-
-    # Add service charge for dine-in
-    if order_type == OrderType.DINE_IN.value:
-        total = total * 1.1  # 10% service charge
-
     # Create order
     order_id = len(orders_data) + 1
-    order = {
-        "id": order_id,
-        "customer_name": customer_name,
-        "items": valid_items,
-        "table_number": table_number if order_type == OrderType.DINE_IN.value else None,
-        "order_type": order_type,
-        "total": total,
-        "status": OrderStatus.PENDING.value,
-        "timestamp": datetime.datetime.now().isoformat()
+    order = Order(order_id, customer_name, valid_items, OrderType(order_type), table_number)
+
+    order_dict = {
+        "id": order.id,
+        "customer_name": order.customer_name,
+        "items": [item.to_dict() for item in order.items],
+        "table_number": order.table_number,
+        "order_type": order.order_type.value,
+        "total": order.total,
+        "status": order.status.value,
+        "timestamp": order.timestamp
     }
 
-    orders_data.append(order)
+    orders_data.append(order_dict)
     save_data()
     return order_id
 
@@ -347,8 +364,8 @@ def generate_report(start_date, end_date):
             report["orders_by_type"][order_type] = report["orders_by_type"].get(order_type, 0) + 1
 
     # Get popular items for the period
-    temp_orders = [o for o in orders_data if start_date <= o["timestamp"][:10] <= end_date and o[
-        "status"] == OrderStatus.COMPLETED.value]
+    temp_orders = [o for o in orders_data if
+                   start_date <= o["timestamp"][:10] <= end_date and o["status"] == OrderStatus.COMPLETED.value]
     item_count = {}
     for order in temp_orders:
         for item in order["items"]:
@@ -372,7 +389,7 @@ def generate_report(start_date, end_date):
     return report
 
 
-# UI functions
+# UI functions (mixing logic with presentation)
 def show_main_menu():
     print("\n=== Restaurant Management System ===")
     print("1. Add Order")
@@ -397,11 +414,9 @@ def handle_add_order():
     items_input = input("Enter item IDs (comma-separated): ")
     items = [int(x.strip()) for x in items_input.split(",")]
 
-    order_type_input = input("Order type (dine_in/takeaway): ")
-    order_type = order_type_input
-
+    order_type = input("Order type (dine_in/takeaway): ")
     table_number = 0
-    if order_type == OrderType.DINE_IN.value:
+    if order_type == "dine_in":
         table_number = int(input("Table number: "))
 
     order_id = add_order(customer_name, items, table_number, order_type)
@@ -443,11 +458,13 @@ def main():
             else:
                 print("Order not found")
         elif choice == "4":
+            # Menu management would go here
             print("Menu management not implemented in this version")
         elif choice == "5":
             date_str = input("Enter date (YYYY-MM-DD): ")
             calculate_daily_revenue(date_str)
         elif choice == "6":
+            # User management would go here
             print("User management not implemented in this version")
         elif choice == "7":
             print("Goodbye!")
