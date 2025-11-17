@@ -1,6 +1,7 @@
-import tempfile
-import os
 import json
+import os
+import pytest
+import tempfile
 
 
 class TestModels:
@@ -41,3 +42,19 @@ class TestUtils:
         finally:
             if os.path.exists(temp_path):
                 os.unlink(temp_path)
+
+
+class TestExtractors:
+    """Data Parser tests"""
+
+    @pytest.mark.parametrize("html_content,expected_count", [
+        ("", 0),
+        ("<div>No scripts</div>", 0),
+        ('<script type="application/ld+json">{"@type": "Product"}</script>', 1),
+        ('<script type="application/ld+json">{"test": 1}</script>', 1)
+    ])
+    def test_json_ld_extractor_various_inputs(self, html_content, expected_count):
+        from extractors import JsonLdExtractor
+        extractor = JsonLdExtractor()
+        result = extractor.extract_from_html(html_content)
+        assert len(result) == expected_count
