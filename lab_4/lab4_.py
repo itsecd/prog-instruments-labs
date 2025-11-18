@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from dataclasses import dataclass
 from app.services.food_database import FoodDatabase
 
@@ -24,16 +24,18 @@ class EstimationResult:
     details: Optional[Dict[str, Any]] = None
 
 
-class CalorieCalculator:
+class FoodDatabaseManager:
+    """Manages food database operations."""
+
     def __init__(self, food_db_path: str = "data/food_ai.db"):
         self.food_db = FoodDatabase(food_db_path)
         self.food_db.initialize()
-        self._init_extended_food_database()
-        logger.info("✅ CalorieCalculator initialized with extended food database")
+        self.extended_food_db = self._initialize_extended_database()
+        logger.info("✅ FoodDatabaseManager initialized")
 
-    def _init_extended_food_database(self):
-        """Расширенная база данных продуктов Food-101"""
-        self.extended_food_db = {
+    def _initialize_extended_database(self) -> Dict[str, FoodInfo]:
+        """Initialize extended Food-101 database."""
+        return {
             "cheese_plate": FoodInfo(calories_per_100g=350, typical_weight_g=200, category="Dairy"),
             "sashimi": FoodInfo(calories_per_100g=120, typical_weight_g=150, category="Seafood"),
             "seaweed_salad": FoodInfo(calories_per_100g=45, typical_weight_g=100, category="Vegetable"),
@@ -50,19 +52,42 @@ class CalorieCalculator:
         }
 
     def get_food_info(self, food_name: str) -> FoodInfo:
-        """Получить информацию о продукте из расширенной базы"""
-        food_info = self.extended_food_db.get(food_name.lower())
+        """Get food information from extended database."""
+        normalized_name = food_name.lower()
 
-        if not food_info:
-            food_info = self.food_db.get_food_info(food_name)
-            if "calories_per_100g" in food_info:
-                food_info = FoodInfo(
-                    calories_per_100g=food_info["calories_per_100g"],
-                    typical_weight_g=150,
-                    category=food_info.get("category", "Unknown")
-                )
+        # Try extended database first
+        if normalized_name in self.extended_food_db:
+            return self.extended_food_db[normalized_name]
 
-        return food_info or self.extended_food_db["default_food"]
+        # Fallback to main database
+        db_food_info = self.food_db.get_food_info(food_name)
+        if db_food_info and "calories_per_100g" in db_food_info:
+            return FoodInfo(
+                calories_per_100g=db_food_info["calories_per_100g"],
+                typical_weight_g=150,
+                category=db_food_info.get("category", "Unknown")
+            )
+
+        # Return default if not found
+        return self.extended_food_db["default_food"]
+
+    def add_prediction_to_history(self, food_class: str, confidence: float, calories: float) -> None:
+        """Add prediction to history."""
+        self.food_db.add_prediction_to_history(food_class, confidence, calories)
+
+    def get_prediction_history(self, limit: int = 50) -> List[Dict[str, Any]]:
+        """Get prediction history."""
+        return self.food_db.get_prediction_history(limit)
+
+    def close(self) -> None:
+        """Close database connections."""
+        self.food_db.close()
+
+
+class CalorieCalculator:
+    def __init__(self, food_db_path: str = "data/food_ai.db"):
+        self.db_manager = FoodDatabaseManager(food_db_path)
+        logger.info("✅ CalorieCalculator initialized with database manager")
 
     def _calculate_estimated_weight(self, typical_weight: int, coverage_ratio: float) -> float:
         """Рассчитать предполагаемый вес на основе коэффициента покрытия."""
@@ -77,7 +102,7 @@ class CalorieCalculator:
         return min(1.0, confidence * 10)
 
     def _create_success_result(self, calories: float, confidence: float, food_class: str,
-                             food_info: FoodInfo, coverage_ratio: float, estimated_weight: float) -> EstimationResult:
+                               food_info: FoodInfo, coverage_ratio: float, estimated_weight: float) -> EstimationResult:
         """Создать успешный результат оценки."""
         return EstimationResult(
             success=True,
@@ -100,6 +125,10 @@ class CalorieCalculator:
             confidence=0.0
         )
 
+    def get_food_info(self, food_name: str) -> FoodInfo:
+        """Получить информацию о продукте из базы данных."""
+        return self.db_manager.get_food_info(food_name)
+
     def estimate_calories(self, food_class: str, coverage_ratio: float, confidence: float) -> EstimationResult:
         """Оценка калорийности"""
         try:
@@ -119,7 +148,7 @@ class CalorieCalculator:
             confidence_factor = self._calculate_confidence_factor(confidence)
             final_calories = base_calories * confidence_factor
 
-            self.food_db.add_prediction_to_history(
+            self.db_manager.add_prediction_to_history(
                 food_class,
                 confidence,
                 final_calories
@@ -137,10 +166,10 @@ class CalorieCalculator:
             logger.error(f"❌ Calorie estimation error: {e}")
             return self._create_error_result(str(e))
 
-    def get_prediction_history(self, limit: int = 50):
+    def get_prediction_history(self, limit: int = 50) -> List[Dict[str, Any]]:
         """Получить историю предсказаний"""
-        return self.food_db.get_prediction_history(limit)
+        return self.db_manager.get_prediction_history(limit)
 
     def close(self):
         """Закрыть соединения"""
-        self.food_db.close()
+        self.db_manager.close()
