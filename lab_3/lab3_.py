@@ -16,26 +16,20 @@ def clean_utf16_string(s):
 def validate_data(df: pd.DataFrame) -> list[int]:
     """
     Валидация данных CSV файла с использованием регулярных выражений.
-
-    Args:
-        df: DataFrame с данными для валидации
-
-    Returns:
-        list[int]: Список индексов невалидных строк
     """
     invalid_rows = []
 
     patterns = {
         "email": re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
-        "height": re.compile(r'^[1-2]\.\d{2}$'),  # 1.50 - 2.99
-        "snils": re.compile(r'^\d{11}$'),  # 11 цифр
-        "passport": re.compile(r'^\d{2} \d{2} \d{6}$'),  # 00 00 000000
-        "occupation": re.compile(r'^[a-zA-Zа-яА-ЯёЁ\s\-–—]+$'),  # только буквы, пробелы, дефисы
-        "longitude": re.compile(r'^-?(180(\.0+)?|1[0-7][0-9](\.\d+)?|[0-9]?[0-9](\.\d+)?)$'),  # -180.0 до 180.0
-        "hex_color": re.compile(r'^#[0-9a-fA-F]{6}$'),  # #ffffff
-        "issn": re.compile(r'^\d{4}-\d{4}$'),  # 0000-0000
-        "locale_code": re.compile(r'^[a-z]{2}(-[A-Za-z]{2,4})?$'),  # en или en-US
-        "time": re.compile(r'^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\.\d{1,6}$')  # время с микросекундами
+        "height": re.compile(r'^[1-2]\.\d{2}$'),  # ТОЧКА, не запятая
+        "snils": re.compile(r'^\d{11}$'),  # Только 11 цифр
+        "passport": re.compile(r'^\d{2} \d{2} \d{6}$'),  # ПРОБЕЛЫ, не подчеркивания
+        "occupation": re.compile(r'^[a-zA-Zа-яА-ЯёЁ\s\-–—]+$'),  # Только буквы, пробелы, дефисы
+        "longitude": re.compile(r'^-?(180(\.0+)?|1[0-7][0-9](\.\d+)?|[0-9]?[0-9](\.\d+)?)$'),
+        "hex_color": re.compile(r'^#[0-9a-fA-F]{6}$'),  # Обязательно # в начале
+        "issn": re.compile(r'^\d{4}-\d{4}$'),  # ДЕФИС, не пробел
+        "locale_code": re.compile(r'^[a-z]{2}(-[a-z]{2,4})?$'),  # Только строчные
+        "time": re.compile(r'^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\.\d{1,6}$')
     }
 
     for index, row in df.iterrows():
@@ -43,42 +37,23 @@ def validate_data(df: pd.DataFrame) -> list[int]:
 
         for col, pattern in patterns.items():
             value = str(row[col])
-
-            # Очистка UTF-16 артефактов
             value = clean_utf16_string(value)
 
-            # Пропускаем NaN значения
+            # Пропускаем пустые значения
             if value == 'nan' or not value:
                 is_valid = False
                 break
 
-            # Специфичная очистка для каждого поля
+            # Минимальная очистка - только убираем UTF-16 артефакты
+            # НЕ исправляем данные (запятые на точки, подчеркивания на пробелы и т.д.)
             cleaned_value = value
 
-            if col == "snils":
-                cleaned_value = value.replace('_', '')
-            elif col == "longitude":
-                cleaned_value = re.sub(r'[°"_]', '', value)
-                cleaned_value = cleaned_value.replace(',', '.')
-                # Убедимся, что это число в допустимом диапазоне
-                try:
-                    lon = float(cleaned_value)
-                    if lon < -180 or lon > 180:
-                        is_valid = False
-                        break
-                except ValueError:
-                    is_valid = False
-                    break
-            elif col == "issn":
-                cleaned_value = value.replace(' ', '')
-            elif col == "locale_code":
-                cleaned_value = value.strip('_')
-            elif col == "hex_color":
-                if value.startswith('##'):
-                    cleaned_value = value[1:]
-                cleaned_value = cleaned_value.upper()
+            # Только базовые преобразования для корректного парсинга
+            if col == "longitude":
+                # Убираем только специальные символы, но не меняем структуру
+                cleaned_value = re.sub(r'[°"]', '', cleaned_value)
 
-            # Проверка по регулярному выражению
+            # Проверяем КАК ЕСТЬ, без исправлений
             if not pattern.match(cleaned_value):
                 is_valid = False
                 break
@@ -89,66 +64,45 @@ def validate_data(df: pd.DataFrame) -> list[int]:
     return invalid_rows
 
 
-def save_to_json(variant: int, checksum: str) -> None:
+def strict_validate_data(df: pd.DataFrame) -> list[int]:
     """
-    Сохранение результата в JSON файл.
-
-    Args:
-        variant: Номер варианта
-        checksum: Контрольная сумма
+    Строгая валидация - данные должны быть правильными без исправлений.
     """
-    result_data = {
-        "variant": variant,
-        "checksum": checksum
-    }
-
-    with open("result.json", "w", encoding="utf-8") as f:
-        json.dump(result_data, f, indent=2, ensure_ascii=False)
-
-    print("Результат записан в result.json")
-
-
-def debug_validation(df: pd.DataFrame) -> None:
-    """Функция для отладки валидации"""
-    print("\n=== ОТЛАДКА ВАЛИДАЦИИ ===")
+    invalid_rows = []
 
     patterns = {
         "email": re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'),
-        "height": re.compile(r'^[1-2]\.\d{2}$'),
-        "snils": re.compile(r'^\d{11}$'),
-        "passport": re.compile(r'^\d{2} \d{2} \d{6}$'),
-        "occupation": re.compile(r'^[a-zA-Zа-яА-ЯёЁ\s\-–—]+$'),
+        "height": re.compile(r'^[1-2]\.\d{2}$'),  # Обязательно точка
+        "snils": re.compile(r'^\d{11}$'),  # Только цифры
+        "passport": re.compile(r'^\d{2} \d{2} \d{6}$'),  # Обязательно пробелы
+        "occupation": re.compile(r'^[a-zA-Zа-яА-ЯёЁ\s\-–—]+$'),  # Только буквы
         "longitude": re.compile(r'^-?(180(\.0+)?|1[0-7][0-9](\.\d+)?|[0-9]?[0-9](\.\d+)?)$'),
-        "hex_color": re.compile(r'^#[0-9a-fA-F]{6}$'),
-        "issn": re.compile(r'^\d{4}-\d{4}$'),
-        "locale_code": re.compile(r'^[a-z]{2}(-[A-Za-z]{2,4})?$'),
+        "hex_color": re.compile(r'^#[0-9a-fA-F]{6}$'),  # Обязательно #
+        "issn": re.compile(r'^\d{4}-\d{4}$'),  # Обязательно дефис
+        "locale_code": re.compile(r'^[a-z]{2}(-[a-z]{2,4})?$'),  # Только строчные
         "time": re.compile(r'^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\.\d{1,6}$')
     }
 
-    # Проверим первые 5 строк подробно
-    for i in range(min(5, len(df))):
-        print(f"\n--- Строка {i} ---")
+    for index, row in df.iterrows():
+        is_valid = True
+
         for col, pattern in patterns.items():
-            value = str(df.iloc[i][col])
-            cleaned_value = clean_utf16_string(value)
+            value = str(row[col])
+            value = clean_utf16_string(value)
 
-            # Специфичная очистка
-            if col == "snils":
-                cleaned_value = cleaned_value.replace('_', '')
-            elif col == "longitude":
-                cleaned_value = re.sub(r'[°"_]', '', cleaned_value)
-                cleaned_value = cleaned_value.replace(',', '.')
-            elif col == "issn":
-                cleaned_value = cleaned_value.replace(' ', '')
-            elif col == "locale_code":
-                cleaned_value = cleaned_value.strip('_')
-            elif col == "hex_color":
-                if cleaned_value.startswith('##'):
-                    cleaned_value = cleaned_value[1:]
-                cleaned_value = cleaned_value.upper()
+            if value == 'nan' or not value:
+                is_valid = False
+                break
 
-            matches = bool(pattern.match(cleaned_value))
-            print(f"{col}: '{value}' -> '{cleaned_value}' | {'VALID' if matches else 'INVALID'}")
+            # НЕТ очистки данных - проверяем как есть
+            if not pattern.match(value):
+                is_valid = False
+                break
+
+        if not is_valid:
+            invalid_rows.append(index)
+
+    return invalid_rows
 
 
 def main() -> None:
@@ -161,36 +115,39 @@ def main() -> None:
             on_bad_lines='skip',
             header=0
         )
-
         print("Файл успешно загружен в кодировке UTF-16")
-
     except Exception as e:
         print(f"Ошибка при загрузке файла: {e}")
         return
 
     print(f"Размер данных: {df.shape}")
-    print(f"Столбцы: {df.columns.tolist()}")
 
     # Очистка данных от UTF-16 артефактов
     for col in df.columns:
         df[col] = df[col].apply(clean_utf16_string)
 
-    # Отладка первых строк
-    debug_validation(df)
+    # Строгая валидация (без исправлений данных)
+    print("Запуск СТРОГОЙ валидации...")
+    invalid_rows = strict_validate_data(df)
 
-    # Валидация всех данных
-    invalid_rows = validate_data(df)
     checksum_value = calculate_checksum(invalid_rows)
 
-    save_to_json(19, checksum_value)
+    # Сохранение результата
+    result_data = {
+        "variant": 19,
+        "checksum": checksum_value
+    }
 
-    print("\n=== РЕЗУЛЬТАТЫ ВАЛИДАЦИИ ===")
-    print(f"Вариант: 19")
+    with open("result.json", "w", encoding="utf-8") as f:
+        json.dump(result_data, f, indent=2, ensure_ascii=False)
+
+    print("\n=== РЕЗУЛЬТАТЫ СТРОГОЙ ВАЛИДАЦИИ ===")
     print(f"Всего строк: {len(df)}")
     print(f"Невалидных строк: {len(invalid_rows)}")
     print(f"Валидных строк: {len(df) - len(invalid_rows)}")
     print(f"Контрольная сумма: {checksum_value}")
     print(f"Ожидаемая сумма: 84f395ceeba40fb8d5799d91158e7175")
+    print(f"Совпадает: {checksum_value == '84f395ceeba40fb8d5799d91158e7175'}")
 
 
 if __name__ == "__main__":
