@@ -12,12 +12,13 @@ DEFAULT_CALORIES_PER_100G = 200
 CONFIDENCE_MULTIPLIER = 10
 MAX_CONFIDENCE_FACTOR = 1.0
 DEFAULT_PREDICTION_HISTORY_LIMIT = 50
+CALORIES_PER_GRAM_DIVISOR = 100
 
 
-@dataclass
+@dataclass(frozen=True)
 class FoodInfo:
     """
-    Data class for storing food nutritional information.
+    Immutable data class for storing food nutritional information.
 
     Attributes:
         calories_per_100g: Calories per 100 grams of the food
@@ -28,11 +29,20 @@ class FoodInfo:
     typical_weight_g: int
     category: str
 
+    @classmethod
+    def create_default(cls) -> 'FoodInfo':
+        """Create a default FoodInfo instance."""
+        return cls(
+            calories_per_100g=DEFAULT_CALORIES_PER_100G,
+            typical_weight_g=DEFAULT_TYPICAL_WEIGHT,
+            category="Unknown"
+        )
 
-@dataclass
+
+@dataclass(frozen=True)
 class EstimationResult:
     """
-    Data class for calorie estimation results.
+    Immutable data class for calorie estimation results.
 
     Attributes:
         success: Whether the estimation was successful
@@ -46,6 +56,60 @@ class EstimationResult:
     confidence: float = 0.0
     error: Optional[str] = None
     details: Optional[Dict[str, Any]] = None
+
+    @classmethod
+    def create_success(
+            cls,
+            calories: float,
+            confidence: float,
+            food_class: str,
+            food_info: FoodInfo,
+            coverage_ratio: float,
+            estimated_weight: float
+    ) -> 'EstimationResult':
+        """
+        Create a successful estimation result.
+
+        Args:
+            calories: Estimated calorie count
+            confidence: Confidence factor
+            food_class: Name of the food item
+            food_info: Food information used for calculation
+            coverage_ratio: Coverage ratio used
+            estimated_weight: Estimated weight in grams
+
+        Returns:
+            EstimationResult with success status and details
+        """
+        return cls(
+            success=True,
+            estimated_calories=round(calories),
+            confidence=round(confidence, 2),
+            details={
+                "food_class": food_class,
+                "calories_per_100g": food_info.calories_per_100g,
+                "estimated_weight_g": round(estimated_weight),
+                "coverage_ratio": round(coverage_ratio, 2),
+                "category": food_info.category
+            }
+        )
+
+    @classmethod
+    def create_error(cls, error_message: str) -> 'EstimationResult':
+        """
+        Create an error estimation result.
+
+        Args:
+            error_message: Description of the error
+
+        Returns:
+            EstimationResult with error status
+        """
+        return cls(
+            success=False,
+            error=error_message,
+            confidence=0.0
+        )
 
 
 class FoodDatabaseManager:
@@ -75,27 +139,27 @@ class FoodDatabaseManager:
         Returns:
             Dictionary mapping food names to FoodInfo objects
         """
-        return {
-            "cheese_plate": FoodInfo(calories_per_100g=350, typical_weight_g=200, category="Dairy"),
-            "sashimi": FoodInfo(calories_per_100g=120, typical_weight_g=150, category="Seafood"),
-            "seaweed_salad": FoodInfo(calories_per_100g=45, typical_weight_g=100, category="Vegetable"),
-            "grilled_salmon": FoodInfo(calories_per_100g=206, typical_weight_g=150, category="Seafood"),
-            "deviled_eggs": FoodInfo(calories_per_100g=210, typical_weight_g=100, category="Eggs"),
-            "club_sandwich": FoodInfo(calories_per_100g=250, typical_weight_g=200, category="Sandwich"),
-            "apple_pie": FoodInfo(calories_per_100g=265, typical_weight_g=150, category="Dessert"),
-            "pizza": FoodInfo(calories_per_100g=266, typical_weight_g=100, category="Fast Food"),
-            "hamburger": FoodInfo(calories_per_100g=295, typical_weight_g=200, category="Fast Food"),
-            "sushi": FoodInfo(calories_per_100g=150, typical_weight_g=50, category="Seafood"),
-            "steak": FoodInfo(calories_per_100g=271, typical_weight_g=200, category="Meat"),
-            "salad": FoodInfo(calories_per_100g=35, typical_weight_g=150, category="Vegetable"),
-            "default_food": FoodInfo(
-                calories_per_100g=DEFAULT_CALORIES_PER_100G,
-                typical_weight_g=DEFAULT_TYPICAL_WEIGHT,
-                category="Unknown"
-            )
+        food_data = {
+            "cheese_plate": (350, 200, "Dairy"),
+            "sashimi": (120, 150, "Seafood"),
+            "seaweed_salad": (45, 100, "Vegetable"),
+            "grilled_salmon": (206, 150, "Seafood"),
+            "deviled_eggs": (210, 100, "Eggs"),
+            "club_sandwich": (250, 200, "Sandwich"),
+            "apple_pie": (265, 150, "Dessert"),
+            "pizza": (266, 100, "Fast Food"),
+            "hamburger": (295, 200, "Fast Food"),
+            "sushi": (150, 50, "Seafood"),
+            "steak": (271, 200, "Meat"),
+            "salad": (35, 150, "Vegetable"),
         }
 
-    def get_food_info(self, food_name: str) -> FoodInfo:
+        return {
+            name: FoodInfo(calories, weight, category)
+            for name, (calories, weight, category) in food_data.items()
+        }
+
+    def get_food_info(self, food_name: str) -> Optional[FoodInfo]:
         """
         Get food information from extended database with fallback logic.
 
@@ -103,7 +167,7 @@ class FoodDatabaseManager:
             food_name: Name of the food item to look up
 
         Returns:
-            FoodInfo object with nutritional information
+            FoodInfo object with nutritional information, or None if not found
         """
         normalized_name = food_name.lower()
 
@@ -120,8 +184,7 @@ class FoodDatabaseManager:
                 category=db_food_info.get("category", "Unknown")
             )
 
-        # Return default if not found
-        return self.extended_food_db["default_food"]
+        return None
 
     def add_prediction_to_history(self, food_class: str, confidence: float, calories: float) -> None:
         """
@@ -171,6 +234,8 @@ class CalorieEstimator:
         Returns:
             Estimated weight in grams
         """
+        if coverage_ratio < 0 or coverage_ratio > 1:
+            raise ValueError("Coverage ratio must be between 0 and 1")
         return typical_weight * coverage_ratio
 
     @staticmethod
@@ -185,7 +250,9 @@ class CalorieEstimator:
         Returns:
             Total calories for the given weight
         """
-        return (calories_per_100g / 100) * weight
+        if weight < 0:
+            raise ValueError("Weight cannot be negative")
+        return (calories_per_100g / CALORIES_PER_GRAM_DIVISOR) * weight
 
     @staticmethod
     def calculate_confidence_factor(confidence: float) -> float:
@@ -198,55 +265,35 @@ class CalorieEstimator:
         Returns:
             Confidence factor adjusted for estimation (0.0 to 1.0)
         """
+        if confidence < 0 or confidence > 1:
+            raise ValueError("Confidence must be between 0 and 1")
         return min(MAX_CONFIDENCE_FACTOR, confidence * CONFIDENCE_MULTIPLIER)
 
-    @staticmethod
-    def create_success_result(calories: float, confidence: float, food_class: str,
-                              food_info: FoodInfo, coverage_ratio: float,
-                              estimated_weight: float) -> EstimationResult:
+    def estimate_calories(
+            self,
+            food_info: FoodInfo,
+            coverage_ratio: float,
+            confidence: float
+    ) -> float:
         """
-        Create a successful estimation result with details.
+        Perform complete calorie estimation.
 
         Args:
-            calories: Estimated calorie count
-            confidence: Confidence factor
-            food_class: Name of the food item
-            food_info: Food information used for calculation
-            coverage_ratio: Coverage ratio used
-            estimated_weight: Estimated weight in grams
+            food_info: Food information for calculation
+            coverage_ratio: Ratio of typical weight
+            confidence: Confidence level from AI model
 
         Returns:
-            EstimationResult with success status and details
+            Final estimated calories
         """
-        return EstimationResult(
-            success=True,
-            estimated_calories=round(calories),
-            confidence=round(confidence, 2),
-            details={
-                "food_class": food_class,
-                "calories_per_100g": food_info.calories_per_100g,
-                "estimated_weight_g": round(estimated_weight),
-                "coverage_ratio": round(coverage_ratio, 2),
-                "category": food_info.category
-            }
+        estimated_weight = self.calculate_estimated_weight(
+            food_info.typical_weight_g, coverage_ratio
         )
-
-    @staticmethod
-    def create_error_result(error_message: str) -> EstimationResult:
-        """
-        Create an error estimation result.
-
-        Args:
-            error_message: Description of the error
-
-        Returns:
-            EstimationResult with error status
-        """
-        return EstimationResult(
-            success=False,
-            error=error_message,
-            confidence=0.0
+        base_calories = self.calculate_base_calories(
+            food_info.calories_per_100g, estimated_weight
         )
+        confidence_factor = self.calculate_confidence_factor(confidence)
+        return base_calories * confidence_factor
 
 
 class CalorieCalculator:
@@ -279,7 +326,8 @@ class CalorieCalculator:
         Returns:
             FoodInfo object with nutritional information
         """
-        return self.db_manager.get_food_info(food_name)
+        food_info = self.db_manager.get_food_info(food_name)
+        return food_info or FoodInfo.create_default()
 
     def estimate_calories(self, food_class: str, coverage_ratio: float,
                           confidence: float) -> EstimationResult:
@@ -295,23 +343,26 @@ class CalorieCalculator:
             EstimationResult with calculation details
         """
         try:
+            # Input validation
+            if not food_class or not food_class.strip():
+                return EstimationResult.create_error("Food class cannot be empty")
+
+            if coverage_ratio < 0 or coverage_ratio > 1:
+                return EstimationResult.create_error("Coverage ratio must be between 0 and 1")
+
+            if confidence < 0 or confidence > 1:
+                return EstimationResult.create_error("Confidence must be between 0 and 1")
+
             food_info = self.get_food_info(food_class)
 
-            if not food_info:
-                logger.warning(f"⚠️ Food class '{food_class}' not found in database")
-                return self.estimator.create_error_result(
-                    f"Food class '{food_class}' not found in database"
-                )
+            # Calculate calories
+            final_calories = self.estimator.estimate_calories(
+                food_info, coverage_ratio, confidence
+            )
 
-            # Calculate components
             estimated_weight = self.estimator.calculate_estimated_weight(
                 food_info.typical_weight_g, coverage_ratio
             )
-            base_calories = self.estimator.calculate_base_calories(
-                food_info.calories_per_100g, estimated_weight
-            )
-            confidence_factor = self.estimator.calculate_confidence_factor(confidence)
-            final_calories = base_calories * confidence_factor
 
             # Save to history
             self.db_manager.add_prediction_to_history(
@@ -319,17 +370,24 @@ class CalorieCalculator:
             )
 
             # Create result
-            result = self.estimator.create_success_result(
-                final_calories, confidence_factor, food_class,
-                food_info, coverage_ratio, estimated_weight
+            result = EstimationResult.create_success(
+                final_calories,
+                self.estimator.calculate_confidence_factor(confidence),
+                food_class,
+                food_info,
+                coverage_ratio,
+                estimated_weight
             )
 
             logger.info(f"✅ Calorie estimation: {result.estimated_calories} kcal for {food_class}")
             return result
 
+        except ValueError as e:
+            logger.warning(f"⚠️ Validation error in calorie estimation: {e}")
+            return EstimationResult.create_error(str(e))
         except Exception as e:
             logger.error(f"❌ Calorie estimation error: {e}")
-            return self.estimator.create_error_result(str(e))
+            return EstimationResult.create_error(f"Internal server error: {str(e)}")
 
     def get_prediction_history(self, limit: int = DEFAULT_PREDICTION_HISTORY_LIMIT) -> List[Dict[str, Any]]:
         """
@@ -346,3 +404,17 @@ class CalorieCalculator:
     def close(self) -> None:
         """Close database connections and release resources."""
         self.db_manager.close()
+
+
+# Factory function for easy instance creation
+def create_calorie_calculator(db_path: str = DEFAULT_DB_PATH) -> CalorieCalculator:
+    """
+    Create and initialize a CalorieCalculator instance.
+
+    Args:
+        db_path: Path to the food database file
+
+    Returns:
+        Initialized CalorieCalculator instance
+    """
+    return CalorieCalculator(db_path)
