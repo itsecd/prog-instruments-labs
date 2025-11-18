@@ -4,7 +4,6 @@ from csv_processor import read_csv, validate_data
 from validators import get_validation_patterns
 
 
-
 def main():
     print("Validation of the CSV file")
 

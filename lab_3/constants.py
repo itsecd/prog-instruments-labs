@@ -28,10 +28,10 @@ VALIDATION_PATTERNS = {
     # Идентификатор: СТРОЖЕ - только формат XX-XX/XX
     COLUMN_IDENTIFIER: re.compile(r'^\d{2}-\d{2}/\d{2}$'),
 
-    # Широта: оставить как есть (100 ошибок - правильно)
-    COLUMN_LATITUDE: re.compile(r'^-?\d{1,2}\.\d+$'),
+    # Широта: согласно описанию - от -90 до 90 градусов
+    COLUMN_LATITUDE: re.compile(r'^-?(?:90(?:\.0+)?|[1-8]?\d(?:\.\d+)?)$'),
 
-    # Группа крови: СТРОЖЕ - без пробелов, только обычный минус (O, а не 0)
+    # Группа крови: СТРОЖЕ - без пробелов, только обычный минус
     COLUMN_BLOOD_TYPE: re.compile(r'^(A|B|AB|O)[+\-]$'),
 
     # ISSN: оставить как есть (100 ошибок - правильно)
@@ -40,10 +40,9 @@ VALIDATION_PATTERNS = {
     # UUID: оставить как есть (100 ошибок - правильно)
     COLUMN_UUID: re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'),
 
-    # Дата: СТРОЖЕ - только YYYY-MM-DD с дефисами (без пробелов)
-    COLUMN_DATE: re.compile(r'^\d{4}-\d{2}-\d{2}$')
+    # Дата: YYYY-MM-DD с валидацией месяцев и дней
+    COLUMN_DATE: re.compile(r'^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$')
 }
-
 
 COLUMNS_TO_VALIDATE = list(VALIDATION_PATTERNS.keys())
 VARIANT = 72
