@@ -84,26 +84,29 @@ class FoodDatabaseManager:
         self.food_db.close()
 
 
-class CalorieCalculator:
-    def __init__(self, food_db_path: str = "data/food_ai.db"):
-        self.db_manager = FoodDatabaseManager(food_db_path)
-        logger.info("✅ CalorieCalculator initialized with database manager")
+class CalorieEstimator:
+    """Handles calorie estimation logic."""
 
-    def _calculate_estimated_weight(self, typical_weight: int, coverage_ratio: float) -> float:
-        """Рассчитать предполагаемый вес на основе коэффициента покрытия."""
+    @staticmethod
+    def calculate_estimated_weight(typical_weight: int, coverage_ratio: float) -> float:
+        """Calculate estimated weight based on coverage ratio."""
         return typical_weight * coverage_ratio
 
-    def _calculate_base_calories(self, calories_per_100g: float, weight: float) -> float:
-        """Рассчитать базовые калории на основе веса."""
+    @staticmethod
+    def calculate_base_calories(calories_per_100g: float, weight: float) -> float:
+        """Calculate calories based on weight."""
         return (calories_per_100g / 100) * weight
 
-    def _calculate_confidence_factor(self, confidence: float) -> float:
-        """Рассчитать коэффициент уверенности для оценки."""
+    @staticmethod
+    def calculate_confidence_factor(confidence: float) -> float:
+        """Calculate confidence factor for estimation."""
         return min(1.0, confidence * 10)
 
-    def _create_success_result(self, calories: float, confidence: float, food_class: str,
-                               food_info: FoodInfo, coverage_ratio: float, estimated_weight: float) -> EstimationResult:
-        """Создать успешный результат оценки."""
+    @staticmethod
+    def create_success_result(calories: float, confidence: float, food_class: str,
+                              food_info: FoodInfo, coverage_ratio: float,
+                              estimated_weight: float) -> EstimationResult:
+        """Create successful estimation result."""
         return EstimationResult(
             success=True,
             estimated_calories=round(calories),
@@ -117,13 +120,26 @@ class CalorieCalculator:
             }
         )
 
-    def _create_error_result(self, error_message: str) -> EstimationResult:
-        """Создать результат ошибки."""
+    @staticmethod
+    def create_error_result(error_message: str) -> EstimationResult:
+        """Create error estimation result."""
         return EstimationResult(
             success=False,
             error=error_message,
             confidence=0.0
         )
+
+
+class CalorieCalculator:
+    """
+    Main class for calorie calculation with separated concerns.
+    Improved maintainability and testability.
+    """
+
+    def __init__(self, food_db_path: str = "data/food_ai.db"):
+        self.db_manager = FoodDatabaseManager(food_db_path)
+        self.estimator = CalorieEstimator()
+        logger.info("✅ CalorieCalculator initialized with improved architecture")
 
     def get_food_info(self, food_name: str) -> FoodInfo:
         """Получить информацию о продукте из базы данных."""
@@ -136,16 +152,16 @@ class CalorieCalculator:
 
             if not food_info:
                 logger.warning(f"⚠️ Food class '{food_class}' not found in database")
-                return self._create_error_result(f"Food class '{food_class}' not found in database")
+                return self.estimator.create_error_result(f"Food class '{food_class}' not found in database")
 
             # Расчет компонентов
-            estimated_weight = self._calculate_estimated_weight(
+            estimated_weight = self.estimator.calculate_estimated_weight(
                 food_info.typical_weight_g, coverage_ratio
             )
-            base_calories = self._calculate_base_calories(
+            base_calories = self.estimator.calculate_base_calories(
                 food_info.calories_per_100g, estimated_weight
             )
-            confidence_factor = self._calculate_confidence_factor(confidence)
+            confidence_factor = self.estimator.calculate_confidence_factor(confidence)
             final_calories = base_calories * confidence_factor
 
             self.db_manager.add_prediction_to_history(
@@ -154,7 +170,7 @@ class CalorieCalculator:
                 final_calories
             )
 
-            result = self._create_success_result(
+            result = self.estimator.create_success_result(
                 final_calories, confidence_factor, food_class,
                 food_info, coverage_ratio, estimated_weight
             )
@@ -164,7 +180,7 @@ class CalorieCalculator:
 
         except Exception as e:
             logger.error(f"❌ Calorie estimation error: {e}")
-            return self._create_error_result(str(e))
+            return self.estimator.create_error_result(str(e))
 
     def get_prediction_history(self, limit: int = 50) -> List[Dict[str, Any]]:
         """Получить историю предсказаний"""
