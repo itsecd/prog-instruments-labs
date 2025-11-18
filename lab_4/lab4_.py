@@ -64,6 +64,42 @@ class CalorieCalculator:
 
         return food_info or self.extended_food_db["default_food"]
 
+    def _calculate_estimated_weight(self, typical_weight: int, coverage_ratio: float) -> float:
+        """Рассчитать предполагаемый вес на основе коэффициента покрытия."""
+        return typical_weight * coverage_ratio
+
+    def _calculate_base_calories(self, calories_per_100g: float, weight: float) -> float:
+        """Рассчитать базовые калории на основе веса."""
+        return (calories_per_100g / 100) * weight
+
+    def _calculate_confidence_factor(self, confidence: float) -> float:
+        """Рассчитать коэффициент уверенности для оценки."""
+        return min(1.0, confidence * 10)
+
+    def _create_success_result(self, calories: float, confidence: float, food_class: str,
+                             food_info: FoodInfo, coverage_ratio: float, estimated_weight: float) -> EstimationResult:
+        """Создать успешный результат оценки."""
+        return EstimationResult(
+            success=True,
+            estimated_calories=round(calories),
+            confidence=round(confidence, 2),
+            details={
+                "food_class": food_class,
+                "calories_per_100g": food_info.calories_per_100g,
+                "estimated_weight_g": round(estimated_weight),
+                "coverage_ratio": round(coverage_ratio, 2),
+                "category": food_info.category
+            }
+        )
+
+    def _create_error_result(self, error_message: str) -> EstimationResult:
+        """Создать результат ошибки."""
+        return EstimationResult(
+            success=False,
+            error=error_message,
+            confidence=0.0
+        )
+
     def estimate_calories(self, food_class: str, coverage_ratio: float, confidence: float) -> EstimationResult:
         """Оценка калорийности"""
         try:
@@ -71,20 +107,17 @@ class CalorieCalculator:
 
             if not food_info:
                 logger.warning(f"⚠️ Food class '{food_class}' not found in database")
-                return EstimationResult(
-                    success=False,
-                    error=f"Food class '{food_class}' not found in database",
-                    confidence=0.0
-                )
+                return self._create_error_result(f"Food class '{food_class}' not found in database")
 
-            typical_weight = food_info.typical_weight_g
-            calories_per_100g = food_info.calories_per_100g
-
-            estimated_weight = typical_weight * coverage_ratio
-            estimated_calories = (calories_per_100g / 100) * estimated_weight
-
-            confidence_factor = min(1.0, confidence * 10)
-            final_calories = estimated_calories * confidence_factor
+            # Расчет компонентов
+            estimated_weight = self._calculate_estimated_weight(
+                food_info.typical_weight_g, coverage_ratio
+            )
+            base_calories = self._calculate_base_calories(
+                food_info.calories_per_100g, estimated_weight
+            )
+            confidence_factor = self._calculate_confidence_factor(confidence)
+            final_calories = base_calories * confidence_factor
 
             self.food_db.add_prediction_to_history(
                 food_class,
@@ -92,17 +125,9 @@ class CalorieCalculator:
                 final_calories
             )
 
-            result = EstimationResult(
-                success=True,
-                estimated_calories=round(final_calories),
-                confidence=round(confidence_factor, 2),
-                details={
-                    "food_class": food_class,
-                    "calories_per_100g": calories_per_100g,
-                    "estimated_weight_g": round(estimated_weight),
-                    "coverage_ratio": round(coverage_ratio, 2),
-                    "category": food_info.category
-                }
+            result = self._create_success_result(
+                final_calories, confidence_factor, food_class,
+                food_info, coverage_ratio, estimated_weight
             )
 
             logger.info(f"✅ Calorie estimation: {result.estimated_calories} kcal for {food_class}")
@@ -110,11 +135,7 @@ class CalorieCalculator:
 
         except Exception as e:
             logger.error(f"❌ Calorie estimation error: {e}")
-            return EstimationResult(
-                success=False,
-                error=str(e),
-                confidence=0.0
-            )
+            return self._create_error_result(str(e))
 
     def get_prediction_history(self, limit: int = 50):
         """Получить историю предсказаний"""
