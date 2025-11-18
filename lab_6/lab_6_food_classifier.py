@@ -1,11 +1,12 @@
-import tensorflow as tf
-import numpy as np
 import json
 import logging
-from typing import List, Dict, Any
-from PIL import Image
 import os
 import traceback
+from typing import Any, Dict, List
+
+import numpy as np
+import tensorflow as tf
+from PIL import Image
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 tf.get_logger().setLevel('ERROR')
@@ -14,8 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class FoodClassifier:
-    def __init__(self, model_path: str = "models/classifier/model.h5",
-                 class_mapping_path: str = "models/classifier/class_mapping.json"):
+
+    def __init__(
+            self,
+            model_path: str = "models/classifier/model.h5",
+            class_mapping_path: str = "models/classifier/class_mapping.json"
+    ):
         self.model = None
         self.class_mapping = {}
         self.model_path = model_path
@@ -23,11 +28,13 @@ class FoodClassifier:
         self.load_model()
 
     def load_model(self):
-        """Загрузка модели и mapping'а классов"""
+        """Загрузка модели и mapping'а классов."""
         try:
             if os.path.exists(self.model_path):
                 with tf.device('/CPU:0'):
-                    self.model = tf.keras.models.load_model(self.model_path, compile=False)
+                    self.model = tf.keras.models.load_model(
+                        self.model_path, compile=False
+                    )
 
                 self.model.compile(
                     optimizer='adam',
@@ -36,7 +43,9 @@ class FoodClassifier:
                 )
                 logger.info(f"✅ TensorFlow model loaded from {self.model_path}")
             else:
-                logger.warning(f"❌ Model not found at {self.model_path}, using fallback")
+                logger.warning(
+                    f"❌ Model not found at {self.model_path}, using fallback"
+                )
                 self.model = None
 
             self._load_class_mapping()
@@ -47,22 +56,32 @@ class FoodClassifier:
             logger.info("🔄 Using fallback classifier")
 
     def _load_class_mapping(self):
-        """Загрузка mapping'а числовых классов в названия еды"""
+        """Загрузка mapping'а числовых классов в названия еды."""
         try:
             if os.path.exists(self.class_mapping_path):
-                with open(self.class_mapping_path, 'r', encoding='utf-8') as f:
+                with open(
+                        self.class_mapping_path, 'r', encoding='utf-8'
+                ) as f:
                     self.class_mapping = json.load(f)
-                logger.info(f"✅ Loaded class mapping with {len(self.class_mapping)} classes")
+                logger.info(
+                    f"✅ Loaded class mapping with {len(self.class_mapping)} classes"
+                )
             else:
-                self.class_mapping = {str(i): f"food_{i}" for i in range(101)}
+                self.class_mapping = {
+                    str(i): f"food_{i}" for i in range(101)
+                }
                 logger.info("🔄 Using default class mapping")
 
         except Exception as e:
             logger.error(f"❌ Error loading class mapping: {e}")
-            self.class_mapping = {str(i): f"food_{i}" for i in range(101)}
+            self.class_mapping = {
+                str(i): f"food_{i}" for i in range(101)
+            }
 
-    def predict(self, image: Image.Image, top_k: int = 3) -> List[Dict[str, Any]]:
-        """Предсказание класса еды"""
+    def predict(
+            self, image: Image.Image, top_k: int = 3
+    ) -> List[Dict[str, Any]]:
+        """Предсказание класса еды."""
         try:
             if self.model is not None:
                 return self._predict_with_model(image, top_k)
@@ -73,8 +92,10 @@ class FoodClassifier:
             logger.error(f"❌ Prediction failed: {e}")
             return self._predict_fallback(image, top_k)
 
-    def _predict_with_model(self, image: Image.Image, top_k: int) -> List[Dict[str, Any]]:
-        """Предсказание с использованием TensorFlow модели"""
+    def _predict_with_model(
+            self, image: Image.Image, top_k: int
+    ) -> List[Dict[str, Any]]:
+        """Предсказание с использованием TensorFlow модели."""
         try:
             processed_image = self.preprocess_image(image)
             predictions = self.model.predict(processed_image, verbose=0)
@@ -93,13 +114,21 @@ class FoodClassifier:
             for i, idx in enumerate(top_10_indices):
                 confidence = float(predictions[idx])
                 class_id = str(idx)
-                class_name = self.class_mapping.get(class_id, f"class_{idx}")
-                logger.info(f"🔍 #{i + 1}: idx={idx}, class='{class_name}', confidence={confidence:.6f}")
+                class_name = self.class_mapping.get(
+                    class_id, f"class_{idx}"
+                )
+                logger.info(
+                    f"🔍 #{i + 1}: idx={idx}, class='{class_name}', "
+                    f"confidence={confidence:.6f}"
+                )
 
             if 17 < len(predictions):
                 confidence_17 = float(predictions[17])
                 class_name_17 = self.class_mapping.get("17", "class_17")
-                logger.info(f"🔍 Specific check - idx=17: '{class_name_17}' with confidence={confidence_17:.6f}")
+                logger.info(
+                    f"🔍 Specific check - idx=17: '{class_name_17}' "
+                    f"with confidence={confidence_17:.6f}"
+                )
 
             top_indices = np.argsort(predictions)[-top_k:][::-1]
             results = []
@@ -107,7 +136,9 @@ class FoodClassifier:
             for idx in top_indices:
                 confidence = float(predictions[idx])
                 class_id = str(idx)
-                class_name = self.class_mapping.get(class_id, f"class_{idx}")
+                class_name = self.class_mapping.get(
+                    class_id, f"class_{idx}"
+                )
 
                 results.append({
                     'class_name': class_name,
@@ -115,7 +146,10 @@ class FoodClassifier:
                     'class_id': int(idx)
                 })
 
-            logger.info(f"✅ TensorFlow prediction: {results[0]['class_name']} ({results[0]['confidence']:.3f})")
+            logger.info(
+                f"✅ TensorFlow prediction: {results[0]['class_name']} "
+                f"({results[0]['confidence']:.3f})"
+            )
             return results
 
         except Exception as e:
@@ -123,8 +157,10 @@ class FoodClassifier:
             logger.error(traceback.format_exc())
             return self._predict_fallback(image, top_k)
 
-    def _predict_fallback(self, image: Image.Image, top_k: int) -> List[Dict[str, Any]]:
-        """Fallback предсказание на основе эвристик"""
+    def _predict_fallback(
+            self, image: Image.Image, top_k: int
+    ) -> List[Dict[str, Any]]:
+        """Fallback предсказание на основе эвристик."""
         main_classes = [
             "apple_pie", "pizza", "hamburger", "sushi", "steak",
             "salad", "chicken_curry", "pasta", "sandwich", "soup"
@@ -152,11 +188,16 @@ class FoodClassifier:
                 'class_id': i
             })
 
-        logger.info(f"🔄 Fallback prediction: {results[0]['class_name']} ({results[0]['confidence']})")
+        logger.info(
+            f"🔄 Fallback prediction: {results[0]['class_name']} "
+            f"({results[0]['confidence']})"
+        )
         return results
 
-    def preprocess_image(self, image: Image.Image, target_size: tuple = (224, 224)) -> np.ndarray:
-        """Предобработка изображения для модели"""
+    def preprocess_image(
+            self, image: Image.Image, target_size: tuple = (224, 224)
+    ) -> np.ndarray:
+        """Предобработка изображения для модели."""
         image = image.resize(target_size)
         img_array = np.array(image) / 255.0
 
@@ -166,7 +207,7 @@ class FoodClassifier:
         return img_array
 
     def _get_dominant_color(self, image: Image.Image) -> str:
-        """Определение доминирующего цвета"""
+        """Определение доминирующего цвета."""
         try:
             small_image = image.resize((50, 50))
             pixels = list(small_image.getdata())
@@ -185,8 +226,9 @@ class FoodClassifier:
                 return "white"
             else:
                 return "mixed"
-        except:
+        except Exception:
             return "unknown"
 
     def get_available_classes(self) -> List[str]:
+        """Получить список доступных классов."""
         return list(self.class_mapping.values())
