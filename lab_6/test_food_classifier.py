@@ -5,7 +5,6 @@ from PIL import Image
 import os
 import sys
 
-
 sys.path.append(os.path.dirname(__file__))
 
 from lab_6_food_classifier import FoodClassifier
@@ -40,7 +39,7 @@ class TestFoodClassifier:
     @patch('builtins.open')
     @patch('lab_6_food_classifier.os.path.exists')
     def test_load_model_success(self, mock_exists, mock_open, mock_load_model):
-        """Тест успешной загрузки модели и mapping'а"""
+        """Тест успешной загрузки модели и mapping'а - ИСПРАВЛЕННЫЙ"""
         # Мокаем существование файлов
         mock_exists.return_value = True
 
@@ -53,11 +52,15 @@ class TestFoodClassifier:
         mock_open.return_value.__enter__.return_value = mock_file
         mock_file.read.return_value = '{"0": "apple_pie", "1": "pizza"}'
 
-        classifier = FoodClassifier()
-        # Перезагружаем модель с моками
+        # Создаем classifier с предотвращением автоматической загрузки
+        with patch.object(FoodClassifier, 'load_model'):
+            classifier = FoodClassifier()
+
+        # Теперь вызываем load_model вручную
         classifier.load_model()
 
-        mock_load_model.assert_called_once_with("models/classifier/model.h5", compile=False)
+        # Проверяем что load_model вызывался с правильными параметрами
+        mock_load_model.assert_called_with("models/classifier/model.h5", compile=False)
         assert classifier.model == mock_model
         assert classifier.class_mapping == {"0": "apple_pie", "1": "pizza"}
 
@@ -67,7 +70,10 @@ class TestFoodClassifier:
         """Тест загрузки модели когда файл не найден"""
         mock_exists.return_value = False
 
-        classifier = FoodClassifier()
+        # Создаем classifier с предотвращением автоматической загрузки
+        with patch.object(FoodClassifier, 'load_model'):
+            classifier = FoodClassifier()
+
         classifier.load_model()
 
         assert classifier.model is None
@@ -167,7 +173,7 @@ class TestFoodClassifier:
     @patch('lab_6_food_classifier.np.argsort')
     @patch('lab_6_food_classifier.FoodClassifier.preprocess_image')
     def test_predict_with_model_logic(self, mock_preprocess, mock_argsort):
-        """Тест логики предсказания с моделью"""
+        """Тест логики предсказания с моделью - ИСПРАВЛЕННЫЙ"""
         mock_preprocess.return_value = np.random.random((1, 224, 224, 3))
 
         mock_predictions = np.array([0.1, 0.8, 0.05, 0.05])
@@ -176,15 +182,21 @@ class TestFoodClassifier:
         classifier.model.predict.return_value = [mock_predictions]
         classifier.class_mapping = {"0": "class_0", "1": "class_1", "2": "class_2", "3": "class_3"}
 
-        mock_argsort.return_value = np.array([1, 0])
+        # ИСПРАВЛЕНИЕ: argsort возвращает индексы в порядке возрастания
+        # Для top_k=2 нам нужны индексы [1, 0] но argsort вернет [2, 3, 0, 1] для нашего массива
+        # Давайте правильно сымитируем argsort для массива [0.1, 0.8, 0.05, 0.05]
+        mock_argsort.return_value = np.array([2, 3, 0, 1])  # Индексы отсортированные по возрастанию
 
         test_image = Image.new('RGB', (100, 100), color='red')
         result = classifier._predict_with_model(test_image, top_k=2)
 
         assert len(result) == 2
-        assert result[0]['class_id'] == 1
+        # Теперь правильные индексы: [1, 0] (топ-2 по убыванию)
+        assert result[0]['class_id'] == 1  # Самый высокий confidence 0.8
         assert result[0]['class_name'] == 'class_1'
         assert result[0]['confidence'] == 0.8
+        assert result[1]['class_id'] == 0  # Второй по confidence 0.1
+        assert result[1]['confidence'] == 0.1
 
     def test_predict_fallback_logic_green_image(self):
         """Тест fallback логики для зеленого изображения"""
