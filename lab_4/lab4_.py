@@ -132,7 +132,8 @@ class FoodDatabaseManager:
         self.extended_food_db = self._initialize_extended_database()
         logger.info("✅ FoodDatabaseManager initialized")
 
-    def _initialize_extended_database(self) -> Dict[str, FoodInfo]:
+    @staticmethod
+    def _initialize_extended_database() -> Dict[str, FoodInfo]:
         """
         Initialize extended Food-101 database with common food items.
 
