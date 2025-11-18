@@ -1,6 +1,9 @@
-import pytest
-from src.Player import Player, Dealer
 from src.Deck import Card
+from src.Player import Player, Dealer
+
+
+import pytest
+
 
 
 @pytest.fixture
