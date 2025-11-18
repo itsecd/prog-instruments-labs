@@ -1,8 +1,8 @@
 import logging
 import time
-import json
-from django.utils.deprecation import MiddlewareMixin
+
 from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
 
 
 class RequestLoggingMiddleware(MiddlewareMixin):
@@ -12,6 +12,7 @@ class RequestLoggingMiddleware(MiddlewareMixin):
     """
 
     def __init__(self, get_response=None):
+        super().__init__(get_response)
         self.get_response = get_response
         self.api_logger = logging.getLogger('users_api')
         self.performance_logger = logging.getLogger('performance')
@@ -45,7 +46,8 @@ class RequestLoggingMiddleware(MiddlewareMixin):
 
         return response
 
-    def _should_skip_logging(self, request):
+    @staticmethod
+    def _should_skip_logging(request):
         """Determine if logging should be skipped for this request."""
         skip_paths = [
             '/health',
@@ -57,12 +59,14 @@ class RequestLoggingMiddleware(MiddlewareMixin):
 
         return any(request.path.startswith(path) for path in skip_paths)
 
-    def _generate_request_id(self):
+    @staticmethod
+    def _generate_request_id():
         """Generate a unique request ID for tracking."""
         import uuid
         return str(uuid.uuid4())[:8]
 
-    def _get_client_ip(self, request):
+    @staticmethod
+    def _get_client_ip(request):
         """Extract client IP address from request."""
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
@@ -71,7 +75,8 @@ class RequestLoggingMiddleware(MiddlewareMixin):
             ip = request.META.get('REMOTE_ADDR')
         return ip
 
-    def _get_user_info(self, request):
+    @staticmethod
+    def _get_user_info(request):
         """Extract user information from request."""
         if hasattr(request, 'user') and request.user.is_authenticated:
             return {

@@ -1,7 +1,6 @@
 import logging
 import logging.config
 import os
-from datetime import datetime
 import time
 from functools import wraps
 
@@ -200,3 +199,9 @@ class PerformanceMixin:
                 f"{operation}: {execution_time:.3f}s",
                 extra={'execution_time': execution_time}
             )
+
+    def retrieve(self, request, param, param1):
+        pass
+
+    def update(self, request, param, param1):
+        pass
