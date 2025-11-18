@@ -14,29 +14,35 @@ from .serializers import (
     UserProfileUpdateSerializer, UniversitySerializer,
     UserAvatarSerializer
 )
-from .logging_config import auth_logger, profile_logger, files_logger, api_logger
+from .logging_config import (
+    auth_logger, profile_logger, files_logger, api_logger,
+    log_execution_time, PerformanceMixin
+)
 
 
-# Класс-based view для профиля
-class UserProfileView(generics.RetrieveUpdateAPIView):
+# Класс-based view для профиля с PerformanceMixin
+class UserProfileView(generics.RetrieveUpdateAPIView, PerformanceMixin):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         return self.request.user
 
+    @log_execution_time('profile')
     def retrieve(self, request, *args, **kwargs):
         profile_logger.info(f"Profile view accessed by user: {request.user.username}")
         return super().retrieve(request, *args, **kwargs)
 
+    @log_execution_time('profile')
     def update(self, request, *args, **kwargs):
         profile_logger.info(f"Profile update initiated by user: {request.user.username}")
         return super().update(request, *args, **kwargs)
 
 
-# Функция-based views
+# Функция-based views с логированием времени выполнения
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@log_execution_time('auth')
 def register(request):
     """Регистрация нового пользователя"""
     try:
@@ -77,6 +83,7 @@ def register(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@log_execution_time('auth')
 def login(request):
     """Аутентификация пользователя"""
     try:
@@ -122,6 +129,7 @@ def login(request):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@log_execution_time('profile')
 def get_profile(request):
     """Получить профиль текущего пользователя"""
     try:
@@ -147,6 +155,7 @@ def get_profile(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
+@log_execution_time('profile')
 def update_profile(request):
     """Обновление профиля пользователя"""
     try:
@@ -198,6 +207,7 @@ def update_profile(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
+@log_execution_time('api')
 def get_universities(request):
     """Получить список университетов"""
     try:
@@ -222,6 +232,7 @@ def get_universities(request):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@log_execution_time('files')
 def upload_avatar(request):
     """Загрузка аватарки пользователя"""
     try:
@@ -283,6 +294,7 @@ def upload_avatar(request):
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
+@log_execution_time('files')
 def delete_avatar(request):
     """Удаление аватарки пользователя"""
     try:
@@ -315,7 +327,51 @@ def delete_avatar(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
+@log_execution_time('api')
 def health_check(request):
     """Health check endpoint"""
     api_logger.debug("Health check request received")
     return Response({"status": "Users API is working"})
+
+
+# Middleware для логирования всех запросов
+class RequestLoggingMiddleware:
+    """
+    Middleware для логирования входящих запросов и исходящих ответов.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        self.logger = logging.getLogger('users_api')
+
+    def __call__(self, request):
+        import time
+        start_time = time.time()
+
+        # Логируем входящий запрос
+        self.logger.info(
+            f"REQUEST - {request.method} {request.path} - "
+            f"User: {getattr(request.user, 'username', 'Anonymous')} - "
+            f"IP: {self.get_client_ip(request)}"
+        )
+
+        response = self.get_response(request)
+
+        # Логируем исходящий ответ
+        execution_time = time.time() - start_time
+        self.logger.info(
+            f"RESPONSE - {request.method} {request.path} - "
+            f"Status: {response.status_code} - "
+            f"Time: {execution_time:.3f}s - "
+            f"User: {getattr(request.user, 'username', 'Anonymous')}"
+        )
+
+        return response
+
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
