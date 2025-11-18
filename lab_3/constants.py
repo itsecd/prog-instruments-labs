@@ -44,6 +44,7 @@ VALIDATION_PATTERNS = {
     COLUMN_DATE: re.compile(r'^\d{4}-\d{2}-\d{2}$')
 }
 
+
 COLUMNS_TO_VALIDATE = list(VALIDATION_PATTERNS.keys())
 VARIANT = 72
 RESULT_FILENAME = 'result.json'
