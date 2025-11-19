@@ -1,3 +1,5 @@
+"""Simple Snake game used for PEP 8 refactoring lab."""
+
 import random
 import sys
 
@@ -45,6 +47,8 @@ def draw_txt(text, x, y, big=False, color=COLOR4, center=False):
 
 
 def rand_food():
+    """Return random food coordinates aligned to the grid."""
+
     x = random.randrange(0, WIN_WIDTH - TILE, TILE)
     y = random.randrange(0, WIN_HEIGHT - TILE, TILE)
     return [x, y]
@@ -203,7 +207,7 @@ def settings_screen():
             True
         )
         draw_txt(
-            f"S - toggle sound: {"ON" if global_sound_enabled else "OFF"}", 
+            f"S - toggle sound: {'ON' if global_sound_enabled else 'OFF'}", 
             80, 
             160, 
             False, 
@@ -235,6 +239,8 @@ def settings_screen():
 
 
 def main_menu():
+    """Display main menu and handle menu input."""
+
     blink = 0
     menu_running = True
     while menu_running:
@@ -333,6 +339,8 @@ def handle_food_collision(x, y, food, score):
 
 
 def game_loop():
+    """Run the main game loop: handle input, update state and draw frames."""
+
     global game_state
     x = WIN_WIDTH // 2
     y = WIN_HEIGHT // 2
