@@ -36,7 +36,7 @@ DEFAULT_SPEED = FPS
 BORDER_THICKNESS = 1
 MAX_FOOD = 999
 
-def drawTxt(text, x, y, big=False, color=COLOR4, center=False):
+def draw_txt(text, x, y, big=False, color=COLOR4, center=False):
     if big == True:
         f = bigFont
     else:
@@ -49,7 +49,7 @@ def drawTxt(text, x, y, big=False, color=COLOR4, center=False):
         r.topleft = (x, y)
     scr.blit(s, r)
 
-def drawTxt2(text, x, y, big, color, center):
+def draw_txt2(text, x, y, big, color, center):
     if big == True:
         f = bigFont
     else:
@@ -62,7 +62,7 @@ def drawTxt2(text, x, y, big, color, center):
         r.topleft = (x, y)
     scr.blit(s, r)
 
-def randFood():
+def rand_food():
     x = random.randrange(0, WIN_WIDHT - TILE, TILE)
     y = random.randrange(0, WIN_HEIGHT - TILE, TILE)
     return [x, y]
@@ -87,7 +87,7 @@ def border_hit(x, y):
     else:
         return False
 
-def drawSnake(lst, col=None):
+def draw_snake(lst, col=None):
     if col is None:
         col = COLOR2
     for p in lst:
@@ -110,10 +110,10 @@ def game_over_screen(sc):
     if sc > bestScore:
         bestScore = sc
     scr.fill(COLOR1)
-    drawTxt("GAME OVER", WIN_WIDHT // 2, WIN_HEIGHT // 2 - 80, True, COLOR3, True)
-    drawTxt("score: " + str(sc), WIN_WIDHT // 2, WIN_HEIGHT // 2 - 20, False, COLOR4, True)
-    drawTxt("best: " + str(bestScore), WIN_WIDHT // 2, WIN_HEIGHT // 2 + 20, False, cl_yellow, True)
-    drawTxt("press R - restart, M - menu, Q - quit", WIN_WIDHT // 2, WIN_HEIGHT // 2 + 80, False, cl_blue, True)
+    draw_txt("GAME OVER", WIN_WIDHT // 2, WIN_HEIGHT // 2 - 80, True, COLOR3, True)
+    draw_txt("score: " + str(sc), WIN_WIDHT // 2, WIN_HEIGHT // 2 - 20, False, COLOR4, True)
+    draw_txt("best: " + str(bestScore), WIN_WIDHT // 2, WIN_HEIGHT // 2 + 20, False, cl_yellow, True)
+    draw_txt("press R - restart, M - menu, Q - quit", WIN_WIDHT // 2, WIN_HEIGHT // 2 + 80, False, cl_blue, True)
     pygame.display.flip()
     waiting = True
     while waiting:
@@ -136,9 +136,9 @@ def pause_screen():
     paused = True
     while paused:
         scr.fill((15, 15, 15))
-        drawTxt("PAUSED", WIN_WIDHT // 2, WIN_HEIGHT // 2 - 60, True, cl_yellow, True)
-        drawTxt("press P to continue, M - menu", WIN_WIDHT // 2, WIN_HEIGHT // 2 + 10, False, COLOR4, True)
-        drawTxt("or Q - quit", WIN_WIDHT // 2, WIN_HEIGHT // 2 + 40, False, COLOR4, True)
+        draw_txt("PAUSED", WIN_WIDHT // 2, WIN_HEIGHT // 2 - 60, True, cl_yellow, True)
+        draw_txt("press P to continue, M - menu", WIN_WIDHT // 2, WIN_HEIGHT // 2 + 10, False, COLOR4, True)
+        draw_txt("or Q - quit", WIN_WIDHT // 2, WIN_HEIGHT // 2 + 40, False, COLOR4, True)
         pygame.display.flip()
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
@@ -161,11 +161,11 @@ def settings_screen():
     local_option = 0
     while running_menu:
         scr.fill(color_background_menu)
-        drawTxt("SETTINGS", WIN_WIDHT // 2, 60, True, cl_yellow, True)
-        drawTxt("S - toggle sound: " + ("ON" if globalSoundEnabled else "OFF"), 80, 160, False, COLOR4, False)
-        drawTxt("ESC - back to main menu", 80, 210, False, COLOR4, False)
+        draw_txt("SETTINGS", WIN_WIDHT // 2, 60, True, cl_yellow, True)
+        draw_txt("S - toggle sound: " + ("ON" if globalSoundEnabled else "OFF"), 80, 160, False, COLOR4, False)
+        draw_txt("ESC - back to main menu", 80, 210, False, COLOR4, False)
         if local_option % 2 == 0:
-            drawTxt(">>", 40, 160, False, cl_yellow, False)
+            draw_txt(">>", 40, 160, False, cl_yellow, False)
         pygame.display.flip()
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
@@ -184,13 +184,13 @@ def main_menu():
     menu_running = True
     while menu_running:
         scr.fill(color_background_menu)
-        drawTxt("SNAKE", WIN_WIDHT // 2, 80, True, COLOR2, True)
-        drawTxt("1 - start game", WIN_WIDHT // 2, 180, False, COLOR4, True)
-        drawTxt("2 - settings", WIN_WIDHT // 2, 220, False, COLOR4, True)
-        drawTxt("Q - quit", WIN_WIDHT // 2, 260, False, COLOR4, True)
-        drawTxt("best score: " + str(bestScore), WIN_WIDHT // 2, 320, False, cl_yellow, True)
+        draw_txt("SNAKE", WIN_WIDHT // 2, 80, True, COLOR2, True)
+        draw_txt("1 - start game", WIN_WIDHT // 2, 180, False, COLOR4, True)
+        draw_txt("2 - settings", WIN_WIDHT // 2, 220, False, COLOR4, True)
+        draw_txt("Q - quit", WIN_WIDHT // 2, 260, False, COLOR4, True)
+        draw_txt("best score: " + str(bestScore), WIN_WIDHT // 2, 320, False, cl_yellow, True)
         if blink % 60 < 30:
-            drawTxt("PRESS 1 TO PLAY", WIN_WIDHT // 2, 380, False, cl_blue, True)
+            draw_txt("PRESS 1 TO PLAY", WIN_WIDHT // 2, 380, False, cl_blue, True)
         blink += 1
         pygame.display.flip()
         for ev in pygame.event.get():
@@ -210,7 +210,7 @@ def main_menu():
 
 def draw_hud(score, length, speed):
     txt = "score:" + str(score) + "   len:" + str(length) + "   spd:" + str(speed) + "   best:" + str(bestScore)
-    drawTxt2(txt, 5, 5, False, COLOR4, False)
+    draw_txt2(txt, 5, 5, False, COLOR4, False)
 
 def update_snake_position(snake_list, vx, vy):
     new_head = [snake_list[-1][0] + vx, snake_list[-1][1] + vy]
@@ -221,7 +221,7 @@ def update_snake_position(snake_list, vx, vy):
 
 def handle_food_collision(x, y, food, score):
     if x == food[0] and y == food[1]:
-        food = randFood()
+        food = rand_food()
         score = score + 1
         play_click()
     return food, score
@@ -236,7 +236,7 @@ def game_loop():
     score = 0
     dir = "RIGHT"
     tmpCounter = 0
-    food = randFood()
+    food = rand_food()
     speed = FPS
     running = True
     frame = 0
@@ -291,7 +291,7 @@ def game_loop():
         scr.fill(COLOR1)
         if draw_grid:
             draw_grid_optional(True)
-        drawSnake(sn)
+        draw_snake(sn)
         pygame.draw.rect(scr, COLOR3, [food[0], food[1], TILE, TILE])
         draw_hud(score, len(sn), speed)
         pygame.display.flip()
