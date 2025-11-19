@@ -193,7 +193,12 @@ def main_menu():
 
 
 def draw_hud(score, length, speed):
-    txt = "score:" + str(score) + "   len:" + str(length) + "   spd:" + str(speed) + "   best:" + str(best_score)
+    txt = (
+        f"score: {score}   "
+        f"len: {length}   "
+        f"spd: {speed}   "
+        f"best: {best_score}"
+    )
     draw_txt(txt, 5, 5, big=False, color=COLOR4, center=False)
 
 
