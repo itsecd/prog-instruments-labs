@@ -21,3 +21,13 @@ def load_data(file_path: str, delimiter: str = CSV_DELIMITER) -> list[list[str]]
             continue
 
     raise UnicodeDecodeError(f"Cannot decode file {file_path} with any supported encoding")
+
+def validate_row(row: list[str], patterns: list[re.Pattern]) -> bool:
+    if len(row) != len(patterns):
+        return False
+
+    for pattern, value in zip(patterns, row):
+        value = value.strip()
+        if not pattern.fullmatch(value):
+            return False
+    return True
