@@ -63,7 +63,7 @@ def draw_grid_optional(show):
     if show:
         for x in range(0, WIN_WIDTH, TILE):
             pygame.draw.line(screen, (30, 30, 30), (x, 0), (x, WIN_HEIGHT))
-        for y in range(0, WIN_HEIGHT,TILE):
+        for y in range(0, WIN_HEIGHT, TILE):
             pygame.draw.line(screen, (30, 30, 30), (0, y), (WIN_WIDTH, y))
 
 def border_hit(x, y):
@@ -252,11 +252,11 @@ def game_loop():
                 elif e.key == pygame.K_p:
                     pause_screen()
                 elif e.key == pygame.K_m:
-                    GAME_STATE="menu"
+                    GAME_STATE = "menu"
                     running = False
         x = x + vx
         y = y + vy
-        sn = update_snake_position(sn, vx, vy)  
+        sn = update_snake_position(sn, vx, vy)
         if len(sn) > SNAKE_INIT_LEN + score:
             del sn[0]
         if border_hit(x, y):
