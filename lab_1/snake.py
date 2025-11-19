@@ -100,7 +100,7 @@ def game_over_screen(sc):
     draw_txt(
         "GAME OVER", 
         WIN_WIDTH // 2, 
-        WIN_HEIGHT//2 - 80, 
+        WIN_HEIGHT // 2 - 80, 
         True, 
         COLOR3, 
         True
@@ -108,7 +108,7 @@ def game_over_screen(sc):
     draw_txt(
         f"score: {sc}", 
         WIN_WIDTH // 2, 
-        WIN_HEIGHT//2 - 20, 
+        WIN_HEIGHT // 2 - 20, 
         False, 
         COLOR4, 
         True
@@ -116,7 +116,7 @@ def game_over_screen(sc):
     draw_txt(
         f"best: {best_score}", 
         WIN_WIDTH // 2, 
-        WIN_HEIGHT//2 + 20, 
+        WIN_HEIGHT // 2 + 20, 
         False, 
         COLOR_YELLOW, 
         True
@@ -124,7 +124,7 @@ def game_over_screen(sc):
     draw_txt(
         "press R - restart, M - menu, Q - quit", 
         WIN_WIDTH // 2, 
-        WIN_HEIGHT//2 + 80, 
+        WIN_HEIGHT // 2 + 80, 
         False, 
         COLOR_BLUE, 
         True
@@ -154,7 +154,7 @@ def pause_screen():
         draw_txt(
             "PAUSED", 
             WIN_WIDTH // 2, 
-            WIN_HEIGHT//2 - 60, 
+            WIN_HEIGHT // 2 - 60, 
             True, 
             COLOR_YELLOW, 
             True
@@ -162,7 +162,7 @@ def pause_screen():
         draw_txt(
             "press P to continue, M - menu", 
             WIN_WIDTH // 2, 
-            WIN_HEIGHT//2 + 10, 
+            WIN_HEIGHT // 2 + 10, 
             False, 
             COLOR4, 
             True
@@ -170,7 +170,7 @@ def pause_screen():
         draw_txt(
             "or Q - quit", 
             WIN_WIDTH // 2, 
-            WIN_HEIGHT//2 + 40, 
+            WIN_HEIGHT // 2 + 40, 
             False, 
             COLOR4, 
             True
