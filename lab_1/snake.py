@@ -250,7 +250,7 @@ def game_loop():
                 sys.exit()
             if e.type == pygame.KEYDOWN:
                 if e.key == pygame.K_LEFT and direction != "RIGHT":
-                    vx =- TILE
+                    vx = -TILE
                     vy = 0
                     direction = "LEFT"
                 elif e.key == pygame.K_RIGHT and direction != "LEFT":
@@ -259,7 +259,7 @@ def game_loop():
                     direction = "RIGHT"
                 elif e.key == pygame.K_UP and direction != "DOWN":
                     vx = 0
-                    vy =- TILE
+                    vy = -TILE
                     direction = "UP"
                 elif e.key == pygame.K_DOWN and direction != "UP":
                     vx = 0
