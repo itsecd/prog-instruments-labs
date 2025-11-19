@@ -28,6 +28,7 @@ global_sound_enabled = True
 SNAKE_INIT_LEN = 3
 GAME_STATE = "menu"
 
+
 def draw_txt(text, x, y, big=False, color=COLOR4, center=False):
     if big:
         f = big_font
@@ -40,6 +41,7 @@ def draw_txt(text, x, y, big=False, color=COLOR4, center=False):
     else:
         r.topleft = (x, y)
     screen.blit(s, r)
+
 
 def draw_txt2(text, x, y, big, color, center):
     if big:
@@ -54,10 +56,12 @@ def draw_txt2(text, x, y, big, color, center):
         r.topleft = (x, y)
     screen.blit(s, r)
 
+
 def rand_food():
     x = random.randrange(0, WIN_WIDTH - TILE, TILE)
     y = random.randrange(0, WIN_HEIGHT - TILE, TILE)
     return [x, y]
+
 
 def draw_grid_optional(show):
     if show:
@@ -66,17 +70,20 @@ def draw_grid_optional(show):
         for y in range(0, WIN_HEIGHT, TILE):
             pygame.draw.line(screen, (30, 30, 30), (0, y), (WIN_WIDTH, y))
 
+
 def border_hit(x, y):
     if x < 0 or x + TILE > WIN_WIDTH or y < 0 or y + TILE > WIN_HEIGHT:
         return True
     else:
         return False
 
+
 def draw_snake(lst, col=None):
     if col is None:
         col = COLOR2
     for p in lst:
         pygame.draw.rect(screen, col, [p[0], p[1], TILE, TILE])
+
 
 def check_self_intersection(s):
     head = s[-1]
@@ -86,9 +93,11 @@ def check_self_intersection(s):
             return True
     return False
 
+
 def play_click():
     if global_sound_enabled:
         print("click!") 
+
 
 def game_over_screen(sc):
     global best_score
@@ -117,6 +126,7 @@ def game_over_screen(sc):
                     global GAME_STATE
                     GAME_STATE = "menu"
 
+
 def pause_screen():
     paused = True
     while paused:
@@ -139,6 +149,7 @@ def pause_screen():
                     global GAME_STATE
                     GAME_STATE = "menu"
                     paused = False
+
 
 def settings_screen():
     global global_sound_enabled
@@ -163,6 +174,7 @@ def settings_screen():
                     global_sound_enabled = not global_sound_enabled
                     play_click()
         clock.tick(15)
+
 
 def main_menu():
     blink = 0
@@ -193,9 +205,11 @@ def main_menu():
                     sys.exit()
         clock.tick(30)
 
+
 def draw_hud(score, length, speed):
     txt = "score:" + str(score) + "   len:" + str(length) + "   spd:" + str(speed) + "   best:" + str(best_score)
     draw_txt2(txt, 5, 5, False, COLOR4, False)
+
 
 def update_snake_position(snake_list, vx, vy):
     new_head = [snake_list[-1][0] + vx, snake_list[-1][1] + vy]
@@ -204,12 +218,14 @@ def update_snake_position(snake_list, vx, vy):
         snake_list.pop(0)
     return snake_list
 
+
 def handle_food_collision(x, y, food, score):
     if x == food[0] and y == food[1]:
         food = rand_food()
         score = score + 1
         play_click()
     return food, score
+
 
 def game_loop():
     global GAME_STATE
@@ -282,6 +298,7 @@ def game_loop():
         pygame.display.flip()
         clock.tick(speed)
 
+
 def main():
     global GAME_STATE
     running = True
@@ -299,6 +316,7 @@ def main():
             GAME_STATE = "menu"
     pygame.quit()
     sys.exit()
+
 
 if __name__ == "__main__":
     main()
