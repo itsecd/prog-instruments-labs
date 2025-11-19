@@ -1,92 +1,17 @@
 """
-Main translation functionality using Selenium WebDriver.
-Integrates all components for PO file translation.
+Main translation coordinator integrating all components.
 """
 
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.common.exceptions import NoSuchElementException
 from multiprocessing import Pool, freeze_support
 from itertools import repeat
-from fake_useragent import UserAgent
 
-from constants import POFileConstants, TranslatorConstants, LogMessages
-from po_parser import POParser
-from text_processor import TextProcessor
-from utils import random_pause, format_translation_url
-
-
-def translate(driver: webdriver.Chrome, text: str, last_translation: str, max_retries: int) -> str:
-    """
-    Translate text using Google Translate via Selenium WebDriver.
-
-    Args:
-        driver: Selenium WebDriver instance
-        text: Text to translate
-        last_translation: Previous translation for comparison
-        max_retries: Maximum number of retry attempts
-
-    Returns:
-        str: Translated text or empty string if translation failed
-    """
-    # Preprocess text for translation
-    processed_text, variables, html_classes, has_service_chars, has_unnamed_format = (
-        TextProcessor.preprocess_text(text)
-    )
-
-    def get_translated_text() -> str:
-        """
-        Extract translated text from Google Translate interface.
-
-        Returns:
-            str: Extracted translation text
-        """
-        random_pause()
-
-        try:
-            output_elements = driver.find_elements(By.CSS_SELECTOR, TranslatorConstants.PRIMARY_OUTPUT_SELECTOR)
-        except NoSuchElementException:
-            driver.refresh()
-            output_elements = driver.find_elements(By.CSS_SELECTOR, TranslatorConstants.PRIMARY_OUTPUT_SELECTOR)
-
-        # Handle multiple translations (some languages show alternatives)
-        if not output_elements:
-            output_elements = driver.find_elements(By.CSS_SELECTOR, TranslatorConstants.FALLBACK_OUTPUT_SELECTOR)[-1:]
-
-        translation_parts = [element.text for element in output_elements]
-        return ''.join(translation_parts)
-
-    try:
-        # Input text and get translation
-        input_field = driver.find_element(By.CSS_SELECTOR, TranslatorConstants.INPUT_SELECTOR)
-        input_field.clear()
-        input_field.send_keys(processed_text)
-
-        translation_result = get_translated_text()
-
-        # Retry if translation is same as previous (possible delay)
-        if translation_result == last_translation:
-            translation_result = get_translated_text()
-
-        # Postprocess translation to restore original patterns
-        final_translation = TextProcessor.postprocess_text(
-            translation_result, variables, html_classes, has_service_chars, has_unnamed_format
-        )
-
-        print(LogMessages.TRANSLATION_SUCCESS.format(source=text, translation=final_translation))
-        return final_translation
-
-    except Exception as error:
-        if max_retries > 0:
-            print(LogMessages.TRANSLATION_RETRY.format(text=text, retry=max_retries, error=error))
-            return translate(driver, text, last_translation, max_retries - 1)
-        else:
-            print(LogMessages.TRANSLATION_FAILED.format(text=text))
-            return ""
+from translation_driver import TranslationDriver
+from translation_service import TranslationService
+from po_file_processor import POFileProcessor
+from file_manager import FileManager
 
 
-def translator(
+def translate_language(
         language_code: str,
         driver_path: str,
         locale_path: str,
@@ -96,149 +21,47 @@ def translator(
         max_retries: int = 3
 ) -> None:
     """
-    Translate PO file for a specific language.
+    Translate PO file for a specific language using the new architecture.
 
     Args:
-        language_code: Target language code (e.g., 'de', 'fr')
+        language_code: Target language code
         driver_path: Path to ChromeDriver executable
-        locale_path: Path to locale directory containing PO files
+        locale_path: Path to locale directory
         headless: Whether to run browser in headless mode
         interface_language: Google Translate interface language
         source_language: Source language for translation
         max_retries: Maximum translation retry attempts
     """
-    # Setup WebDriver
-    user_agent = UserAgent(verify_ssl=False)
-    service = Service(executable_path=driver_path)
-    options = webdriver.ChromeOptions()
-    options.add_argument(f'user-agent={user_agent.random}')
-    options.add_argument('--disable-blink-features=AutomationControlled')
-
-    if headless:
-        options.add_argument('--headless')
-
-    driver = webdriver.Chrome(service=service, options=options)
+    # Setup translation pipeline
+    driver = TranslationDriver(driver_path, headless)
 
     try:
-        # Navigate to Google Translate
-        url = format_translation_url(interface_language, source_language, language_code)
-        driver.get(url)
+        # Initialize components
+        driver.navigate_to_translator(interface_language, source_language, language_code)
+        translation_service = TranslationService(driver, max_retries)
+        file_processor = POFileProcessor(translation_service)
 
         # Process PO file
-        po_file_path = f'{locale_path}/{language_code}/LC_MESSAGES/django.po'
-        _process_po_file(driver, po_file_path, max_retries)
+        po_file_path = FileManager.get_po_file_path(locale_path, language_code)
+
+        try:
+            original_content = FileManager.read_po_file(po_file_path)
+            translated_content = file_processor.process_file_content(original_content)
+
+            # Save if changes were made
+            if FileManager.file_has_changes(original_content, translated_content):
+                FileManager.write_po_file(po_file_path, translated_content)
+            else:
+                FileManager.log_no_changes(po_file_path)
+
+        except FileNotFoundError:
+            # Error already logged by FileManager
+            pass
 
     finally:
-        driver.quit()
+        driver.close()
 
 
-def _process_po_file(driver: webdriver.Chrome, file_path: str, max_retries: int) -> None:
-    """
-    Process and translate strings in a PO file.
-
-    Args:
-        driver: WebDriver instance
-        file_path: Path to PO file
-        max_retries: Maximum translation retry attempts
-    """
-    try:
-        with open(file_path, 'r', encoding='UTF-8') as file:
-            print(LogMessages.FILE_OPENED.format(path=file_path))
-            file_content = file.read()
-            translated_content = _translate_po_content(driver, file_content, max_retries)
-
-        # Save if changes were made
-        if translated_content != file_content:
-            with open(file_path, 'w', encoding='UTF-8') as file:
-                file.write(translated_content)
-            print(LogMessages.FILE_SAVED.format(path=file_path))
-        else:
-            print(LogMessages.NO_CHANGES.format(path=file_path))
-
-    except FileNotFoundError:
-        print(LogMessages.FILE_NOT_FOUND.format(path=file_path))
-
-
-def _translate_po_content(driver: webdriver.Chrome, content: str, max_retries: int) -> str:
-    """
-    Translate untranslated strings in PO file content.
-
-    Args:
-        driver: WebDriver instance
-        content: PO file content as string
-        max_retries: Maximum translation retry attempts
-
-    Returns:
-        str: Translated content
-    """
-    lines = content.splitlines(True)
-    result_lines = []
-
-    current_text = ''
-    is_translating = False
-    is_complex_text = False
-    should_save_complex = False
-    complex_text_parts = []
-    current_translation = None
-    last_translation = None
-
-    for i, line in enumerate(lines):
-        # Skip already translated strings
-        if POParser.is_translated(lines, i, line):
-            result_lines.append(line)
-            continue
-
-        if line.startswith(POFileConstants.MSGID_PREFIX):
-            # Start new translation unit
-            text_content = POParser.extract_text_content(line)
-
-            if text_content:  # Simple string translation
-                current_translation = translate(
-                    driver, text_content, last_translation, max_retries
-                )
-                last_translation = current_translation
-                is_translating = True
-            else:  # Complex multi-line string
-                is_complex_text = True
-
-            result_lines.append(line)
-
-        elif line.startswith(POFileConstants.QUOTE) and is_complex_text and len(line) > 2:
-            # Collect complex text parts
-            text_content = POParser.extract_text_content(line)
-            complex_text_parts.append(text_content)
-            result_lines.append(line)
-
-            # Check if next line starts msgstr (end of complex text)
-            try:
-                if lines[i + 1].startswith(POFileConstants.MSGSTR_PREFIX):
-                    is_complex_text = False
-                    should_save_complex = True
-                    is_translating = True
-            except IndexError:
-                print(LogMessages.SYNTAX_ERROR.format(line=i + 1, file="PO file"))
-
-        elif line.startswith(POFileConstants.MSGSTR_PREFIX) and is_translating:
-            # Write translation
-            if should_save_complex:
-                full_text = ' '.join(complex_text_parts)
-                translation = translate(driver, full_text, last_translation, max_retries)
-                last_translation = translation
-                result_lines.append(f'msgstr ""\n"{translation}"\n')
-                should_save_complex = False
-                complex_text_parts.clear()
-            else:
-                result_lines.append(f'msgstr "{current_translation}"\n')
-
-            is_translating = False
-            current_translation = None
-        else:
-            result_lines.append(line)
-
-    return ''.join(result_lines)
-
-
-# Manager function remains similar but uses new constants
 def manager(
         language_codes: list,
         driver_path: str,
@@ -273,7 +96,7 @@ def manager(
             codes_to_process = codes_to_process[max_processes:]
 
             with Pool(processes=len(current_batch)) as pool:
-                pool.starmap(translator, zip(
+                pool.starmap(translate_language, zip(
                     current_batch,
                     repeat(driver_path),
                     repeat(locale_path),
@@ -284,8 +107,15 @@ def manager(
                 ))
     else:
         for code in language_codes:
-            translator(code, driver_path, locale_path, headless,
-                       interface_language, source_language, max_retries)
+            translate_language(
+                language_code=code,
+                driver_path=driver_path,
+                locale_path=locale_path,
+                headless=headless,
+                interface_language=interface_language,
+                source_language=source_language,
+                max_retries=max_retries
+            )
 
 
 if __name__ == '__main__':
