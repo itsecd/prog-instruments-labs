@@ -1,4 +1,7 @@
 """
+Драйвер для автоматизации Google Translate.
+"""
+"""
 Selenium WebDriver management and translation automation.
 Handles browser setup, navigation, and translation operations.
 """
@@ -74,6 +77,11 @@ class TranslationDriver:
 
         # Wait for page to load
         random_pause()
+        try:
+            self.driver.find_element(By.CSS_SELECTOR, 'textarea.er8xn')
+            print(f"[+] Переводчик готов для {target_language}")
+        except:
+            print(f"[!] Ошибка загрузки переводчика для {target_language}")
 
     def translate_text(self, text: str, max_retries: int = 3) -> str:
         """

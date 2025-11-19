@@ -139,5 +139,17 @@ def process_language(language_code: str, config: TranslationConfig) -> bool:
         return False
 
 
+def print_help_examples():
+    """Печать примеров использования."""
+    print("\nПримеры использования:")
+    print("  python main.py -l de fr -d chromedriver -p ./locale")
+    print("  python main.py -l es it -d chromedriver -p ./locale -m --max-processes 3")
+    print("  python main.py -l ja ko -d chromedriver -p ./locale --no-headless")
+
+
 if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        print("PO File Translator")
+        print_help_examples()
+        sys.exit(1)
     main()
