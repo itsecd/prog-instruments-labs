@@ -235,7 +235,7 @@ def game_loop():
     vy = 0
     sn = [[x, y]]
     score = 0
-    dir = "RIGHT"
+    direction = "RIGHT"
     tmpCounter = 0
     food = rand_food()
     speed = FPS
@@ -249,22 +249,22 @@ def game_loop():
                 pygame.quit()
                 sys.exit()
             if e.type == pygame.KEYDOWN:
-                if e.key == pygame.K_LEFT and dir != "RIGHT":
+                if e.key == pygame.K_LEFT and direction != "RIGHT":
                     vx =- TILE
                     vy = 0
-                    dir = "LEFT"
-                elif e.key == pygame.K_RIGHT and dir != "LEFT":
+                    direction = "LEFT"
+                elif e.key == pygame.K_RIGHT and direction != "LEFT":
                     vx = TILE
                     vy = 0
-                    dir = "RIGHT"
-                elif e.key == pygame.K_UP and dir != "DOWN":
+                    direction = "RIGHT"
+                elif e.key == pygame.K_UP and direction != "DOWN":
                     vx = 0
                     vy =- TILE
-                    dir = "UP"
-                elif e.key == pygame.K_DOWN and dir != "UP":
+                    direction = "UP"
+                elif e.key == pygame.K_DOWN and direction != "UP":
                     vx = 0
                     vy = TILE
-                    dir = "DOWN"
+                    direction = "DOWN"
                 elif e.key == pygame.K_p:
                     pause_screen()
                 elif e.key == pygame.K_m:
