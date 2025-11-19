@@ -59,10 +59,12 @@ def draw_grid_optional(show):
 
 
 def border_hit(x, y):
-    if x < 0 or x + TILE > WIN_WIDTH or y < 0 or y + TILE > WIN_HEIGHT:
-        return True
-    else:
-        return False
+    return (
+        x < 0
+        or x + TILE > WIN_WIDTH
+        or y < 0
+        or y + TILE > WIN_HEIGHT
+    )
 
 
 def draw_snake(lst, col=None):
