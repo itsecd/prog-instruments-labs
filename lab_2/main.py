@@ -41,3 +41,28 @@ def find_invalid_rows(data: list[list[str]], patterns: list[re.Pattern]) -> list
 
     return invalid_rows
 
+def main():
+    print(f"Validating file: {DEFAULT_FILE_PATH}")
+
+    try:
+        data = load_data(DEFAULT_FILE_PATH)
+        print(f"Total rows: {len(data)}")
+
+        patterns = get_validation_patterns()
+
+        invalid_rows = find_invalid_rows(data, patterns)
+        print(f"Invalid rows found: {len(invalid_rows)}")
+
+        checksum_value = calculate_checksum(invalid_rows)
+
+        serialize_result(DEFAULT_VARIANT, checksum_value)
+
+        print(f"Checksum: {checksum_value}")
+        print(f"Result saved to result.json (variant {DEFAULT_VARIANT})")
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+
+if __name__ == "__main__":
+    main()
