@@ -352,10 +352,8 @@ def game_loop():
     food = rand_food()
     speed = FPS
     running = True
-    frame = 0
     draw_grid = False
     while running:
-        frame = frame + 1
         for e in pygame.event.get():
             if e.type == pygame.QUIT:
                 pygame.quit()
