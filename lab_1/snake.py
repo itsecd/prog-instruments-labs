@@ -28,14 +28,6 @@ global_sound_enabled = True
 SNAKE_INIT_LEN = 3
 GAME_STATE = "menu"
 
-LEFT = "LEFT"
-RIGHT = "RIGHT"
-UP = "UP"
-DOWN = "DOWN"
-DEFAULT_SPEED = FPS
-BORDER_THICKNESS = 1
-MAX_FOOD = 999
-
 def draw_txt(text, x, y, big=False, color=COLOR4, center=False):
     if big == True:
         f = big_font
@@ -66,13 +58,6 @@ def rand_food():
     x = random.randrange(0, WIN_WIDTH - TILE, TILE)
     y = random.randrange(0, WIN_HEIGHT - TILE, TILE)
     return [x, y]
-
-def make_grid_points():
-    pts = []
-    for xx in range(0, WIN_WIDTH, TILE):
-        for yy in range(0, WIN_HEIGHT, TILE):
-            pts.append((xx, yy))
-    return pts
 
 def draw_grid_optional(show):
     if show:
