@@ -31,3 +31,13 @@ def validate_row(row: list[str], patterns: list[re.Pattern]) -> bool:
         if not pattern.fullmatch(value):
             return False
     return True
+
+def find_invalid_rows(data: list[list[str]], patterns: list[re.Pattern]) -> list[int]:
+    invalid_rows = []
+
+    for index, row in enumerate(data[1:], start=0):
+        if not validate_row(row, patterns):
+            invalid_rows.append(index)
+
+    return invalid_rows
+
