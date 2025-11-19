@@ -1,128 +1,298 @@
 """
-Main translation coordinator integrating all components.
+Main entry point for translation application with new architecture.
 """
 
+import sys
+import argparse
 from multiprocessing import Pool, freeze_support
 from itertools import repeat
+from typing import List
 
-from translation_driver import TranslationDriver
-from translation_service import TranslationService
-from po_file_processor import POFileProcessor
-from file_manager import FileManager
+from config import TranslationConfig, BatchConfig
+from translation_session import TranslationSession
+from translation_orchestrator import TranslationOrchestrator
 
 
-def translate_language(
-        language_code: str,
-        driver_path: str,
-        locale_path: str,
-        headless: bool = True,
-        interface_language: str = 'en',
-        source_language: str = 'en',
-        max_retries: int = 3
-) -> None:
+def setup_argparse() -> argparse.ArgumentParser:
     """
-    Translate PO file for a specific language using the new architecture.
+    Setup command line argument parser.
+
+    Returns:
+        argparse.ArgumentParser: Configured argument parser
+    """
+    parser = argparse.ArgumentParser(
+        description="Translate PO files using Google Translate",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Translate specific languages
+  python translator.py --languages de fr es --locale-path /path/to/locale
+  
+  # Use configuration file
+  python translator.py --config config.json
+  
+  # Single language with custom settings
+  python translator.py --language ja --interface-language en --headless
+        """
+    )
+
+    # Input options
+    input_group = parser.add_argument_group('Input Options')
+    input_group.add_argument(
+        '--languages', '-l',
+        nargs='+',
+        help='Language codes to translate (e.g., de fr es)'
+    )
+    input_group.add_argument(
+        '--language-file',
+        help='File containing list of language codes (one per line)'
+    )
+    input_group.add_argument(
+        '--config', '-c',
+        help='JSON configuration file path'
+    )
+
+    # Path options
+    path_group = parser.add_argument_group('Path Options')
+    path_group.add_argument(
+        '--driver-path', '-d',
+        required='--config' not in sys.argv,
+        help='Path to ChromeDriver executable'
+    )
+    path_group.add_argument(
+        '--locale-path', '-p',
+        required='--config' not in sys.argv,
+        help='Path to locale directory'
+    )
+
+    # Translation options
+    translation_group = parser.add_argument_group('Translation Options')
+    translation_group.add_argument(
+        '--interface-language', '-i',
+        default='en',
+        help='Google Translate interface language (default: en)'
+    )
+    translation_group.add_argument(
+        '--source-language', '-s',
+        default='en',
+        help='Source language for translation (default: en)'
+    )
+    translation_group.add_argument(
+        '--max-retries', '-r',
+        type=int,
+        default=3,
+        help='Maximum retry attempts for failed translations (default: 3)'
+    )
+
+    # Execution options
+    execution_group = parser.add_argument_group('Execution Options')
+    execution_group.add_argument(
+        '--headless',
+        action='store_true',
+        default=True,
+        help='Run browser in headless mode (default: True)'
+    )
+    execution_group.add_argument(
+        '--no-headless',
+        action='store_false',
+        dest='headless',
+        help='Disable headless mode'
+    )
+    execution_group.add_argument(
+        '--multi-process', '-m',
+        action='store_true',
+        help='Use multiprocessing for parallel translation'
+    )
+    execution_group.add_argument(
+        '--max-processes',
+        type=int,
+        default=10,
+        help='Maximum number of parallel processes (default: 10)'
+    )
+
+    return parser
+
+
+def load_language_codes(args: argparse.Namespace) -> List[str]:
+    """
+    Load language codes from various sources.
 
     Args:
-        language_code: Target language code
-        driver_path: Path to ChromeDriver executable
-        locale_path: Path to locale directory
-        headless: Whether to run browser in headless mode
-        interface_language: Google Translate interface language
-        source_language: Source language for translation
-        max_retries: Maximum translation retry attempts
+        args: Command line arguments
+
+    Returns:
+        List[str]: List of language codes
+
+    Raises:
+        ValueError: If no language codes provided
     """
-    # Setup translation pipeline
-    driver = TranslationDriver(driver_path, headless)
+    languages = []
+
+    # From command line argument
+    if args.languages:
+        languages.extend(args.languages)
+
+    # From file
+    if args.language_file:
+        try:
+            with open(args.language_file, 'r', encoding='utf-8') as file:
+                file_languages = [line.strip() for line in file if line.strip()]
+                languages.extend(file_languages)
+        except FileNotFoundError:
+            print(f"[!] Language file not found: {args.language_file}")
+
+    # Remove duplicates
+    languages = list(set(languages))
+
+    if not languages:
+        raise ValueError("No language codes provided. Use --languages or --language-file")
+
+    return languages
+
+
+def create_config_from_args(args: argparse.Namespace) -> TranslationConfig:
+    """
+    Create configuration from command line arguments.
+
+    Args:
+        args: Command line arguments
+
+    Returns:
+        TranslationConfig: Created configuration
+    """
+    if args.config:
+        return TranslationConfig.from_json_file(args.config)
+    else:
+        config = TranslationConfig(
+            driver_path=args.driver_path,
+            locale_path=args.locale_path,
+            headless=args.headless,
+            interface_language=args.interface_language,
+            source_language=args.source_language,
+            max_retries=args.max_retries,
+            multi_process=args.multi_process,
+            max_processes=args.max_processes
+        )
+        config.validate()
+        return config
+
+
+def translate_single_process(batch_config: BatchConfig):
+    """
+    Translate languages in single process mode.
+
+    Args:
+        batch_config: Batch configuration
+    """
+    session = TranslationSession(batch_config)
+    session.start()
+
+    for language_code in batch_config.language_codes:
+        session.translate_language(language_code)
+        session.print_progress()
+
+    session.complete()
+
+
+def translate_multi_process(batch_config: BatchConfig):
+    """
+    Translate languages in multiprocess mode.
+
+    Args:
+        batch_config: Batch configuration
+    """
+    freeze_support()
+
+    config = batch_config.translation_config
+    language_codes = batch_config.language_codes.copy()
+
+    print(f"[+] Starting multiprocess translation with {config.max_processes} max processes")
+    print(f"[+] Total languages: {len(language_codes)}")
+
+    processed_count = 0
+
+    while language_codes:
+        current_batch = language_codes[:config.max_processes]
+        language_codes = language_codes[config.max_processes:]
+
+        print(f"[+] Processing batch: {current_batch}")
+
+        with Pool(processes=len(current_batch)) as pool:
+            results = pool.starmap(process_language_batch, [
+                (code, config) for code in current_batch
+            ])
+
+        processed_count += len(current_batch)
+        success_count = sum(1 for result in results if result)
+
+        print(f"[+] Batch completed: {success_count}/{len(current_batch)} successful")
+        print(f"[+] Overall progress: {processed_count}/{len(batch_config.language_codes)}")
+
+    print(f"[+] Multiprocess translation completed")
+
+
+def process_language_batch(language_code: str, config: TranslationConfig) -> bool:
+    """
+    Process a single language in multiprocessing pool.
+
+    Args:
+        language_code: Language code to translate
+        config: Translation configuration
+
+    Returns:
+        bool: True if translation was successful
+    """
+    try:
+        with TranslationOrchestrator(config) as orchestrator:
+            return orchestrator.translate_language(language_code)
+    except Exception as error:
+        print(f"[!] Multiprocess error for {language_code}: {error}")
+        return False
+
+
+def main():
+    """Main application entry point."""
+    parser = setup_argparse()
+    args = parser.parse_args()
 
     try:
-        # Initialize components
-        driver.navigate_to_translator(interface_language, source_language, language_code)
-        translation_service = TranslationService(driver, max_retries)
-        file_processor = POFileProcessor(translation_service)
+        # Load configuration
+        config = create_config_from_args(args)
 
-        # Process PO file
-        po_file_path = FileManager.get_po_file_path(locale_path, language_code)
+        # Load language codes
+        language_codes = load_language_codes(args)
 
-        try:
-            original_content = FileManager.read_po_file(po_file_path)
-            translated_content = file_processor.process_file_content(original_content)
+        # Create batch configuration
+        batch_config = BatchConfig(language_codes, config)
+        batch_config.validate()
 
-            # Save if changes were made
-            if FileManager.file_has_changes(original_content, translated_content):
-                FileManager.write_po_file(po_file_path, translated_content)
-            else:
-                FileManager.log_no_changes(po_file_path)
+        print("[+] Translation Configuration:")
+        print(f"    Languages: {', '.join(language_codes)}")
+        print(f"    Interface: {config.interface_language}")
+        print(f"    Source: {config.source_language}")
+        print(f"    Headless: {config.headless}")
+        print(f"    Multiprocess: {config.multi_process}")
+        print(f"    Max Processes: {config.max_processes}")
+        print(f"    Max Retries: {config.max_retries}")
 
-        except FileNotFoundError:
-            # Error already logged by FileManager
-            pass
+        # Execute translation
+        if config.multi_process:
+            translate_multi_process(batch_config)
+        else:
+            translate_single_process(batch_config)
 
-    finally:
-        driver.close()
+        print("[+] Translation process completed successfully")
 
-
-def manager(
-        language_codes: list,
-        driver_path: str,
-        locale_path: str,
-        headless: bool = True,
-        multi_process: bool = False,
-        max_processes: int = 10,
-        interface_language: str = 'en',
-        source_language: str = 'en',
-        max_retries: int = 3
-) -> None:
-    """
-    Manage translation process for multiple languages.
-
-    Args:
-        language_codes: List of language codes to translate
-        driver_path: Path to ChromeDriver executable
-        locale_path: Path to locale directory
-        headless: Whether to run browser in headless mode
-        multi_process: Whether to use multiprocessing
-        max_processes: Maximum number of parallel processes
-        interface_language: Google Translate interface language
-        source_language: Source language for translation
-        max_retries: Maximum translation retry attempts
-    """
-    if multi_process:
-        freeze_support()
-        codes_to_process = language_codes.copy()
-
-        while codes_to_process:
-            current_batch = codes_to_process[:max_processes]
-            codes_to_process = codes_to_process[max_processes:]
-
-            with Pool(processes=len(current_batch)) as pool:
-                pool.starmap(translate_language, zip(
-                    current_batch,
-                    repeat(driver_path),
-                    repeat(locale_path),
-                    repeat(headless),
-                    repeat(interface_language),
-                    repeat(source_language),
-                    repeat(max_retries)
-                ))
-    else:
-        for code in language_codes:
-            translate_language(
-                language_code=code,
-                driver_path=driver_path,
-                locale_path=locale_path,
-                headless=headless,
-                interface_language=interface_language,
-                source_language=source_language,
-                max_retries=max_retries
-            )
+    except ValueError as e:
+        print(f"[!] Configuration error: {e}")
+        sys.exit(1)
+    except KeyboardInterrupt:
+        print("\n[!] Translation interrupted by user")
+        sys.exit(1)
+    except Exception as e:
+        print(f"[!] Unexpected error: {e}")
+        sys.exit(1)
 
 
 if __name__ == '__main__':
-    manager(
-        language_codes=['de', 'fr', 'ja', 'tr', 'ru', 'uk'],
-        driver_path='/DJTranslator/chromedriver',
-        locale_path='/DJAuth/locale',
-        multi_process=True,
-        interface_language='ru',
-    )
+    main()
