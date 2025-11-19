@@ -16,6 +16,7 @@ COLOR4 = (255, 255, 255)
 COLOR_BACKGROUND_MENU = (10, 10, 40)
 COLOR_YELLOW = (250, 250, 0)
 COLOR_BLUE = (0, 0, 200)
+SNAKE_INIT_LEN = 3
 
 screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
 pygame.display.set_caption("snake")
@@ -26,8 +27,7 @@ big_font = pygame.font.SysFont("arial", 48)
 
 best_score = 0
 global_sound_enabled = True
-SNAKE_INIT_LEN = 3
-GAME_STATE = "menu"
+game_state = "menu"
 
 
 def draw_txt(text, x, y, big=False, color=COLOR4, center=False):
@@ -87,7 +87,7 @@ def play_click():
 
 
 def game_over_screen(sc):
-    global best_score
+    global best_score, game_state
     if sc > best_score:
         best_score = sc
     screen.fill(COLOR1)
@@ -110,8 +110,7 @@ def game_over_screen(sc):
                     waiting = False
                 elif e.key == pygame.K_m:
                     waiting = False
-                    global GAME_STATE
-                    GAME_STATE = "menu"
+                    game_state = "menu"
 
 
 def pause_screen():
@@ -133,8 +132,8 @@ def pause_screen():
                     pygame.quit()
                     sys.exit()
                 elif e.key == pygame.K_m:
-                    global GAME_STATE
-                    GAME_STATE = "menu"
+                    global game_state
+                    game_state = "menu"
                     paused = False
 
 
@@ -215,7 +214,7 @@ def handle_food_collision(x, y, food, score):
 
 
 def game_loop():
-    global GAME_STATE
+    global game_state
     x = WIN_WIDTH // 2
     y = WIN_HEIGHT // 2
     vx = TILE
@@ -254,7 +253,7 @@ def game_loop():
                 elif e.key == pygame.K_p:
                     pause_screen()
                 elif e.key == pygame.K_m:
-                    GAME_STATE = "menu"
+                    game_state = "menu"
                     running = False
         x = x + vx
         y = y + vy
@@ -263,13 +262,13 @@ def game_loop():
             del sn[0]
         if border_hit(x, y):
             game_over_screen(score)
-            if GAME_STATE == "menu":
+            if game_state == "menu":
                 running = False
             else:
                 return
         if check_self_intersection(sn):
             game_over_screen(score)
-            if GAME_STATE == "menu":
+            if game_state == "menu":
                 running = False
             else:
                 return
@@ -286,20 +285,20 @@ def game_loop():
 
 
 def main():
-    global GAME_STATE
+    global game_state
     running = True
     while running:
-        if GAME_STATE == "menu":
+        if game_state == "menu":
             main_menu()
-            GAME_STATE = "game"
-        elif GAME_STATE == "game":
+            game_state = "game"
+        elif game_state == "game":
             game_loop()
-            if GAME_STATE != "menu":
-                GAME_STATE = "menu"
-        elif GAME_STATE == "exit":
+            if game_state != "menu":
+                game_state = "menu"
+        elif game_state == "exit":
             running = False
         else:
-            GAME_STATE = "menu"
+            game_state = "menu"
     pygame.quit()
     sys.exit()
 
