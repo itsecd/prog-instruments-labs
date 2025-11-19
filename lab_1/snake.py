@@ -29,7 +29,7 @@ SNAKE_INIT_LEN = 3
 GAME_STATE = "menu"
 
 def draw_txt(text, x, y, big=False, color=COLOR4, center=False):
-    if big == True:
+    if big:
         f = big_font
     else:
         f = basic_font
@@ -42,7 +42,7 @@ def draw_txt(text, x, y, big=False, color=COLOR4, center=False):
     screen.blit(s, r)
 
 def draw_txt2(text, x, y, big, color, center):
-    if big == True:
+    if big:
         f = big_font
     else:
         f = basic_font
@@ -87,7 +87,7 @@ def check_self_intersection(s):
     return False
 
 def play_click():
-    if global_sound_enabled == True:
+    if global_sound_enabled:
         print("click!") 
 
 def game_over_screen(sc):
