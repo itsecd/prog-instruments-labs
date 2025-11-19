@@ -1,6 +1,7 @@
-import pygame
 import random
 import sys
+
+import pygame
 
 pygame.init()
 
@@ -96,7 +97,7 @@ def check_self_intersection(s):
 
 def play_click():
     if global_sound_enabled:
-        print("click!") 
+        print("click!")
 
 
 def game_over_screen(sc):
