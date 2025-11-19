@@ -98,35 +98,35 @@ def game_over_screen(sc):
         best_score = sc
     screen.fill(COLOR1)
     draw_txt(
-        "GAME OVER", 
-        WIN_WIDTH // 2, 
-        WIN_HEIGHT // 2 - 80, 
-        True, 
-        COLOR3, 
+        "GAME OVER",
+        WIN_WIDTH // 2,
+        WIN_HEIGHT // 2 - 80,
+        True,
+        COLOR3,
         True
     )
     draw_txt(
-        f"score: {sc}", 
-        WIN_WIDTH // 2, 
-        WIN_HEIGHT // 2 - 20, 
-        False, 
-        COLOR4, 
+        f"score: {sc}",
+        WIN_WIDTH // 2,
+        WIN_HEIGHT // 2 - 20,
+        False,
+        COLOR4,
         True
     )
     draw_txt(
-        f"best: {best_score}", 
-        WIN_WIDTH // 2, 
-        WIN_HEIGHT // 2 + 20, 
-        False, 
-        COLOR_YELLOW, 
+        f"best: {best_score}",
+        WIN_WIDTH // 2,
+        WIN_HEIGHT // 2 + 20,
+        False,
+        COLOR_YELLOW,
         True
     )
     draw_txt(
-        "press R - restart, M - menu, Q - quit", 
-        WIN_WIDTH // 2, 
-        WIN_HEIGHT // 2 + 80, 
-        False, 
-        COLOR_BLUE, 
+        "press R - restart, M - menu, Q - quit",
+        WIN_WIDTH // 2,
+        WIN_HEIGHT // 2 + 80,
+        False,
+        COLOR_BLUE,
         True
     )
     pygame.display.flip()
@@ -152,27 +152,27 @@ def pause_screen():
     while paused:
         screen.fill((15, 15, 15))
         draw_txt(
-            "PAUSED", 
-            WIN_WIDTH // 2, 
-            WIN_HEIGHT // 2 - 60, 
-            True, 
-            COLOR_YELLOW, 
+            "PAUSED",
+            WIN_WIDTH // 2,
+            WIN_HEIGHT // 2 - 60,
+            True,
+            COLOR_YELLOW,
             True
         )
         draw_txt(
-            "press P to continue, M - menu", 
-            WIN_WIDTH // 2, 
-            WIN_HEIGHT // 2 + 10, 
-            False, 
-            COLOR4, 
+            "press P to continue, M - menu",
+            WIN_WIDTH // 2,
+            WIN_HEIGHT // 2 + 10,
+            False,
+            COLOR4,
             True
         )
         draw_txt(
-            "or Q - quit", 
-            WIN_WIDTH // 2, 
-            WIN_HEIGHT // 2 + 40, 
-            False, 
-            COLOR4, 
+            "or Q - quit",
+            WIN_WIDTH // 2,
+            WIN_HEIGHT // 2 + 40,
+            False,
+            COLOR4,
             True
         )
         pygame.display.flip()
@@ -199,27 +199,27 @@ def settings_screen():
     while running_menu:
         screen.fill(COLOR_BACKGROUND_MENU)
         draw_txt(
-            "SETTINGS", 
-            WIN_WIDTH // 2, 
-            60, 
-            True, 
-            COLOR_YELLOW, 
+            "SETTINGS",
+            WIN_WIDTH // 2,
+            60,
+            True,
+            COLOR_YELLOW,
             True
         )
         draw_txt(
-            f"S - toggle sound: {'ON' if global_sound_enabled else 'OFF'}", 
-            80, 
-            160, 
-            False, 
-            COLOR4, 
+            f"S - toggle sound: {'ON' if global_sound_enabled else 'OFF'}",
+            80,
+            160,
+            False,
+            COLOR4,
             False
         )
         draw_txt(
-            "ESC - back to main menu", 
-            80, 
-            210, 
-            False, 
-            COLOR4, 
+            "ESC - back to main menu",
+            80,
+            210,
+            False,
+            COLOR4,
             False
         )
         if local_option % 2 == 0:
@@ -246,52 +246,52 @@ def main_menu():
     while menu_running:
         screen.fill(COLOR_BACKGROUND_MENU)
         draw_txt(
-            "SNAKE", 
-            WIN_WIDTH // 2, 
-            80, 
-            True, 
-            COLOR2, 
+            "SNAKE",
+            WIN_WIDTH // 2,
+            80,
+            True,
+            COLOR2,
             True
         )
         draw_txt(
-            "1 - start game", 
-            WIN_WIDTH // 2, 
-            180, 
-            False, 
-            COLOR4, 
+            "1 - start game",
+            WIN_WIDTH // 2,
+            180,
+            False,
+            COLOR4,
             True
         )
         draw_txt(
-            "2 - settings", 
-            WIN_WIDTH // 2, 
-            220, 
-            False, 
-            COLOR4, 
+            "2 - settings",
+            WIN_WIDTH // 2,
+            220,
+            False,
+            COLOR4,
             True
         )
         draw_txt(
-            "Q - quit", 
-            WIN_WIDTH // 2, 
-            260, 
-            False, 
-            COLOR4, 
+            "Q - quit",
+            WIN_WIDTH // 2,
+            260,
+            False,
+            COLOR4,
             True
         )
         draw_txt(
-            f"best score: {best_score}", 
-            WIN_WIDTH // 2, 
-            320, 
-            False, 
-            COLOR_YELLOW, 
+            f"best score: {best_score}",
+            WIN_WIDTH // 2,
+            320,
+            False,
+            COLOR_YELLOW,
             True
         )
         if blink % 60 < 30:
             draw_txt(
-                "PRESS 1 TO PLAY", 
-                WIN_WIDTH // 2, 
-                380, 
-                False, 
-                COLOR_BLUE, 
+                "PRESS 1 TO PLAY",
+                WIN_WIDTH // 2,
+                380,
+                False,
+                COLOR_BLUE,
                 True
             )
         blink += 1
