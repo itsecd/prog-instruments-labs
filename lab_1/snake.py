@@ -44,20 +44,6 @@ def draw_txt(text, x, y, big=False, color=COLOR4, center=False):
     screen.blit(s, r)
 
 
-def draw_txt2(text, x, y, big, color, center):
-    if big:
-        f = big_font
-    else:
-        f = basic_font
-    s = f.render(str(text), True, color)
-    r = s.get_rect()
-    if center:
-        r.center = (x, y)
-    else:
-        r.topleft = (x, y)
-    screen.blit(s, r)
-
-
 def rand_food():
     x = random.randrange(0, WIN_WIDTH - TILE, TILE)
     y = random.randrange(0, WIN_HEIGHT - TILE, TILE)
@@ -209,7 +195,7 @@ def main_menu():
 
 def draw_hud(score, length, speed):
     txt = "score:" + str(score) + "   len:" + str(length) + "   spd:" + str(speed) + "   best:" + str(best_score)
-    draw_txt2(txt, 5, 5, False, COLOR4, False)
+    draw_txt(txt, 5, 5, big=False, color=COLOR4, center=False)
 
 
 def update_snake_position(snake_list, vx, vy):
