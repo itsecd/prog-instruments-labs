@@ -236,7 +236,6 @@ def game_loop():
     sn = [[x, y]]
     score = 0
     direction = "RIGHT"
-    tmpCounter = 0
     food = rand_food()
     speed = FPS
     running = True
