@@ -20,6 +20,7 @@ def read_csv(csv_path: str) -> pandas.DataFrame:
        print(f"Ошибка при загрузке данных: {e}")
     return pd.DataFrame()
 
+
 def read_json(filename: str) -> dict:
     """
     Читает JSON.
