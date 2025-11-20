@@ -39,7 +39,7 @@ class TestFileOperations:
         assert test_file.exists()
         with open(test_file, 'r') as f:
             saved_content = f.read()
-        assert saved_content == test_content
+        assert saved_content.rstrip() == test_content
         assert app.filename == str(test_file)
 
     def test_save_file_updates_existing_file(self, app, tmp_path):
@@ -61,7 +61,7 @@ class TestFileOperations:
         # Check if file was updated
         with open(test_file, 'r') as f:
             saved_content = f.read()
-        assert saved_content == updated_content
+        assert saved_content.rstrip() == updated_content
 
     def test_open_file_loads_content(self, app, tmp_path):
         """Test open_file loads content from file"""

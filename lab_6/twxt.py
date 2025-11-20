@@ -89,7 +89,7 @@ class MmabiaaTextpad:
     # Function to decrease the font size
     def decrease_font_size(self):
         # This function helps to decrease the font size of a font by 5
-        if self.current_font_size > 2:
+        if self.current_font_size > 5:
             self.current_font_size -= 5
             self.text_area.configure(font=(self.current_font_family, self.current_font_size))
 
