@@ -1,4 +1,3 @@
-
 # Some of the setup.py code is inspired or copied from SQLAlchemy
 
 # SQLAlchemy was created by Michael Bayer.
@@ -67,7 +66,6 @@ try:
 except ImportError as setuptools_import_error:
     _SETUPTOOL_IMPORT_ERROR = setuptools_import_error
 
-
 try:
     import setuptools_scm  # noqa: F401  # pylint: disable=unused-import
 
@@ -78,6 +76,7 @@ except ImportError:
 try:
     import tomllib
 
+
     def parse_toml(filename):
         """Parse a TOML file."""
         with open(str(filename), 'rb') as toml_file:
@@ -86,6 +85,7 @@ try:
 except ImportError:
     try:
         import toml
+
 
         def parse_toml(filename):
             """Parse a TOML file."""
@@ -96,11 +96,12 @@ except ImportError:
         def _find_toml_section_end(lines, start):
             """Find the index of the start of the next section."""
             return (
-                next(filter(itemgetter(1), enumerate(line.startswith('[')
-                                        for line in lines[start + 1:])))[0]
-                + start
-                + 1
+                    next(filter(itemgetter(1), enumerate(line.startswith('[')
+                                                         for line in lines[start + 1:])))[0]
+                    + start
+                    + 1
             )
+
 
         def _parse_list(lines):
             """Parse a TOML list into a Python list."""
@@ -123,6 +124,7 @@ except ImportError:
 
             raise RuntimeError(f'Failed to locate closing "]" for {name}')
 
+
         def parse_toml(filename):
             """Very simple parser routine for pyproject.toml."""
             result = {'project': {'optional-dependencies': {}}}
@@ -132,11 +134,11 @@ except ImportError:
                      not line.startswith('#')]
 
             start = lines.index('[project]')
-            project_data = lines[start : _find_toml_section_end(lines, start)]
+            project_data = lines[start: _find_toml_section_end(lines, start)]
 
             start = lines.index('[project.optional-dependencies]')
-            optional_dependencies = lines[start + 1 :
-                                        _find_toml_section_end(lines, start)]
+            optional_dependencies = lines[start + 1:
+                                          _find_toml_section_end(lines, start)]
 
             idx = 0
             N = len(project_data)
@@ -201,14 +203,14 @@ def status_msgs(*msgs):
 
 
 def compiler_test(
-    compiler,
-    flagname = None,
-    link_executable = False,
-    link_shared_lib = False,
-    include = '',
-    body = '',
-    compile_postargs = None,
-    link_postargs = None,
+        compiler,
+        flagname=None,
+        link_executable=False,
+        link_shared_lib=False,
+        include='',
+        body='',
+        compile_postargs=None,
+        link_postargs=None,
 ):  # pylint: disable=too-many-arguments,too-many-branches
     """Return a boolean indicating whether a flag name is supported
      on the specified compiler."""
@@ -234,7 +236,7 @@ def compiler_test(
             raise RuntimeError('')
         if link_executable:
             compiler.link_executable(obj_file, os.path.join(tempfile.mkdtemp(),
-                                        'test'), extra_postargs=link_postargs)
+                                                            'test'), extra_postargs=link_postargs)
         elif link_shared_lib:
             if sys.platform == 'win32':
                 lib_name = os.path.join(tempfile.mkdtemp(), 'test.dll')
@@ -385,9 +387,9 @@ class BuildExt(build_ext):
             import json  # pylint: disable=import-outside-toplevel
 
             with open(
-                os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                             'compile_commands.json'),
-                'w',
+                    os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 'compile_commands.json'),
+                    'w',
             ) as json_file:
                 json.dump(compile_commands, json_file, sort_keys=True,
                           indent=4)
@@ -435,7 +437,7 @@ class BuildExt(build_ext):
                 (
                     ' '.join(
                         compiler_so + cc_args + [os.path.abspath(src), "-o",
-                                    os.path.abspath(obj)] + extra_postargs
+                                                 os.path.abspath(obj)] + extra_postargs
                     ),
                     src,
                 )
@@ -448,9 +450,9 @@ class BuildExt(build_ext):
         self.compiler.dry_run = False
 
         if (
-            int(os.environ.get('PROJECTQ_CLEANUP_COMPILER_FLAGS', 0))
-            and self.compiler.compiler_type == 'unix'
-            and sys.platform != 'darwin'
+                int(os.environ.get('PROJECTQ_CLEANUP_COMPILER_FLAGS', 0))
+                and self.compiler.compiler_type == 'unix'
+                and sys.platform != 'darwin'
         ):
             self._cleanup_compiler_flags()
 
@@ -488,7 +490,7 @@ class BuildExt(build_ext):
         self.compiler.define_macro('VERSION_INFO',
                                    f'"{self.distribution.get_version()}"')
         if compiler_type == 'unix' and compiler_test(self.compiler,
-                                    '-fvisibility=hidden'):
+                                                     '-fvisibility=hidden'):
             self.opts.append('-fvisibility=hidden')
 
         self.compiler.dry_run = dry_run_old
@@ -515,9 +517,9 @@ class BuildExt(build_ext):
         if sys.platform == 'darwin' and compiler_test(self.compiler, flag):
             try:
                 llvm_root = subprocess.check_output(['brew', '--prefix',
-                                                'llvm']).decode('utf-8')[:-1]
+                                                     'llvm']).decode('utf-8')[:-1]
                 compiler_root = subprocess.check_output(['which',
-                            self.compiler.compiler[0]]).decode('utf-8')[:-1]
+                                                         self.compiler.compiler[0]]).decode('utf-8')[:-1]
 
                 # Only add the flag if the compiler we are using is the one
                 # from HomeBrew
@@ -537,7 +539,7 @@ class BuildExt(build_ext):
                     ['which', 'port']).decode('utf-8')[:-1]
                 macports_root = os.path.dirname(os.path.dirname(port_path))
                 compiler_root = subprocess.check_output(['which',
-                                    self.compiler.compiler[0]]).decode('utf-8')[:-1]
+                                                         self.compiler.compiler[0]]).decode('utf-8')[:-1]
 
                 # Only add the flag if the compiler we are using is the one
                 # from MacPorts
@@ -568,9 +570,9 @@ class BuildExt(build_ext):
         ]
 
         if int(os.environ.get('PROJECTQ_NOINTRIN', '0')) or (
-            sys.platform == 'darwin'
-            and platform.machine() == 'arm64'
-            and (sys.version_info.major == 3 and sys.version_info.minor < 9)
+                sys.platform == 'darwin'
+                and platform.machine() == 'arm64'
+                and (sys.version_info.major == 3 and sys.version_info.minor < 9)
         ):
             important_msgs(
                 'Either requested no-intrinsics or detected potentially'
@@ -584,10 +586,10 @@ class BuildExt(build_ext):
 
         for flag in flags:
             if compiler_test(
-                self.compiler,
-                flagname=flag,
-                include='#include <immintrin.h>',
-                body='__m256d neg = _mm256_set1_pd(1.0); (void)neg;',
+                    self.compiler,
+                    flagname=flag,
+                    include='#include <immintrin.h>',
+                    body='__m256d neg = _mm256_set1_pd(1.0); (void)neg;',
             ):
                 self.opts.append(flag)
                 self.compiler.define_macro("INTRIN")
