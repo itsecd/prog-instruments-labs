@@ -2,7 +2,7 @@ name: Python Tests
 
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [ main, master, develop, unit-tests ]
   pull_request:
     branches: [ main, master ]
 
@@ -30,3 +30,30 @@ jobs:
     - name: Test with pytest
       run: |
         pytest tests/ -v
+
+    - name: Test Coverage
+      run: |
+        pip install pytest-cov
+        pytest tests/ --cov=nmap_gui_scan --cov-report=term-missing
+
+    - name: Upload Coverage Reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+
+    - name: Check code style
+      run: |
+        pip install pycodestyle
+        pycodestyle nmap_gui_scan.py --max-line-length=100
