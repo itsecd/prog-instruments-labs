@@ -22,3 +22,10 @@ def sample_text_file(tmp_path):
     test_file = tmp_path / "sample.txt"
     test_file.write_text("This is sample text content.\nSecond line.")
     return test_file
+
+@pytest.fixture
+def app_with_text_selection(app):
+    """Fixture that provides app with selected text"""
+    app.text_area.insert('1.0', 'This is test text for selection')
+    app.text_area.tag_add('sel', '1.0', '1.4')  # Select "This"
+    return app
