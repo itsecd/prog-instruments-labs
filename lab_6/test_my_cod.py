@@ -69,5 +69,31 @@ class TestCardSearcher:
         mock_pool.assert_called_once()
 
 
+class TestPerformanceBenchmark:
+
+    def test_initialization(self):
+
+        test_bins = ["547905", "546925"]
+        benchmark = PerformanceBenchmark(test_bins)
+
+        assert benchmark.bins == test_bins
+        assert benchmark.results == []
+
+    @patch('time_test.CardSearcher')
+    def test_run_tests_with_mocks(self, mock_searcher_class):
+
+        # Настраиваем мок CardSearcher
+        mock_searcher = Mock()
+        mock_searcher.search_card_number.return_value = ("5479054156572301", 5.0)
+        mock_searcher_class.return_value = mock_searcher
+
+        benchmark = PerformanceBenchmark(["547905"])
+        benchmark.run_tests(3)
+
+        assert len(benchmark.results) == 3
+        assert benchmark.results == [(1, 5.0), (2, 5.0), (3, 5.0)]
+        assert mock_searcher.search_card_number.call_count == 3
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
