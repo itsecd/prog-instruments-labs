@@ -26,6 +26,8 @@ def mock_tkinter(mocker):
     mocker.patch('nmap_gui_scan.ttk.Combobox', return_value=MagicMock())
     mocker.patch('nmap_gui_scan.ttk.Labelframe', return_value=MagicMock())
     mocker.patch('nmap_gui_scan.scrolledtext.ScrolledText', return_value=MagicMock())
+    mocker.patch('nmap_gui_scan.tk.BooleanVar', return_value=MagicMock())
+    mocker.patch('nmap_gui_scan.tk.StringVar', return_value=MagicMock())
 
 
 @pytest.fixture
@@ -42,6 +44,7 @@ def gui_instance(mock_tkinter):
     gui.stop_btn = MagicMock()
     gui.status_var = MagicMock()
     gui.stop_requested = MagicMock()
+    gui.log = MagicMock()
 
     return gui
 
@@ -65,3 +68,34 @@ def sample_scan_parameters():
         "extra_args": "",
         "output_basename": "test_scan"
     }
+
+
+@pytest.fixture
+def gui_with_real_vars(mock_tkinter):
+    """Фикстура для GUI с реальными Tkinter переменными"""
+    from nmap_gui_scan import NmapGUI
+    import tkinter as tk
+
+    root_mock = MagicMock()
+    gui = NmapGUI(root_mock)
+
+    # Заменяем моки на реальные Tkinter переменные для некоторых тестов
+    gui.target_var = tk.StringVar(value="192.168.1.0/24")
+    gui.port_choice = tk.StringVar(value="common")
+    gui.syn_var = tk.BooleanVar(value=True)
+    gui.adv_var = tk.BooleanVar(value=False)
+    gui.timing_var = tk.StringVar(value="T3")
+    gui.agree_var = tk.BooleanVar(value=False)
+    gui.custom_ports_var = tk.StringVar(value="")
+    gui.extra_args_var = tk.StringVar(value="")
+    gui.basename_var = tk.StringVar(value="")
+
+    # Моки для остальных компонентов
+    gui.append_log = MagicMock()
+    gui.start_btn = MagicMock()
+    gui.stop_btn = MagicMock()
+    gui.status_var = MagicMock()
+    gui.stop_requested = MagicMock()
+    gui.log = MagicMock()
+
+    return gui
