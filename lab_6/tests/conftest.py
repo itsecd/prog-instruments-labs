@@ -29,3 +29,13 @@ def app_with_text_selection(app):
     app.text_area.insert('1.0', 'This is test text for selection')
     app.text_area.tag_add('sel', '1.0', '1.4')  # Select "This"
     return app
+
+@pytest.fixture
+def app_with_formatted_text(app):
+    """Fixture that provides app with formatted text"""
+    app.text_area.insert('1.0', 'Bold and italic text')
+    app.text_area.tag_add('sel', '1.0', '1.4')
+    app.apply_bold()
+    app.text_area.tag_add('sel', '1.8', '1.14')
+    app.apply_italic()
+    return app
