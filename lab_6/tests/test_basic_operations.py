@@ -15,6 +15,7 @@ class TestBasicOperations:
         assert app.current_font_family == "Times New Roman"
         assert app.current_font_size == 18
         assert hasattr(app, 'text_area')
+        assert app.text_area is not None
 
     def test_new_file_creation(self, app):
         """Test creating a new file clears the text area"""
@@ -32,3 +33,11 @@ class TestBasicOperations:
         """Test window title is updated after creating new file"""
         app.new_file()
         assert "Untitled File" in app.root.title()
+
+    def test_text_area_has_undo_capability(self, app):
+        """Test that text area has undo functionality enabled"""
+        assert app.text_area.cget('undo') == True
+
+    def test_text_area_wrap_configuration(self, app):
+        """Test that text area is configured to wrap words"""
+        assert app.text_area.cget('wrap') == 'word'
