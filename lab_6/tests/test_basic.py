@@ -61,3 +61,10 @@ class TestBasicFunctions:
         result = find_nmap()
         assert result is None
         mock_which.assert_called_once_with("nmap")
+
+    def test_sanitize_arg_with_none(self):
+        """Тест очистки аргумента с None значением"""
+        # Добавляем тест для граничного случая
+        result = sanitize_arg(None)
+        # Ожидаем, что функция обработает None без ошибки
+        assert result is None
