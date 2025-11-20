@@ -11,15 +11,12 @@ from time_test import PerformanceBenchmark
 
 
 class TestLuhnAlgorithm:
-    """Тесты для алгоритма Луна"""
 
     def test_luhn_check_valid_card(self):
-        """Тест проверки валидного номера карты"""
         # Используем заведомо валидный номер карты
         assert luhn_algorithm_check("4532015112830366") == True
 
     def test_luhn_check_invalid_card(self):
-        """Тест проверки невалидного номера карты"""
         assert luhn_algorithm_check("4532015112830367") == False
 
     @pytest.mark.parametrize("number,expected", [
@@ -36,6 +33,41 @@ class TestLuhnAlgorithm:
         result = luhn_algorithm_compute("123456781234567")
         assert result == "1234567812345670"
         assert luhn_algorithm_check(result) == True
+
+
+class TestCardSearcher:
+
+    def test_generate_card_numbers(self):
+        searcher = CardSearcher()
+
+        with patch('hash_card.LAST_4_DIGITS', '2301'):
+            numbers = searcher.generate_card_numbers("547905")
+
+            assert len(numbers) == 1000000
+            assert numbers[0] == "5479050000002301"
+            assert numbers[999999] == "5479059999992301"
+
+    @patch('hash_card.multiprocessing.Pool')
+    @patch('hash_card.BINS', ['547905'])
+    def test_search_card_number_with_mocks(self, mock_pool):
+        # Настраиваем мок пула процессов
+        mock_pool_instance = Mock()
+        mock_pool.return_value.__enter__.return_value = mock_pool_instance
+        mock_pool_instance.imap_unordered.return_value = ["5479054156572301"]
+
+        searcher = CardSearcher()
+        searcher.found_event = Mock()
+        searcher.found_event.is_set.return_value = False
+        searcher.result_queue = Mock()
+        searcher.result_queue.empty.return_value = False
+        searcher.result_queue.get.return_value = "5479054156572301"
+
+        result, duration = searcher.search_card_number(num_processes=2)
+
+        assert result == "5479054156572301"
+        assert isinstance(duration, float)
+        mock_pool.assert_called_once()
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
