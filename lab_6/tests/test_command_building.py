@@ -16,6 +16,129 @@ from nmap_gui_scan import build_nmap_command
 class TestCommandBuilding:
     """Тесты построения команд nmap"""
 
+    # Параметризованные тесты для различных комбинаций портов
+    @pytest.mark.parametrize("port_option,custom_ports,expected_args", [
+        ("common", "", []),  # No port args for common
+        ("all", "", ["-p-"]),  # All ports
+        ("custom", "80,443", ["-p", "80,443"]),  # Custom ports
+        ("custom", "22,80,443,8000-8100", ["-p", "22,80,443,8000-8100"]),  # Range
+        ("custom", "", []),  # Empty custom ports
+    ])
+    def test_port_options_parametrized(self, port_option, custom_ports, expected_args):
+        """Параметризованный тест различных опций портов"""
+        cmd = build_nmap_command(
+            target="192.168.1.1",
+            port_option=port_option,
+            custom_ports=custom_ports,
+            syn_scan=True,
+            enable_A=False,
+            timing="T3",
+            extra_args="",
+            output_basename=""
+        )
+
+        expected = ["nmap", "-sS"] + expected_args + ["192.168.1.1"]
+        assert cmd == expected
+
+    # Параметризованные тесты для timing templates
+    @pytest.mark.parametrize("timing,expected_args", [
+        ("T0", ["-T0"]),  # Paranoid
+        ("T1", ["-T1"]),  # Sneaky
+        ("T2", ["-T2"]),  # Polite
+        ("T3", []),  # Normal (default, not included)
+        ("T4", ["-T4"]),  # Aggressive
+        ("T5", ["-T5"]),  # Insane
+        ("", []),  # Empty timing
+        (None, []),  # None timing
+    ])
+    def test_timing_options_parametrized(self, timing, expected_args):
+        """Параметризованный тест timing templates"""
+        cmd = build_nmap_command(
+            target="192.168.1.1",
+            port_option="common",
+            custom_ports="",
+            syn_scan=True,
+            enable_A=False,
+            timing=timing,
+            extra_args="",
+            output_basename=""
+        )
+
+        expected = ["nmap"] + expected_args + ["-sS", "192.168.1.1"]
+        assert cmd == expected
+
+    # Параметризованные тесты для scan types и advanced options
+    @pytest.mark.parametrize("syn_scan,enable_A,expected_scan_type,expected_advanced", [
+        (True, False, "-sS", []),  # SYN scan only
+        (False, False, "-sT", []),  # TCP connect only
+        (True, True, "-sS", ["-A"]),  # SYN + Advanced
+        (False, True, "-sT", ["-A"]),  # TCP + Advanced
+    ])
+    def test_scan_types_advanced_parametrized(self, syn_scan, enable_A, expected_scan_type, expected_advanced):
+        """Параметризованный тест типов сканирования и расширенных опций"""
+        cmd = build_nmap_command(
+            target="192.168.1.1",
+            port_option="common",
+            custom_ports="",
+            syn_scan=syn_scan,
+            enable_A=enable_A,
+            timing="T3",
+            extra_args="",
+            output_basename=""
+        )
+
+        expected = ["nmap"] + expected_advanced + [expected_scan_type, "192.168.1.1"]
+        assert cmd == expected
+
+    # Параметризованные тесты для различных целей сканирования
+    @pytest.mark.parametrize("target,description", [
+        ("192.168.1.1", "Single IP"),
+        ("192.168.1.0/24", "Network CIDR"),
+        ("192.168.1.1-100", "IP range"),
+        ("example.com", "Hostname"),
+        ("localhost", "Localhost"),
+        ("8.8.8.8,8.8.4.4", "Multiple IPs"),
+    ])
+    def test_different_targets_parametrized(self, target, description):
+        """Параметризованный тест различных типов целей"""
+        cmd = build_nmap_command(
+            target=target,
+            port_option="common",
+            custom_ports="",
+            syn_scan=True,
+            enable_A=False,
+            timing="T3",
+            extra_args="",
+            output_basename=""
+        )
+
+        expected = ["nmap", "-sS", target]
+        assert cmd == expected, f"Failed for target: {description}"
+
+    # Параметризованные тесты для extra args
+    @pytest.mark.parametrize("extra_args,expected_extra", [
+        ("", []),
+        ("--max-retries 3", ["--max-retries", "3"]),
+        ("-v --reason", ["-v", "--reason"]),
+        ('--script "default and safe"', ["--script", "default and safe"]),
+        ("-O --osscan-limit", ["-O", "--osscan-limit"]),
+    ])
+    def test_extra_args_parametrized(self, extra_args, expected_extra):
+        """Параметризованный тест дополнительных аргументов"""
+        cmd = build_nmap_command(
+            target="192.168.1.1",
+            port_option="common",
+            custom_ports="",
+            syn_scan=True,
+            enable_A=False,
+            timing="T3",
+            extra_args=extra_args,
+            output_basename=""
+        )
+
+        expected = ["nmap", "-sS"] + expected_extra + ["192.168.1.1"]
+        assert cmd == expected
+
     def test_basic_command_defaults(self):
         """Тест базовой команды с параметрами по умолчанию"""
         cmd = build_nmap_command(

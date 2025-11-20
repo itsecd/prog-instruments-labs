@@ -16,6 +16,22 @@ from nmap_gui_scan import find_nmap, sanitize_arg
 class TestBasicFunctions:
     """Тесты базовых функций"""
 
+    # Параметризованный тест для sanitize_arg
+    @pytest.mark.parametrize("input_arg,expected", [
+        ("192.168.1.1", "192.168.1.1"),
+        ("  example.com  ", "example.com"),
+        ("", ""),
+        ("   ", ""),
+        ("example.com; rm -rf /", "example.com; rm -rf /"),
+        (None, None),
+        ("   multiple   spaces   ", "multiple   spaces"),
+        ("\ttab\tseparated\t", "tab\tseparated"),
+    ])
+    def test_sanitize_arg_parametrized(self, input_arg, expected):
+        """Параметризованный тест очистки аргументов"""
+        result = sanitize_arg(input_arg)
+        assert result == expected
+
     def test_find_nmap_exists(self):
         """Тест поиска nmap в системе"""
         result = find_nmap()
