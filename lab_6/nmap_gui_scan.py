@@ -29,8 +29,9 @@ def find_nmap():
 
 def sanitize_arg(arg):
     # Basic sanity: strip; let shlex.quote handle shell safety when building command
+    if arg is None:
+        return None
     return arg.strip()
-
 def build_nmap_command(target, port_option, custom_ports, syn_scan, enable_A, timing, extra_args, output_basename):
     # Build list of args (not a shell string)
     cmd = []
@@ -50,12 +51,9 @@ def build_nmap_command(target, port_option, custom_ports, syn_scan, enable_A, ti
     if enable_A:
         cmd.append("-A")
 
-    # Ports
+    # Порты должны идти ПОСЛЕ опций сканирования
     if port_option == "all":
         cmd.append("-p-")
-    elif port_option == "common":
-        # nmap default scan covers common ports; don't add -p so it uses defaults
-        pass
     elif port_option == "custom":
         p = custom_ports.strip()
         if p:

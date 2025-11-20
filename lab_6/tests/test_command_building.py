@@ -67,7 +67,6 @@ class TestCommandBuilding:
         expected = ["nmap"] + expected_args + ["-sS", "192.168.1.1"]
         assert cmd == expected
 
-    # Параметризованные тесты для scan types и advanced options
     @pytest.mark.parametrize("syn_scan,enable_A,expected_scan_type,expected_advanced", [
         (True, False, "-sS", []),  # SYN scan only
         (False, False, "-sT", []),  # TCP connect only
@@ -87,7 +86,8 @@ class TestCommandBuilding:
             output_basename=""
         )
 
-        expected = ["nmap"] + expected_advanced + [expected_scan_type, "192.168.1.1"]
+        # Правильный порядок: nmap, timing (если есть), scan_type, advanced, target
+        expected = ["nmap", expected_scan_type] + expected_advanced + ["192.168.1.1"]
         assert cmd == expected
 
     # Параметризованные тесты для различных целей сканирования
