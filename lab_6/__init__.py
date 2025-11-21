@@ -1,0 +1,1 @@
+# This file makes the lab_6 directory a Python package

@@ -1,0 +1,35 @@
+name: Python Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov pytest-mock
+
+    - name: Run CI-compatible tests
+      run: |
+        cd lab_6
+        CI=true python -m pytest tests/test_ci_compatible.py tests/test_pure_logic.py tests/test_business_rules.py -v --cov=twxt --cov-report=xml
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./lab_6/coverage.xml
+        flags: unittests
