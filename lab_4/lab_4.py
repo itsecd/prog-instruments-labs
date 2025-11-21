@@ -24,6 +24,7 @@ PLANTS = [
 MAX_PLOTS = 6
 
 
+
 def get_plant_by_id(plant_id):
     for plant in PLANTS:
         if plant["id"] == plant_id:
@@ -480,39 +481,34 @@ h - Помощь
 """)
 
 
+COMMANDS = {
+    "1": show_farm,
+    "2": plant_seed,
+    "3": buy_seeds_quick,
+    "shop": buy_seeds_shop,
+    "4": plant_from_inventory,
+    "5": water_plot,
+    "6": harvest_plot,
+    "7": sell_items,
+    "8": lambda: (rest_day(), random_events()),
+    "9": save_game,
+    "10": load_game,
+    "11": market_prices,
+    "12": stats,
+    "13": lambda: globals().update(GAME_OVER=True),
+    "h": help_menu
+}
+
+
 def handle_choice(choice):
     global GAME_OVER, MESSAGE
-    if choice == "1":
-        show_farm()
-    elif choice == "2":
-        plant_seed()
-    elif choice == "3":
-        buy_seeds_quick()
-    elif choice == "shop":
-        buy_seeds_shop()
-    elif choice == "4":
-        plant_from_inventory()
-    elif choice == "5":
-        water_plot()
-    elif choice == "6":
-        harvest_plot()
-    elif choice == "7":
-        sell_items()
-    elif choice == "8":
-        rest_day()
-        random_events()
-    elif choice == "9":
-        save_game()
-    elif choice == "10":
-        load_game()
-    elif choice == "11":
-        market_prices()
-    elif choice == "12":
-        stats()
-    elif choice == "13":
-        GAME_OVER = True
-    elif choice == "h":
-        help_menu()
+
+    if choice in COMMANDS:
+        command = COMMANDS[choice]
+        if callable(command):
+            command()
+        else:
+            MESSAGE = "Некорректная команда в словаре."
     else:
         MESSAGE = "Неизвестная команда."
 
