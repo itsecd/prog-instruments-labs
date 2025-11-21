@@ -23,25 +23,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install pytest pytest-cov pytest-mock
 
-    - name: Run unit tests
+    - name: Run CI-compatible tests
       run: |
         cd lab_6
-        python run_ci_tests.py
+        CI=true python -m pytest tests/test_ci_compatible.py tests/test_pure_logic.py tests/test_business_rules.py -v --cov=twxt --cov-report=xml
 
-    - name: Verify test count
-      run: |
-        cd lab_6
-        TEST_COUNT=$(python -c "
-        import pytest
-        import sys
-        sys.path.insert(0, '.')
-        collector = pytest.main(['tests/test_pure_logic.py', 'tests/test_business_rules.py', '--collect-only'])
-        ")
-        
-        # Простая проверка что тесты существуют
-        if [ -f tests/test_pure_logic.py ] && [ -f tests/test_business_rules.py ]; then
-          echo '✅ Test files exist'
-        else
-          echo '❌ Test files missing'
-          exit 1
-        fi
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./lab_6/coverage.xml
+        flags: unittests
