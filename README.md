@@ -1,15 +1,16 @@
 # Технологии и методы программирования
 [Таблица с успеваемостью](https://docs.google.com/spreadsheets/d/1Oo_FVO-9iztwu1i8dQ5SnCTso_yKjNKWbaWGv6dl9oY/edit?usp=sharing)
+
 # Лабораторные работы
-1. [Стандарты кодирования](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_1/README.md)
-2. [Code review](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_2/README.md)
-3. [Regular expressions](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_3/README.md)
-4. [Рефакторинг](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_4/README.md)
-5. [Логирование](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_5/README.md)
-6. [Unit tests](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_6/README.md)
-7. [Профайлинг и оптимизация производительности](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_7/README.md)
-8. [Асинхронное программирование](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_8/README.md)
-9. [Конфиги](https://github.com/itsecd/prog_instruments_labs/blob/main/lab_9/README.md)
+1. [Стандарты кодирования](lab_1/README.md)
+2. [Code review](lab_2/README.md)
+3. [Regular expressions](lab_3/README.md)
+4. [Рефакторинг](lab_4/README.md)
+5. [Логирование](lab_5/README.md)
+6. [Unit tests](lab_6/README.md)
+7. [Профайлинг и оптимизация производительности](lab_7/README.md)
+8. [Асинхронное программирование](lab_8/README.md)
+9. [Конфиги](lab_9/README.md)
 
 # Ремарки
 * Внимательно прочитайте [дискуссии](https://github.com/itsecd/prog_instruments_labs/discussions) о том, как работает автоматическое распределение на ревью.
