@@ -1,33 +1,57 @@
 import pytest
 import sys
 import os
-import tkinter as tk
+from unittest.mock import Mock, MagicMock, patch
 
-# Добавляем путь к корневой директории для импорта
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-try:
-    from twxt import MmabiaaTextpad
-except ImportError:
-    import sys
-    import os
-    # Добавляем текущую директорию в путь Python
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    from twxt import MmabiaaTextpad
+# @pytest.fixture(autouse=True)
+# def skip_if_headless():
+#     """Skip GUI tests in CI environment"""
+#     if os.environ.get('CI') or not os.environ.get('DISPLAY'):
+#         pytest.skip("Skipping GUI test in headless environment")
+
+
+# Мокаем весь tkinter перед импортом нашего приложения
+sys.modules['tkinter'] = MagicMock()
+sys.modules['tkinter.filedialog'] = MagicMock()
+sys.modules['tkinter.colorchooser'] = MagicMock()
+sys.modules['tkinter.font'] = MagicMock()
+sys.modules['tkinter.messagebox'] = MagicMock()
+sys.modules['tkinter.simpledialog'] = MagicMock()
+sys.modules['tkinter.scrolledtext'] = MagicMock()
+
+# Теперь импортируем наше приложение
+from twxt import MmabiaaTextpad
+
 
 @pytest.fixture
-def root_window():
-    """Fixture to create a root window for testing"""
-    root = tk.Tk()
-    root.withdraw()  # Hide the window during tests
-    yield root
-    root.destroy()
+def mock_tkinter():
+    """Fixture to mock all tkinter components"""
+    with patch('tkinter.Tk') as mock_tk, \
+            patch('tkinter.Menu') as mock_menu, \
+            patch('tkinter.ScrolledText') as mock_scrolled_text, \
+            patch('tkinter.PhotoImage') as mock_photo:
+        # Настраиваем моки
+        mock_root = MagicMock()
+        mock_tk.return_value = mock_root
+
+        mock_text_widget = MagicMock()
+        mock_scrolled_text.return_value = mock_text_widget
+
+        yield {
+            'root': mock_root,
+            'text_widget': mock_text_widget,
+            'photo': mock_photo
+        }
+
 
 @pytest.fixture
-def app(root_window):
-    """Fixture to create the application instance"""
-    app = MmabiaaTextpad(root_window)
-    yield app
+def app(mock_tkinter):
+    """Fixture to create the application instance with mocked tkinter"""
+    app = MmabiaaTextpad(mock_tkinter['root'])
+    app.text_area = mock_tkinter['text_widget']
+    return app
+
 
 @pytest.fixture
 def sample_text_file(tmp_path):
@@ -35,10 +59,3 @@ def sample_text_file(tmp_path):
     test_file = tmp_path / "sample.txt"
     test_file.write_text("This is sample text content.\nSecond line.")
     return test_file
-
-@pytest.fixture
-def app_with_text_selection(app):
-    """Fixture that provides app with selected text"""
-    app.text_area.insert('1.0', 'This is test text for selection')
-    app.text_area.tag_add('sel', '1.0', '1.4')  # Select "This"
-    return app
