@@ -1,10 +1,10 @@
 # Технологии и методы программирования
 
-## Лабораторная 8 «Асинхронное программирование»
+## Лабораторная работа №8: «Асинхронное программирование»
 
 В рамках данной лабораторной работы требуется продемонстрировать способность к написанию асинхронного кода на python.
 
-## Задание на лабораторную работу
+## Задание
 1. Создать отдельную ветку в своем [форке](https://docs.github.com/en/get-started/quickstart/fork-a-repo) данного репозитория.
 2. Написать код приложения, содержащий *осмысленный* асинхронный код, с помощью [материала лекции](https://github.com/xtrueman/prog_instruments/raw/main/presentations/Async.pptx).
 6. Открыть [пул-риквест](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) и ждать ревью.
