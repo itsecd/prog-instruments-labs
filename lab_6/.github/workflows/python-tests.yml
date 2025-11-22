@@ -1,0 +1,59 @@
+name: Python Tests
+
+on:
+  push:
+    branches: [ main, master, develop, unit-tests ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10]
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-mock
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Test with pytest
+      run: |
+        pytest tests/ -v
+
+    - name: Test Coverage
+      run: |
+        pip install pytest-cov
+        pytest tests/ --cov=nmap_gui_scan --cov-report=term-missing
+
+    - name: Upload Coverage Reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.9"
+
+    - name: Check code style
+      run: |
+        pip install pycodestyle
+        pycodestyle nmap_gui_scan.py --max-line-length=100
