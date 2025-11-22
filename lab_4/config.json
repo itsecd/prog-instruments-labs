@@ -1,0 +1,12 @@
+{
+  "driver_path": "/DJTranslator/chromedriver",
+  "locale_path": "/DJAuth/locale",
+  "headless": true,
+  "interface_language": "ru",
+  "source_language": "en",
+  "max_retries": 3,
+  "multi_process": true,
+  "max_processes": 10,
+  "timeout_per_translation": 30,
+  "user_agent_rotation": true
+}
