@@ -108,7 +108,7 @@
 
 Если вы столкнулись с непреодолимыми трудностями в ходе выполнения лабораторной работы, вы можете задать вопрос:
 
-* в виде [ишью](https://github.com/itsecd/prog_instruments_labs/issues/new/choose) в этом репозитории;
-* в разделе [Q&A](https://github.com/itsecd/prog_instruments_labs/discussions/categories/questions) дискуссий в этом репозитории;
+* в виде [ишью](https://github.com/itsecd/prog-instruments-labs/issues/new/choose) в этом репозитории;
+* в разделе [Q&A](https://github.com/itsecd/prog-instruments-labs/discussions/categories/questions) дискуссий в этом репозитории;
 * в телеграм-чате предмета;
 * в телеграм-чате вашего курса.

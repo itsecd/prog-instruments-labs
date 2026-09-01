@@ -192,8 +192,8 @@
 * Не бомбите открытый pr коммитами. Отладьте код локально. На каждую неудачную отработку CI github шлет оповещение по почту. Вы загадите почту как себе, так и мне.
 
 Если вы столкнулись с непреодолимыми трудностями в ходе выполнения лабораторной работы, вы можете задать вопрос в:
-* в виде [ишью](https://github.com/itsecd/prog_instruments_labs/issues/new/choose) в этом репозитории,
-* в разделе [Q&A](https://github.com/itsecd/prog_instruments_labs/discussions/categories/questions) дискуссий в этом репозитории,
+* в виде [ишью](https://github.com/itsecd/prog-instruments-labs/issues/new/choose) в этом репозитории,
+* в разделе [Q&A](https://github.com/itsecd/prog-instruments-labs/discussions/categories/questions) дискуссий в этом репозитории,
 * телеграм-чате предмета,
 * телеграм-чате вашего курса.
 
