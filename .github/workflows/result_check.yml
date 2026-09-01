@@ -8,24 +8,38 @@ on:
     paths:
       - 'lab_3/**'
 permissions:
-  contents: write
-  
+  contents: read
+
 jobs:
   check-result:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - uses: ActionsTools/read-json-action@main
-        name: acquiring your results
-        id: your_results
-        with:
-         file_path: "lab_3/result.json"       
-      - name: displaying your results
+      - name: Get result.json
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          echo "your variant: ${{steps.your_results.outputs.variant}}"
-          echo "your checksum: ${{steps.your_results.outputs.checksum}}" 
+          gh api \
+            "repos/${REPOSITORY}/contents/lab_3/result.json?ref=${SHA}" \
+            --header "Accept: application/vnd.github.raw+json" \
+            > result.json
+
+      - name: Read result
+        id: your_results
+        run: |
+          variant=$(jq -r '.variant' result.json)
+          checksum=$(jq -r '.checksum' result.json)
+
+          echo "variant=$variant" >> "$GITHUB_OUTPUT"
+          echo "checksum=$checksum" >> "$GITHUB_OUTPUT"
+
+      - name: Displaying your results
+        run: |
+          echo "your variant: ${{ steps.your_results.outputs.variant }}"
+          echo "your checksum: ${{ steps.your_results.outputs.checksum }}"
+
       - name: checking your results 
         run: |
           array=${{ secrets.CHECKSUMS }}
