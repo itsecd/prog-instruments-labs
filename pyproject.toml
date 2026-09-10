@@ -1,0 +1,12 @@
+[tool.lint]
+select = [
+    "E", "F", "W", "I", "N", "D", "UP", "B", "C", "ANN"
+]
+
+[tool.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pyright]
+typeCheckingMode = "strict"
+pythonVersion = "3.11"
