@@ -1,0 +1,14 @@
+target-version = "py311"
+line-length = 120
+
+[lint]
+extend-select = [
+  "E",   # pycodestyle
+  "F",   # Pyflakes
+  "UP",  # pyupgrade
+]
+
+[format]
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"

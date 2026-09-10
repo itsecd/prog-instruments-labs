@@ -1,8 +1,11 @@
-from bs4 import BeautifulSoup
 import csv
-from Iterator import CSVIterator
 import os
+
 import requests
+from bs4 import BeautifulSoup
+
+from Iterator import CSVIterator
+
 
 def parse_music_data(music_type: str) -> list[dict[str, str | None]]:
     """
@@ -19,13 +22,14 @@ def parse_music_data(music_type: str) -> list[dict[str, str | None]]:
     soup = BeautifulSoup(response.text, 'html.parser')
     # Все музыкальные композиции хранятся в элементах этого html класса \/
     data_elements = soup.find_all("div", class_="item-grid-card item-grid-card--show-meta")
-    tracks = list()
+    tracks = []
     for element in data_elements:
         track = {
             "name": element.find_next("h2").text.rstrip().lstrip(),
             "author": element.find_next("p").text.rstrip().lstrip().replace("by ", ""),
             "duration": element.find("div", {"data-test-id": "duration"}, recursive=True).text.rstrip().lstrip(),
-            "link": element.find("div", attrs={"data-audio-player-preview-url-value": True}).get("data-audio-player-preview-url-value")
+            "link": element.find("div", attrs={"data-audio-player-preview-url-value": True}
+                                 ).get("data-audio-player-preview-url-value")
         }
         tracks.append(track)
     return tracks
@@ -48,8 +52,7 @@ def download_file(folder: str, url: str) -> str:
         os.mkdir(folder)
     if not os.path.exists(f"{folder}/{filename}"): # Чтобы лишний раз ничего не загружать
         with open(f"{folder}/{filename}", 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
+            f.writelines(response.iter_content(chunk_size=8192))
     return filename
 
 
@@ -70,18 +73,25 @@ def main(downloads_folder: str, csv_path: str, amount: int) -> None:
         print(f"Запрошено слишком много. Будет сохранено: {max_amount}")
         amount = max_amount
 
+    directory = os.path.dirname(os.path.abspath(csv_path))
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    
     with open(csv_path, mode="w", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow(("Путь", "Полный путь", "Инструмент" , "Название песни", "Исполнитель", "Длинна"))
         for track in flute_tracks[0:min(len(flute_tracks), amount // 3)]:
             filename = download_file(f"{downloads_folder}/flute", track["link"])
-            writer.writerow((f"flute/{filename}", os.path.abspath(f"{downloads_folder}/flute/{filename}"), "Флейта", track["name"], track["author"], track["duration"]))
+            writer.writerow((f"flute/{filename}", os.path.abspath(f"{downloads_folder}/flute/{filename}"), "Флейта",
+                              track["name"], track["author"], track["duration"]))
         for track in violin_tracks[0:min(len(flute_tracks), amount // 3)]:
             filename = download_file(f"{downloads_folder}/violin", track["link"])
-            writer.writerow((f"violin/{filename}", os.path.abspath(f"{downloads_folder}/violin/{filename}"), "Скрипка", track["name"], track["author"], track["duration"]))
+            writer.writerow((f"violin/{filename}", os.path.abspath(f"{downloads_folder}/violin/{filename}"), "Скрипка",
+                              track["name"], track["author"], track["duration"]))
         for track in drums_tracks[0:min(len(flute_tracks), amount // 3 + amount % 3)]:
             filename = download_file(f"{downloads_folder}/drums", track["link"])
-            writer.writerow((f"drums/{filename}", os.path.abspath(f"{downloads_folder}/drums/{filename}"), "Барабаны", track["name"], track["author"], track["duration"]))
+            writer.writerow((f"drums/{filename}", os.path.abspath(f"{downloads_folder}/drums/{filename}"), "Барабаны",
+                              track["name"], track["author"], track["duration"]))
 
     iter = CSVIterator(csv_path)
     for row in iter:
