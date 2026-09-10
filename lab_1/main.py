@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from Iterator import CSVIterator
 
 
-def parse_music_data(music_type: str) -> list[dict[str, str | None]]:
+def parse_music_data(music_type: str) -> list[dict[str, str]]:
     """
     Выполняет запрос на сайт mixkit.co; считывает со страницы информацию о всех музыкальных композициях
     Args:
@@ -24,13 +24,18 @@ def parse_music_data(music_type: str) -> list[dict[str, str | None]]:
     data_elements = soup.find_all("div", class_="item-grid-card item-grid-card--show-meta")
     tracks = []
     for element in data_elements:
-        track = {
-            "name": element.find_next("h2").text.rstrip().lstrip(),
-            "author": element.find_next("p").text.rstrip().lstrip().replace("by ", ""),
-            "duration": element.find("div", {"data-test-id": "duration"}, recursive=True).text.rstrip().lstrip(),
-            "link": element.find("div", attrs={"data-audio-player-preview-url-value": True}
-                                 ).get("data-audio-player-preview-url-value")
-        }
+        track = {}
+        tag = element.find_next("h2")
+        track["name"] = tag.text.rstrip().lstrip() if tag else ""
+
+        tag = element.find_next("p")
+        track["author"] = tag.text.rstrip().lstrip().replace("by ", "") if tag else ""
+
+        tag = element.find("div", {"data-test-id": "duration"}, recursive=True)
+        track["duration"] = tag.text.rstrip().lstrip() if tag else ""
+
+        tag = element.find("div", attrs={"data-audio-player-preview-url-value": True})
+        track["link"] = tag.get("data-audio-player-preview-url-value") if tag else ""
         tracks.append(track)
     return tracks
 

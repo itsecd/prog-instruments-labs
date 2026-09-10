@@ -1,0 +1,7 @@
+{
+    "pythonVersion": "3.11",
+    "pythonPlatform": "All",
+    "typeCheckingMode": "basic",
+    "verboseOutput": true,
+    "useLibraryCodeForTypes": true,
+}
