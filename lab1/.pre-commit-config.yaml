@@ -1,0 +1,15 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+        stages: [pre-commit]
+      - id: ruff-format
+        stages: [pre-commit]
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.414
+    hooks:
+      - id: pyright
+        stages: [pre-push]
