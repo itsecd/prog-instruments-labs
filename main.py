@@ -15,7 +15,7 @@ class Student:
     """
 
     name: str
-    grades: list
+    grades: list[int]
     is_active: bool = True
 
 
@@ -50,7 +50,9 @@ class GradeBook:
             msg = "Имя студента не может быть пустым"
             raise ValueError(msg)
 
-        student = Student(name=name, grades=grades)
+        current_grades = grades if grades is not None else []
+
+        student = Student(name=name, grades=current_grades)
         self.students[name] = student
         return student
 
@@ -104,7 +106,7 @@ class GradeBook:
                 top_list.append((name, avg))
         return top_list
 
-    def export_summary(self) -> dict[str, dict[str]]:
+    def export_summary(self) -> dict[str, dict[str, int]]:
         """Формирует словарь со сводной информацией по всем студентам.
 
         Returns:

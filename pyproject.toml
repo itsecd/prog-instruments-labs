@@ -18,3 +18,7 @@ ignore = [
     "RUF002",  # Кириллические символы в docstring
     "RUF003",  # Кириллические символы в комментариях
 ]
+
+[tool.pyright]
+include = ["*.py"]
+typeCheckingMode = "standard"
