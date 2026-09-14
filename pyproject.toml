@@ -1,0 +1,25 @@
+[tool.ruff]
+fix = false
+indent-width = 4
+line-length = 88
+target-version = "py310"
+include = ["*.py"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+fixable = ["A", "B", "C", "D", "E", "F"]
+unfixable = []
+ignore = [
+    "T201",
+    "RUF001",  # Кириллические символы в обычных строках
+    "RUF002",  # Кириллические символы в docstring
+    "RUF003",  # Кириллические символы в комментариях
+    "CPY001"
+]
+
+[tool.pyright]
+include = ["*.py"]
+typeCheckingMode = "standard"
