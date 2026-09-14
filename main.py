@@ -89,7 +89,7 @@ class GradeBook:
         avg = total / len(student.grades)
         return round(avg, 2)
 
-    def get_top_students(self, threshold: float  = 4.5) -> list[tuple[str, float]]:
+    def get_top_students(self, threshold: float = 4.5) -> list[tuple[str, float]]:
         """Возвращает список студентов, средний балл которых выше или равен порогу.
 
         Args:
