@@ -17,3 +17,8 @@ format:
 typecheck:
 	-pyright
 
+precommit:
+	pre-commit install
+
+prepush:
+	pre-commit install --hook-type pre-push
