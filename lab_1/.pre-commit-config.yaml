@@ -27,7 +27,7 @@ repos:
       - id: pyright-typecheck
         name: typecheck
         language: system
-        entry: make -C ./lab_1 typecheck -d
+        entry: make -C ./lab_1 typecheck
         pass_filenames: false
         always_run: true
         files: ^lab_1/
@@ -36,7 +36,7 @@ repos:
       - id: run-tests
         name: tests
         language: system
-        entry: make -C ./lab_1 test -d
+        entry: make -C ./lab_1 test
         pass_filenames: false
         always_run: true
         files: ^lab_1/
