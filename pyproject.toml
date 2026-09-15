@@ -1,0 +1,25 @@
+[project]
+requires-python = ">=3.10"
+
+[tool.ruff]
+
+line-length=79
+
+fix=false
+
+exclude=[
+    ".venv"
+]
+
+[tool.ruff.lint]
+select=["E", "F", "I", "UP"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+docstring-code-line-length = 72
+
+[tool.pyright]
+pythonVersion = "3.10"
+typeCheckingMode = "standard"
