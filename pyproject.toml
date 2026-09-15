@@ -5,11 +5,10 @@ requires-python = ">=3.10"
 
 line-length=79
 
-fix=true
+fix=false
 
 exclude=[
-    ".venv",
-    "README.md"
+    ".venv"
 ]
 
 [tool.ruff.lint]
@@ -20,3 +19,7 @@ quote-style = "double"
 indent-style = "space"
 docstring-code-format = true
 docstring-code-line-length = 72
+
+[tool.pyright]
+pythonVersion = "3.10"
+typeCheckingMode = "standard"
