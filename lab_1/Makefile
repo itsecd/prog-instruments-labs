@@ -1,8 +1,9 @@
-.PHONY: help install lint format format-check typecheck fullcheck test fulltest precommit clean
+.PHONY: help install run lint format format-check typecheck fullcheck test fulltest precommit clean
 
 help:
 	@echo Available commands:
 	@echo   make install       - install dependencies
+	@echo   make run           - run the script on test data
 	@echo   make lint          - run linter
 	@echo   make format        - format code
 	@echo   make format-check  - check formatting
@@ -15,6 +16,9 @@ help:
 
 install:
 	pip install -r requirements.txt
+
+run:
+	python lab1_var13.py data.txt result.txt
 
 lint:
 	ruff check .
