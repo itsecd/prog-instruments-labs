@@ -1,12 +1,15 @@
-[tool.lint]
+[tool.ruff.lint]
 select = [
     "E", "F", "W", "I", "N", "D", "UP", "B", "C", "ANN"
 ]
 
-[tool.format]
+[tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 
 [tool.pyright]
 typeCheckingMode = "strict"
 pythonVersion = "3.11"
+
+[tool.ruff.lint.per-file-ignores]
+"lab_1/test_parrot.py" = ["D"]

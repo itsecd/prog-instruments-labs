@@ -1,8 +1,8 @@
 run:
-	python lab_1/parrot.py
+	python parrot.py
 
 tests:
-	pytest lab_1\test_parrot.py
+	pytest test_parrot.py
 
 format:
 	ruff format . --check

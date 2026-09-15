@@ -1,3 +1,5 @@
+files: ^lab_1/
+
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
@@ -9,10 +11,31 @@ repos:
 
 -   repo: local
     hooks:
+    -   id: ruff-check
+        name: ruff-check
+        entry: ruff
+        language: system
+        pass_filenames: false
+        args: [check, lab_1]
+
+    -   id: format-check
+        name: format-check
+        entry: ruff
+        language: system
+        pass_filenames: false
+        args: [format, lab_1, --check]
+
+    -   id: types-check
+        name: types-check
+        entry: pyright
+        language: system
+        pass_filenames: false
+        args: [lab_1]
+
     -   id: final-check
         name: Pre-push
         entry: make
         language: system
         pass_filenames: false
-        args: [fullcheck]
+        args: [-C, lab_1, fullcheck]
         stages: [pre-push]
