@@ -1,23 +1,25 @@
-def add(a, b):
+from typing import Union
+
+
+def add(a: int, b: int) -> int:
     return a + b
 
 
-def subtract(a, b):
+def subtract(a: int, b: int) -> int:
     return a - b
 
 
-def multiply(a, b):
+def multiply(a: int, b: int) -> int:
     return a * b
 
 
-def divide(a, b):
+def divide(a: int, b: int) -> Union[float, str]:
     if b == 0:
         return "Error: Division by zero"
     return a / b
 
 
-def main():
-    # Ошибка типов: передаем строку туда, где ожидается число
+def main() -> None:
     result = add(10, 20)
     print(f"Result: {result}")
 

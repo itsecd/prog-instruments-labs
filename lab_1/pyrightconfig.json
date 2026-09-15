@@ -1,6 +1,15 @@
 {
     "include": ["."],
-    "exclude": ["**/node_modules", "**/__pycache__"],
+    "exclude": [
+        "**/node_modules",
+        "**/__pycache__",
+        ".venv"
+    ],
+    "ignore": [],
     "strict": ["."],
-    "typeCheckingMode": "basic"
+    "typeCheckingMode": "basic",
+    "reportMissingImports": true,
+    "reportMissingTypeStubs": false,
+    "pythonVersion": "3.9",
+    "pythonPlatform": "Windows"
 }
