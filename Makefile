@@ -15,3 +15,8 @@ fullcheck:
 	pyright .
 	ruff format --check
 
+precommit:
+	pre-commit install --hook-type pre-commit --hook-type pre-push
+
+prepush:
+	pre-commit run --all-files
