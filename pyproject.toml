@@ -11,5 +11,12 @@ exclude=[
     ".venv",
     "README.md"
 ]
+
 [tool.ruff.lint]
 select=["E", "F", "I", "UP"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+docstring-code-line-length = 72
