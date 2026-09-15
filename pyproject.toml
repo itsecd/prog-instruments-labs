@@ -1,0 +1,15 @@
+[project]
+requires-python = ">=3.10"
+
+[tool.ruff]
+
+line-length=79
+
+fix=true
+
+exclude=[
+    ".venv",
+    "README.md"
+]
+[tool.ruff.lint]
+select=["E", "F", "I", "UP"]

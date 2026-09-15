@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import re
 import argparse
+import re
 
 
 def read_file(filename: str) -> str | None:
@@ -9,7 +9,7 @@ def read_file(filename: str) -> str | None:
     Читает содержимое файла.
     """
     try:
-        with open(filename, "r", encoding='utf-8') as file:
+        with open(filename, encoding='utf-8') as file:
             return file.read()
     except FileNotFoundError:
         print("File not found")
