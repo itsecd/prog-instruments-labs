@@ -1,0 +1,24 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.8
+    hooks:
+      - id: ruff
+        args: [--fix]
+        files: ^lab_1/
+      - id: ruff-format
+        files: ^lab_1/
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.414
+    hooks:
+      - id: pyright
+        files: ^lab_1/
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: pytest lab_1 -v
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
