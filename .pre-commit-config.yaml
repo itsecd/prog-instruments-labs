@@ -1,0 +1,42 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: check-merge-conflict
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix, --config, lab_1/pyproject.toml]
+        files: ^lab_1/
+      - id: ruff-format
+        args: [--config, lab_1/pyproject.toml]
+        files: ^lab_1/
+
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        entry: lab_1/venv/Scripts/python.exe -m pyright --project lab_1/pyproject.toml
+        language: system
+        types: [python]
+        files: ^lab_1/
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
+
+      - id: pytest
+        name: pytest
+        entry: lab_1/venv/Scripts/python.exe -m pytest lab_1/tests -q
+        language: system
+        types: [python]
+        files: ^lab_1/
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]

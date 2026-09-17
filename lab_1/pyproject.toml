@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cipher-analysis"
+version = "1.0.0"
+description = "Frequency analysis and decryption tool"
+requires-python = ">=3.9"
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+exclude = [".git", "__pycache__", "venv", ".venv", "Lab1/venv", "Lab1/.venv"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pyright]
+typeCheckingMode = "standard"
+reportMissingTypeStubs = "none"
+pythonVersion = "3.9"
+include = ["script.py", "tests"]
+exclude = ["venv", ".venv", "__pycache__", ".git"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
