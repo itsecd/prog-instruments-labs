@@ -1,0 +1,5 @@
+bs4~=0.0.2
+requests~=2.34.2
+ruff~=0.16.6
+pyright~=1.1.413
+pre_commit~=4.6.2

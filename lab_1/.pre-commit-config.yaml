@@ -1,0 +1,43 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.0
+    hooks:
+      - id: ruff
+        args: [--fix, --config, lab_1/ruff.toml]
+        files: ^lab_1/
+        stages: [pre-commit, pre-push]
+
+      - id: ruff-format
+        args: [--config, lab_1/ruff.toml]
+        files: ^lab_1/
+        stages: [pre-commit, pre-push]
+
+-   repo: local
+    hooks:
+      - id: pyright-typecheck
+        name: typecheck
+        language: system
+        entry: make -C ./lab_1 typecheck
+        pass_filenames: false
+        always_run: true
+        files: ^lab_1/
+        stages: [pre-commit, pre-push]
+
+      - id: run-tests
+        name: tests
+        language: system
+        entry: make -C ./lab_1 test
+        pass_filenames: false
+        always_run: true
+        files: ^lab_1/
+        stages: [pre-push]
