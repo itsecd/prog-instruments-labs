@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools==84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "image-crop-cli"
+version = "0.1.0"
+description = "Crop images from the top-left corner and compare the result"
+requires-python = ">=3.11"
+dependencies = ["Pillow==12.3.0", "matplotlib==3.11.2"]
+
+[project.optional-dependencies]
+dev = [
+    "ruff==0.16.7",
+    "pyright==1.1.414",
+    "pre-commit==4.6.2",
+    "pytest==9.1.1",
+    "build==1.6.1",
+]
+
+[project.scripts]
+image-crop = "crop_cli:main"
+
+[tool.setuptools]
+py-modules = ["crop_cli", "image_processing", "visualization"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+indent-width = 4
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+
+[tool.pyright]
+include = ["crop_cli.py", "image_processing.py", "visualization.py", "tests"]
+exclude = [".venv", "build", "dist"]
+pythonVersion = "3.11"
+typeCheckingMode = "strict"
+reportUnnecessaryTypeIgnoreComment = "error"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --basetemp=.pytest_tmp"

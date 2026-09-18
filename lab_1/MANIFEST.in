@@ -1,0 +1,4 @@
+include Makefile
+include .pre-commit-config.yaml
+include .gitignore
+recursive-include tests *.py
