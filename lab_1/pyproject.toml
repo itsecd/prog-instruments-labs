@@ -1,0 +1,14 @@
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+# Выбираем набор правил (E - ошибки стиля, F - логические ошибки, I - сортировка импортов)
+select = ["E", "F", "I"]
+ignore = ["E501"] # Игнорируем ошибку длины строки, если она мешает
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
