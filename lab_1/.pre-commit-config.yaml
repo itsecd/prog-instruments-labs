@@ -1,0 +1,43 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: debug-statements
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+        files: ^src/|^tests/
+      - id: ruff-format
+        files: ^src/|^tests/
+  
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright (type checking)
+        entry: python -m pyright
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: false
+        stages: [commit]
+  
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest (run all tests)
+        entry: python -m pytest tests/ -v --tb=short
+        language: system
+        types: [python]
+        pass_filenames: false
+        always_run: true
+        stages: [push]
