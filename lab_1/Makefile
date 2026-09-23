@@ -1,7 +1,5 @@
 .PHONY: help venv install run lint format format-check typecheck fullcheck test fulltest build deploy precommit clean
 
-PYTHON := venv/Scripts/python.exe
-
 help:
 	@echo Доступные команды:
 	@echo   make venv          - Создать виртуальное окружение
@@ -20,53 +18,45 @@ help:
 	@echo   make clean         - Очистка временных файлов
 
 venv:
-	$(PYTHON) -m venv venv
+	python -m venv venv
 
 install:
-	$(PYTHON) -m pip install --upgrade pip
-	$(PYTHON) -m pip install ruff pyright pre-commit pytest build
+	python -m pip install --upgrade pip
+	python -m pip install ruff pyright pre-commit pytest build
 
 run:
-	$(PYTHON) script.py text.txt alfa.txt key.txt decrypted.txt
+	python script.py text.txt alfa.txt key.txt decrypted.txt
 
 lint:
-	$(PYTHON) -m ruff check .
-	@echo Линтер завершен без ошибок
+	python -m ruff check .
 
 format-check:
-	$(PYTHON) -m ruff format --check .
-	@echo Форматирование проверено
+	python -m ruff format --check .
 
 format:
-	$(PYTHON) -m ruff format .
-	@echo Код отформатирован
+	python -m ruff format .
 
 typecheck:
-	$(PYTHON) -m pyright
-	@echo Проверка типов завершена
+	python -m mypy script.py
 
 fullcheck: lint format-check typecheck
-	@echo Все статические проверки пройдены
 
 test:
-	$(PYTHON) -m pytest -q
+	python -m pytest -q
 
 fulltest: fullcheck test
-	@echo Все проверки и тесты пройдены
 
 build:
-	$(PYTHON) -m build
+	python -m build
 
 deploy:
 	@echo deploy target - заглушка
 
 precommit:
-	$(PYTHON) -m pip install pre-commit
-	$(PYTHON) -m pre_commit install
-	$(PYTHON) -m pre_commit install --hook-type pre-push
-	@echo Git hooks установлены
+	python -m pip install pre-commit
+	python -m pre_commit install
+	python -m pre_commit install --hook-type pre-push
 
 clean:
 	rm -rf __pycache__ tests/__pycache__ .ruff_cache .pytest_cache .mypy_cache
 	find . -name "*.pyc" -delete
-	@echo Очистка завершена

@@ -6,12 +6,12 @@ build-backend = "setuptools.build_meta"
 name = "cipher-analysis"
 version = "1.0.0"
 description = "Frequency analysis and decryption tool"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py310"
 line-length = 100
-exclude = [".git", "__pycache__", "venv", ".venv", "Lab1/venv", "Lab1/.venv"]
+exclude = [".git", "__pycache__", "venv", ".venv"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "N", "UP", "B"]
@@ -20,12 +20,11 @@ select = ["E", "W", "F", "I", "N", "UP", "B"]
 quote-style = "double"
 indent-style = "space"
 
-[tool.pyright]
-typeCheckingMode = "standard"
-reportMissingTypeStubs = "none"
-pythonVersion = "3.9"
-include = ["script.py", "tests"]
-exclude = ["venv", ".venv", "__pycache__", ".git"]
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
