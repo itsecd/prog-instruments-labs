@@ -50,7 +50,7 @@ class TennisGame1:
                 1: "Fifteen-All",
                 2: "Thirty-All",
             }.get(self.p1points, "Deuce")
-            return result
+        return result
 
     def dispaly_endgame_score(self) -> str:
         """Выводит счет при преимуществе или победе одного из игроков.

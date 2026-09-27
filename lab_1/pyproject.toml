@@ -15,3 +15,8 @@ max-complexity = 4
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[tool.pyright]
+typeCheckingMode = "strict"
+
+include = ["fixed_tennis.py"]
