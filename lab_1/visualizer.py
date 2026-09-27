@@ -1,15 +1,17 @@
+"""Визуализация исходного и обрезанного аудиосигнала."""
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-def plot_audio_comparison(original: np.ndarray,
-                          trimmed: np.ndarray,
-                          samplerate: int,
-                          start_sec: float,
-                          end_sec: float) -> None:
-    """
-    Отображает исходный и обрезанный сигнал аудиофайла.
-    """
+def plot_audio_comparison(
+    original: np.ndarray,
+    trimmed: np.ndarray,
+    samplerate: int,
+    start_sec: float,
+    end_sec: float,
+) -> None:
+    """Отображает исходный и обрезанный сигнал аудиофайла."""
     duration_full = len(original) / samplerate
 
     t_full = np.linspace(0, duration_full, num=len(original))
