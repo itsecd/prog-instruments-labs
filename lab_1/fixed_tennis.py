@@ -1,9 +1,10 @@
-""" Модуль для ведения и отображения счета в теннисном матче. """
+"""Модуль для ведения и отображения счета в теннисном матче."""
 
 REQUIRED_ADVANTAGE = 2
 
+
 class TennisGame1:
-    """ Класс для отслеживания партии по теннису.
+    """Класс для отслеживания партии по теннису.
 
     Этот класс позволяет вести счет очков и
     выводить их.
@@ -16,7 +17,7 @@ class TennisGame1:
     """
 
     def __init__(self, player1_name: str, player2_name: str) -> None:
-        """ Инициализирует объект теннисный матч. """
+        """Инициализирует объект теннисный матч."""
 
         self.player1_name = player1_name
         self.player2_name = player2_name
@@ -24,7 +25,7 @@ class TennisGame1:
         self.p2points = 0
 
     def add_point(self, player_name: str) -> None:
-        """ Начисляет очко игроку.
+        """Начисляет очко игроку.
 
         Args:
             player_name (str): Имя игрока.
@@ -36,7 +37,7 @@ class TennisGame1:
             self.p2points += 1
 
     def display_tie_score(self) -> str:
-        """ Выводит счет при равенстве очков.
+        """Выводит счет при равенстве очков.
 
         Returns:
             str: Очки игроков.
@@ -52,7 +53,7 @@ class TennisGame1:
             return result
 
     def dispaly_endgame_score(self) -> str:
-        """ Выводит счет при преимуществе или победе одного из игроков.
+        """Выводит счет при преимуществе или победе одного из игроков.
 
         Returns:
             str: Очки игроков.
@@ -72,7 +73,7 @@ class TennisGame1:
         return result
 
     def display_score(self) -> str:
-        """ Выводит текущий счет.
+        """Выводит текущий счет.
 
         Returns:
             str: Очки игроков.
