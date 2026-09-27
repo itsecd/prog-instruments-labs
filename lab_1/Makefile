@@ -1,6 +1,6 @@
 FIXED_FILE = fixed_tennis.py
 
-.PHONY: lint lintfix formatcheck format typecheck fullcheck run
+.PHONY: lint lintfix formatcheck format typecheck fullcheck run precommit
 
 lint:
 	@ruff check $(FIXED_FILE)
@@ -21,3 +21,7 @@ fullcheck: lintfix format typecheck
 
 run:
 	@python $(FIXED_FILE)
+
+precommit:
+	@pre-commit install --hook-type pre-commit
+	@pre-commit install --hook-type pre-push

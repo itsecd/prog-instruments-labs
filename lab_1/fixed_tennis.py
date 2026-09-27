@@ -98,3 +98,5 @@ if __name__ == "__main__":
     game.add_point("Сергей")
     points = game.display_score()
     print(f"Счет: {points}")
+
+# Осмысленное изменение файла, чтобы проверить pre-commit
