@@ -91,3 +91,10 @@ class TennisGame1:
 
         result = f"{p1_score} - {p2_score}"
         return result
+
+
+if __name__ == "__main__":
+    game = TennisGame1("Игорь", "Сергей")
+    game.add_point("Сергей")
+    points = game.display_score()
+    print(f"Счет: {points}")

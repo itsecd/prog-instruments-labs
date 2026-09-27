@@ -17,6 +17,6 @@ quote-style = "double"
 indent-style = "space"
 
 [tool.pyright]
-typeCheckingMode = "strict"
-
 include = ["fixed_tennis.py"]
+
+typeCheckingMode = "strict"
