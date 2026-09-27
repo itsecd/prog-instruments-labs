@@ -1,5 +1,6 @@
 import math
 from typing import Any, Tuple
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -59,9 +60,7 @@ def main() -> None:
         x_val = 10.0 ** (-k)
         y64 = f_64(x_val)
         y32 = f_32(x_val)
-        rel_err = (
-            abs(float(y32) - float(y64)) / abs(float(y64)) if y64 != 0 else 0.0
-        )
+        rel_err = abs(float(y32) - float(y64)) / abs(float(y64)) if y64 != 0 else 0.0
         print(f"{k:<5}{x_val:<15.1e}{y64:<25.15e}{y32:<25.7e}{rel_err:<20.7e}")
 
     eps_float32 = machine_eps(np.float32)
@@ -91,6 +90,7 @@ def main() -> None:
     max_terms = 30
     terms_count = list(range(1, max_terms + 1))
     abs_errors = []
+    term = 1.0
     current_sum = 0.0
 
     for n in range(max_terms):

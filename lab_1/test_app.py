@@ -1,6 +1,8 @@
 import math
+
 import numpy as np
 import pytest
+
 from lab_1 import f_32, f_64, machine_eps, my_function
 
 
