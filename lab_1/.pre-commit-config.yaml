@@ -1,0 +1,58 @@
+files: ^lab_1/
+exclude: ^lab_1/README\.md$
+default_install_hook_types: [pre-commit, pre-push]
+default_stages: [pre-commit]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check (линтер)
+        entry: python -m ruff check --fix --force-exclude
+        language: system
+        types_or: [python, pyi]
+
+      - id: ruff-format
+        name: ruff format (форматирование)
+        entry: python -m ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+
+      - id: pyright
+        name: pyright (проверка типов)
+        entry: python -m pyright -p lab_1
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+
+      - id: ruff-format-check
+        name: ruff format --check (весь проект)
+        entry: python -m ruff format --check lab_1
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+
+      - id: pyright-push
+        name: pyright (весь проект)
+        entry: python -m pyright -p lab_1
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+
+      - id: pytest
+        name: pytest (тесты)
+        entry: python -m pytest lab_1/tests -q
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
