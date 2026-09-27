@@ -4,14 +4,15 @@ from pathlib import Path
 
 import numpy as np
 import soundfile as sf
+from numpy.typing import NDArray
 
 
-def load_audio(path: str) -> tuple:
+def load_audio(path: str) -> tuple[NDArray[np.float64], int]:
     """Загружает аудиофайл и возвращает данные и частоту дискретизации."""
     if not Path(path).is_file():
         raise FileNotFoundError(path)
     data, samplerate = sf.read(path)
-    return data, samplerate
+    return np.asarray(data, dtype=np.float64), samplerate
 
 
 def get_duration(data: np.ndarray, samplerate: int) -> float:

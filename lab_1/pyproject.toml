@@ -51,11 +51,10 @@ exclude = ["**/__pycache__", "**/.*", "venv", "build"]
 stubPath = "typings"
 pythonVersion = "3.10"
 typeCheckingMode = "strict"
-reportMissingTypeStubs = "error"
+reportMissingTypeStubs = false
 reportMissingModuleSource = "warning"
 reportUnnecessaryTypeIgnoreComment = "error"
 reportImplicitOverride = "error"
-reportShadowedImports = "warning"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

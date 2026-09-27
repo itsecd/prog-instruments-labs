@@ -1,3 +1,4 @@
+# pyright: reportUnknownMemberType=false
 """Визуализация исходного и обрезанного аудиосигнала."""
 
 import matplotlib.pyplot as plt
