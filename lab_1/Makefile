@@ -1,6 +1,6 @@
 FIXED_FILE = fixed_tennis.py
 
-.PHONY: lint lintfix formatcheck format typecheck fullcheck run precommit
+.PHONY: lint lintfix formatcheck format typecheck fullcheck run precommit preinstall
 
 lint:
 	@ruff check $(FIXED_FILE)
@@ -25,3 +25,7 @@ run:
 precommit:
 	@pre-commit install --hook-type pre-commit
 	@pre-commit install --hook-type pre-push
+
+preinstall:
+	@pip install pre-commit
+	@pip install pyright[nodejs]
