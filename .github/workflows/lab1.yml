@@ -1,0 +1,48 @@
+name: Lab 1 checks
+
+on:
+  push:
+    branches: ["lab_1"]
+    paths:
+      - "lab_1/**"
+      - ".github/workflows/lab1.yml"
+
+  pull_request:
+    paths:
+      - "lab_1/**"
+      - ".github/workflows/lab1.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: lab_1
+
+    steps:
+      - name: Download repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Check code with Ruff
+        run: make check
+
+      - name: Check formatting
+        run: make format
+
+      - name: Check types
+        run: make types
+
+      - name: Run tests
+        run: make tests

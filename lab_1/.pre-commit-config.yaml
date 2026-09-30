@@ -1,0 +1,30 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        files: ^lab_1/
+        stages: [pre-commit, pre-push]
+      - id: ruff-format
+        args: [--check]
+        files: ^lab_1/
+        stages: [pre-commit, pre-push]
+
+  - repo: local
+    hooks:
+      - id: lab1-typecheck
+        name: Lab 1 typecheck
+        entry: python -m pyright --project lab_1/pyproject.toml
+        language: python
+        additional_dependencies: ["pyright[nodejs]==1.1.385"]
+        files: ^lab_1/
+        pass_filenames: false
+        stages: [pre-push]
+      - id: lab1-tests
+        name: Lab 1 tests
+        entry: python -m pytest -c lab_1/pyproject.toml lab_1/tests
+        language: python
+        additional_dependencies: [pytest==8.3.3]
+        files: ^lab_1/
+        pass_filenames: false
+        stages: [pre-push]
