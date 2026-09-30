@@ -1,0 +1,22 @@
+[tool.ruff]
+target-version = "py313"
+indent-width = 4
+line-length = 88
+
+include = ["fixed_tennis.py"]
+
+[tool.ruff.lint]
+select = [ "E", "W", "F", "C90", "N", "D", "PL", "ANN", ]
+ignore = [ "D213", "D203", "D413", "D202", ]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 4
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pyright]
+include = ["fixed_tennis.py"]
+
+typeCheckingMode = "strict"

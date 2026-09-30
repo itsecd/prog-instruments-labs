@@ -1,0 +1,215 @@
+warning: `incorrect-blank-line-before-class` (D203) and `blank-line-before-class` (D211) are incompatible. Ignoring `incorrect-blank-line-before-class`.
+warning: `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible. Ignoring `multi-line-summary-second-line`.
+D100 Missing docstring in public module
+--> fixed_tennis.py:1:1
+
+D101 Missing docstring in public class
+ --> fixed_tennis.py:1:7
+  |
+1 | class TennisGame1:
+  |       ^^^^^^^^^^^
+2 |     def __init__(self, player1_name, player2_name):
+3 |         self.player1_name = player1_name
+  |
+
+ANN204 Missing return type annotation for special method `__init__`
+ --> fixed_tennis.py:2:9
+  |
+1 | class TennisGame1:
+2 |     def __init__(self, player1_name, player2_name):
+  |         ^^^^^^^^
+3 |         self.player1_name = player1_name
+4 |         self.player2_name = player2_name
+  |
+help: Add return type annotation: `None`
+
+D107 Missing docstring in `__init__`
+ --> fixed_tennis.py:2:9
+  |
+1 | class TennisGame1:
+2 |     def __init__(self, player1_name, player2_name):
+  |         ^^^^^^^^
+3 |         self.player1_name = player1_name
+4 |         self.player2_name = player2_name
+  |
+
+ANN001 Missing type annotation for function argument `player1_name`
+ --> fixed_tennis.py:2:24
+  |
+1 | class TennisGame1:
+2 |     def __init__(self, player1_name, player2_name):
+  |                        ^^^^^^^^^^^^
+3 |         self.player1_name = player1_name
+4 |         self.player2_name = player2_name
+  |
+
+ANN001 Missing type annotation for function argument `player2_name`
+ --> fixed_tennis.py:2:38
+  |
+1 | class TennisGame1:
+2 |     def __init__(self, player1_name, player2_name):
+  |                                      ^^^^^^^^^^^^
+3 |         self.player1_name = player1_name
+4 |         self.player2_name = player2_name
+  |
+
+ANN201 Missing return type annotation for public function `won_point`
+  --> fixed_tennis.py:8:9
+   |
+ 6 |         self.p2points = 0
+ 7 |
+ 8 |     def won_point(self, player_name):
+   |         ^^^^^^^^^
+ 9 |         if player_name == "player1":
+10 |             self.p1points += 1
+   |
+help: Add return type annotation: `None`
+
+D102 Missing docstring in public method
+  --> fixed_tennis.py:8:9
+   |
+ 6 |         self.p2points = 0
+ 7 |
+ 8 |     def won_point(self, player_name):
+   |         ^^^^^^^^^
+ 9 |         if player_name == "player1":
+10 |             self.p1points += 1
+   |
+
+ANN001 Missing type annotation for function argument `player_name`
+  --> fixed_tennis.py:8:25
+   |
+ 6 |         self.p2points = 0
+ 7 |
+ 8 |     def won_point(self, player_name):
+   |                         ^^^^^^^^^^^
+ 9 |         if player_name == "player1":
+10 |             self.p1points += 1
+   |
+
+C901 `score` is too complex (8 > 4)
+  --> fixed_tennis.py:14:9
+   |
+12 |             self.p2points += 1
+13 |
+14 |     def score(self):
+   |         ^^^^^
+15 |         result = ""
+16 |         temp_score = 0
+   |
+
+ANN201 Missing return type annotation for public function `score`
+  --> fixed_tennis.py:14:9
+   |
+12 |             self.p2points += 1
+13 |
+14 |     def score(self):
+   |         ^^^^^
+15 |         result = ""
+16 |         temp_score = 0
+   |
+help: Add return type annotation
+
+D102 Missing docstring in public method
+  --> fixed_tennis.py:14:9
+   |
+12 |             self.p2points += 1
+13 |
+14 |     def score(self):
+   |         ^^^^^
+15 |         result = ""
+16 |         temp_score = 0
+   |
+
+PLR2004 Magic value used in comparison, consider replacing `4` with a constant variable
+  --> fixed_tennis.py:23:31
+   |
+21 |                 2: "Thirty-All",
+22 |             }.get(self.p1points, "Deuce")
+23 |         elif self.p1points >= 4 or self.p2points >= 4:
+   |                               ^
+24 |             minus_result = self.p1points - self.p2points
+25 |             if minus_result == 1:
+   |
+
+PLR2004 Magic value used in comparison, consider replacing `4` with a constant variable
+  --> fixed_tennis.py:23:53
+   |
+21 |                 2: "Thirty-All",
+22 |             }.get(self.p1points, "Deuce")
+23 |         elif self.p1points >= 4 or self.p2points >= 4:
+   |                                                     ^
+24 |             minus_result = self.p1points - self.p2points
+25 |             if minus_result == 1:
+   |
+
+PLR2004 Magic value used in comparison, consider replacing `2` with a constant variable
+  --> fixed_tennis.py:29:34
+   |
+27 |             elif minus_result == -1:
+28 |                 result = "Advantage player2"
+29 |             elif minus_result >= 2:
+   |                                  ^
+30 |                 result = "Win for player1"
+31 |             else:
+   |
+
+W292 [*] No newline at end of file
+  --> fixed_tennis.py:46:22
+   |
+44 |                     3: "Forty",
+45 |                 }[temp_score]
+46 |         return result
+   |                      ^
+help: Add trailing newline
+   |
+45 |                 }[temp_score]
+   -         return result
+46 +         return result
+   |
+
+Found 16 errors.
+[*] 1 fixable with the `--fix` option (2 hidden fixes can be enabled with the `--unsafe-fixes` option).
+
+
+"""Ошибки после ruff format --check lab_1"""
+
+unformatted: File would be reformatted
+  --> lab_1\fixed_tennis.py:1:4
+   |
+   - """ Модуль для ведения и отображения счета в теннисном матче. """
+1  + """Модуль для ведения и отображения счета в теннисном матче."""
+2  |
+3  | REQUIRED_ADVANTAGE = 2
+4  |
+5  +
+6  | class TennisGame1:
+   -     """ Класс для отслеживания партии по теннису.
+7  +     """Класс для отслеживания партии по теннису.
+8  |
+--------------------------------------------------------------------------------
+19 |     def __init__(self, player1_name: str, player2_name: str) -> None:
+   -         """ Инициализирует объект теннисный матч. """
+20 +         """Инициализирует объект теннисный матч."""
+21 |
+--------------------------------------------------------------------------------
+27 |     def add_point(self, player_name: str) -> None:
+   -         """ Начисляет очко игроку.
+28 +         """Начисляет очко игроку.
+29 |
+--------------------------------------------------------------------------------
+39 |     def display_tie_score(self) -> str:
+   -         """ Выводит счет при равенстве очков.
+40 +         """Выводит счет при равенстве очков.
+41 |
+--------------------------------------------------------------------------------
+55 |     def dispaly_endgame_score(self) -> str:
+   -         """ Выводит счет при преимуществе или победе одного из игроков.
+56 +         """Выводит счет при преимуществе или победе одного из игроков.
+57 |
+--------------------------------------------------------------------------------
+75 |     def display_score(self) -> str:
+   -         """ Выводит текущий счет.
+76 +         """Выводит текущий счет.
+77 |
+   |
