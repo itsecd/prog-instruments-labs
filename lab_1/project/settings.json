@@ -1,0 +1,19 @@
+{
+  "generator": {
+    "default_length": 10
+  },
+  "hasher": {
+    "allowed_bits": [ 8, 12, 16 ],
+    "default_bits": 8
+  },
+  "experiments": {
+    "default_count": 1,
+    "min_count": 1,
+    "max_count": 100
+  },
+  "gui": {
+    "window_title": "Hash Collision Finder",
+    "window_width": 1920,
+    "window_height": 1920
+  }
+}

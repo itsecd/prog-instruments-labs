@@ -1,0 +1,52 @@
+name: Lab 1 CI
+
+on:
+  push:
+    branches: [lab1]
+    paths:
+      - "lab_1/**"
+      - ".github/workflows/lab1.yml"
+      - ".pre-commit-config.yaml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "lab_1/**"
+      - ".github/workflows/lab1.yml"
+      - ".pre-commit-config.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Code quality and tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    defaults:
+      run:
+        working-directory: lab_1
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: python -m pip install -r project/requirements.txt -r requirements-dev.txt
+
+      - name: Lint
+        run: make PYTHON=python lint
+
+      - name: Check formatting
+        run: make PYTHON=python format-check
+
+      - name: Check types
+        run: make PYTHON=python typecheck
+
+      - name: Run tests
+        run: make PYTHON=python test
