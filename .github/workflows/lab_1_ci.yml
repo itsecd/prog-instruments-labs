@@ -6,8 +6,6 @@ on:
       - 'lab_1/**'
   push:
     branches: [lab1]
-    paths:
-      - 'lab_1/**'
 
 jobs:
   checks:
