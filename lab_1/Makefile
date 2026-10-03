@@ -9,12 +9,12 @@ help:
 	@echo "  make format-check  - ruff format --check"
 	@echo "  make typecheck     - pyright"
 	@echo "  make fullcheck     - lint + format-check + typecheck"
-	@echo "  make test          - unit-тесты"
+	@echo "  make test          - unit-tests"
 	@echo "  make fulltest      - fullcheck + test"
-	@echo "  make run           - запуск CLI (--help)"
-	@echo "  make run-gui       - запуск GUI"
-	@echo "  make precommit     - установка git hooks"
-	@echo "  make clean         - очистка кэшей"
+	@echo "  make run           - run CLI (--help)"
+	@echo "  make run-gui       - run GUI"
+	@echo "  make precommit     - install git hooks"
+	@echo "  make clean         - clean caches"
 
 lint:
 	$(PY) -m ruff check .
