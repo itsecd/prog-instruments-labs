@@ -1,6 +1,7 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import math
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 print("=" * 60)
 print("ЛАБОРАТОРНАЯ РАБОТА №1")
@@ -11,11 +12,13 @@ print("=" * 60)
 # ЗАДАНИЕ 1: Сравнение точности float64 и float32
 # =============================================================
 
+
 def func(x):
     # Защита от деления на ноль
     if abs(x) < 1e-300:
-        return 1.0 # Предел функции при x->0 равен 1
+        return 1.0  # Предел функции при x->0 равен 1
     return (np.exp(x) - 1) / x
+
 
 print("\n--- Задание 1: Сравнение float64 и float32 ---")
 print(f"{'x':<10} {'float64':<20} {'float32':<20} {'Отн. ошибка':<15}")
@@ -29,18 +32,19 @@ for x in x_vals:
     res64 = func(np.float64(x))
     # Вычисление в одинарной точности
     res32 = func(np.float32(x))
-    
+
     # Вычисление относительной погрешности
     if res64 != 0:
         rel_err = abs(res64 - res32) / abs(res64)
     else:
         rel_err = 0
-        
+
     print(f"{x:<10.1e} {res64:<20.10f} {res32:<20.10f} {rel_err:<15.2e}")
 
 # =============================================================
 # ЗАДАНИЕ 2: Машинный эпсилон
 # =============================================================
+
 
 def machine_epsilon(dtype):
     eps = 1.0
@@ -50,6 +54,7 @@ def machine_epsilon(dtype):
     # Возвращаем последнее значение, при котором разница была (умножаем на 2)
     return eps * 2.0
 
+
 print("\n--- Задание 2: Машинный эпсилон ---")
 print(f"float64: {machine_epsilon(np.float64):.5e}")
 print(f"float32: {machine_epsilon(np.float32):.5e}")
@@ -58,24 +63,26 @@ print(f"float32: {machine_epsilon(np.float32):.5e}")
 # ЗАДАНИЕ 3: Ряд Тейлора для f(x) = (e^x - 1) / x
 # =============================================================
 
+
 def my_func(x, eps=1e-10):
     # Вычисляем ряд Тейлора для e^x
     term = 1.0  # Первый член ряда (x^0 / 0!)
-    s = 1.0     # Сумма
-    n = 1       # Счетчик для следующего члена
-    
+    s = 1.0  # Сумма
+    n = 1  # Счетчик для следующего члена
+
     while abs(term) > eps:
         term *= x / n  # Рекуррентная формула: term_n = term_{n-1} * x / n
         s += term
         n += 1
-        
+
     # Теперь вычисляем значение нашей функции (e^x - 1) / x
     # Если x близок к 0, используем предел
     if abs(x) < 1e-300:
         return 1.0, n - 1
-        
+
     result = (s - 1.0) / x
     return result, n - 1
+
 
 print("\n--- Задание 3: Ряд Тейлора для f(x) = (e^x - 1)/x ---")
 
@@ -84,8 +91,10 @@ for x in [0.5, 1, 2]:
         approx, terms = my_func(x, eps)
         exact = (math.exp(x) - 1) / x
         error = abs(approx - exact)
-        print(f"x={x:<3}, eps={eps:.0e}: approx={approx:.10f}, "
-              f"exact={exact:.10f}, terms={terms}, error={error:.2e}")
+        print(
+            f"x={x:<3}, eps={eps:.0e}: approx={approx:.10f}, "
+            f"exact={exact:.10f}, terms={terms}, error={error:.2e}"
+        )
 
 # =============================================================
 # ЗАДАНИЕ 4: График погрешности для x=3
@@ -109,16 +118,16 @@ while n < 50:
     term *= x_fixed / n
     s += term
     n += 1
-    
+
     # Вычисляем приближение нашей функции
     approx_val = (s - 1.0) / x_fixed
-    
-    terms_list.append(n - 1) # Количество учтенных членов
+
+    terms_list.append(n - 1)  # Количество учтенных членов
     errors_list.append(abs(exact_val - approx_val))
 
 # Построение графика
 plt.figure(figsize=(10, 6))
 # Используем полулогарифмический масштаб по Y, чтобы увидеть экспоненциальное убывание ошибки
-plt.semilogy(terms_list, errors_list, 'o-', color='blue', label='Абс. погрешность')
-plt.title('Зависимость абсолютной погрешности от числа членов ряда (x=3)')
+plt.semilogy(terms_list, errors_list, "o-", color="blue", label="Абс. погрешность")
+plt.title("Зависимость абсолютной погрешности от числа членов ряда (x=3)")
 plt.show()
