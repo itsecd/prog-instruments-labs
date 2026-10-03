@@ -1,7 +1,3 @@
-# Makefile для lab_1 (хеш-инструмент)
-#
-# Все команды используют `py -m ...`, чтобы не зависеть от PATH.
-
 PYTHON := py
 RUFF := $(PYTHON) -m ruff
 PYRIGHT := $(PYTHON) -m pyright
