@@ -1,0 +1,29 @@
+default_install_hook_types: [pre-commit, pre-push]
+files: ^lab_1/
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.10
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+        stages: [pre-commit]
+      - id: ruff-format
+        stages: [pre-commit]
+
+  - repo: local
+    hooks:
+      - id: pyright
+        name: pyright
+        entry: pyright --project lab_1
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
+      - id: pytest
+        name: pytest
+        entry: pytest lab_1
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
