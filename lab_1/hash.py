@@ -1,5 +1,5 @@
 import hashlib
-import hmac
+
 
 def hash_file(filepath):
     """
@@ -8,7 +8,7 @@ def hash_file(filepath):
     Возвращает: строку с хешем (64 символа) или None, если файл не найден
     """
     try:
-        with open(filepath, 'rb') as f:
+        with open(filepath, "rb") as f:
             data = f.read()
             return hashlib.sha256(data).hexdigest()
     except (FileNotFoundError, PermissionError, OSError):
@@ -21,7 +21,7 @@ def hash_text(text):
     Аргументы: text строка текста
     Возвращает: строку с хешем (64 символа)
     """
-    return hashlib.sha256(text.encode('utf-8')).hexdigest()
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def save_hash(hash, filepath):
@@ -31,7 +31,7 @@ def save_hash(hash, filepath):
     Возвращает: True при успехе, False при ошибке
     """
     try:
-        with open(filepath, 'w') as f:
+        with open(filepath, "w") as f:
             f.write(hash)
         return True
     except (FileNotFoundError, PermissionError, OSError):
@@ -45,9 +45,8 @@ def load_hash(filepath):
     Возвращает: строку с хешем или None, если файл не найден
     """
     try:
-        with open(filepath, 'r') as f:
-            hash = f.read().strip()
-            return hash
+        with open(filepath) as f:
+            return f.read().strip()
     except (FileNotFoundError, PermissionError, OSError):
         return None
 
@@ -77,5 +76,5 @@ def avalanche(text1, text2):
     bits2 = bin(int(hash2, 16))[2:].zfill(256)
     diff = sum(1 for i in range(256) if bits1[i] != bits2[i])
     percent = (diff / 256) * 100
-    
+
     return hash1, hash2, diff, percent
