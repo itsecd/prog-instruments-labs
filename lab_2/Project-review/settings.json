@@ -1,0 +1,22 @@
+{
+  "paths": {
+    "private_key": "keys/private_key.pem",
+    "public_key": "keys/public_key.pem",
+    "encrypted_key": "keys/encrypted_idea_key.bin"
+  },
+  "crypto_params": {
+    "rsa_key_size": 2048,
+    "rsa_public_exponent": 65537,
+    "idea_key_size": 16,
+    "idea_iv_size": 8,
+    "idea_block_size_bits": 64,
+    "padding_scheme": "ANSIX923",
+    "hash_algorithm": "SHA256"
+  },
+  "app_settings": {
+    "verbose": true,
+    "auto_save_config": true,
+    "confirm_overwrite": true,
+    "default_config_file": "settings.json"
+  }
+}
