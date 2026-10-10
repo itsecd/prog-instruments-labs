@@ -1,0 +1,11 @@
+﻿{
+  "rsa_key_size": 2048,
+  "rsa_public_exponent": 65537,
+  "key_size": 32,
+  "secret_key": "keys/private_key.pem",
+  "public_key": "keys/public_key.pem",
+  "symmetric_key": "keys/symmetric_key.enc",
+  "initial_file": "data/input.txt",
+  "encrypted_file": "data/encrypted.bin",
+  "decrypted_file": "data/decrypted.txt"
+}
