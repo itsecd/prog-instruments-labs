@@ -1,15 +1,13 @@
-import json
 import hashlib
-from typing import List
+import json
 
 """
 В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
 """
 
 
-def calculate_checksum(row_numbers: List[int]) -> str:
-    """
-    Вычисляет md5 хеш от списка целочисленных значений.
+def calculate_checksum(row_numbers: list[int]) -> str:
+    """Вычисляет md5 хеш от списка целочисленных значений.
 
     ВНИМАНИЕ, ВАЖНО! Чтобы сумма получилась корректной, считать, что первая строка с данными csv-файла имеет номер 0
     Другими словами: В исходном csv 1я строка - заголовки столбцов, 2я и остальные - данные.
@@ -17,7 +15,7 @@ def calculate_checksum(row_numbers: List[int]) -> str:
 
     Надеюсь, я расписал это максимально подробно.
     Хотя что-то мне подсказывает, что обязательно найдется человек, у которого с этим возникнут проблемы.
-    Которому я отвечу, что все написано в докстринге ¯\_(ツ)_/¯
+    Которому я отвечу, что все написано в докстринге ¯\\_(ツ)_/¯
 
     :param row_numbers: список целочисленных номеров строк csv-файла, на которых были найдены ошибки валидации
     :return: md5 хеш для проверки через github action
@@ -26,9 +24,8 @@ def calculate_checksum(row_numbers: List[int]) -> str:
     return hashlib.md5(json.dumps(row_numbers).encode('utf-8')).hexdigest()
 
 
-def serialize_result(variant: int, checksum: str) -> None:
-    """
-    Метод для сериализации результатов лабораторной пишите сами.
+def serialize_result(variant: int, checksum: str, filename: str) -> None:
+    """Метод для сериализации результатов лабораторной пишите сами.
     Вам нужно заполнить данными - номером варианта и контрольной суммой - файл, лежащий в папке с лабораторной.
     Файл называется, очевидно, result.json.
 
@@ -37,8 +34,17 @@ def serialize_result(variant: int, checksum: str) -> None:
 
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
+    :param filename: название файла для записи результатов
     """
-    pass
+    data = {
+        "variant" : variant,
+        "checksum" : checksum
+    }
+    try:
+        with open (filename, "w", encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        raise e
 
 
 if __name__ == "__main__":
