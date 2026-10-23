@@ -1,12 +1,16 @@
 name: Lab 1 Quality Check
 
 on:
+  push:
+    branches:
+      - lab-1
   pull_request:
     paths:
       - 'lab_1/**'
       - '.github/workflows/lab_1.yml'
       - 'pyproject.toml'
       - 'Makefile'
+  workflow_dispatch:
 
 jobs:
   quality-check:
