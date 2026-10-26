@@ -1,0 +1,21 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.2
+    hooks:
+      - id: ruff-check
+        args: [--config, lab_1/pyproject.toml, --fix]
+        files: ^lab_1/.*\.py$
+        stages: [pre-commit]
+      - id: ruff-format
+        args: [--config, lab_1/pyproject.toml]
+        files: ^lab_1/.*\.py$
+        stages: [pre-commit]
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.414
+    hooks:
+      - id: pyright
+        args: [--project, lab_1/pyproject.toml]
+        files: ^lab_1/.*\.py$
+        pass_filenames: false
+        stages: [pre-push]
