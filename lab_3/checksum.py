@@ -1,5 +1,6 @@
-import json
 import hashlib
+import json
+from pathlib import Path
 from typing import List
 
 """
@@ -38,7 +39,11 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    result = {"variant": str(variant), "checksum": checksum}
+    result_path = Path(__file__).with_name("result.json")
+    with result_path.open("w", encoding="utf-8") as file:
+        json.dump(result, file, indent=2)
+        file.write("\n")
 
 
 if __name__ == "__main__":
