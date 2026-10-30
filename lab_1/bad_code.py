@@ -1,55 +1,54 @@
-CACHE_DATA = {}
-COUNTER = 0
+from typing import Self
 
 
-def bad_default_args(item, list_container=None):
+def bad_default_args(item: int, list_container: list[int] | None = None) -> list[int]:
     if list_container is None:
         list_container = []
     list_container.append(item)
     return list_container
 
 
-class MegaSuperManager_Processor_Data_Controller:
-    def __init__(self, name, val) -> None:
-        self.name = name
-        self.val = val
+class MegaSuperManagerProcessorDataController:
+    def __init__(self: Self, name: str, val: int) -> None:
+        self.name: str = name
+        self.val: int = val
+        self.counter: int = 0
 
-    def process(self, data):
-        global COUNTER
-        COUNTER += 1
+    def process(self: Self, data: int | None) -> int | None:
+        self.counter += 1
 
         if data is None:
-            return False
+            return None
 
         try:
             return int(data) + self.val
-        except:
-            pass
+        except (ValueError, TypeError):
+            return None
 
-    def extremely_long_line_function_that_violates_all_possible_length_limits_and_pep8_standards_just_to_make_ruff_cry_very_hard(
-        self, parameter_one, parameter_two, parameter_three, parameter_four, parameter_five
-    ):
-
+    def extremely_long_line_function(
+        self: Self,
+        parameter_one: int,
+        parameter_two: int,
+        parameter_three: int,
+    ) -> int:
         if parameter_one:
             return parameter_two + parameter_three
-        return parameter_four * parameter_five
+        return parameter_two * parameter_three
 
 
-def pipeline_with_bugs():
-    l = [1, 2, 3, "four", 5.5]
-    O = 10
+def pipeline_with_bugs() -> int | None:
+    items = [1, 2, 3, 4, 5]
+    offset = 10
 
-    mgr = MegaSuperManager_Processor_Data_Controller("test", O)
+    mgr = MegaSuperManagerProcessorDataController("test", offset)
 
-    for i in range(len(l)):
-        print(mgr.process(l[i]))
+    for item in items:
+        print(mgr.process(item))
 
-    return mgr.extremely_long_line_function_that_violates_all_possible_length_limits_and_pep8_standards_just_to_make_ruff_cry_very_hard(
-        "abc", "def", "ghi", "jkl", "mno"
-    )
+    return mgr.extremely_long_line_function(1, 2, 3)
 
 
 if __name__ == "__main__":
-    print("Running super-flawed script...")
+    print("Running script...")
     res = pipeline_with_bugs()
     print(f"Result: {res}")
