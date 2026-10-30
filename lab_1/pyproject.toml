@@ -23,9 +23,9 @@ ignore = ["E501", "D", "T201", "CPY001", "COM812", "ISC001"]
 "tests/*" = ["S101", "INP001", "PLR2004", "E402"]
 
 [tool.pyright]
-include = ["script.py"]
+include = ["bad_code.py"]
 exclude = ["build", "generated", ".venv", "venv"]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
-strict = ["script.py"]
+strict = ["bad_code.py"]
 reportMissingTypeStubs = "error"
