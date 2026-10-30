@@ -1,130 +1,63 @@
 # Importing the required Modules
+import time
+import tkinter.messagebox as messagebox
+from tkinter import (
+    RIDGE,
+    VERTICAL,
+    Button,
+    Canvas,
+    DoubleVar,
+    Entry,
+    Frame,
+    Label,
+    Scale,
+    StringVar,
+    Tk,
+    ttk,
+)
 
-import time  # For Date and Time
-import tkinter.messagebox  # For Message Box
-from tkinter import *
-from tkinter import StringVar, Tk, ttk
-
-import requests as req  # For requests
-from bs4 import *  # For BeautifulSoup
+import requests as req
+from bs4 import BeautifulSoup
 from matplotlib import pyplot as plt
 from matplotlib import style
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-# Variable for Storing URL of website
-url = "https://www.x-rates.com/table/?from=INR&amount=1"
 
-# Header For my browser
-header = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36"
-}
-
-# Getting the access to webpage and Creating the Soup object
-webpage = req.get(url, headers=header)
-Soup = BeautifulSoup(webpage.text, "html.parser")
-
-
-style.use("ggplot")
-
-fig3 = plt.Figure(figsize=(5, 3), dpi=100)
-ax3 = fig3.add_subplot(111)
-
-
-# Class For Converter
 class Convert:
-    def __init__(self, root):
+    def __init__(self, root: Tk) -> None:
         self.root = root
         self.root.title("Currency Converter | Foreign Exchange Rates")
         self.root.geometry("1350x800+0+0")
         self.root.configure(background="#F2C496")
 
-        # =============================== VAriables ===============================
-
-        DateofConvert = StringVar()
-        value_0 = StringVar()
-        convert = DoubleVar()
-        currency = DoubleVar()
-        var1 = DoubleVar()
-        var2 = DoubleVar()
-        convert.set(1)
-        DateofConvert.set(time.strftime("%d/%m/%y"))
-
-        # ============================ Methods ==================================
-
-        # ============= Method For Exit =================================
-        def cExit():
-            cExit = tkinter.messagebox.askyesno(
-                "Exit System", "Confirm if you want to exit"
+        # Инициализация переменных и парсинга как атрибутов класса
+        self.url = "https://www.x-rates.com/table/?from=INR&amount=1"
+        self.header = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/78.0.3904.87 Safari/537.36"
             )
-            if cExit > 0:
-                root.destroy()
-                return
+        }
+        self.webpage = req.get(self.url, headers=self.header)
+        self.soup = BeautifulSoup(self.webpage.text, "html.parser")
 
-            # ============= Method For Reset the Screen ====================
+        style.use("ggplot")
+        self.fig3 = plt.Figure(figsize=(5, 3), dpi=100)
+        self.ax3 = self.fig3.add_subplot(111)
 
-        def Reset():
-            value_0.set("")
-            convert.set(1)
-            currency.set("0.00")
-            var1.set(0)
-            var2.set(0)
+        self.date_of_convert = StringVar()
+        self.value_0 = StringVar()
+        self.convert_var = DoubleVar()
+        self.currency_var = DoubleVar()
+        self.var1 = DoubleVar()
+        self.var2 = DoubleVar()
 
-            # ============= Method For Converting the value ================
-
-        def Converted_value():
-            s = value_0.get()
-            # ============== Fetch the value of rates from the table ======
-            rate = (
-                Soup.find("table", class_="tablesorter ratesTable")
-                .find("td", text=lambda x: x == s)
-                .find_next("td")
-                .get_text()
-            )
-            canvasCal()
-            x = float(convert.get() * float(rate))
-            Final_value = str("%.2f" % (x))
-            currency.set(Final_value)
-            var1.set(Final_value)
-            var2.set(convert.get())
-
-            def animate():
-                s = value_0.get()
-                c1 = int(convert.get())
-                u = (
-                    Soup.find("table", class_="tablesorter ratesTable")
-                    .find("td", text=lambda x: x == s)
-                    .find_next("td")
-                    .get_text()
-                )
-                c2 = float(c1) * float(u)
-                ax3.clear()
-                ax3.scatter(c1 + c1, c2)
-
-            animate()
-            return Final_value
-
-        def canvasCal():
-            s = value_0.get()
-            c1 = int(convert.get())
-            u = (
-                Soup.find("table", class_="tablesorter ratesTable")
-                .find("td", text=lambda x: x == s)
-                .find_next("td")
-                .get_text()
-            )
-            c2 = float(c1) * float(u)
-            print(c1, c2)
-
-            # ax3.scatter(c1, c2)
-            scatter3 = FigureCanvasTkAgg(fig3, Frame_2ButtomL)
-            scatter3.get_tk_widget().grid(row=0, column=0)
-            # ax3.legend()
-            ax3.set_xlabel("INR")
-            ax3.set_ylabel("Converted Value")
-            ax3.set_title("Currency Conversion")
+        self.convert_var.set(1)
+        self.date_of_convert.set(time.strftime("%d/%m/%y"))
 
         # ===================== Frames ==========================================
-        Title_frame = Frame(
+        title_frame = Frame(
             self.root,
             bd=10,
             width=1350,
@@ -134,10 +67,10 @@ class Convert:
             bg="#F2C496",
             relief=RIDGE,
         )
-        Title_frame.grid(row=0, column=0)
+        title_frame.grid(row=0, column=0)
 
         self.lbl_Title = Label(
-            Title_frame,
+            title_frame,
             text="Currency Converter | Foreign Exchange Rates",
             padx=17,
             pady=4,
@@ -148,7 +81,7 @@ class Convert:
         )
         self.lbl_Title.pack()
 
-        Main_frame = Frame(
+        main_frame = Frame(
             self.root,
             bd=10,
             width=1350,
@@ -158,46 +91,46 @@ class Convert:
             bg="#F2C496",
             relief=RIDGE,
         )
-        Main_frame.grid(row=1, column=0)
+        main_frame.grid(row=1, column=0)
 
-        Frame_1 = Frame(
-            Main_frame, bd=4, width=100, height=600, padx=5, pady=1, relief=RIDGE
+        frame_1 = Frame(
+            main_frame, bd=4, width=100, height=600, padx=5, pady=1, relief=RIDGE
         )
-        Frame_1.grid(row=0, column=0)
+        frame_1.grid(row=0, column=0)
 
-        Frame_2 = Frame(
-            Main_frame, bd=4, width=800, height=600, padx=0, pady=2, relief=RIDGE
+        frame_2 = Frame(
+            main_frame, bd=4, width=800, height=600, padx=0, pady=2, relief=RIDGE
         )
-        Frame_2.grid(row=0, column=1)
+        frame_2.grid(row=0, column=1)
 
-        Frame_2Top = Frame(
-            Frame_2, width=250, height=300, bd=4, padx=80, pady=2, relief=RIDGE
+        frame_2_top = Frame(
+            frame_2, width=250, height=300, bd=4, padx=80, pady=2, relief=RIDGE
         )
-        Frame_2Top.grid(row=0, column=0)
+        frame_2_top.grid(row=0, column=0)
 
-        Frame_2Buttom = Frame(
-            Frame_2, width=800, height=300, bd=4, padx=5, pady=2, relief=RIDGE
+        frame_2_bottom = Frame(
+            frame_2, width=800, height=300, bd=4, padx=5, pady=2, relief=RIDGE
         )
-        Frame_2Buttom.grid(row=1, column=0)
+        frame_2_bottom.grid(row=1, column=0)
 
-        Frame_2ButtomL = Frame(
-            Frame_2Buttom, width=450, height=300, bd=4, padx=0, pady=2, relief=RIDGE
+        self.frame_2_bottom_l = Frame(
+            frame_2_bottom, width=450, height=300, bd=4, padx=0, pady=2, relief=RIDGE
         )
-        Frame_2ButtomL.grid(row=0, column=0)
+        self.frame_2_bottom_l.grid(row=0, column=0)
 
-        Frame_2ButtomR = Frame(
-            Frame_2Buttom, width=350, height=300, bd=4, padx=10, pady=2, relief=RIDGE
+        frame_2_bottom_r = Frame(
+            frame_2_bottom, width=350, height=300, bd=4, padx=10, pady=2, relief=RIDGE
         )
-        Frame_2ButtomR.grid(row=0, column=1)
+        frame_2_bottom_r.grid(row=0, column=1)
 
-        Frame_3 = Frame(
-            Main_frame, bd=4, width=100, height=600, padx=5, pady=1, relief=RIDGE
+        frame_3 = Frame(
+            main_frame, bd=4, width=100, height=600, padx=5, pady=1, relief=RIDGE
         )
-        Frame_3.grid(row=0, column=2)
+        frame_3.grid(row=0, column=2)
 
         # =============================== Widgets =================================
         self.lblToday = Label(
-            Frame_2Top,
+            frame_2_top,
             font=("arial", 20, "bold"),
             text="Todays Date",
             padx=2,
@@ -206,10 +139,11 @@ class Convert:
             width=18,
         )
         self.lblToday.grid(row=0, column=0)
+
         self.lblDate = Label(
-            Frame_2Top,
+            frame_2_top,
             font=("arial", 20, "bold"),
-            textvariable=DateofConvert,
+            textvariable=self.date_of_convert,
             padx=2,
             pady=10,
             bd=2,
@@ -218,11 +152,9 @@ class Convert:
         )
         self.lblDate.grid(row=0, column=1)
 
-        # ================================ Scale ==================================
-
         self.Converted = Scale(
-            Frame_3,
-            variable=var1,
+            frame_3,
+            variable=self.var1,
             from_=0,
             to=1000,
             length=500,
@@ -235,8 +167,8 @@ class Convert:
         self.Converted.grid(row=0, column=0, rowspan=2)
 
         self.INR = Scale(
-            Frame_1,
-            variable=var2,
+            frame_1,
+            variable=self.var2,
             from_=0,
             to=1000,
             length=500,
@@ -248,10 +180,8 @@ class Convert:
         )
         self.INR.grid(row=0, column=0, rowspan=2)
 
-        # =========================== Labels for Frame_2 Top=======================
-
         self.lbl_INR = Label(
-            Frame_2Top,
+            frame_2_top,
             font=("arial", 20, "bold"),
             text="INR",
             padx=2,
@@ -262,9 +192,9 @@ class Convert:
         self.lbl_INR.grid(row=1, column=0)
 
         self.EntCurrency = Entry(
-            Frame_2Top,
+            frame_2_top,
             font=("arial", 20, "bold"),
-            textvariable=convert,
+            textvariable=self.convert_var,
             bd=2,
             width=23,
             justify="center",
@@ -272,12 +202,13 @@ class Convert:
         self.EntCurrency.grid(row=1, column=1, pady=10)
 
         self.Option = ttk.Combobox(
-            Frame_2Top,
-            textvariable=value_0,
+            frame_2_top,
+            textvariable=self.value_0,
             state="readonly",
             font=("arial", 20, "bold"),
             width=20,
         )
+        # Разбито на короткие строки для соответствия PEP 8
         self.Option["values"] = (
             "Select",
             "Argentine Peso",
@@ -339,9 +270,9 @@ class Convert:
         self.Option.grid(row=2, column=0, padx=38, pady=10)
 
         self.lblCurrency = Label(
-            Frame_2Top,
+            frame_2_top,
             font=("arial", 20, "bold"),
-            textvariable=currency,
+            textvariable=self.currency_var,
             bd=2,
             width=20,
             bg="white",
@@ -351,17 +282,10 @@ class Convert:
         )
         self.lblCurrency.grid(row=2, column=1)
 
-        # ============================== Canvas =================================
-
-        self.canvas = Canvas(Frame_2ButtomL, width=600, height=300, bg="gray")
-        # self.canvas.pack()
-        # self.canvas.create_line(100, 250, 400, 250, width = 3)
-        # self.canvas.create_line(100, 250, 100, 50, width = 3)
-
-        # ============================= Buttons =================================
+        self.canvas = Canvas(self.frame_2_bottom_l, width=600, height=300, bg="gray")
 
         self.btnconvert = Button(
-            Frame_2ButtomR,
+            frame_2_bottom_r,
             text="Convert",
             padx=2,
             pady=8,
@@ -370,12 +294,12 @@ class Convert:
             font=("arial", 20, "bold"),
             width=14,
             height=2,
-            command=Converted_value,
+            command=self.convert_value,
         )
         self.btnconvert.grid(row=4, column=0)
 
         self.btnReset = Button(
-            Frame_2ButtomR,
+            frame_2_bottom_r,
             text="Reset",
             padx=2,
             pady=7,
@@ -383,12 +307,12 @@ class Convert:
             font=("arial", 20, "bold"),
             width=14,
             height=2,
-            command=Reset,
+            command=self.reset,
         )
         self.btnReset.grid(row=5, column=0)
 
         self.btnExit = Button(
-            Frame_2ButtomR,
+            frame_2_bottom_r,
             text="Exit",
             padx=2,
             pady=8,
@@ -396,13 +320,65 @@ class Convert:
             font=("arial", 20, "bold"),
             width=14,
             height=2,
-            command=cExit,
+            command=self.c_exit,
         )
         self.btnExit.grid(row=6, column=0)
 
+    # ============================ Methods ==================================
 
-# ============================ Driver Code For the program =========================
+    def c_exit(self) -> None:
+        exit_confirmed = messagebox.askyesno(
+            "Exit System", "Confirm if you want to exit"
+        )
+        if exit_confirmed:
+            self.root.destroy()
+
+    def reset(self) -> None:
+        self.value_0.set("")
+        self.convert_var.set(1)
+        self.currency_var.set("0.00")
+        self.var1.set(0)
+        self.var2.set(0)
+
+    def convert_value(self) -> None:
+        s = self.value_0.get()
+        if s == "Select" or not s:
+            return
+
+        rate = (
+            self.soup.find("table", class_="tablesorter ratesTable")
+            .find("td", text=lambda x: x == s)
+            .find_next("td")
+            .get_text()
+        )
+        self.canvas_cal()
+        x = float(self.convert_var.get()) * float(rate)
+        final_value = f"{x:.2f}"
+
+        self.currency_var.set(final_value)
+        self.var1.set(final_value)
+        self.var2.set(self.convert_var.get())
+
+    def canvas_cal(self) -> None:
+        s = self.value_0.get()
+        c1 = int(self.convert_var.get())
+        u = (
+            self.soup.find("table", class_="tablesorter ratesTable")
+            .find("td", text=lambda x: x == s)
+            .find_next("td")
+            .get_text()
+        )
+        c2 = float(c1) * float(u)
+        print(c1, c2)
+
+        scatter3 = FigureCanvasTkAgg(self.fig3, self.frame_2_bottom_l)
+        scatter3.get_tk_widget().grid(row=0, column=0)
+        self.ax3.set_xlabel("INR")
+        self.ax3.set_ylabel("Converted Value")
+        self.ax3.set_title("Currency Conversion")
+
+
 if __name__ == "__main__":
-    root = Tk()  # Object instance of Tk() Class
-    application = Convert(root)  # Creating the Object of the Classs
-    root.mainloop()  # Running the main loop for the main window
+    root = Tk()
+    application = Convert(root)
+    root.mainloop()
