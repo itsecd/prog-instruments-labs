@@ -1,0 +1,11 @@
+{
+  "include": ["."],
+  "exclude": ["**/node_modules", "**/__pycache__", ".venv", ".git"],
+  "venvPath": ".",
+  "venv": ".venv",
+  "typeCheckingMode": "basic",
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "reportUnknownVariableType": false,
+  "reportUnknownMemberType": false
+}
