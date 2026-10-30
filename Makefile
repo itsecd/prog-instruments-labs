@@ -1,19 +1,19 @@
-.PHONY: install lint format typecheck fullcheck test fulltest precommit run
+.PHONY: install lint format typecheck fullcheck test fulltest precommit run format-check
 
 install:
 	pip install ruff pyright pre-commit pytest requests beautifulsoup4 matplotlib
 
 lint:
-	ruff check currency-converter.py
+	ruff check .
 
 format:
-	ruff format currency-converter.py
+	ruff format .
 
 format-check:
-	ruff format --check currency-converter.py
+	ruff format --check .
 
 typecheck:
-	pyright currency-converter.py
+	pyright .
 
 fullcheck: lint format-check typecheck
 
