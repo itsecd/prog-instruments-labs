@@ -1,14 +1,13 @@
-import json
 import hashlib
-from typing import List
+import json
 
 """
 В этом модуле обитают функции, необходимые для автоматизированной проверки результатов ваших трудов.
 """
 
 
-def calculate_checksum(row_numbers: List[int]) -> str:
-    """
+def calculate_checksum(row_numbers: list[int]) -> str:
+    r"""
     Вычисляет md5 хеш от списка целочисленных значений.
 
     ВНИМАНИЕ, ВАЖНО! Чтобы сумма получилась корректной, считать, что первая строка с данными csv-файла имеет номер 0
@@ -23,7 +22,7 @@ def calculate_checksum(row_numbers: List[int]) -> str:
     :return: md5 хеш для проверки через github action
     """
     row_numbers.sort()
-    return hashlib.md5(json.dumps(row_numbers).encode('utf-8')).hexdigest()
+    return hashlib.md5(json.dumps(row_numbers).encode("utf-8")).hexdigest()
 
 
 def serialize_result(variant: int, checksum: str) -> None:
