@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+include = ["task_1/*.py", "task_2/*.py"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
