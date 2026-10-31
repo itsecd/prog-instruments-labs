@@ -2,18 +2,14 @@ from tkinter import Tk, StringVar, DoubleVar, Frame, Label, Entry, Button, Scale
 from tkinter import ttk
 import tkinter.messagebox
 import time
-import requests as req
-from bs4 import BeautifulSoup
 from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib import style
 
+from rate_service import RateService
+
 
 class Convert:
-
-    URL = "https://www.x-rates.com/table/?from=INR&amount=1"
-    USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36'
-    RATES_TABLE_CLASS = 'tablesorter ratesTable'
 
     def __init__(self, root):
         self.root = root
@@ -21,8 +17,8 @@ class Convert:
         self.root.geometry("1350x800+0+0")
         self.root.configure(background="#F2C496")
 
-        webpage = req.get(self.URL, headers={"User-Agent": self.USER_AGENT})
-        self.soup = BeautifulSoup(webpage.text, 'html.parser')
+        self.rate_service = RateService()
+        self.rate_service.load()
 
         style.use("ggplot")
         self.fig = plt.Figure(figsize=(5, 3), dpi=100)
@@ -118,9 +114,9 @@ class Convert:
 
     def convert_value(self):
         s = self.value_0.get()
-        rate = self.soup.find('table', class_=self.RATES_TABLE_CLASS).find('td', text=lambda x: x == s).find_next('td').get_text()
+        rate = self.rate_service.get_rate(s)  
         self.update_chart()
-        x = float(self.convert.get() * float(rate))
+        x = self.convert.get() * rate  
         Final_value = str('%.2f' % (x))
         self.currency.set(Final_value)
         self.var1.set(Final_value)
@@ -130,8 +126,8 @@ class Convert:
     def update_chart(self):
         s = self.value_0.get()
         c1 = int(self.convert.get())
-        u = self.soup.find('table', class_=self.RATES_TABLE_CLASS).find('td', text=lambda x: x == s).find_next('td').get_text()
-        c2 = (float(c1) * float(u))
+        u = self.rate_service.get_rate(s)  
+        c2 = c1 * u  
         print(c1, c2)
 
         scatter3 = FigureCanvasTkAgg(self.fig, self.frame_2_bottom_l)
