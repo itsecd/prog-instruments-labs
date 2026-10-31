@@ -14,6 +14,10 @@ USER_AGENT = (
 TABLE_CLASS = "tablesorter ratesTable"
 
 
+class RateServiceError(Exception):
+    """Исключение для ошибок загрузки или парсинга курсов."""
+
+
 class RateService:
     """Источник курсов: один раз загружает страницу и отдаёт курс по имени валюты."""
 
@@ -24,11 +28,16 @@ class RateService:
 
     def load(self) -> None:
         """Загружает страницу и разбирает таблицу курсов в словарь {имя: курс}."""
-        response = requests.get(
-            self._url, headers={"User-Agent": USER_AGENT}, timeout=self._timeout
-        )
-        response.raise_for_status()
-        self._rates = self._parse(response.text)
+        try:
+            response = requests.get(
+                self._url, headers={"User-Agent": USER_AGENT}, timeout=self._timeout
+            )
+            response.raise_for_status()
+            self._rates = self._parse(response.text)
+        except requests.exceptions.RequestException as e:
+            raise RateServiceError(f"Ошибка сети: {e}") from e
+        except (ValueError, AttributeError) as e:
+            raise RateServiceError(f"Ошибка парсинга страницы: {e}") from e
 
     def get_rate(self, currency: str) -> float:
         """Возвращает курс валюты к INR; при пустом кэше сначала загружает таблицу."""

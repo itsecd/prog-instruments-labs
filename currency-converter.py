@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib import style
 
-from rate_service import RateService
+from rate_service import RateService, RateServiceError
 
 #Константы интерфейса
 WINDOW_WIDTH = 1350
@@ -75,17 +75,23 @@ class Convert:
     def __init__(self, root):
         self.root = root
         self._setup_window()
-        self._init_variables()
-        self._build_frames()
-        self._build_widgets()
+        if self.root.winfo_exists():
+            self._init_variables()
+            self._build_frames()
+            self._build_widgets()
 
     def _setup_window(self):
         self.root.title("Currency Converter | Foreign Exchange Rates")
         self.root.geometry(WINDOW_GEOMETRY)
         self.root.configure(background=BACKGROUND_COLOR)
 
-        self.rate_service = RateService()
-        self.rate_service.load()
+        try:
+            self.rate_service = RateService()
+            self.rate_service.load()
+        except RateServiceError as e:
+            tkinter.messagebox.showerror("Ошибка загрузки курсов", str(e))
+            self.root.destroy()
+            return
 
         style.use("ggplot")
         self.fig = plt.Figure(figsize=(FIGURE_WIDTH, FIGURE_HEIGHT), dpi=FIGURE_DPI)
