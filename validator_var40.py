@@ -45,7 +45,7 @@ def validate_latitude_range(value: str) -> bool:
 
 
 def validate_date_real(value: str) -> bool:
-    """Проверка реалистичности даты (дни в месяце, высокосный год)."""
+    """Проверка реалистичности даты (дни в месяце, високосный год)."""
     try:
         year, month, day = map(int, value.split('-'))
     except ValueError:
@@ -91,16 +91,14 @@ def analyze_csv(file_path: str) -> Dict[str, int]:
 
 
 def validate_csv_file(file_path: str) -> List[int]:
-    """Валидация всего файла. Возвращает отсортированные номера невалидных строк."""
+    """Валидация файла. Возвращает номера невалидных строк данных (нумерация с 1)."""
     invalid_rows: Set[int] = set()
 
     with open(file_path, 'r', encoding=ENCODING) as f:
         reader = csv.reader(f, delimiter=';')
+        next(reader) 
 
         for row_number, row in enumerate(reader, start=1):
-            if row_number == 1:  # пропускаем заголовок
-                continue
-
             if len(row) != len(FIELD_ORDER):
                 invalid_rows.add(row_number)
                 continue
