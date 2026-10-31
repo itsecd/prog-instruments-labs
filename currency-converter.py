@@ -13,6 +13,12 @@ class Convert:
 
     def __init__(self, root):
         self.root = root
+        self._setup_window()
+        self._init_variables()
+        self._build_frames()
+        self._build_widgets()
+
+    def _setup_window(self):
         self.root.title("Currency Converter | Foreign Exchange Rates")
         self.root.geometry("1350x800+0+0")
         self.root.configure(background="#F2C496")
@@ -24,6 +30,7 @@ class Convert:
         self.fig = plt.Figure(figsize=(5, 3), dpi=100)
         self.ax = self.fig.add_subplot(111)
 
+    def _init_variables(self):
         self.date_of_convert = StringVar()
         self.value_0 = StringVar()
         self.convert = DoubleVar()
@@ -33,11 +40,9 @@ class Convert:
         self.convert.set(1)
         self.date_of_convert.set(time.strftime("%d/%m/%y"))
 
+    def _build_frames(self):
         self.title_frame = Frame(self.root, bd=10, width=1350, height=100, padx=10, pady=10, bg="#F2C496", relief=RIDGE)
         self.title_frame.grid(row=0, column=0)
-
-        self.lbl_Title = Label(self.title_frame, text="Currency Converter | Foreign Exchange Rates", padx=17, pady=4, bd=1, font=('arial', 30, 'bold'), bg="#02A9FC", width=50)
-        self.lbl_Title.pack()
 
         self.main_frame = Frame(self.root, bd=10, width=1350, height=700, padx=11, pady=10, bg="#F2C496", relief=RIDGE)
         self.main_frame.grid(row=1, column=0)
@@ -62,6 +67,10 @@ class Convert:
 
         self.frame_3 = Frame(self.main_frame, bd=4, width=100, height=600, padx=5, pady=1, relief=RIDGE)
         self.frame_3.grid(row=0, column=2)
+
+    def _build_widgets(self):
+        self.lbl_Title = Label(self.title_frame, text="Currency Converter | Foreign Exchange Rates", padx=17, pady=4, bd=1, font=('arial', 30, 'bold'), bg="#02A9FC", width=50)
+        self.lbl_Title.pack()
 
         self.lblToday = Label(self.frame_2_top, font=('arial', 20, 'bold'), text='Todays Date', padx=2, pady=10, bd=2, width=18)
         self.lblToday.grid(row=0, column=0)
@@ -114,9 +123,9 @@ class Convert:
 
     def convert_value(self):
         s = self.value_0.get()
-        rate = self.rate_service.get_rate(s)  
+        rate = self.rate_service.get_rate(s)
         self.update_chart()
-        x = self.convert.get() * rate  
+        x = self.convert.get() * rate
         Final_value = str('%.2f' % (x))
         self.currency.set(Final_value)
         self.var1.set(Final_value)
@@ -126,8 +135,8 @@ class Convert:
     def update_chart(self):
         s = self.value_0.get()
         c1 = int(self.convert.get())
-        u = self.rate_service.get_rate(s)  
-        c2 = c1 * u  
+        u = self.rate_service.get_rate(s)
+        c2 = c1 * u
         print(c1, c2)
 
         scatter3 = FigureCanvasTkAgg(self.fig, self.frame_2_bottom_l)
