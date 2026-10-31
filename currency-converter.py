@@ -16,7 +16,6 @@ WINDOW_GEOMETRY = f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}+0+0"
 BACKGROUND_COLOR = "#F2C496"
 TITLE_BACKGROUND_COLOR = "#02A9FC"
 SCALE_BACKGROUND_COLOR = "#EA2A97"
-LABEL_BACKGROUND_COLOR = "white"
 
 TITLE_FONT = ("arial", 30, "bold")
 LABEL_FONT = ("arial", 20, "bold")
@@ -236,10 +235,14 @@ class Convert:
 
         self.lbl_result = Label(
             self.frame_2_top, font=LABEL_FONT, textvariable=self.result_var,
-            bd=SMALL_BORDER, width=RESULT_LABEL_WIDTH, bg=LABEL_BACKGROUND_COLOR,
+            bd=SMALL_BORDER, width=RESULT_LABEL_WIDTH, bg=BACKGROUND_COLOR,
             pady=SMALL_PADDING, padx=SMALL_PADDING, relief='sunken'
         )
         self.lbl_result.grid(row=2, column=1)
+
+        # Создаём matplotlib canvas ОДИН раз (исправление бага с утечкой ресурсов)
+        self.canvas = FigureCanvasTkAgg(self.fig, self.frame_2_bottom_l)
+        self.canvas.get_tk_widget().grid(row=0, column=0)
 
         self.btn_convert = Button(
             self.frame_2_bottom_r, text="Convert", padx=SMALL_PADDING,
@@ -291,13 +294,12 @@ class Convert:
         rate = self.rate_service.get_rate(currency_name)
         result_value = amount * rate
 
-        scatter3 = FigureCanvasTkAgg(self.fig, self.frame_2_bottom_l)
-        scatter3.get_tk_widget().grid(row=0, column=0)
         self.ax.clear()
-        self.ax.scatter(amount + amount, result_value)
+        self.ax.scatter(amount * 2, result_value)
         self.ax.set_xlabel('INR')
         self.ax.set_ylabel('Converted Value')
         self.ax.set_title('Currency Conversion')
+        self.canvas.draw()
 
 
 if __name__ == "__main__":
