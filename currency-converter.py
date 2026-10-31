@@ -1,4 +1,4 @@
-from tkinter import Tk, StringVar, DoubleVar, Frame, Label, Entry, Button, Scale, Canvas, RIDGE, VERTICAL
+from tkinter import Tk, StringVar, DoubleVar, Frame, Label, Entry, Button, Scale, RIDGE, VERTICAL
 from tkinter import ttk
 import tkinter.messagebox
 import time
@@ -8,24 +8,20 @@ from matplotlib import style
 
 from rate_service import RateService
 
-# Размеры окна
+#Константы интерфейса
 WINDOW_WIDTH = 1350
 WINDOW_HEIGHT = 800
 WINDOW_GEOMETRY = f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}+0+0"
 
-# Цвета
 BACKGROUND_COLOR = "#F2C496"
 TITLE_BACKGROUND_COLOR = "#02A9FC"
 SCALE_BACKGROUND_COLOR = "#EA2A97"
-CANVAS_BACKGROUND_COLOR = "gray"
 LABEL_BACKGROUND_COLOR = "white"
 
-# Шрифты
 TITLE_FONT = ("arial", 30, "bold")
 LABEL_FONT = ("arial", 20, "bold")
 SCALE_FONT = ("arial", 10, "bold")
 
-# Размеры фреймов (в пикселях)
 TITLE_FRAME_WIDTH = 1350
 TITLE_FRAME_HEIGHT = 100
 MAIN_FRAME_WIDTH = 1350
@@ -55,7 +51,7 @@ DATE_VALUE_WIDTH = 12
 INR_LABEL_WIDTH = 19
 CURRENCY_ENTRY_WIDTH = 23
 COMBOBOX_WIDTH = 20
-CURRENCY_LABEL_WIDTH = 20
+RESULT_LABEL_WIDTH = 20
 BUTTON_WIDTH = 14
 BUTTON_HEIGHT = 2
 
@@ -97,12 +93,12 @@ class Convert:
 
     def _init_variables(self):
         self.date_of_convert = StringVar()
-        self.value_0 = StringVar()
-        self.convert = DoubleVar()
-        self.currency = DoubleVar()
-        self.var1 = DoubleVar()
-        self.var2 = DoubleVar()
-        self.convert.set(1)
+        self.selected_currency = StringVar()
+        self.amount_var = DoubleVar()
+        self.result_var = DoubleVar()
+        self.converted_scale_var = DoubleVar()
+        self.inr_scale_var = DoubleVar()
+        self.amount_var.set(1)
         self.date_of_convert.set(time.strftime("%d/%m/%y"))
 
     def _build_frames(self):
@@ -161,56 +157,56 @@ class Convert:
         self.frame_3.grid(row=0, column=2)
 
     def _build_widgets(self):
-        self.lbl_Title = Label(
+        self.lbl_title = Label(
             self.title_frame, text="Currency Converter | Foreign Exchange Rates",
             padx=TITLE_PADDING_X, pady=TITLE_PADDING_Y, bd=TITLE_BORDER,
             font=TITLE_FONT, bg=TITLE_BACKGROUND_COLOR, width=TITLE_LABEL_WIDTH
         )
-        self.lbl_Title.pack()
+        self.lbl_title.pack()
 
-        self.lblToday = Label(
+        self.lbl_today = Label(
             self.frame_2_top, font=LABEL_FONT, text='Todays Date',
             padx=LABEL_PADDING, pady=LABEL_PADDING_Y, bd=SMALL_BORDER, width=DATE_LABEL_WIDTH
         )
-        self.lblToday.grid(row=0, column=0)
-        self.lblDate = Label(
+        self.lbl_today.grid(row=0, column=0)
+        self.lbl_date = Label(
             self.frame_2_top, font=LABEL_FONT, textvariable=self.date_of_convert,
             padx=LABEL_PADDING, pady=LABEL_PADDING_Y, bd=SMALL_BORDER,
             width=DATE_VALUE_WIDTH, justify='center'
         )
-        self.lblDate.grid(row=0, column=1)
+        self.lbl_date.grid(row=0, column=1)
 
-        self.Converted = Scale(
-            self.frame_3, variable=self.var1, from_=SCALE_FROM, to=SCALE_TO,
+        self.converted_scale = Scale(
+            self.frame_3, variable=self.converted_scale_var, from_=SCALE_FROM, to=SCALE_TO,
             length=SCALE_LENGTH, tickinterval=SCALE_TICK_INTERVAL, orient=VERTICAL,
             bg=SCALE_BACKGROUND_COLOR, label="Convert", font=SCALE_FONT
         )
-        self.Converted.grid(row=0, column=0, rowspan=2)
+        self.converted_scale.grid(row=0, column=0, rowspan=2)
 
-        self.INR = Scale(
-            self.frame_1, variable=self.var2, from_=SCALE_FROM, to=SCALE_TO,
+        self.inr_scale = Scale(
+            self.frame_1, variable=self.inr_scale_var, from_=SCALE_FROM, to=SCALE_TO,
             length=SCALE_LENGTH, tickinterval=SCALE_TICK_INTERVAL, orient=VERTICAL,
             bg=SCALE_BACKGROUND_COLOR, label="INR", font=SCALE_FONT
         )
-        self.INR.grid(row=0, column=0, rowspan=2)
+        self.inr_scale.grid(row=0, column=0, rowspan=2)
 
-        self.lbl_INR = Label(
+        self.lbl_inr = Label(
             self.frame_2_top, font=LABEL_FONT, text="INR",
             padx=LABEL_PADDING, pady=LABEL_PADDING_Y, width=INR_LABEL_WIDTH, bd=SMALL_BORDER
         )
-        self.lbl_INR.grid(row=1, column=0)
+        self.lbl_inr.grid(row=1, column=0)
 
-        self.EntCurrency = Entry(
-            self.frame_2_top, font=LABEL_FONT, textvariable=self.convert,
+        self.amount_entry = Entry(
+            self.frame_2_top, font=LABEL_FONT, textvariable=self.amount_var,
             bd=SMALL_BORDER, width=CURRENCY_ENTRY_WIDTH, justify='center'
         )
-        self.EntCurrency.grid(row=1, column=1, pady=LABEL_PADDING_Y)
+        self.amount_entry.grid(row=1, column=1, pady=LABEL_PADDING_Y)
 
-        self.Option = ttk.Combobox(
-            self.frame_2_top, textvariable=self.value_0, state='readonly',
+        self.currency_combobox = ttk.Combobox(
+            self.frame_2_top, textvariable=self.selected_currency, state='readonly',
             font=LABEL_FONT, width=COMBOBOX_WIDTH
         )
-        self.Option['values'] = (
+        self.currency_combobox['values'] = (
             "Select", "Argentine Peso", "Australian Dollar", "Bahraini Dinar",
             "Batwana Pula", "Brazilian Real", "British Pound", "Bruneian Dollar",
             "Bulgarian Lev", "Canadian Dollar", "Chilean Peso",
@@ -229,76 +225,70 @@ class Convert:
             "Taiwan New Dollar", "Thai Baht", "Trinidadian Dollar",
             "Turkish Lira", "US Dollar", "Venezuelan Bolivar", ""
         )
-        self.Option.current(0)
-        self.Option.grid(row=2, column=0, padx=38, pady=LABEL_PADDING_Y)
+        self.currency_combobox.current(0)
+        self.currency_combobox.grid(row=2, column=0, padx=38, pady=LABEL_PADDING_Y)
 
-        self.lblCurrency = Label(
-            self.frame_2_top, font=LABEL_FONT, textvariable=self.currency,
-            bd=SMALL_BORDER, width=CURRENCY_LABEL_WIDTH, bg=LABEL_BACKGROUND_COLOR,
+        self.lbl_result = Label(
+            self.frame_2_top, font=LABEL_FONT, textvariable=self.result_var,
+            bd=SMALL_BORDER, width=RESULT_LABEL_WIDTH, bg=LABEL_BACKGROUND_COLOR,
             pady=SMALL_PADDING, padx=SMALL_PADDING, relief='sunken'
         )
-        self.lblCurrency.grid(row=2, column=1)
+        self.lbl_result.grid(row=2, column=1)
 
-        self.canvas = Canvas(
-            self.frame_2_bottom_l, width=600, height=300, bg=CANVAS_BACKGROUND_COLOR
-        )
-
-        self.btnconvert = Button(
+        self.btn_convert = Button(
             self.frame_2_bottom_r, text="Convert", padx=SMALL_PADDING,
             pady=LABEL_PADDING_Y, bd=SMALL_BORDER, fg="black", font=LABEL_FONT,
             width=BUTTON_WIDTH, height=BUTTON_HEIGHT, command=self.convert_value
         )
-        self.btnconvert.grid(row=4, column=0)
+        self.btn_convert.grid(row=4, column=0)
 
-        self.btnReset = Button(
+        self.btn_reset = Button(
             self.frame_2_bottom_r, text="Reset", padx=SMALL_PADDING,
             pady=LABEL_PADDING, fg="black", font=LABEL_FONT,
             width=BUTTON_WIDTH, height=BUTTON_HEIGHT, command=self.reset
         )
-        self.btnReset.grid(row=5, column=0)
+        self.btn_reset.grid(row=5, column=0)
 
-        self.btnExit = Button(
+        self.btn_exit = Button(
             self.frame_2_bottom_r, text="Exit", padx=SMALL_PADDING,
             pady=LABEL_PADDING_Y, fg="black", font=LABEL_FONT,
             width=BUTTON_WIDTH, height=BUTTON_HEIGHT, command=self.exit_app
         )
-        self.btnExit.grid(row=6, column=0)
+        self.btn_exit.grid(row=6, column=0)
 
     def exit_app(self):
-        cExit = tkinter.messagebox.askyesno("Exit System", "Confirm if you want to exit")
-        if (cExit > 0):
+        should_exit = tkinter.messagebox.askyesno("Exit System", "Confirm if you want to exit")
+        if should_exit:
             self.root.destroy()
-            return
 
     def reset(self):
-        self.value_0.set("")
-        self.convert.set(1)
-        self.currency.set("0.00")
-        self.var1.set(0)
-        self.var2.set(0)
+        self.selected_currency.set("")
+        self.amount_var.set(1)
+        self.result_var.set("0.00")
+        self.converted_scale_var.set(0)
+        self.inr_scale_var.set(0)
 
     def convert_value(self):
-        s = self.value_0.get()
-        rate = self.rate_service.get_rate(s)
+        currency_name = self.selected_currency.get()
+        rate = self.rate_service.get_rate(currency_name)
         self.update_chart()
-        x = self.convert.get() * rate
-        Final_value = str('%.2f' % (x))
-        self.currency.set(Final_value)
-        self.var1.set(Final_value)
-        self.var2.set(self.convert.get())
-        return Final_value
+        result_value = self.amount_var.get() * rate
+        final_value = f"{result_value:.2f}"
+        self.result_var.set(final_value)
+        self.converted_scale_var.set(final_value)
+        self.inr_scale_var.set(self.amount_var.get())
+        return final_value
 
     def update_chart(self):
-        s = self.value_0.get()
-        c1 = int(self.convert.get())
-        u = self.rate_service.get_rate(s)
-        c2 = c1 * u
-        print(c1, c2)
+        currency_name = self.selected_currency.get()
+        amount = int(self.amount_var.get())
+        rate = self.rate_service.get_rate(currency_name)
+        result_value = amount * rate
 
         scatter3 = FigureCanvasTkAgg(self.fig, self.frame_2_bottom_l)
         scatter3.get_tk_widget().grid(row=0, column=0)
         self.ax.clear()
-        self.ax.scatter(c1 + c1, c2)
+        self.ax.scatter(amount + amount, result_value)
         self.ax.set_xlabel('INR')
         self.ax.set_ylabel('Converted Value')
         self.ax.set_title('Currency Conversion')
