@@ -44,16 +44,15 @@ class TrithemiusCipher:
         return ''.join(result)
 
 
-def load_text(filename='task1/original.txt'):
+def load_text(filename='task1/original.txt') -> str:
     with open(filename, 'r', encoding='utf-8') as f:
-        text = f.read()
-    return text
+    return f.read()
 
-def write_text(text, file_name):
+def write_text(text, file_name) -> None:
     with open(file_name, 'w', encoding='utf-8') as f:
         f.write(text)
 
-def main():
+def main() -> None:
     original_text = load_text()
     processed_text = original_text.upper().replace('Ё', 'Е')
     processed_text = ' '.join(processed_text.split())
