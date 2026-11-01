@@ -25,7 +25,6 @@ class TrithemiusCipher:
                 result.append(encrypted_char)
             else:
                 result.append(char)
-        
         return ''.join(result)
     
     def decrypt(self, text: str) -> str:
@@ -40,13 +39,12 @@ class TrithemiusCipher:
                 result.append(decrypted_char)
             else:
                 result.append(char)
-        
         return ''.join(result)
 
 
-def load_text(filename='task1/original.txt') -> str:
+def load_text(filename: str ='task1/original.txt') -> str:
     with open(filename, 'r', encoding='utf-8') as f:
-    return f.read()
+        return f.read()
 
 def write_text(text, file_name) -> None:
     with open(file_name, 'w', encoding='utf-8') as f:
