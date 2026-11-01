@@ -1,6 +1,6 @@
 class TrithemiusCipher:
     def __init__(self)-> None:
-        self.alphabet = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ '
+        self.alphabet = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ "
         self.alphabet_list = list(self.alphabet)
         self.alphabet_size = len(self.alphabet_list)
         self.tabula_recta = self.create_tabula_recta()
