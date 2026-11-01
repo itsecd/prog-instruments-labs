@@ -1,180 +1,180 @@
 class TennisGameDefactored1:
-    def __init__(self, player1Name, player2Name):
-        self.player1Name = player1Name
-        self.player2Name = player2Name
-        self.p1points = 0
-        self.p2points = 0
+    def __init__(self, player1_name: str, player2_name: str) -> None:
+        self.player1_name = player1_name
+        self.player2_name = player2_name
+        self.p1_points = 0
+        self.p2_points = 0
 
-    def won_point(self, playerName):
-        if playerName == self.player1Name:
-            self.p1points += 1
+    def won_point(self, player_name: str) -> None:
+        if player_name == self.player1_name:
+            self.p1_points += 1
         else:
-            self.p2points += 1
+            self.p2_points += 1
 
-    def score(self):
+    def score(self) -> str:
         result = ""
-        tempScore = 0
-        if self.p1points == self.p2points:
+        temp_score = 0
+        if self.p1_points == self.p2_points:
             result = {
                 0: "Love-All",
                 1: "Fifteen-All",
                 2: "Thirty-All",
                 3: "Forty-All",
-            }.get(self.p1points, "Deuce")
-        elif self.p1points >= 4 or self.p2points >= 4:
-            minusResult = self.p1points - self.p2points
-            if minusResult == 1:
-                result = "Advantage " + self.player1Name
-            elif minusResult == -1:
-                result = "Advantage " + self.player2Name
-            elif minusResult >= 2:
-                result = "Win for " + self.player1Name
+            }.get(self.p1_points, "Deuce")
+        elif self.p1_points >= 4 or self.p2_points >= 4:
+            minus_result = self.p1_points - self.p2_points
+            if minus_result == 1:
+                result = "Advantage " + self.player1_name
+            elif minus_result == -1:
+                result = "Advantage " + self.player2_name
+            elif minus_result >= 2:
+                result = "Win for " + self.player1_name
             else:
-                result = "Win for " + self.player2Name
+                result = "Win for " + self.player2_name
         else:
             for i in range(1, 3):
                 if i == 1:
-                    tempScore = self.p1points
+                    temp_score = self.p1_points
                 else:
                     result += "-"
-                    tempScore = self.p2points
+                    temp_score = self.p2_points
                 result += {
                     0: "Love",
                     1: "Fifteen",
                     2: "Thirty",
                     3: "Forty",
-                }[tempScore]
+                }[temp_score]
         return result
 
 
 class TennisGameDefactored2:
-    def __init__(self, player1Name, player2Name):
-        self.player1Name = player1Name
-        self.player2Name = player2Name
-        self.p1points = 0
-        self.p2points = 0
+    def __init__(self, player1_name: str, player2_name: str) -> None:
+        self.player1_name = player1_name
+        self.player2_name = player2_name
+        self.p1_points = 0
+        self.p2_points = 0
 
-    def won_point(self, playerName):
-        if playerName == self.player1Name:
-            self.P1Score()
+    def won_point(self, player_name: str) -> None:
+        if player_name == self.player1_name:
+            self.p1_score()
         else:
-            self.P2Score()
+            self.p2_score()
 
-    def score(self):
+    def score(self) -> str:
         result = ""
-        if self.p1points == self.p2points and self.p1points < 4:
-            if self.p1points == 0:
+        if self.p1_points == self.p2_points and self.p1_points < 4:
+            if self.p1_points == 0:
                 result = "Love"
-            if self.p1points == 1:
+            if self.p1_points == 1:
                 result = "Fifteen"
-            if self.p1points == 2:
+            if self.p1_points == 2:
                 result = "Thirty"
-            if self.p1points == 3:
+            if self.p1_points == 3:
                 result = "Forty"
             result += "-All"
-        if self.p1points == self.p2points and self.p1points > 3:
+        if self.p1_points == self.p2_points and self.p1_points > 3:
             result = "Deuce"
 
-        P1res = ""
-        P2res = ""
-        if self.p1points > 0 and self.p2points == 0:
-            if self.p1points == 1:
-                P1res = "Fifteen"
-            if self.p1points == 2:
-                P1res = "Thirty"
-            if self.p1points == 3:
-                P1res = "Forty"
+        p1_res = ""
+        p2_res = ""
+        if self.p1_points > 0 and self.p2_points == 0:
+            if self.p1_points == 1:
+                p1_res = "Fifteen"
+            if self.p1_points == 2:
+                p1_res = "Thirty"
+            if self.p1_points == 3:
+                p1_res = "Forty"
 
-            P2res = "Love"
-            result = P1res + "-" + P2res
-        if self.p2points > 0 and self.p1points == 0:
-            if self.p2points == 1:
-                P2res = "Fifteen"
-            if self.p2points == 2:
-                P2res = "Thirty"
-            if self.p2points == 3:
-                P2res = "Forty"
+            p2_res = "Love"
+            result = p1_res + "-" + p2_res
+        if self.p2_points > 0 and self.p1_points == 0:
+            if self.p2_points == 1:
+                p2_res = "Fifteen"
+            if self.p2_points == 2:
+                p2_res = "Thirty"
+            if self.p2_points == 3:
+                p2_res = "Forty"
 
-            P1res = "Love"
-            result = P1res + "-" + P2res
+            p1_res = "Love"
+            result = p1_res + "-" + p2_res
 
-        if self.p1points > self.p2points and self.p1points < 4:
-            if self.p1points == 2:
-                P1res = "Thirty"
-            if self.p1points == 3:
-                P1res = "Forty"
-            if self.p2points == 1:
-                P2res = "Fifteen"
-            if self.p2points == 2:
-                P2res = "Thirty"
-            result = P1res + "-" + P2res
-        if self.p2points > self.p1points and self.p2points < 4:
-            if self.p2points == 2:
-                P2res = "Thirty"
-            if self.p2points == 3:
-                P2res = "Forty"
-            if self.p1points == 1:
-                P1res = "Fifteen"
-            if self.p1points == 2:
-                P1res = "Thirty"
-            result = P1res + "-" + P2res
+        if self.p1_points > self.p2_points and self.p1_points < 4:
+            if self.p1_points == 2:
+                p1_res = "Thirty"
+            if self.p1_points == 3:
+                p1_res = "Forty"
+            if self.p2_points == 1:
+                p2_res = "Fifteen"
+            if self.p2_points == 2:
+                p2_res = "Thirty"
+            result = p1_res + "-" + p2_res
+        if self.p2_points > self.p1_points and self.p2_points < 4:
+            if self.p2_points == 2:
+                p2_res = "Thirty"
+            if self.p2_points == 3:
+                p2_res = "Forty"
+            if self.p1_points == 1:
+                p1_res = "Fifteen"
+            if self.p1_points == 2:
+                p1_res = "Thirty"
+            result = p1_res + "-" + p2_res
 
-        if self.p1points > self.p2points and self.p2points >= 3:
-            result = "Advantage " + self.player1Name
+        if self.p1_points > self.p2_points and self.p2_points >= 3:
+            result = "Advantage " + self.player1_name
 
-        if self.p2points > self.p1points and self.p1points >= 3:
-            result = "Advantage " + self.player2Name
+        if self.p2_points > self.p1_points and self.p1_points >= 3:
+            result = "Advantage " + self.player2_name
 
         if (
-            self.p1points >= 4
-            and self.p2points >= 0
-            and (self.p1points - self.p2points) >= 2
+            self.p1_points >= 4
+            and self.p2_points >= 0
+            and (self.p1_points - self.p2_points) >= 2
         ):
-            result = "Win for " + self.player1Name
+            result = "Win for " + self.player1_name
         if (
-            self.p2points >= 4
-            and self.p1points >= 0
-            and (self.p2points - self.p1points) >= 2
+            self.p2_points >= 4
+            and self.p1_points >= 0
+            and (self.p2_points - self.p1_points) >= 2
         ):
-            result = "Win for " + self.player2Name
+            result = "Win for " + self.player2_name
         return result
 
-    def SetP1Score(self, number):
-        for i in range(number):
-            self.P1Score()
+    def set_p1_score(self, number: int) -> None:
+        for _ in range(number):
+            self.p1_score()
 
-    def SetP2Score(self, number):
-        for i in range(number):
-            self.P2Score()
+    def set_p2_score(self, number: int) -> None:
+        for _ in range(number):
+            self.p2_score()
 
-    def P1Score(self):
-        self.p1points += 1
+    def p1_score(self) -> None:
+        self.p1_points += 1
 
-    def P2Score(self):
-        self.p2points += 1
+    def p2_score(self) -> None:
+        self.p2_points += 1
 
 
 class TennisGameDefactored3:
-    def __init__(self, player1Name, player2Name):
-        self.p1N = player1Name
-        self.p2N = player2Name
+    def __init__(self, player1_name: str, player2_name: str) -> None:
+        self.p1_n = player1_name
+        self.p2_n = player2_name
         self.p1 = 0
         self.p2 = 0
 
-    def won_point(self, n):
-        if n == self.p1N:
+    def won_point(self, n: str) -> None:
+        if n == self.p1_n:
             self.p1 += 1
         else:
             self.p2 += 1
 
-    def score(self):
+    def score(self) -> str:
         if self.p1 < 4 and self.p2 < 4:
             p = ["Love", "Fifteen", "Thirty", "Forty"]
             s = p[self.p1]
             return s + "-All" if (self.p1 == self.p2) else s + "-" + p[self.p2]
         if self.p1 == self.p2:
             return "Deuce"
-        s = self.p1N if self.p1 > self.p2 else self.p2N
+        s = self.p1_n if self.p1 > self.p2 else self.p2_n
         return (
             "Advantage " + s
             if ((self.p1 - self.p2) * (self.p1 - self.p2) == 1)
@@ -182,5 +182,6 @@ class TennisGameDefactored3:
         )
 
 
-# NOTE: You must change this to point at the one of the three examples that you're working on!
+# NOTE: You must change this to point at the one of the three examples
+# that you're working on!
 TennisGame = TennisGameDefactored1
