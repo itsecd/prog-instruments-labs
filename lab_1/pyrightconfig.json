@@ -1,0 +1,8 @@
+{
+  "include": ["."],
+  "exclude": [".venv", "**/__pycache__", ".ruff_cache"],
+  "typeCheckingMode": "strict",
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "pythonVersion": "3.11"
+}
