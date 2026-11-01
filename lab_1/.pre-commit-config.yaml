@@ -1,0 +1,37 @@
+# Hooks run from the repository root, so every command goes through
+# `make -C lab_1` and only fires when files inside lab_1/ are changed.
+# Install: `make precommit` (from lab_1/).
+repos:
+  - repo: local
+    hooks:
+      - id: lab1-lint
+        name: ruff check (lint)
+        entry: make -C lab_1 lint
+        language: system
+        files: ^lab_1/
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: lab1-format-check
+        name: ruff format --check
+        entry: make -C lab_1 format-check
+        language: system
+        files: ^lab_1/
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: lab1-typecheck
+        name: pyright (typecheck)
+        entry: make -C lab_1 typecheck
+        language: system
+        files: ^lab_1/
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: lab1-fulltest
+        name: all checks + pytest
+        entry: make -C lab_1 fulltest
+        language: system
+        files: ^lab_1/
+        pass_filenames: false
+        stages: [pre-push]

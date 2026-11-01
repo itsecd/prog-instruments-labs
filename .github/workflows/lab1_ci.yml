@@ -1,0 +1,46 @@
+name: Lab 1 CI (lint, format, typecheck, tests)
+
+on:
+  pull_request:
+    paths:
+      - "lab_1/**"
+      - ".github/workflows/lab1_ci.yml"
+  push:
+    paths:
+      - "lab_1/**"
+      - ".github/workflows/lab1_ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lab_1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Lint (ruff check)
+        run: make lint
+
+      - name: Format check (ruff format --check)
+        run: make format-check
+
+      - name: Type check (pyright)
+        run: make typecheck
+
+      - name: Tests (pytest)
+        run: make test

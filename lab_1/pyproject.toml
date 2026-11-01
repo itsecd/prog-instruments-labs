@@ -1,0 +1,44 @@
+[project]
+name = "tennis-kata"
+version = "0.1.0"
+description = "Tennis refactoring kata with code quality tooling (lab 1)"
+requires-python = ">=3.10"
+
+# ---------------------------------------------------------------- ruff ---
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+extend-exclude = [".venv"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort (import order)
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "C4",   # flake8-comprehensions
+    "RET",  # flake8-return
+    "ANN",  # flake8-annotations
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+# ------------------------------------------------------------- pyright ---
+[tool.pyright]
+include = ["."]
+exclude = [".venv", "**/__pycache__"]
+pythonVersion = "3.10"
+typeCheckingMode = "strict"
+venvPath = "."
+venv = ".venv"
+
+# -------------------------------------------------------------- pytest ---
+[tool.pytest.ini_options]
+python_files = ["*_test.py", "*_unittest.py"]
