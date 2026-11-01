@@ -1,0 +1,22 @@
+[project]
+name = "lab-1-crypto"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "ANN", "ARG", "RET", "SIM"]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"task_2_key.py" = ["ANN201"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
