@@ -46,7 +46,7 @@ def load_text(filename: str ='task1/original.txt') -> str:
     with open(filename, 'r', encoding='utf-8') as f:
         return f.read()
 
-def write_text(text, file_name) -> None:
+def write_text(text: str, file_name: str) -> None:
     with open(file_name, 'w', encoding='utf-8') as f:
         f.write(text)
 
