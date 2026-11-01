@@ -27,7 +27,7 @@ jobs:
           pip install -r requirements.txt
           
       - name: Lint with Ruff
-        run: ruff check .
+        run: ruff check --fix .
         
       - name: Check formatting with Ruff
         run: ruff format --check .
