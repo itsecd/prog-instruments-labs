@@ -4,8 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from script import AnnotationIterator, parse_args, write_annotation
-
+from lab_1 import AnnotationIterator, parse_args, write_annotation 
 
 def test_annotation_iterator() -> None:
     test_file = Path("test_annotation.csv")
@@ -51,7 +50,7 @@ def test_parse_args_invalid_number() -> None:
     original_argv = sys.argv
     
     try:
-        sys.argv = ["script.py", "save_dir", "ann.csv", "10", "keyword"]
+        sys.argv = ["lab_1.py", "save_dir", "ann.csv", "10", "keyword"]
         
         with pytest.raises(ValueError):
             parse_args()
