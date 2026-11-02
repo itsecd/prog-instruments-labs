@@ -1,0 +1,31 @@
+repos:
+  - repo: local
+    hooks:
+      - id: lab1-lint
+        name: lab_1 / Ruff lint
+        entry: make -C lab_1/valentin708 lint
+        language: system
+        pass_filenames: false
+        files: ^lab_1/valentin708/
+        stages: [pre-commit]
+      - id: lab1-format-check
+        name: lab_1 / Ruff format check
+        entry: make -C lab_1/valentin708 format-check
+        language: system
+        pass_filenames: false
+        files: ^lab_1/valentin708/
+        stages: [pre-commit]
+      - id: lab1-typecheck
+        name: lab_1 / Pyright
+        entry: make -C lab_1/valentin708 typecheck
+        language: system
+        pass_filenames: false
+        files: ^lab_1/valentin708/
+        stages: [pre-commit]
+      - id: lab1-pre-push
+        name: lab_1 / Full checks before push
+        entry: make -C lab_1/valentin708 fullcheck
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]

@@ -1,0 +1,7 @@
+{
+  "include": ["main.py"],
+  "exclude": [".venv", "__pycache__", ".ruff_cache"],
+  "pythonVersion": "3.10",
+  "typeCheckingMode": "standard",
+  "reportMissingTypeStubs": "none"
+}
