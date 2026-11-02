@@ -19,14 +19,25 @@ def main() -> None:
     
     args = arg_parser.parse_args()
     
-    stats = parse_logs(args.input_file, args.output, args.broken, args.stats)
+    print(f"Чтение файла: {args.input_file}...")
+    
+    try:
+        stats = parse_logs(args.input_file, args.output, args.broken, args.stats)
+    except FileNotFoundError:
+        print(f"Ошибка: файл '{args.input_file}' не найден.")
+        return
+    except PermissionError:
+        print(f"Ошибка: нет прав на чтение файла '{args.input_file}'.")
+        return
+    except Exception as e:
+        print(f"Произошла непредвиденная ошибка: {e}")
+        return
     
     print(f"Всего строк обработано: {stats['total_lines_processed']}")
     print(f"Валидных строк (сохранены в {args.output}): {stats['valid_lines']}")
     print(f"Битых строк (сохранены в {args.broken}): {stats['broken_lines']}")
     print(f"Статистика по кодам ответа: {stats['status_codes']}")
     print(f"Полная статистика сохранена в {args.stats}")
-
-
+    
 if __name__ == "__main__":
     main()

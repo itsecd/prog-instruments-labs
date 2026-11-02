@@ -95,6 +95,15 @@ class TestParseLogs(unittest.TestCase):
         self.assertTrue(os.path.exists(self.valid_csv))
         self.assertTrue(os.path.exists(self.broken_txt))
         self.assertTrue(os.path.exists(self.stats_json))
+    def test_parse_logs_raises_on_missing_file(self):
+        """Проверяет, что при отсутствии файла выбрасывается FileNotFoundError."""
+        with self.assertRaises(FileNotFoundError):
+            parse_logs(
+                'nonexistent_file.txt',
+                self.valid_csv,
+                self.broken_txt,
+                self.stats_json
+            )
 
 
 if __name__ == '__main__':
