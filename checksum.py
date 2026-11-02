@@ -38,7 +38,6 @@ def serialize_result(variant: int, checksum: str) -> None:
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
     data = {"variant": variant, "checksum": checksum}
     with open("result.json", mode='w', encoding='utf-8') as file_json:
         json.dump(data, file_json, indent=2)
