@@ -53,18 +53,45 @@ jobs:
         labels: |
            ${{ env.LABEL }}
            In progress
+
+     - name: Determine PR parity for group 6313
+       if: env.GROUP == '6313'
+       run: |
+        PR_NUMBER=${{ github.event.pull_request.number }}
+        
+        if (( PR_NUMBER % 2 == 0 )); then
+            echo "PR_PARITY=even" >> "$GITHUB_ENV"
+            echo "PR #$PR_NUMBER is EVEN"
+        else
+            echo "PR_PARITY=odd" >> "$GITHUB_ENV"
+            echo "PR #$PR_NUMBER is ODD"
+        fi
           
-     - name: Setting reviewer 
-       if:  env.GROUP == '6311' || env.GROUP == '6313' 
+     - name: Setting reviewer for group 6311
+       if: env.GROUP == '6311'
        uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
        with:
-          reviewers: "IlyaOv"
-          token: ${{ secrets.GITHUB_TOKEN }}
+         reviewers: "IlyaOv"
+         token: ${{ secrets.GITHUB_TOKEN }}
           
-     - name: Setting reviewer
+     - name: Setting reviewer for group 6312
        if: env.GROUP == '6312' 
        uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
        with:
-          reviewers: "mxwrlld" 
-          token: ${{ secrets.GITHUB_TOKEN }}
+         reviewers: "mxwrlld" 
+         token: ${{ secrets.GITHUB_TOKEN }}
+    
+     - name: Setting reviewer for group 6313 - odd PR
+       if: env.GROUP == '6313' && env.PR_PARITY == 'odd'
+       uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
+       with:
+         reviewers: "IlyaOv"
+         token: ${{ secrets.GITHUB_TOKEN }}
+
+     - name: Setting reviewer for group 6313 - even PR
+       if: env.GROUP == '6313' && env.PR_PARITY == 'even'
+       uses: AveryCameronUofR/add-reviewer-gh-action@1.0.3
+       with:
+         reviewers: "mxwrlld"
+         token: ${{ secrets.GITHUB_TOKEN }}
          
