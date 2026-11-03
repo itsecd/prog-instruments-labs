@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "detailed": {
+            "format": "%(asctime)s.%(msecs)03d %(levelname)-8s %(name)s %(funcName)s:%(lineno)d %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S"
+        }
+    },
+    "handlers": {
+        "app_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "detailed",
+            "filename": "app.log",
+            "maxBytes": 1048576,
+            "backupCount": 3,
+            "encoding": "utf-8"
+        },
+        "error_file": {
+            "class": "logging.FileHandler",
+            "level": "ERROR",
+            "formatter": "detailed",
+            "filename": "errors.log",
+            "encoding": "utf-8"
+        }
+    },
+    "loggers": {
+        "profile_validator": {
+            "level": "DEBUG",
+            "handlers": ["app_file", "error_file"],
+            "propagate": false
+        }
+    }
+}

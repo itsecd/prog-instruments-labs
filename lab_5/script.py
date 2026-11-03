@@ -1,6 +1,10 @@
 import argparse
+import json
+import logging
+import logging.config
 import re
 import sys
+from pathlib import Path
 
 EMAIL_FIELD = "Номер телефона или email:"
 ALLOWED_DOMAINS = ("gmail.com", "mail.ru", "yandex.ru")
@@ -11,6 +15,26 @@ VALID_EMAIL_PATTERN = re.compile(
 PHONE_HINT_PATTERN = re.compile(r"\+\d|\(\d| \d{3}")
 PROFILE_SEPARATOR = re.compile(r"\n\s*\n")
 OUTPUT_SEPARATOR = "=" * 80
+BASE_DIR = Path(__file__).resolve().parent
+LOGGING_CONFIG_PATH = BASE_DIR / "logging_config.json"
+LOG_DIR = BASE_DIR / "logs"
+
+logger = logging.getLogger("profile_validator")
+
+
+def setup_logging() -> None:
+    """
+    Функция для настройки логирования из JSON-конфига.
+
+    Пути к лог-файлам в конфиге задаются относительно папки logs.
+    """
+    LOG_DIR.mkdir(exist_ok=True)
+    with LOGGING_CONFIG_PATH.open(encoding="utf-8") as file:
+        config = json.load(file)
+    for handler in config["handlers"].values():
+        if "filename" in handler:
+            handler["filename"] = str(LOG_DIR / handler["filename"])
+    logging.config.dictConfig(config)
 
 
 def read_file(file_path: str) -> str:
@@ -165,6 +189,7 @@ def main() -> None:
 
     Обрабатывает аргументы CLI, находит и удаляет анкеты с некорректными email
     """
+    setup_logging()
     try:
         parser = argparse.ArgumentParser()
 
