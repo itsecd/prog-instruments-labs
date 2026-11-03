@@ -9,6 +9,7 @@ DOMAINS_PATTERN = "|".join(map(re.escape, ALLOWED_DOMAINS))
 VALID_EMAIL_PATTERN = re.compile(
     rf"\b[A-Za-z0-9._%+-]{{1,64}}@({DOMAINS_PATTERN})\b"
 )
+PHONE_HINT_PATTERN = re.compile(r"\+\d|\(\d| \d{3}")
 PROFILE_SEPARATOR = re.compile(r"\n\s*\n")
 OUTPUT_SEPARATOR = "=" * 80
 
@@ -80,6 +81,39 @@ def split_into_profiles(content: str) -> List[str]:
     return PROFILE_SEPARATOR.split(content.strip())
 
 
+def find_email_line(profile: str) -> str | None:
+    """
+    Функция для поиска строки с телефоном или email в анкете.
+
+    Args:
+        profile (str): Текст анкеты
+
+    Returns:
+        str | None: Найденная строка или None, если поля нет
+    """
+    for line in profile.split("\n"):
+        if EMAIL_FIELD in line:
+            return line
+    return None
+
+
+def has_invalid_email(line: str) -> bool:
+    """
+    Функция для проверки, содержит ли строка некорректный email.
+
+    Args:
+        line (str): Строка с телефоном или email
+
+    Returns:
+        bool: True, если в строке некорректный email
+    """
+    if "@" in line:
+        return VALID_EMAIL_PATTERN.search(line) is None
+    if any(domain in line for domain in ALLOWED_DOMAINS):
+        return PHONE_HINT_PATTERN.search(line) is None
+    return False
+
+
 def extract_profiles_with_invalid_email(content: str) -> List[str]:
     """
     Функция для извлечения анкет с некорректным email.
@@ -96,20 +130,9 @@ def extract_profiles_with_invalid_email(content: str) -> List[str]:
     profiles = split_into_profiles(content)
     invalid_profiles = []
     for profile in profiles:
-        for line in profile.split('\n'):
-            if EMAIL_FIELD in line:
-                if '@' in line:
-                    valid_email_match = VALID_EMAIL_PATTERN.search(line)
-                    if not valid_email_match:
-                        invalid_profiles.append(profile)
-                        break
-                elif any(
-                        domain in line
-                        for domain in ALLOWED_DOMAINS):
-                    if not re.search(r'\+\d|\(\d| \d{3}', line):
-                        invalid_profiles.append(profile)
-                        break
-                break
+        line = find_email_line(profile)
+        if line is not None and has_invalid_email(line):
+            invalid_profiles.append(profile)
     return invalid_profiles
 
 
