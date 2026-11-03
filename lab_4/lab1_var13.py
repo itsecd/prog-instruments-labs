@@ -1,5 +1,6 @@
 import argparse
 import re
+from pathlib import Path
 
 PHONE_PATTERN = re.compile(r"(?:\+7|8)[\s+]?\(?\d{3}\)?[\s+]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}")
 
@@ -30,25 +31,20 @@ def correct_numbers(text: str) -> list[str]:
     return correct_profiles
 
 
-
-def read_file(text: str) -> str:
+def read_file(path: str) -> str:
     """
     Читает содержимое файла
     """
-    with open(text, 'r', encoding = 'utf-8') as file:
-        return file.read()
+    return Path(path).read_text(encoding="utf-8")
 
 
-
-def write_file(new_text: str, profiles: list) -> None: 
+def write_file(path: str, profiles: list[str]) -> None:
     """
     Записывает найденные анкеты в новый файл
     """
-    with open(new_text, 'w', encoding = 'utf-8') as file:
-        for profile in profiles:
-            file.write(profile + "\n\n")
+    content = "\n\n".join(profiles)
+    Path(path).write_text(content, encoding="utf-8")
            
-
 
 
 
