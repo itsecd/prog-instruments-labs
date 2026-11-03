@@ -52,9 +52,10 @@ def read_file(file_path: str) -> str:
         PermissionError: Если нет прав для чтения файла
         ValueError: Если файл не в кодировке UTF-8
     """
+    logger.debug("Reading input file %s", file_path)
     try:
         with open(file_path, "r", encoding="utf-8") as f:
-            return f.read()
+            content = f.read()
     except FileNotFoundError as e:
         raise FileNotFoundError(f"Файл '{file_path}' не найден") from e
     except PermissionError as e:
@@ -63,6 +64,8 @@ def read_file(file_path: str) -> str:
         ) from e
     except UnicodeDecodeError as e:
         raise ValueError(f"Файл '{file_path}' не в кодировке UTF-8") from e
+    logger.info("Read %d characters from %s", len(content), file_path)
+    return content
 
 
 def write_file(file_path: str, data: list[str]) -> None:
@@ -77,6 +80,7 @@ def write_file(file_path: str, data: list[str]) -> None:
         PermissionError: Если нет прав для записи в файл
         OSError: Если произошла ошибка ввода-вывода
     """
+    logger.debug("Writing %d profiles to %s", len(data), file_path)
     try:
         with open(file_path, "w", encoding="utf-8") as f:
             f.write("\n\n".join(data))
@@ -86,6 +90,7 @@ def write_file(file_path: str, data: list[str]) -> None:
         ) from e
     except OSError as e:
         raise OSError(f"Ошибка записи в файл '{file_path}': {e}") from e
+    logger.info("Saved %d profiles to %s", len(data), file_path)
 
 
 def split_into_profiles(content: str) -> list[str]:
@@ -154,10 +159,18 @@ def extract_profiles_with_invalid_email(content: str) -> list[str]:
     """
     profiles = split_into_profiles(content)
     invalid_profiles = []
-    for profile in profiles:
+    for number, profile in enumerate(profiles, start=1):
         line = find_email_line(profile)
-        if line is not None and has_invalid_email(line):
+        if line is None:
+            logger.debug("Profile #%d has no phone or email field", number)
+        elif has_invalid_email(line):
+            logger.warning("Profile #%d rejected: invalid email", number)
             invalid_profiles.append(profile)
+    logger.info(
+        "Validation finished: %d of %d profiles have invalid email",
+        len(invalid_profiles),
+        len(profiles),
+    )
     return invalid_profiles
 
 
@@ -206,6 +219,11 @@ def main() -> None:
     )
 
         args = parser.parse_args()
+        logger.info(
+            "Program started: input=%s, output=%s",
+            args.input_file,
+            args.output_file,
+        )
         content = read_file(args.input_file)
         invalid_profiles = extract_profiles_with_invalid_email(content)
 
@@ -222,16 +240,25 @@ def main() -> None:
         write_file(args.output_file, valid_profiles)
         print(f"\nУдалено {len(invalid_profiles)} анкет с некорректным  email.")
         print(f"Сохранено {len(valid_profiles)} анкет в файл: {args.output_file}")
+        logger.info(
+            "Program finished: %d profiles saved, %d removed",
+            len(valid_profiles),
+            len(invalid_profiles),
+        )
     except FileNotFoundError as e:
+        logger.exception("Input file not found")
         print(f"Ошибка: {e}", file=sys.stderr)
         sys.exit(1)
     except PermissionError as e:
+        logger.exception("Permission denied")
         print(f"Ошибка прав доступа: {e}", file=sys.stderr)
         sys.exit(1)
     except OSError as e:
+        logger.exception("Input/output error")
         print(f"Ошибка ввода-вывода: {e}", file=sys.stderr)
         sys.exit(1)
     except ValueError as e:
+        logger.exception("Invalid input data")
         print(f"Ошибка данных: {e}", file=sys.stderr)
         sys.exit(1)
 
