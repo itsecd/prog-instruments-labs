@@ -53,7 +53,7 @@ def write_file(file_path: str, data: List[str]) -> None:
         raise IOError(f"Ошибка записи в файл '{file_path}': {e}")
 
 
-def extract_ankets_with_invalid_email(content: str) -> List[str]:
+def extract_profiles_with_invalid_email(content: str) -> List[str]:
     """
     Функция для извлечения анкет с некорректным email.
 
@@ -81,13 +81,13 @@ def extract_ankets_with_invalid_email(content: str) -> List[str]:
     )
 
     try:
-        ankets = re.split(r"\n\s*\n", content.strip())
+        profiles = re.split(r"\n\s*\n", content.strip())
     except re.error as e:
         raise ValueError(f"Ошибка при чтении анкет: {e}")
 
-    invalid_anktes = []
-    for anket in ankets:
-        for line in anket.split('\n'):
+    invalid_profiles = []
+    for profile in profiles:
+        for line in profile.split('\n'):
             if 'Номер телефона или email:' in line:
                 email_phone_line = line
                 if '@' in email_phone_line:
@@ -95,33 +95,33 @@ def extract_ankets_with_invalid_email(content: str) -> List[str]:
                         email_phone_line)
                     if not valid_email_match:
                         if re.search(r'[А-Яа-я]', email_phone_line):
-                            invalid_anktes.append(anket)
+                            invalid_profiles.append(profile)
                             break
                         elif any(
                                 domain in email_phone_line
                                 for domain in ALLOWED_DOMAINS):
-                            invalid_anktes.append(anket)
+                            invalid_profiles.append(profile)
                             break
                 elif any(
                         domain in email_phone_line
                         for domain in ALLOWED_DOMAINS):
                     if not re.search(r'\+\d|\(\d| \d{3}', email_phone_line):
-                        invalid_anktes.append(anket)
+                        invalid_profiles.append(profile)
                         break
                 break
-    return invalid_anktes
+    return invalid_profiles
 
 
-def remove_ankets_with_invalid_email(
+def remove_profiles_with_invalid_email(
     content: str,
-    invalid_ankets: List[str]
+    invalid_profiles: List[str]
 ) -> List[str]:
     """
     Функция для удаления анкет с некорректным email
 
     Args:
         content (str): Содержимое файла с анкетами
-        invalid_ankets (List[str]): Список анкет для удаления
+        invalid_profiles (List[str]): Список анкет для удаления
 
     Returns:
         List[str]: Список анкет без некорректных email
@@ -133,12 +133,12 @@ def remove_ankets_with_invalid_email(
         raise ValueError("Файл пуст")
 
     try:
-        ankets = re.split(r"\n\s*\n", content.strip())
+        profiles = re.split(r"\n\s*\n", content.strip())
     except re.error as e:
         raise ValueError(f"Ошибка при чтении анкет: {e}")
 
-    invalid_set = set(invalid_ankets)
-    return [anket for anket in ankets if anket not in invalid_set]
+    invalid_set = set(invalid_profiles)
+    return [profile for profile in profiles if profile not in invalid_set]
 
 
 def main() -> None:
@@ -164,21 +164,21 @@ def main() -> None:
 
         args = parser.parse_args()
         content = read_file(args.input_file)
-        invalid_ankets = extract_ankets_with_invalid_email(content)
+        invalid_profiles = extract_profiles_with_invalid_email(content)
 
         print("Анкеты с некорректным email:")
         print("=" * 80)
-        for i, anket in enumerate(invalid_ankets, 1):
-            print(anket)
+        for i, profile in enumerate(invalid_profiles, 1):
+            print(profile)
             print("=" * 80)
 
         print(
-            f"\nНайдено {len(invalid_ankets)} анкет с некорректным email.")
-        cleaned_ankets = remove_ankets_with_invalid_email(
-            content, invalid_ankets)
-        write_file(args.output_file, cleaned_ankets)
-        print(f"\nУдалено {len(invalid_ankets)} анкет с некорректным  email.")
-        print(f"Сохранено {len(cleaned_ankets)} анкет в файл: {args.output_file}")
+            f"\nНайдено {len(invalid_profiles)} анкет с некорректным email.")
+        valid_profiles = remove_profiles_with_invalid_email(
+            content, invalid_profiles)
+        write_file(args.output_file, valid_profiles)
+        print(f"\nУдалено {len(invalid_profiles)} анкет с некорректным  email.")
+        print(f"Сохранено {len(valid_profiles)} анкет в файл: {args.output_file}")
     except FileNotFoundError as e:
         print(f"Ошибка {e}")
         sys.exit(1)
