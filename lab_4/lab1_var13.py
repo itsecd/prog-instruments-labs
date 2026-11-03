@@ -1,6 +1,9 @@
 import argparse
 import re
 
+PHONE_PATTERN = re.compile(r"(?:\+7|8)[\s+]?\(?\d{3}\)?[\s+]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}")
+
+
 def parse_console() -> argparse.Namespace:
     """
     Парсер для аргументов в консоли
@@ -15,15 +18,14 @@ def parse_console() -> argparse.Namespace:
     return args
 
 
-def correct_numbers(text: str) -> list:
+def correct_numbers(text: str) -> list[str]:
     """
     Извлекает анкеты с корректными номерами телефонов
     """
-    profiles=re.split(r'\n(?:\d+\)\s*\n)', text)
-    pattern= r'(?:\+7|8)[\s+]?\(?\d{3}\)?[\s+]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}'
+    profiles = re.split(r'\n\s*\d+\)\s*\n', text)
     correct_profiles = []
     for profile in profiles:
-        if re.search(pattern, profile):
+        if PHONE_PATTERN.search(profile):
             correct_profiles.append(profile)
     return correct_profiles
 
