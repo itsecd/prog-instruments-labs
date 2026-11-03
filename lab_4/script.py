@@ -27,19 +27,19 @@ def read_file(file_path: str) -> str:
     Raises:
         FileNotFoundError: Если файл не найден
         PermissionError: Если нет прав для чтения файла
-        UnicodeDecodeError: Если ошибка кодировки файла
+        ValueError: Если файл не в кодировке UTF-8
     """
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             return f.read()
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Файл '{file_path}' не найден")
-    except PermissionError:
-        raise PermissionError(f"Нет прав для чтения файла '{file_path}'")
-    except UnicodeDecodeError:
-        raise UnicodeDecodeError(
-            "Ошибка кодировки файла."
-        )
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Файл '{file_path}' не найден") from e
+    except PermissionError as e:
+        raise PermissionError(
+            f"Нет прав для чтения файла '{file_path}'"
+        ) from e
+    except UnicodeDecodeError as e:
+        raise ValueError(f"Файл '{file_path}' не в кодировке UTF-8") from e
 
 
 def write_file(file_path: str, data: List[str]) -> None:
@@ -52,15 +52,17 @@ def write_file(file_path: str, data: List[str]) -> None:
 
     Raises:
         PermissionError: Если нет прав для записи в файл
-        IOError: Если произошла ошибка ввода-вывода
+        OSError: Если произошла ошибка ввода-вывода
     """
     try:
         with open(file_path, "w", encoding="utf-8") as f:
             f.write("\n\n".join(data))
-    except PermissionError:
-        raise PermissionError(f"Нет прав для записи в файл '{file_path}'")
-    except IOError as e:
-        raise IOError(f"Ошибка записи в файл '{file_path}': {e}")
+    except PermissionError as e:
+        raise PermissionError(
+            f"Нет прав для записи в файл '{file_path}'"
+        ) from e
+    except OSError as e:
+        raise OSError(f"Ошибка записи в файл '{file_path}': {e}") from e
 
 
 def split_into_profiles(content: str) -> List[str]:
@@ -197,16 +199,16 @@ def main() -> None:
         print(f"\nУдалено {len(invalid_profiles)} анкет с некорректным  email.")
         print(f"Сохранено {len(valid_profiles)} анкет в файл: {args.output_file}")
     except FileNotFoundError as e:
-        print(f"Ошибка {e}")
+        print(f"Ошибка: {e}", file=sys.stderr)
         sys.exit(1)
     except PermissionError as e:
-        print(f"Ошибка прав доступа {e}")
+        print(f"Ошибка прав доступа: {e}", file=sys.stderr)
+        sys.exit(1)
+    except OSError as e:
+        print(f"Ошибка ввода-вывода: {e}", file=sys.stderr)
         sys.exit(1)
     except ValueError as e:
-        print(f"Ошибка данных: {e}")
-        sys.exit(1)
-    except Exception as e:
-        print(f"Неизвестная ошибка: {e}")
+        print(f"Ошибка данных: {e}", file=sys.stderr)
         sys.exit(1)
 
 
