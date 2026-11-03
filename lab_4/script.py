@@ -1,7 +1,6 @@
 import argparse
 import re
 import sys
-from typing import List
 
 EMAIL_FIELD = "Номер телефона или email:"
 ALLOWED_DOMAINS = ("gmail.com", "mail.ru", "yandex.ru")
@@ -42,13 +41,13 @@ def read_file(file_path: str) -> str:
         raise ValueError(f"Файл '{file_path}' не в кодировке UTF-8") from e
 
 
-def write_file(file_path: str, data: List[str]) -> None:
+def write_file(file_path: str, data: list[str]) -> None:
     """
     Функция для записи списка анкет в файл.
 
     Args:
-        file_path (str): Путь к входному файлу
-        data (List[str]): Список анкет для записи
+        file_path (str): Путь к выходному файлу
+        data (list[str]): Список анкет для записи
 
     Raises:
         PermissionError: Если нет прав для записи в файл
@@ -65,7 +64,7 @@ def write_file(file_path: str, data: List[str]) -> None:
         raise OSError(f"Ошибка записи в файл '{file_path}': {e}") from e
 
 
-def split_into_profiles(content: str) -> List[str]:
+def split_into_profiles(content: str) -> list[str]:
     """
     Функция для разбиения содержимого файла на анкеты.
 
@@ -73,7 +72,7 @@ def split_into_profiles(content: str) -> List[str]:
         content (str): Содержимое файла с анкетами
 
     Returns:
-        List[str]: Список анкет
+        list[str]: Список анкет
 
     Raises:
         ValueError: Если файл пуст
@@ -116,7 +115,7 @@ def has_invalid_email(line: str) -> bool:
     return False
 
 
-def extract_profiles_with_invalid_email(content: str) -> List[str]:
+def extract_profiles_with_invalid_email(content: str) -> list[str]:
     """
     Функция для извлечения анкет с некорректным email.
 
@@ -124,7 +123,7 @@ def extract_profiles_with_invalid_email(content: str) -> List[str]:
         content (str): Содержимое файла с анкетами
 
     Returns:
-        List[str]: список анкет с некорректными email
+        list[str]: список анкет с некорректными email
 
     Raises:
         ValueError: Если файл пуст
@@ -140,17 +139,17 @@ def extract_profiles_with_invalid_email(content: str) -> List[str]:
 
 def remove_profiles_with_invalid_email(
     content: str,
-    invalid_profiles: List[str]
-) -> List[str]:
+    invalid_profiles: list[str]
+) -> list[str]:
     """
     Функция для удаления анкет с некорректным email
 
     Args:
         content (str): Содержимое файла с анкетами
-        invalid_profiles (List[str]): Список анкет для удаления
+        invalid_profiles (list[str]): Список анкет для удаления
 
     Returns:
-        List[str]: Список анкет без некорректных email
+        list[str]: Список анкет без некорректных email
 
     Raises:
         ValueError: Если файл пуст
@@ -164,7 +163,7 @@ def main() -> None:
     """
     Основная функция программы.
 
-    Обрабатывает аргументы CLI, находит и удаляет анкеты с некорректыми email
+    Обрабатывает аргументы CLI, находит и удаляет анкеты с некорректными email
     """
     try:
         parser = argparse.ArgumentParser()
