@@ -1,0 +1,22 @@
+[tool.ruff]
+src = ["lab_1"]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B"]
+ignore = []
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.pyright]
+include = ["lab_1"]
+exclude = ["**/__pycache__", ".venv", "venv"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
