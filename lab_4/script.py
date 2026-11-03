@@ -77,33 +77,20 @@ def extract_profiles_with_invalid_email(content: str) -> List[str]:
     """
     if not content or not content.strip():
         raise ValueError("Файл пуст")
-
-    try:
-        profiles = PROFILE_SEPARATOR.split(content.strip())
-    except re.error as e:
-        raise ValueError(f"Ошибка при чтении анкет: {e}")
-
+    profiles = PROFILE_SEPARATOR.split(content.strip())
     invalid_profiles = []
     for profile in profiles:
         for line in profile.split('\n'):
             if EMAIL_FIELD in line:
-                email_phone_line = line
-                if '@' in email_phone_line:
-                    valid_email_match = VALID_EMAIL_PATTERN.search(
-                        email_phone_line)
+                if '@' in line:
+                    valid_email_match = VALID_EMAIL_PATTERN.search(line)
                     if not valid_email_match:
-                        if re.search(r'[А-Яа-я]', email_phone_line):
-                            invalid_profiles.append(profile)
-                            break
-                        elif any(
-                                domain in email_phone_line
-                                for domain in ALLOWED_DOMAINS):
-                            invalid_profiles.append(profile)
-                            break
+                        invalid_profiles.append(profile)
+                        break
                 elif any(
-                        domain in email_phone_line
+                        domain in line
                         for domain in ALLOWED_DOMAINS):
-                    if not re.search(r'\+\d|\(\d| \d{3}', email_phone_line):
+                    if not re.search(r'\+\d|\(\d| \d{3}', line):
                         invalid_profiles.append(profile)
                         break
                 break
@@ -129,12 +116,7 @@ def remove_profiles_with_invalid_email(
     """
     if not content or not content.strip():
         raise ValueError("Файл пуст")
-
-    try:
-        profiles = PROFILE_SEPARATOR.split(content.strip())
-    except re.error as e:
-        raise ValueError(f"Ошибка при чтении анкет: {e}")
-
+    profiles = PROFILE_SEPARATOR.split(content.strip())
     invalid_set = set(invalid_profiles)
     return [profile for profile in profiles if profile not in invalid_set]
 
@@ -166,7 +148,7 @@ def main() -> None:
 
         print("Анкеты с некорректным email:")
         print(OUTPUT_SEPARATOR)
-        for i, profile in enumerate(invalid_profiles, 1):
+        for profile in invalid_profiles:
             print(profile)
             print(OUTPUT_SEPARATOR)
 
