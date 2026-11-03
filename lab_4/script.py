@@ -3,6 +3,15 @@ import re
 import sys
 from typing import List
 
+EMAIL_FIELD = "Номер телефона или email:"
+ALLOWED_DOMAINS = ("gmail.com", "mail.ru", "yandex.ru")
+DOMAINS_PATTERN = "|".join(map(re.escape, ALLOWED_DOMAINS))
+VALID_EMAIL_PATTERN = re.compile(
+    rf"\b[A-Za-z0-9._%+-]{{1,64}}@({DOMAINS_PATTERN})\b"
+)
+PROFILE_SEPARATOR = re.compile(r"\n\s*\n")
+OUTPUT_SEPARATOR = "=" * 80
+
 
 def read_file(file_path: str) -> str:
     """
@@ -69,29 +78,18 @@ def extract_profiles_with_invalid_email(content: str) -> List[str]:
     if not content or not content.strip():
         raise ValueError("Файл пуст")
 
-    ALLOWED_DOMAINS = [
-        'gmail.com',
-        'mail.ru',
-        'yandex.ru'
-    ]
-
-    valid_email_pattern = re.compile(
-        r"\b[A-Za-z0-9._%+-]{1,64}"
-        r"@(gmail\.com|mail\.ru|yandex\.ru)\b"
-    )
-
     try:
-        profiles = re.split(r"\n\s*\n", content.strip())
+        profiles = PROFILE_SEPARATOR.split(content.strip())
     except re.error as e:
         raise ValueError(f"Ошибка при чтении анкет: {e}")
 
     invalid_profiles = []
     for profile in profiles:
         for line in profile.split('\n'):
-            if 'Номер телефона или email:' in line:
+            if EMAIL_FIELD in line:
                 email_phone_line = line
                 if '@' in email_phone_line:
-                    valid_email_match = valid_email_pattern.search(
+                    valid_email_match = VALID_EMAIL_PATTERN.search(
                         email_phone_line)
                     if not valid_email_match:
                         if re.search(r'[А-Яа-я]', email_phone_line):
@@ -133,7 +131,7 @@ def remove_profiles_with_invalid_email(
         raise ValueError("Файл пуст")
 
     try:
-        profiles = re.split(r"\n\s*\n", content.strip())
+        profiles = PROFILE_SEPARATOR.split(content.strip())
     except re.error as e:
         raise ValueError(f"Ошибка при чтении анкет: {e}")
 
@@ -167,10 +165,10 @@ def main() -> None:
         invalid_profiles = extract_profiles_with_invalid_email(content)
 
         print("Анкеты с некорректным email:")
-        print("=" * 80)
+        print(OUTPUT_SEPARATOR)
         for i, profile in enumerate(invalid_profiles, 1):
             print(profile)
-            print("=" * 80)
+            print(OUTPUT_SEPARATOR)
 
         print(
             f"\nНайдено {len(invalid_profiles)} анкет с некорректным email.")
