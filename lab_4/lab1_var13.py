@@ -56,12 +56,13 @@ def main() -> None:
         write_file(args.write_file, correct_profiles)
         print(f'Успешно найденных анкет: {len(correct_profiles)}')
         print(f'Записаны в файл: {args.write_file}')
-
     except FileNotFoundError:
-         print("Ошибка. Данный файл не найден")
-    except Exception as e:
-        print("Ошибка при чтении файла")
+        print("Ошибка. Данный файл не найден")
+    except PermissionError as e:
+        print(f"Ошибка доступа к файлу: {e}")
+    except OSError as e:
+        print(f"Ошибка при работе с файлом: {e}")
 
-    
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()
