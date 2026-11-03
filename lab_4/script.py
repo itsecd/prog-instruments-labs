@@ -62,6 +62,24 @@ def write_file(file_path: str, data: List[str]) -> None:
         raise IOError(f"Ошибка записи в файл '{file_path}': {e}")
 
 
+def split_into_profiles(content: str) -> List[str]:
+    """
+    Функция для разбиения содержимого файла на анкеты.
+
+    Args:
+        content (str): Содержимое файла с анкетами
+
+    Returns:
+        List[str]: Список анкет
+
+    Raises:
+        ValueError: Если файл пуст
+    """
+    if not content.strip():
+        raise ValueError("Файл пуст")
+    return PROFILE_SEPARATOR.split(content.strip())
+
+
 def extract_profiles_with_invalid_email(content: str) -> List[str]:
     """
     Функция для извлечения анкет с некорректным email.
@@ -73,11 +91,9 @@ def extract_profiles_with_invalid_email(content: str) -> List[str]:
         List[str]: список анкет с некорректными email
 
     Raises:
-        ValueError: если содержимое файла имеет некорректный формат
+        ValueError: Если файл пуст
     """
-    if not content or not content.strip():
-        raise ValueError("Файл пуст")
-    profiles = PROFILE_SEPARATOR.split(content.strip())
+    profiles = split_into_profiles(content)
     invalid_profiles = []
     for profile in profiles:
         for line in profile.split('\n'):
@@ -112,11 +128,9 @@ def remove_profiles_with_invalid_email(
         List[str]: Список анкет без некорректных email
 
     Raises:
-        ValueError: Если содержимое файла имеет некорректный формат
+        ValueError: Если файл пуст
     """
-    if not content or not content.strip():
-        raise ValueError("Файл пуст")
-    profiles = PROFILE_SEPARATOR.split(content.strip())
+    profiles = split_into_profiles(content)
     invalid_set = set(invalid_profiles)
     return [profile for profile in profiles if profile not in invalid_set]
 
