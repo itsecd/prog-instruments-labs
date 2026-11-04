@@ -55,18 +55,31 @@ def validate_records(records):
             invalid_records.append(rec)
     return invalid_records, valid_records
 
-def print_file(invalid_records,valid_records):
+def print_invalid_records(invalid_records):
+    """Выводит анкеты с некорректной датой рождения."""
     print("Анкеты с некорректной датой рождения")
-    for rec in invalid_records:
-        print("\n".join(rec))
 
-    with open("output.txt", "w", encoding="utf-8") as f:
-        for rec in valid_records:
-            f.write("\n".join(rec) + "\n\n")
+    for record in invalid_records:
+        print("\n".join(record))
 
-    print(f"\nОбщее количество некорректных анкет {len(invalid_records)}")
-    print(f"Результат сохранён в файл output.txt")
+def save_valid_records(valid_records, output_path):
+    """Сохраняет корректные анкеты в файл."""
+    with open(output_path, "w", encoding="utf-8") as file:
+        for record in valid_records:
+            file.write("\n".join(record) + "\n\n")
 
+def print_summary(invalid_count, output_path):
+    """Выводит количество некорректных анкет и путь к результату."""
+    print(f"\nОбщее количество некорректных анкет {invalid_count}")
+    print(f"Результат сохранён в файл {output_path}")
+
+def print_file(invalid_records, valid_records):
+    """Организует вывод и сохранение результатов проверки."""
+    output_path = "output.txt"
+
+    print_invalid_records(invalid_records)
+    save_valid_records(valid_records, output_path)
+    print_summary(len(invalid_records), output_path)
 
 def main():
     parser = argparse.ArgumentParser()
