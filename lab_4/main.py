@@ -18,21 +18,15 @@ def date_check(date: str) -> bool:
 
     day, month, year = map(int, re.split(r"[./-]", date))
 
-    if not (MIN_YEAR <= year <= MAX_YEAR and 1 <= month <= 12 and 1 <= day <= 31):
+    if not MIN_YEAR <= year <= MAX_YEAR:
         return False
-    
-    days_in_month = {1: 31, 2: 29, 3: 31, 4: 30, 5: 31, 6: 30,
-                     7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31}
 
-    if month == 2:
-        if calendar.isleap(year):
-            max_day=29
-        else:
-            max_day=28
-    else:
-        max_day = days_in_month[month]
+    if not 1 <= month <= 12:
+        return False
 
-    return day <= max_day
+    max_day = calendar.monthrange(year, month)[1]
+
+    return 1 <= day <= max_day
 
 def read_file(file_name):
     with open(file_name, "r", encoding="utf-8") as f:
