@@ -10,7 +10,7 @@ body:
         Фамилия И.О. 631Х
     validations:
       required: true
-      
+
   - type: dropdown
     id: lab
     attributes:
@@ -30,12 +30,12 @@ body:
         - 9 лабораторной работе (Конфиги)
     validations:
       required: true
-      
+
   - type: textarea
     id: details
     attributes:
       label: Описание проблемы
-      description: | 
+      description: |
         Подробно опиши проблему, с которой ты столкнулся при выполнении лабораторной
       placeholder: |
         Также было бы крайне полезно привести помимо текстового описания проблемы скриншоты и фрагменты кода

@@ -1,0 +1,6 @@
+numpy
+matplotlib
+ruff
+pyright
+pre-commit
+pytest
