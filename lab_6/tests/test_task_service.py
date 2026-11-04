@@ -87,3 +87,15 @@ def test_delete_task_removes_found_task(service: TaskService, db: Mock) -> None:
 
     service.task_repository.delete.assert_called_once_with(task)
     db.commit.assert_called_once()
+
+
+def test_delete_missing_task_raises_and_not_delete(
+    service: TaskService,
+    db: Mock
+) -> None:
+    """Тест на удаление несуществующей задачи"""
+    service.task_repository.get_by_id.return_value = None
+    with pytest.raises(TaskNotFound):
+        service.delete_task("missing")
+    service.task_repository.delete.assert_not_called()
+    db.commit.assert_not_called()
