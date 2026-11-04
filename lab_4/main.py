@@ -4,14 +4,21 @@ import calendar
 
 DATE_PATTERN = re.compile(r"Дата рождения\s*:\s*(\d{1,2}[./-]\d{1,2}[./-]\d{4})")
 
+DATE_VALIDATION_PATTERN = re.compile(
+    r"\d{1,2}([./-])\d{1,2}\1\d{4}"
+)
+
+MIN_YEAR = 1900
+MAX_YEAR = 2025
+
 def date_check(date: str) -> bool:
     """Проверка корректности даты (с учетом високосных годов)"""
-    if not re.fullmatch(r"\d{1,2}([./-])\d{1,2}\1\d{4}", date):
+    if not DATE_VALIDATION_PATTERN.fullmatch(date):
         return False
 
     day, month, year = map(int, re.split(r"[./-]", date))
 
-    if not (1900 <= year <= 2025 and 1 <= month <= 12 and 1 <= day <= 31):
+    if not (MIN_YEAR <= year <= MAX_YEAR and 1 <= month <= 12 and 1 <= day <= 31):
         return False
     
     days_in_month = {1: 31, 2: 29, 3: 31, 4: 30, 5: 31, 6: 30,
