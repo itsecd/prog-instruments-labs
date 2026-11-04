@@ -60,7 +60,7 @@ def test_update_missing_category_raises_and_not_commit(
 ) -> None:
     """Тест на обновление несуществующей категории"""
     service.category_repository.get_by_id.return_value = None
-    with pytest.raises(CategoryNotFound):
+    with pytest.raises(CategoryNotFound, match="missing"):
         service.update_category("missing", CategoryUpdateSchema(name="New name"))
     db.commit.assert_not_called()
 
@@ -105,7 +105,7 @@ def test_delete_missing_category_raises_and_not_delete(
 ) -> None:
     """Тест на удаление несуществующей категории"""
     service.category_repository.get_by_id.return_value = None
-    with pytest.raises(CategoryNotFound):
+    with pytest.raises(CategoryNotFound, match="missing"):
         service.delete_category("missing")
     service.category_repository.delete.assert_not_called()
     db.commit.assert_not_called()

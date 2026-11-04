@@ -44,7 +44,7 @@ def test_update_missing_task_raises_and_not_commit(
 ) -> None:
     """Тест на обновление несуществующей задачи"""
     service.task_repository.get_by_id.return_value = None
-    with pytest.raises(TaskNotFound):
+    with pytest.raises(TaskNotFound, match="missing"):
         service.update_task("missing", TaskUpdateSchema(title="New title"))
     db.commit.assert_not_called()
 
@@ -95,7 +95,7 @@ def test_delete_missing_task_raises_and_not_delete(
 ) -> None:
     """Тест на удаление несуществующей задачи"""
     service.task_repository.get_by_id.return_value = None
-    with pytest.raises(TaskNotFound):
+    with pytest.raises(TaskNotFound, match="missing"):
         service.delete_task("missing")
     service.task_repository.delete.assert_not_called()
     db.commit.assert_not_called()
