@@ -57,6 +57,7 @@ def test_update_missing_task_raises_and_not_commit(
         ({"title": "New title", "completed": True}, "New title", True),
         ({}, "Old title", False),
     ],
+    ids=["title only", "completed only", "both fields", "empty fields"],
 )
 def test_update_task_changes_only_given_fields(
     service: TaskService,
