@@ -40,7 +40,7 @@ jobs:
           echo "your variant: ${{ steps.your_results.outputs.variant }}"
           echo "your checksum: ${{ steps.your_results.outputs.checksum }}"
 
-      - name: checking your results 
+      - name: checking your results
         run: |
           array=${{ secrets.CHECKSUMS }}
           sum=${{steps.your_results.outputs.checksum}}
