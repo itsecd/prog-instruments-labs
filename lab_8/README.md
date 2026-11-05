@@ -4,8 +4,16 @@
 
 В рамках данной лабораторной работы требуется продемонстрировать способность к написанию асинхронного кода на python.
 
+## Способ выполнения лабратоной работы
+Лабораторную работу можно выполнить одним из двух способов:
+
+1. В форке данного репозитория.
+2. В собственном публичном GitHub-репозитории.
+
+Подробные правила для обоих способов описаны в [дискуссии](https://github.com/itsecd/prog-instruments-labs/discussions/2).
+
 ## Задание
-1. Создать отдельную ветку в своем [форке](https://docs.github.com/en/get-started/quickstart/fork-a-repo) данного репозитория.
+1. Создать отдельную ветку в своем отрытом репозитории или в своем [форке](https://docs.github.com/en/get-started/quickstart/fork-a-repo) данного репозитория.
 2. Написать код приложения, содержащий *осмысленный* асинхронный код, с помощью [материала лекции](https://github.com/xtrueman/prog_instruments/raw/main/presentations/Async.pptx).
 6. Открыть [пул-риквест](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) и ждать ревью.
 
