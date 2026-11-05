@@ -1,0 +1,156 @@
+2026-11-05 12:28:54 | INFO     | logging_config | logging_config:45 | Logging configured. Log file: lastet.log
+2026-11-05 12:28:54 | INFO     | __main__ | window:319 | Application starting
+2026-11-05 12:28:54 | INFO     | __main__ | window:31 | CryptoApp initialization started
+2026-11-05 12:28:54 | DEBUG    | __main__ | window:39 | Loading settings from settings.json
+2026-11-05 12:28:54 | DEBUG    | __main__ | window:51 | Settings loaded: keys=['initial_file', 'encrypted_file', 'decrypted_file', 'symmetric_key', 'public_key', 'secret_key']
+2026-11-05 12:28:54 | DEBUG    | __main__ | window:74 | Initializing UI
+2026-11-05 12:28:54 | DEBUG    | __main__ | window:215 | Applying settings to UI fields
+2026-11-05 12:28:54 | INFO     | __main__ | window:35 | CryptoApp initialization completed
+2026-11-05 12:28:57 | INFO     | __main__ | window:182 | User requested key generation: symmetric_key_bits=128
+2026-11-05 12:28:57 | INFO     | key_gen | key_gen:27 | Key generation started: symmetric_key_bits=128, public_key=public_key.pem, private_key=private_key.pem, symmetric_key=symmetric_key.bin
+2026-11-05 12:28:57 | DEBUG    | RSA | RSA:18 | Generating RSA key pair: key_size=2048, public_exponent=65537
+2026-11-05 12:28:57 | DEBUG    | RSA | RSA:22 | RSA key pair generated
+2026-11-05 12:28:57 | DEBUG    | RSA | RSA:32 | Saving public RSA key to public_key.pem
+2026-11-05 12:28:57 | DEBUG    | RSA | RSA:41 | Public RSA key saved: public_key.pem
+2026-11-05 12:28:57 | DEBUG    | RSA | RSA:53 | Saving private RSA key to private_key.pem
+2026-11-05 12:28:57 | DEBUG    | RSA | RSA:63 | Private RSA key saved: private_key.pem
+2026-11-05 12:28:57 | DEBUG    | RSA | RSA:115 | RSA encryption started: plaintext_size=16 bytes
+2026-11-05 12:28:57 | DEBUG    | RSA | RSA:124 | RSA encryption completed: ciphertext_size=256 bytes
+2026-11-05 12:28:57 | DEBUG    | key_gen | key_gen:53 | Saving encrypted symmetric key to symmetric_key.bin
+2026-11-05 12:28:57 | DEBUG    | key_gen | key_gen:57 | Encrypted symmetric key saved: symmetric_key.bin
+2026-11-05 12:28:57 | INFO     | key_gen | key_gen:41 | Key generation completed successfully
+2026-11-05 12:28:57 | INFO     | __main__ | window:207 | Key generation finished successfully
+2026-11-05 12:29:04 | INFO     | __main__ | window:229 | User started process: mode=encrypt
+2026-11-05 12:29:04 | INFO     | __main__ | window:253 | Encryption parameters validated: input=initial_file.txt, output=encrypted_file.bin
+2026-11-05 12:29:04 | INFO     | Camellia | Camellia:27 | Encryption started: input=initial_file.txt, output=encrypted_file.bin
+2026-11-05 12:29:04 | DEBUG    | text_processor | text_processor:28 | Reading data from initial_file.txt
+2026-11-05 12:29:04 | DEBUG    | text_processor | text_processor:32 | Data read from initial_file.txt: 1231 bytes
+2026-11-05 12:29:04 | DEBUG    | Camellia | Camellia:34 | Source file size: 1231 bytes
+2026-11-05 12:29:04 | DEBUG    | Camellia | Camellia:37 | Generated IV for Camellia-CBC: 16 bytes
+2026-11-05 12:29:04 | DEBUG    | key_gen | key_gen:69 | Reading encrypted symmetric key from symmetric_key.bin
+2026-11-05 12:29:04 | DEBUG    | key_gen | key_gen:73 | Encrypted symmetric key read: 256 bytes
+2026-11-05 12:29:04 | DEBUG    | RSA | RSA:93 | Reading private RSA key from private_key.pem
+2026-11-05 12:29:04 | DEBUG    | RSA | RSA:101 | Private RSA key loaded: private_key.pem
+2026-11-05 12:29:04 | DEBUG    | RSA | RSA:135 | RSA decryption started: ciphertext_size=256 bytes
+2026-11-05 12:29:04 | DEBUG    | RSA | RSA:144 | RSA decryption completed: plaintext_size=16 bytes
+2026-11-05 12:29:04 | DEBUG    | Camellia | Camellia:43 | Symmetric key decrypted with RSA private key: 16 bytes
+2026-11-05 12:29:04 | DEBUG    | Camellia | Camellia:52 | Camellia encryption completed: ciphertext_size=1232 bytes
+2026-11-05 12:29:04 | DEBUG    | text_processor | text_processor:12 | Saving data to encrypted_file.bin: 1248 bytes
+2026-11-05 12:29:04 | DEBUG    | text_processor | text_processor:16 | Data saved successfully: encrypted_file.bin
+2026-11-05 12:29:04 | INFO     | Camellia | Camellia:57 | Encryption completed successfully: encrypted_file.bin
+2026-11-05 12:29:04 | INFO     | __main__ | window:265 | Encryption process finished successfully
+2026-11-05 12:29:18 | INFO     | __main__ | window:229 | User started process: mode=decrypt
+2026-11-05 12:29:18 | INFO     | __main__ | window:292 | Decryption parameters validated: input=encrypted_file.bin, output=decrypted_file.txt
+2026-11-05 12:29:18 | INFO     | Camellia | Camellia:80 | Decryption started: input=encrypted_file.bin, output=decrypted_file.txt
+2026-11-05 12:29:18 | DEBUG    | text_processor | text_processor:45 | Reading ciphertext from encrypted_file.bin
+2026-11-05 12:29:18 | DEBUG    | text_processor | text_processor:50 | Ciphertext read: file=encrypted_file.bin, iv_size=16, ciphertext_size=1232
+2026-11-05 12:29:18 | DEBUG    | Camellia | Camellia:87 | Ciphertext size without IV: 1232 bytes
+2026-11-05 12:29:18 | DEBUG    | key_gen | key_gen:69 | Reading encrypted symmetric key from symmetric_key.bin
+2026-11-05 12:29:18 | DEBUG    | key_gen | key_gen:73 | Encrypted symmetric key read: 256 bytes
+2026-11-05 12:29:18 | DEBUG    | RSA | RSA:93 | Reading private RSA key from private_key.pem
+2026-11-05 12:29:18 | DEBUG    | RSA | RSA:101 | Private RSA key loaded: private_key.pem
+2026-11-05 12:29:18 | DEBUG    | RSA | RSA:135 | RSA decryption started: ciphertext_size=256 bytes
+2026-11-05 12:29:18 | DEBUG    | RSA | RSA:144 | RSA decryption completed: plaintext_size=16 bytes
+2026-11-05 12:29:18 | DEBUG    | Camellia | Camellia:93 | Symmetric key decrypted with RSA private key: 16 bytes
+2026-11-05 12:29:18 | DEBUG    | Camellia | Camellia:101 | Camellia decryption completed: plaintext_size=1231 bytes
+2026-11-05 12:29:18 | DEBUG    | text_processor | text_processor:12 | Saving data to decrypted_file.txt: 1231 bytes
+2026-11-05 12:29:18 | DEBUG    | text_processor | text_processor:16 | Data saved successfully: decrypted_file.txt
+2026-11-05 12:29:18 | INFO     | Camellia | Camellia:106 | Decryption completed successfully: decrypted_file.txt
+2026-11-05 12:29:18 | INFO     | __main__ | window:304 | Decryption process finished successfully
+2026-11-05 12:29:24 | INFO     | __main__ | window:324 | Application stopped with exit code=0
+2026-11-05 12:29:45 | INFO     | logging_config | logging_config:45 | Logging configured. Log file: lastet.log
+2026-11-05 12:29:45 | INFO     | __main__ | window:319 | Application starting
+2026-11-05 12:29:45 | INFO     | __main__ | window:31 | CryptoApp initialization started
+2026-11-05 12:29:45 | DEBUG    | __main__ | window:39 | Loading settings from settings.json
+2026-11-05 12:29:45 | DEBUG    | __main__ | window:51 | Settings loaded: keys=['initial_file', 'encrypted_file', 'decrypted_file', 'symmetric_key', 'public_key', 'secret_key']
+2026-11-05 12:29:45 | DEBUG    | __main__ | window:74 | Initializing UI
+2026-11-05 12:29:45 | DEBUG    | __main__ | window:215 | Applying settings to UI fields
+2026-11-05 12:29:46 | INFO     | __main__ | window:35 | CryptoApp initialization completed
+2026-11-05 12:29:49 | INFO     | __main__ | window:229 | User started process: mode=decrypt
+2026-11-05 12:29:49 | INFO     | __main__ | window:292 | Decryption parameters validated: input=encrypted_file.bin, output=decrypted_file.txt
+2026-11-05 12:29:49 | INFO     | Camellia | Camellia:80 | Decryption started: input=encrypted_file.bin, output=decrypted_file.txt
+2026-11-05 12:29:49 | DEBUG    | text_processor | text_processor:45 | Reading ciphertext from encrypted_file.bin
+2026-11-05 12:29:49 | DEBUG    | text_processor | text_processor:50 | Ciphertext read: file=encrypted_file.bin, iv_size=16, ciphertext_size=1232
+2026-11-05 12:29:49 | DEBUG    | Camellia | Camellia:87 | Ciphertext size without IV: 1232 bytes
+2026-11-05 12:29:49 | DEBUG    | key_gen | key_gen:69 | Reading encrypted symmetric key from symmetric_key.bin
+2026-11-05 12:29:49 | DEBUG    | key_gen | key_gen:73 | Encrypted symmetric key read: 256 bytes
+2026-11-05 12:29:49 | DEBUG    | RSA | RSA:93 | Reading private RSA key from private_key.pem
+2026-11-05 12:29:49 | DEBUG    | RSA | RSA:101 | Private RSA key loaded: private_key.pem
+2026-11-05 12:29:49 | DEBUG    | RSA | RSA:135 | RSA decryption started: ciphertext_size=256 bytes
+2026-11-05 12:29:49 | DEBUG    | RSA | RSA:144 | RSA decryption completed: plaintext_size=16 bytes
+2026-11-05 12:29:49 | DEBUG    | Camellia | Camellia:93 | Symmetric key decrypted with RSA private key: 16 bytes
+2026-11-05 12:29:49 | DEBUG    | Camellia | Camellia:101 | Camellia decryption completed: plaintext_size=1231 bytes
+2026-11-05 12:29:49 | DEBUG    | text_processor | text_processor:12 | Saving data to decrypted_file.txt: 1231 bytes
+2026-11-05 12:29:49 | DEBUG    | text_processor | text_processor:16 | Data saved successfully: decrypted_file.txt
+2026-11-05 12:29:49 | INFO     | Camellia | Camellia:106 | Decryption completed successfully: decrypted_file.txt
+2026-11-05 12:29:49 | INFO     | __main__ | window:304 | Decryption process finished successfully
+2026-11-05 12:29:54 | INFO     | __main__ | window:324 | Application stopped with exit code=0
+2026-11-05 12:35:21 | INFO     | logging_config | logging_config:45 | Logging configured. Log file: lasted.log
+2026-11-05 12:35:21 | INFO     | __main__ | window:319 | Application starting
+2026-11-05 12:35:21 | INFO     | __main__ | window:31 | CryptoApp initialization started
+2026-11-05 12:35:21 | DEBUG    | __main__ | window:39 | Loading settings from settings.json
+2026-11-05 12:35:21 | DEBUG    | __main__ | window:51 | Settings loaded: keys=['initial_file', 'encrypted_file', 'decrypted_file', 'symmetric_key', 'public_key', 'secret_key']
+2026-11-05 12:35:21 | DEBUG    | __main__ | window:74 | Initializing UI
+2026-11-05 12:35:21 | DEBUG    | __main__ | window:215 | Applying settings to UI fields
+2026-11-05 12:35:21 | INFO     | __main__ | window:35 | CryptoApp initialization completed
+2026-11-05 12:35:23 | DEBUG    | __main__ | window:146 | Browse file dialog opened for: initial_file
+2026-11-05 12:35:30 | INFO     | __main__ | window:162 | User selected file for 'initial_file': D:/programming/lab_5sem/prog-instruments-labs/lab_5/Camellia.py
+2026-11-05 12:35:30 | DEBUG    | __main__ | window:168 | Updating settings.json from UI fields
+2026-11-05 12:35:32 | DEBUG    | __main__ | window:146 | Browse file dialog opened for: initial_file
+2026-11-05 12:35:35 | INFO     | __main__ | window:162 | User selected file for 'initial_file': D:/programming/lab_5sem/prog-instruments-labs/lab_5/initial_file.txt
+2026-11-05 12:35:35 | DEBUG    | __main__ | window:168 | Updating settings.json from UI fields
+2026-11-05 12:35:41 | DEBUG    | __main__ | window:168 | Updating settings.json from UI fields
+2026-11-05 12:35:46 | INFO     | __main__ | window:229 | User started process: mode=encrypt
+2026-11-05 12:35:46 | INFO     | __main__ | window:253 | Encryption parameters validated: input=D:/programming/lab_5sem/prog-instruments-labs/lab_5/initial_file.txt, output=encrypted_file.bin
+2026-11-05 12:35:46 | INFO     | Camellia | Camellia:27 | Encryption started: input=D:/programming/lab_5sem/prog-instruments-labs/lab_5/initial_file.txt, output=encrypted_file.bin
+2026-11-05 12:35:46 | DEBUG    | text_processor | text_processor:28 | Reading data from D:/programming/lab_5sem/prog-instruments-labs/lab_5/initial_file.txt
+2026-11-05 12:35:46 | DEBUG    | text_processor | text_processor:32 | Data read from D:/programming/lab_5sem/prog-instruments-labs/lab_5/initial_file.txt: 1231 bytes
+2026-11-05 12:35:46 | DEBUG    | Camellia | Camellia:34 | Source file size: 1231 bytes
+2026-11-05 12:35:46 | DEBUG    | Camellia | Camellia:37 | Generated IV for Camellia-CBC: 16 bytes
+2026-11-05 12:35:46 | DEBUG    | key_gen | key_gen:69 | Reading encrypted symmetric key from symmetric_key.bin
+2026-11-05 12:35:46 | DEBUG    | key_gen | key_gen:73 | Encrypted symmetric key read: 256 bytes
+2026-11-05 12:35:46 | DEBUG    | RSA | RSA:93 | Reading private RSA key from private_key.pem
+2026-11-05 12:35:46 | DEBUG    | RSA | RSA:101 | Private RSA key loaded: private_key.pem
+2026-11-05 12:35:46 | DEBUG    | RSA | RSA:135 | RSA decryption started: ciphertext_size=256 bytes
+2026-11-05 12:35:46 | DEBUG    | RSA | RSA:144 | RSA decryption completed: plaintext_size=16 bytes
+2026-11-05 12:35:46 | DEBUG    | Camellia | Camellia:43 | Symmetric key decrypted with RSA private key: 16 bytes
+2026-11-05 12:35:46 | DEBUG    | Camellia | Camellia:52 | Camellia encryption completed: ciphertext_size=1232 bytes
+2026-11-05 12:35:46 | DEBUG    | text_processor | text_processor:12 | Saving data to encrypted_file.bin: 1248 bytes
+2026-11-05 12:35:46 | DEBUG    | text_processor | text_processor:16 | Data saved successfully: encrypted_file.bin
+2026-11-05 12:35:46 | INFO     | Camellia | Camellia:57 | Encryption completed successfully: encrypted_file.bin
+2026-11-05 12:35:46 | INFO     | __main__ | window:265 | Encryption process finished successfully
+2026-11-05 12:35:50 | INFO     | __main__ | window:229 | User started process: mode=decrypt
+2026-11-05 12:35:50 | INFO     | __main__ | window:292 | Decryption parameters validated: input=encrypted_file.bin, output=decrypted_file.txt
+2026-11-05 12:35:50 | INFO     | Camellia | Camellia:80 | Decryption started: input=encrypted_file.bin, output=decrypted_file.txt
+2026-11-05 12:35:50 | DEBUG    | text_processor | text_processor:45 | Reading ciphertext from encrypted_file.bin
+2026-11-05 12:35:50 | DEBUG    | text_processor | text_processor:50 | Ciphertext read: file=encrypted_file.bin, iv_size=16, ciphertext_size=1232
+2026-11-05 12:35:50 | DEBUG    | Camellia | Camellia:87 | Ciphertext size without IV: 1232 bytes
+2026-11-05 12:35:50 | DEBUG    | key_gen | key_gen:69 | Reading encrypted symmetric key from symmetric_key.bin
+2026-11-05 12:35:50 | DEBUG    | key_gen | key_gen:73 | Encrypted symmetric key read: 256 bytes
+2026-11-05 12:35:50 | DEBUG    | RSA | RSA:93 | Reading private RSA key from private_key.pem
+2026-11-05 12:35:50 | DEBUG    | RSA | RSA:101 | Private RSA key loaded: private_key.pem
+2026-11-05 12:35:50 | DEBUG    | RSA | RSA:135 | RSA decryption started: ciphertext_size=256 bytes
+2026-11-05 12:35:50 | DEBUG    | RSA | RSA:144 | RSA decryption completed: plaintext_size=16 bytes
+2026-11-05 12:35:50 | DEBUG    | Camellia | Camellia:93 | Symmetric key decrypted with RSA private key: 16 bytes
+2026-11-05 12:35:50 | DEBUG    | Camellia | Camellia:101 | Camellia decryption completed: plaintext_size=1231 bytes
+2026-11-05 12:35:50 | DEBUG    | text_processor | text_processor:12 | Saving data to decrypted_file.txt: 1231 bytes
+2026-11-05 12:35:50 | DEBUG    | text_processor | text_processor:16 | Data saved successfully: decrypted_file.txt
+2026-11-05 12:35:50 | INFO     | Camellia | Camellia:106 | Decryption completed successfully: decrypted_file.txt
+2026-11-05 12:35:50 | INFO     | __main__ | window:304 | Decryption process finished successfully
+2026-11-05 12:35:52 | INFO     | __main__ | window:324 | Application stopped with exit code=0
+2026-11-05 12:38:28 | INFO     | logging_config | logging_config:45 | Logging configured. Log file: lasted.log
+2026-11-05 12:38:28 | INFO     | __main__ | window:319 | Application starting
+2026-11-05 12:38:28 | INFO     | __main__ | window:31 | CryptoApp initialization started
+2026-11-05 12:38:28 | DEBUG    | __main__ | window:39 | Loading settings from settings.json
+2026-11-05 12:38:28 | DEBUG    | __main__ | window:51 | Settings loaded: keys=['initial_file', 'encrypted_file', 'decrypted_file', 'symmetric_key', 'public_key', 'secret_key']
+2026-11-05 12:38:28 | WARNING  | __main__ | window:57 | Settings path for 'encrypted_file' is invalid or file not found: encrypted_file.bin
+2026-11-05 12:38:28 | WARNING  | __main__ | window:57 | Settings path for 'decrypted_file' is invalid or file not found: decrypted_file.txt
+2026-11-05 12:38:28 | WARNING  | __main__ | window:57 | Settings path for 'symmetric_key' is invalid or file not found: symmetric_key.bin
+2026-11-05 12:38:28 | WARNING  | __main__ | window:57 | Settings path for 'public_key' is invalid or file not found: public_key.pem
+2026-11-05 12:38:28 | WARNING  | __main__ | window:57 | Settings path for 'secret_key' is invalid or file not found: private_key.pem
+2026-11-05 12:38:28 | DEBUG    | __main__ | window:74 | Initializing UI
+2026-11-05 12:38:28 | DEBUG    | __main__ | window:215 | Applying settings to UI fields
+2026-11-05 12:38:29 | INFO     | __main__ | window:35 | CryptoApp initialization completed
+2026-11-05 12:38:36 | DEBUG    | __main__ | window:168 | Updating settings.json from UI fields
+2026-11-05 12:38:40 | DEBUG    | __main__ | window:168 | Updating settings.json from UI fields
+2026-11-05 12:38:40 | INFO     | __main__ | window:324 | Application stopped with exit code=0
