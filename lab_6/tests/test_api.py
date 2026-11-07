@@ -71,7 +71,7 @@ def test_create_task_with_invalid_payload(
     client: TestClient,
     payload: dict[str, object],
 ) -> None:
-    """Тест обработки некорректного тела запроса"""
+    """Тест обработки некорректного тела запроса, отклоняется с кодом 422"""
     response = client.post("/tasks", json=payload)
 
     assert response.status_code == 422

@@ -12,25 +12,25 @@ from app.services.task import TaskService, TaskNotFound
 
 @pytest.fixture
 def db() -> Mock:
-    """Mock сессии БД"""
+    """Mock сессии БД."""
     return Mock()
 
 
 @pytest.fixture
 def service(db: Mock) -> TaskService:
-    """Сервис задач с подменой репозитория на Mock"""
+    """Сервис задач с подменой репозитория на Mock."""
     task_service = TaskService(db)
     task_service.task_repository = Mock(spec=TaskRepository)
     return task_service
 
 
 def make_task(title: str = "Old title", completed: bool = False) -> SimpleNamespace:
-    """Создаёт объект имитирующий задачу из БД"""
+    """Создаёт объект, имитирующий задачу из БД."""
     return SimpleNamespace(id="task-1", title=title, completed=completed)
 
 
 def test_create_task_saves_and_commits(service: TaskService, db: Mock) -> None:
-    """Тест на создание задачи"""
+    """Создание задачи вызывает репозиторий и сохраняет изменения."""
     service.task_repository.create.return_value = make_task(title="1st task")
 
     result = service.create_task(TaskCreateSchema(title="1st task"))
@@ -44,7 +44,7 @@ def test_update_missing_task_raises_and_not_commit(
         service: TaskService,
         db: Mock
 ) -> None:
-    """Тест на обновление несуществующей задачи"""
+    """Обновление несуществующей задачи бросает TaskNotFound без коммита."""
     service.task_repository.get_by_id.return_value = None
 
     with pytest.raises(TaskNotFound, match="missing"):
@@ -70,7 +70,7 @@ def test_update_task_changes_only_given_fields(
     expected_title: str,
     expected_completed: bool,
 ) -> None:
-    """Параметризованный тест"""
+    """Параметризованный тест, обновление меняет только переданные поля задачи."""
     task = make_task()
     service.task_repository.get_by_id.return_value = task
 
@@ -84,7 +84,7 @@ def test_update_task_changes_only_given_fields(
 
 
 def test_delete_task_removes_found_task(service: TaskService, db: Mock) -> None:
-    """Тест на удаление задачи по id единожды"""
+    """Удаляется найденная задача один раз."""
     task = make_task()
     service.task_repository.get_by_id.return_value = task
 
@@ -98,7 +98,7 @@ def test_delete_missing_task_raises_and_not_delete(
     service: TaskService,
     db: Mock
 ) -> None:
-    """Тест на удаление несуществующей задачи"""
+    """Удаление несуществующей задачи ничего не удаляет."""
     service.task_repository.get_by_id.return_value = None
 
     with pytest.raises(TaskNotFound, match="missing"):
