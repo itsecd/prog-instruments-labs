@@ -84,6 +84,29 @@ class AppGui(QWidget):
 
         self.init_ui()
 
+    def _show_error(self, message: str) -> None:
+        """
+        Показывает диалоговое окно с сообщением об ошибке
+        :param message: текст ошибки для отображения пользователю
+        """
+        QMessageBox.critical(self, "Ошибка", message)
+
+    def _show_warning(self, message: str) -> None:
+        """
+        Показывает диалоговое окно с предупреждением
+        :param message: текст предупреждения для отображения пользователю
+        """
+        QMessageBox.warning(self, "Внимание", message)
+
+    def _show_info(self, title: str, message: str) -> None:
+        """
+        Показывает информационное диалоговое окно
+        :param title: заголовок окна
+        :param message: текст сообщения для отображения пользователю
+        """
+        QMessageBox.information(self, title, message)
+
+
     def init_ui(self):
         """
         Создает, настраивает и размещает все графические виджеты приложения (кнопки, текстовые поля, метки)
@@ -145,27 +168,27 @@ class AppGui(QWidget):
             try:
                 self.label_hash.setText(f"Текущий хеш: {calculate_sha256(file_path)}")
             except Exception as e:
-                QMessageBox.critical(self, "Ошибка", str(e))
+                self._show_error(str(e))
 
     def handle_save(self):
         """
         Обработчик нажатия кнопки сохранения
         """
         if not self.selected_file_path:
-            QMessageBox.warning(self, "Внимание", "Сначала выберите файл!")
+            self._show_warning("Сначала выберите файл!")
             return
         try:
             save_path = save_file_hash(self.selected_file_path)
-            QMessageBox.information(self, "Успех", f"Хеш сохранен в файл:\n{os.path.basename(save_path)}")
+            self._show_info("Успех", f"Хеш сохранен в файл:\n{os.path.basename(save_path)}")
         except Exception as e:
-            QMessageBox.critical(self, "Ошибка", str(e))
+            self._show_error(str(e))
 
     def handle_verify(self):
         """
         Обработчик нажатия кнопки проверки
         """
         if not self.selected_file_path:
-            QMessageBox.warning(self, "Внимание", "Сначала выберите рабочий файл!")
+            self._show_warning("Сначала выберите рабочий файл!")
             return
 
         hash_file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл с хешем", filter="*.sha256")
@@ -175,11 +198,11 @@ class AppGui(QWidget):
         try:
             is_intact, _, _ = verify_file_hash(self.selected_file_path, hash_file_path)
             if is_intact:
-                QMessageBox.information(self, "Результат", "Целостность подтверждена.\nФайл не изменялся.")
+                self._show_info("Результат", "Целостность подтверждена.\nФайл не изменялся.")
             else:
-                QMessageBox.critical(self, "Результат", "Хеши не совпадают\nФайл был изменен.")
+                self._show_error("Хеши не совпадают\nФайл был изменен.")
         except Exception as e:
-            QMessageBox.critical(self, "Ошибка", str(e))
+            self._show_error(str(e))
 
     def handle_collision(self):
         """
@@ -187,7 +210,7 @@ class AppGui(QWidget):
         """
         prefix = self.entry_prefix.text().strip()
         if not prefix:
-            QMessageBox.warning(self, "Внимание", "Введите префикс")
+            self._show_warning("Введите префикс")
             return
 
         self.log_display.clear()
@@ -221,7 +244,7 @@ class AppGui(QWidget):
             self.log_display.append("\nКоллизия найдена")
             self.log_display.append(f"Исходная строка (оригинал): {candidate}")
             self.log_display.append(f"Результирующий SHA-256 хеш: {col_hash}")
-            QMessageBox.information(self, "Успех!", f"Найдено.\nСтрока: {candidate}")
+            self._show_info("Успех!", f"Найдено.\nСтрока: {candidate}")
         else:
             self.log_display.append("\nПревышен лимит итераций. Коллизия не найдена.")
-            QMessageBox.warning(self, "Неудача", "Коллизия не найдена.")
+            self._show_warning("Коллизия не найдена.")
