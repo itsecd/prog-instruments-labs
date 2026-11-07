@@ -35,7 +35,9 @@ def test_list_categories_converts_orm_objects(service: CategoryService) -> None:
         SimpleNamespace(id="cat-1", name="Category 1"),
         SimpleNamespace(id="cat-2", name="Category 2"),
     ]
+
     result = service.list_categories()
+
     assert result == [
         CategorySchema(id="cat-1", name="Category 1"),
         CategorySchema(id="cat-2", name="Category 2"),
@@ -48,7 +50,9 @@ def test_create_category_saves_and_commits(
 ) -> None:
     """Тест на создание категории"""
     service.category_repository.create.return_value = make_category()
+
     result = service.create_category(CategoryCreateSchema(name="Category 1"))
+
     service.category_repository.create.assert_called_once_with(name="Category 1")
     db.commit.assert_called_once()
     assert result == CategorySchema(id="cat-1", name="Category 1")
@@ -60,8 +64,10 @@ def test_update_missing_category_raises_and_not_commit(
 ) -> None:
     """Тест на обновление несуществующей категории"""
     service.category_repository.get_by_id.return_value = None
+
     with pytest.raises(CategoryNotFound, match="missing"):
         service.update_category("missing", CategoryUpdateSchema(name="New name"))
+
     db.commit.assert_not_called()
 
 
@@ -79,9 +85,11 @@ def test_update_category_changes_name_only_when_given(
     """Параметризованный тест"""
     category = make_category()
     service.category_repository.get_by_id.return_value = category
+
     result = service.update_category(
         "cat-1", CategoryUpdateSchema(name=new_name)
     )
+
     assert category.name == expected_name
     assert result == CategorySchema(id="cat-1", name=expected_name)
     db.commit.assert_called_once()
@@ -94,7 +102,9 @@ def test_delete_category_removes_found_category(
     """Тест на удаление категории по id единожды"""
     category = make_category()
     service.category_repository.get_by_id.return_value = category
+
     service.delete_category("cat-1")
+
     service.category_repository.delete.assert_called_once_with(category)
     db.commit.assert_called_once()
 
@@ -105,7 +115,9 @@ def test_delete_missing_category_raises_and_not_delete(
 ) -> None:
     """Тест на удаление несуществующей категории"""
     service.category_repository.get_by_id.return_value = None
+
     with pytest.raises(CategoryNotFound, match="missing"):
         service.delete_category("missing")
+
     service.category_repository.delete.assert_not_called()
     db.commit.assert_not_called()

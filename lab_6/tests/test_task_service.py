@@ -32,7 +32,9 @@ def make_task(title: str = "Old title", completed: bool = False) -> SimpleNamesp
 def test_create_task_saves_and_commits(service: TaskService, db: Mock) -> None:
     """Тест на создание задачи"""
     service.task_repository.create.return_value = make_task(title="1st task")
+
     result = service.create_task(TaskCreateSchema(title="1st task"))
+
     service.task_repository.create.assert_called_once_with(title="1st task")
     db.commit.assert_called_once()
     assert result == TaskSchema(id="task-1", title="1st task", completed=False)
@@ -44,8 +46,10 @@ def test_update_missing_task_raises_and_not_commit(
 ) -> None:
     """Тест на обновление несуществующей задачи"""
     service.task_repository.get_by_id.return_value = None
+
     with pytest.raises(TaskNotFound, match="missing"):
         service.update_task("missing", TaskUpdateSchema(title="New title"))
+
     db.commit.assert_not_called()
 
 
@@ -69,6 +73,7 @@ def test_update_task_changes_only_given_fields(
     """Параметризованный тест"""
     task = make_task()
     service.task_repository.get_by_id.return_value = task
+
     result = service.update_task("task-1", TaskUpdateSchema(**update))
 
     assert task.title == expected_title
@@ -95,7 +100,9 @@ def test_delete_missing_task_raises_and_not_delete(
 ) -> None:
     """Тест на удаление несуществующей задачи"""
     service.task_repository.get_by_id.return_value = None
+
     with pytest.raises(TaskNotFound, match="missing"):
         service.delete_task("missing")
+
     service.task_repository.delete.assert_not_called()
     db.commit.assert_not_called()
