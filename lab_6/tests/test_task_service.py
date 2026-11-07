@@ -6,8 +6,8 @@ from unittest.mock import Mock
 import pytest
 
 from app.repositories.task import TaskRepository
-from app.schemas.task import TaskSchema, TaskCreateSchema, TaskUpdateSchema
-from app.services.task import TaskService, TaskNotFound
+from app.schemas.task import TaskCreateSchema, TaskSchema, TaskUpdateSchema
+from app.services.task import TaskNotFound, TaskService
 
 
 @pytest.fixture
@@ -24,7 +24,9 @@ def service(db: Mock) -> TaskService:
     return task_service
 
 
-def make_task(title: str = "Old title", completed: bool = False) -> SimpleNamespace:
+def make_task(
+    title: str = "Old title", completed: bool = False
+) -> SimpleNamespace:
     """Создаёт объект, имитирующий задачу из БД."""
     return SimpleNamespace(id="task-1", title=title, completed=completed)
 
@@ -41,8 +43,7 @@ def test_create_task_saves_and_commits(service: TaskService, db: Mock) -> None:
 
 
 def test_update_missing_task_raises_and_not_commit(
-        service: TaskService,
-        db: Mock
+    service: TaskService, db: Mock
 ) -> None:
     """Обновление несуществующей задачи бросает TaskNotFound без коммита."""
     service.task_repository.get_by_id.return_value = None
@@ -70,7 +71,9 @@ def test_update_task_changes_only_given_fields(
     expected_title: str,
     expected_completed: bool,
 ) -> None:
-    """Параметризованный тест, обновление меняет только переданные поля задачи."""
+    """
+    Параметризованный тест, обновление меняет только переданные поля задачи.
+    """
     task = make_task()
     service.task_repository.get_by_id.return_value = task
 
@@ -83,7 +86,9 @@ def test_update_task_changes_only_given_fields(
     db.commit.assert_called_once()
 
 
-def test_delete_task_removes_found_task(service: TaskService, db: Mock) -> None:
+def test_delete_task_removes_found_task(
+    service: TaskService, db: Mock
+) -> None:
     """Удаляется найденная задача один раз."""
     task = make_task()
     service.task_repository.get_by_id.return_value = task
@@ -95,8 +100,7 @@ def test_delete_task_removes_found_task(service: TaskService, db: Mock) -> None:
 
 
 def test_delete_missing_task_raises_and_not_delete(
-    service: TaskService,
-    db: Mock
+    service: TaskService, db: Mock
 ) -> None:
     """Удаление несуществующей задачи ничего не удаляет."""
     service.task_repository.get_by_id.return_value = None

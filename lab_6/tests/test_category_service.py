@@ -6,8 +6,12 @@ from unittest.mock import Mock
 import pytest
 
 from app.repositories.category import CategoryRepository
-from app.schemas.category import CategorySchema, CategoryCreateSchema, CategoryUpdateSchema
-from app.services.category import CategoryService, CategoryNotFound
+from app.schemas.category import (
+    CategoryCreateSchema,
+    CategorySchema,
+    CategoryUpdateSchema,
+)
+from app.services.category import CategoryNotFound, CategoryService
 
 
 @pytest.fixture
@@ -29,7 +33,9 @@ def make_category(name: str = "Category 1") -> SimpleNamespace:
     return SimpleNamespace(id="cat-1", name=name)
 
 
-def test_list_categories_converts_orm_objects(service: CategoryService) -> None:
+def test_list_categories_converts_orm_objects(
+    service: CategoryService,
+) -> None:
     """Список категорий из БД превращается в схемы API."""
     service.category_repository.get_all.return_value = [
         SimpleNamespace(id="cat-1", name="Category 1"),
@@ -45,22 +51,22 @@ def test_list_categories_converts_orm_objects(service: CategoryService) -> None:
 
 
 def test_create_category_saves_and_commits(
-    service: CategoryService,
-    db: Mock
+    service: CategoryService, db: Mock
 ) -> None:
     """Создание категории вызывает репозиторий и сохраняет изменения."""
     service.category_repository.create.return_value = make_category()
 
     result = service.create_category(CategoryCreateSchema(name="Category 1"))
 
-    service.category_repository.create.assert_called_once_with(name="Category 1")
+    service.category_repository.create.assert_called_once_with(
+        name="Category 1"
+    )
     db.commit.assert_called_once()
     assert result == CategorySchema(id="cat-1", name="Category 1")
 
 
 def test_update_missing_category_raises_and_not_commit(
-    service: CategoryService,
-    db: Mock
+    service: CategoryService, db: Mock
 ) -> None:
     """
     Обновление несуществующей категории бросает CategoryNotFound без коммита.
@@ -68,7 +74,9 @@ def test_update_missing_category_raises_and_not_commit(
     service.category_repository.get_by_id.return_value = None
 
     with pytest.raises(CategoryNotFound, match="missing"):
-        service.update_category("missing", CategoryUpdateSchema(name="New name"))
+        service.update_category(
+            "missing", CategoryUpdateSchema(name="New name")
+        )
 
     db.commit.assert_not_called()
 
@@ -84,7 +92,10 @@ def test_update_category_changes_name_only_when_given(
     new_name: str | None,
     expected_name: str,
 ) -> None:
-    """Параметризованный тест, название категории обновляется, только если оно передано."""
+    """
+    Параметризованный тест,
+    название категории обновляется, только если оно передано.
+    """
     category = make_category()
     service.category_repository.get_by_id.return_value = category
 
@@ -98,8 +109,7 @@ def test_update_category_changes_name_only_when_given(
 
 
 def test_delete_category_removes_found_category(
-    service: CategoryService,
-    db: Mock
+    service: CategoryService, db: Mock
 ) -> None:
     """Удаляется найденная категория один раз."""
     category = make_category()
@@ -112,8 +122,7 @@ def test_delete_category_removes_found_category(
 
 
 def test_delete_missing_category_raises_and_not_delete(
-    service: CategoryService,
-    db: Mock
+    service: CategoryService, db: Mock
 ) -> None:
     """Удаление несуществующей категории ничего не удаляет."""
     service.category_repository.get_by_id.return_value = None

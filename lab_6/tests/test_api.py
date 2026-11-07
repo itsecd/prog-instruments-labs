@@ -45,7 +45,9 @@ def test_create_and_rename_category(client: TestClient) -> None:
     assert create_response.status_code == 201
     category_id = create_response.json()["id"]
 
-    response = client.patch(f"/categories/{category_id}", json={"name": "Category 2"})
+    response = client.patch(
+        f"/categories/{category_id}", json={"name": "Category 2"}
+    )
 
     assert response.status_code == 200
     assert response.json() == {"id": category_id, "name": "Category 2"}
@@ -54,7 +56,9 @@ def test_create_and_rename_category(client: TestClient) -> None:
 
 def test_delete_category_remove_from_list(client: TestClient) -> None:
     """Удаляемая категория удаляется из списка, возвращается код 204"""
-    category_id = client.post("/categories", json={"name": "Temp"}).json()["id"]
+    category_id = client.post("/categories", json={"name": "Temp"}).json()[
+        "id"
+    ]
 
     response = client.delete(f"/categories/{category_id}")
 
@@ -65,7 +69,7 @@ def test_delete_category_remove_from_list(client: TestClient) -> None:
 @pytest.mark.parametrize(
     "payload",
     [{}, {"title": ""}, {"title": None}, {"name": "Wrong field"}],
-    ids=["no title", "empty title", "None title", "wrong field"]
+    ids=["no title", "empty title", "None title", "wrong field"],
 )
 def test_create_task_with_invalid_payload(
     client: TestClient,
@@ -85,13 +89,10 @@ def test_create_task_with_invalid_payload(
         ("PATCH", "/categories/missing", {"name": "New name"}),
         ("DELETE", "/categories/missing", None),
     ],
-    ids=["patch task", "delete task", "patch category", "delete category"]
+    ids=["patch task", "delete task", "patch category", "delete category"],
 )
 def test_missing_resource(
-    client: TestClient,
-    method: str,
-    url: str,
-    payload: dict[str, str] | None
+    client: TestClient, method: str, url: str, payload: dict[str, str] | None
 ) -> None:
     """Обращение к несуществующему объекту, возвращается код 404"""
     response = client.request(method, url, json=payload)
