@@ -2,6 +2,12 @@ import hashlib
 from tqdm import tqdm
 from read_write_file import save_hash_to_file, load_hash_from_file
 
+
+CHUNK_SIZE = 4096
+DEFAULT_MAX_ITERATIONS = 10_000_000
+HASH_FILE_EXTENSION = ".sha256"
+
+
 def calculate_sha256(file_path : str) -> str:
     """
     Вычисляет SHA-256 хеш файла
@@ -11,7 +17,7 @@ def calculate_sha256(file_path : str) -> str:
     sha256_hash = hashlib.sha256()
     try:
         with open(file_path, "rb") as f:
-            for byte_block in iter(lambda: f.read(4096), b""):
+            for byte_block in iter(lambda: f.read(CHUNK_SIZE), b""):
                 sha256_hash.update(byte_block)
         return sha256_hash.hexdigest()
     except FileNotFoundError:
@@ -28,7 +34,7 @@ def save_file_hash(file_path : str) -> str:
     :return: путь к хеш файлу
     """
     current_hash = calculate_sha256(file_path)
-    save_path = f"{file_path}.sha256"
+    save_path = f"{file_path}{HASH_FILE_EXTENSION}"
     save_hash_to_file(current_hash, save_path)
     return save_path
 
@@ -44,7 +50,7 @@ def verify_file_hash(file_path : str, hash_file_path : str)-> tuple[bool, str, s
     return current_hash == saved_hash, current_hash, saved_hash
 
 
-def find_partial_collision(target_prefix : str, max_iterations=10000000, out_file=None)-> tuple[str, str]:
+def find_partial_collision(target_prefix : str, max_iterations=DEFAULT_MAX_ITERATIONS, out_file=None)-> tuple[str, str]:
     """
     Поиск коллизии
     :param target_prefix: искомый хеш
