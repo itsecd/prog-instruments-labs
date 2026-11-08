@@ -16,6 +16,7 @@ from symmetric_crypto import (
 )
 
 
+CLI_OVERRIDES = ("private_key", "public_key", "symmetric_key", "key_size")
 KEY_PROMPTS = (
     ("private_key", "Путь к приватному ключу"),
     ("public_key", "Путь к публичному ключу"),
@@ -123,6 +124,20 @@ def decryption_mode(settings: dict) -> None:
     print("Дешифрование завершено")
 
 
+def apply_cli_overrides(settings: dict, args: argparse.Namespace) -> None:
+    """
+    Заменяет настройки значениями, переданными в командной строке.
+
+    :param settings: словарь с настройками
+    :param args: разобранные аргументы командной строки
+    :return: None
+    """
+    for name in CLI_OVERRIDES:
+        value = getattr(args, name)
+        if value is not None:
+            settings[name] = value
+
+
 def main() -> None:
     """
     Запускает выбранный режим программы.
@@ -153,14 +168,7 @@ def main() -> None:
         settings = request_settings(settings)
         write_json_file(settings_path, settings)
 
-        if args.private_key is not None:
-            settings["private_key"] = args.private_key
-        if args.public_key is not None:
-            settings["public_key"] = args.public_key
-        if args.symmetric_key is not None:
-            settings["symmetric_key"] = args.symmetric_key
-        if args.key_size is not None:
-            settings["key_size"] = args.key_size
+        apply_cli_overrides(settings, args)
 
         match mode:
             case (True, False, False):
