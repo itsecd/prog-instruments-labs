@@ -107,20 +107,34 @@ class AppGui(QWidget):
         QMessageBox.information(self, title, message)
 
     def _ensure_file_selected(self) -> bool:
+        """
+        Проверяет, что пользователь выбрал файл для работы
+        :return: True, если файл выбран, иначе False
+        """
         if not self.selected_file_path:
             self._show_warning("Сначала выберите файл!")
             return False
         
         return True
 
-    def init_ui(self):
+    def init_ui(self) -> None:
         """
-        Создает, настраивает и размещает все графические виджеты приложения (кнопки, текстовые поля, метки)
+        Создает и размещает основные секции графического интерфейса приложения
         """
         self.setWindowTitle("Контроль целостности файлов (SHA-256)")
         self.resize(550, 500)
-        layout = QVBoxLayout()
 
+        layout = QVBoxLayout()
+        self._build_file_section(layout)
+        self._build_collision_section(layout)
+        self._build_log_section(layout)
+        self.setLayout(layout)
+
+    def _build_file_section(self, layout) -> None:
+        """
+        Создает секцию выбора файла и работы с его хешем
+        :param layout: вертикальный слой, в который добавляются виджеты секции
+        """
         self.label_file = QLabel("Файл не выбран", self)
         layout.addWidget(self.label_file)
 
@@ -140,6 +154,11 @@ class AppGui(QWidget):
         btn_verify.clicked.connect(self.handle_verify)
         layout.addWidget(btn_verify)
 
+    def _build_collision_section(self, layout) -> None:
+        """
+        Создает секцию поиска коллизии
+        :param layout: вертикальный слой, в который добавляются виджеты секции
+        """
         layout.addWidget(QLabel("\nПоиск коллизии"))
         hbox = QHBoxLayout()
         hbox.addWidget(QLabel("Хеш:"))
@@ -154,14 +173,16 @@ class AppGui(QWidget):
         self.btn_collision.clicked.connect(self.handle_collision)
         layout.addWidget(self.btn_collision)
 
+    def _build_log_section(self, layout) -> None:
+        """
+        Создает секцию вывода результатов работы
+        :param layout: вертикальный слой, в который добавляются виджеты секции
+        """
         layout.addWidget(QLabel("Результаты:"))
         self.log_display = QTextEdit(self)
         self.log_display.setReadOnly(True)
-        self.log_display.setStyleSheet(
-            "background-color: #1e1e1e; color: #a9dc76; font-family: Consolas, Monaco, monospace;")
+        self.log_display.setStyleSheet("background-color: #1e1e1e; color: #a9dc76; font-family: Consolas, Monaco, monospace;")
         layout.addWidget(self.log_display)
-
-        self.setLayout(layout)
 
     def select_file(self):
         """
@@ -193,6 +214,7 @@ class AppGui(QWidget):
         Обработчик нажатия кнопки проверки
         """
         if not self._ensure_file_selected():
+
             return
 
         hash_file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл с хешем", filter="*.sha256")
