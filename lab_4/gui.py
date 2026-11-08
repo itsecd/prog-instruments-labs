@@ -106,6 +106,12 @@ class AppGui(QWidget):
         """
         QMessageBox.information(self, title, message)
 
+    def _ensure_file_selected(self) -> bool:
+        if not self.selected_file_path:
+            self._show_warning("Сначала выберите файл!")
+            return False
+        
+        return True
 
     def init_ui(self):
         """
@@ -174,8 +180,7 @@ class AppGui(QWidget):
         """
         Обработчик нажатия кнопки сохранения
         """
-        if not self.selected_file_path:
-            self._show_warning("Сначала выберите файл!")
+        if not self._ensure_file_selected():
             return
         try:
             save_path = save_file_hash(self.selected_file_path)
@@ -187,8 +192,7 @@ class AppGui(QWidget):
         """
         Обработчик нажатия кнопки проверки
         """
-        if not self.selected_file_path:
-            self._show_warning("Сначала выберите рабочий файл!")
+        if not self._ensure_file_selected():
             return
 
         hash_file_path, _ = QFileDialog.getOpenFileName(self, "Выберите файл с хешем", filter="*.sha256")
