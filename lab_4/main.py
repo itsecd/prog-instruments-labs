@@ -4,11 +4,11 @@ import argparse
 import csv
 import json
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
 
 from checksum import calculate_checksum
 from patterns import PATTERNS
+from validators import is_valid_date
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -22,17 +22,6 @@ class ValidationResult:
     row_count: int
     invalid_rows: list[int]
     errors_by_field: dict[str, int]
-
-
-def _is_valid_date(value: str) -> bool:
-    """Check that the date is a real calendar date in YYYY-MM-DD form."""
-    if PATTERNS["date"].fullmatch(value) is None:
-        return False
-    try:
-        datetime.strptime(value, "%Y-%m-%d")
-    except ValueError:
-        return False
-    return True
 
 
 def validate_csv(path: Path, encoding: str = "utf-16") -> ValidationResult:
@@ -61,7 +50,7 @@ def validate_csv(path: Path, encoding: str = "utf-16") -> ValidationResult:
             for field, pattern in PATTERNS.items():
                 value = row[field]
                 if field == "date":
-                    valid = _is_valid_date(value)
+                    valid = is_valid_date(value)          # ← изменилось
                 else:
                     valid = pattern.fullmatch(value) is not None
                 if not valid:
