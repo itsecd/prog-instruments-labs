@@ -6,6 +6,11 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from file_utils import read_binary_file, write_binary_file
 
 
+KEY_SIZES_BITS = (128, 192, 256)
+BLOCK_SIZE_BITS = 128
+IV_SIZE_BYTES = 16
+
+
 def generate_symmetric_key(key_size: int) -> bytes:
     """
     Генерирует ключ Camellia.
@@ -13,7 +18,7 @@ def generate_symmetric_key(key_size: int) -> bytes:
     :param key_size: длина ключа в битах, 128, 192 или 256
     :return: ключ Camellia
     """
-    if key_size not in (128, 192, 256):
+    if key_size not in KEY_SIZES_BITS:
         raise ValueError("Длина ключа Camellia должна быть 128, 192 или 256 бит.")
 
     return os.urandom(key_size // 8)
@@ -30,10 +35,10 @@ def encrypt_file_camellia(input_file_path: str, output_file_path: str, key: byte
     """
     plaintext = read_binary_file(input_file_path)
 
-    padder = symmetric_padding.PKCS7(128).padder()
+    padder = symmetric_padding.PKCS7(BLOCK_SIZE_BITS).padder()
     padded_plaintext = padder.update(plaintext) + padder.finalize()
 
-    iv = os.urandom(16)
+    iv = os.urandom(IV_SIZE_BYTES)
     cipher = Cipher(algorithms.Camellia(key), modes.CBC(iv))
 
     encryptor = cipher.encryptor()
@@ -53,14 +58,14 @@ def decrypt_file_camellia(input_file_path: str, output_file_path: str, key: byte
     """
     encrypted_data = read_binary_file(input_file_path)
 
-    iv = encrypted_data[:16]
-    ciphertext = encrypted_data[16:]
+    iv = encrypted_data[:IV_SIZE_BYTES]
+    ciphertext = encrypted_data[IV_SIZE_BYTES:]
 
     cipher = Cipher(algorithms.Camellia(key), modes.CBC(iv))
     decryptor = cipher.decryptor()
     padded_plaintext = decryptor.update(ciphertext) + decryptor.finalize()
 
-    unpadder = symmetric_padding.PKCS7(128).unpadder()
+    unpadder = symmetric_padding.PKCS7(BLOCK_SIZE_BITS).unpadder()
     plaintext = unpadder.update(padded_plaintext) + unpadder.finalize()
 
     write_binary_file(output_file_path, plaintext)
