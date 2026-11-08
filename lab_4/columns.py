@@ -1,6 +1,6 @@
 """Registry of the ten variant-26 CSV columns and how to validate them."""
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 from patterns import PATTERNS
 from validators import is_valid_date

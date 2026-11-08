@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from checksum import calculate_checksum
-from columns import COLUMNS, COLUMN_NAMES
+from columns import COLUMN_NAMES, COLUMNS
 from reader import read_rows
 
 BASE_DIR = Path(__file__).resolve().parent
