@@ -6,6 +6,19 @@ from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from file_utils import read_binary_file, write_binary_file
 
 
+def _oaep_padding() -> asymmetric_padding.OAEP:
+    """
+    Создаёт схему дополнения OAEP для шифрования ключа Camellia.
+
+    :return: схема дополнения
+    """
+    return asymmetric_padding.OAEP(
+        mgf=asymmetric_padding.MGF1(algorithm=hashes.SHA256()),
+        algorithm=hashes.SHA256(),
+        label=None,
+    )
+
+
 def generate_rsa_key() -> tuple[rsa.RSAPrivateKey, rsa.RSAPublicKey]:
     """
     Генерирует пару RSA-ключей.
@@ -73,11 +86,7 @@ def encrypt_symmetric_key(key: bytes, public_key: rsa.RSAPublicKey) -> bytes:
     """
     return public_key.encrypt(
         key,
-        asymmetric_padding.OAEP(
-            mgf=asymmetric_padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=None,
-        ),
+        _oaep_padding(),
     )
 
 
@@ -91,9 +100,5 @@ def decrypt_symmetric_key(encrypted_key: bytes, private_key: rsa.RSAPrivateKey) 
     """
     return private_key.decrypt(
         encrypted_key,
-        asymmetric_padding.OAEP(
-            mgf=asymmetric_padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=None,
-        ),
+        _oaep_padding(),
     )
