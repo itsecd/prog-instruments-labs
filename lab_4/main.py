@@ -124,6 +124,13 @@ def decryption_mode(settings: dict) -> None:
     print("Дешифрование завершено")
 
 
+MODES = {
+    "generation": ("Режим генерации ключей", generation_mode),
+    "encryption": ("Режим шифрования", encryption_mode),
+    "decryption": ("Режим дешифрования", decryption_mode),
+}
+
+
 def apply_cli_overrides(settings: dict, args: argparse.Namespace) -> None:
     """
     Заменяет настройки значениями, переданными в командной строке.
@@ -157,12 +164,8 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        mode = (
-            args.generation is not None,
-            args.encryption is not None,
-            args.decryption is not None,
-        )
-        settings_path = args.generation or args.encryption or args.decryption
+        mode = next(name for name in MODES if getattr(args, name) is not None)
+        settings_path = getattr(args, mode)
         settings = read_json_file(settings_path)
 
         settings = request_settings(settings)
@@ -170,16 +173,9 @@ def main() -> None:
 
         apply_cli_overrides(settings, args)
 
-        match mode:
-            case (True, False, False):
-                print("Режим генерации ключей")
-                generation_mode(settings)
-            case (False, True, False):
-                print("Режим шифрования")
-                encryption_mode(settings)
-            case (False, False, True):
-                print("Режим дешифрования")
-                decryption_mode(settings)
+        title, run_mode = MODES[mode]
+        print(title)
+        run_mode(settings)
     except (FileNotFoundError, OSError, ValueError) as error:
         print(f"Ошибка: {error}")
 
