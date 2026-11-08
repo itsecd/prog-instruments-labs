@@ -1,0 +1,25 @@
+2026-11-08 15:35:50,232 [INFO] __main__: Parrot simulation started
+2026-11-08 15:35:50,233 [DEBUG] __main__: EuropeanParrot.cry() called
+2026-11-08 15:35:50,234 [DEBUG] __main__: EuropeanParrot.speed() called, returning 12.00
+2026-11-08 15:35:50,234 [DEBUG] __main__: AfricanParrot created with 0 coconuts
+2026-11-08 15:35:50,234 [DEBUG] __main__: AfricanParrot.cry() called
+2026-11-08 15:35:50,234 [DEBUG] __main__: AfricanParrot.speed() -> 12.00 (coconuts=0)
+2026-11-08 15:35:50,235 [DEBUG] __main__: AfricanParrot created with 1 coconuts
+2026-11-08 15:35:50,235 [DEBUG] __main__: AfricanParrot.cry() called
+2026-11-08 15:35:50,235 [DEBUG] __main__: AfricanParrot.speed() -> 3.00 (coconuts=1)
+2026-11-08 15:35:50,235 [DEBUG] __main__: AfricanParrot created with 2 coconuts
+2026-11-08 15:35:50,242 [DEBUG] __main__: AfricanParrot.cry() called
+2026-11-08 15:35:50,242 [DEBUG] __main__: AfricanParrot.speed() -> 0.00 (coconuts=2)
+2026-11-08 15:35:50,243 [DEBUG] __main__: NorwegianBlueParrot created: voltage=1.50, nailed=False
+2026-11-08 15:35:50,243 [DEBUG] __main__: NorwegianBlueParrot.cry() at voltage=1.50
+2026-11-08 15:35:50,243 [DEBUG] __main__: NorwegianBlueParrot.speed() -> 18.00
+2026-11-08 15:35:50,244 [DEBUG] __main__: NorwegianBlueParrot created: voltage=4.00, nailed=False
+2026-11-08 15:35:50,244 [DEBUG] __main__: NorwegianBlueParrot.cry() at voltage=4.00
+2026-11-08 15:35:50,244 [DEBUG] __main__: NorwegianBlueParrot.speed() -> 24.00
+2026-11-08 15:35:50,244 [DEBUG] __main__: NorwegianBlueParrot created: voltage=1.50, nailed=True
+2026-11-08 15:35:50,244 [DEBUG] __main__: NorwegianBlueParrot.cry() at voltage=1.50
+2026-11-08 15:35:50,244 [DEBUG] __main__: NorwegianBlueParrot is nailed, speed forced to 0
+2026-11-08 15:35:50,244 [DEBUG] __main__: NorwegianBlueParrot created: voltage=0.00, nailed=False
+2026-11-08 15:35:50,245 [DEBUG] __main__: NorwegianBlueParrot.cry() at voltage=0.00
+2026-11-08 15:35:50,245 [DEBUG] __main__: NorwegianBlueParrot.speed() -> 0.00
+2026-11-08 15:35:50,245 [INFO] __main__: Parrot simulation finished

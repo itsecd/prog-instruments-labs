@@ -1,4 +1,8 @@
+import logging
+from logging.handlers import RotatingFileHandler
 from abc import ABC, abstractmethod
+
+logger = logging.getLogger(__name__)
 
 
 class Parrot(ABC):
@@ -46,6 +50,7 @@ class EuropeanParrot(Parrot):
         Returns:
             str: The string "Sqoork!".
         """
+        logger.debug("EuropeanParrot.cry() called")
         return "Sqoork!"
 
     def speed(self) -> float:
@@ -54,6 +59,7 @@ class EuropeanParrot(Parrot):
         Returns:
             float: The base speed, unaffected by any external factors.
         """
+        logger.debug("EuropeanParrot.speed() called, returning %.2f", Parrot.BASE_SPEED)
         return Parrot.BASE_SPEED
 
 
@@ -77,7 +83,11 @@ class AfricanParrot(Parrot):
             number_of_coconuts: The number of coconuts attached to the
                 parrot. Must be non-negative (not validated here).
         """
+        if number_of_coconuts < 0:
+            logger.error("AfricanParrot: invalid number_of_coconuts=%d", number_of_coconuts)
+            raise ValueError("number_of_coconuts must be non-negative")
         self._number_of_coconuts = number_of_coconuts
+        logger.debug("AfricanParrot created with %d coconuts", number_of_coconuts)
 
     def cry(self) -> str:
         """Produce the African parrot's cry.
@@ -85,6 +95,7 @@ class AfricanParrot(Parrot):
         Returns:
             str: The string "Sqaark!".
         """
+        logger.debug("AfricanParrot.cry() called")
         return "Sqaark!"
 
     def speed(self) -> float:
@@ -97,11 +108,13 @@ class AfricanParrot(Parrot):
         Returns:
             float: The resulting speed, always >= 0.
         """
-        return max(
+        speed = max(
             0.0,
             Parrot.BASE_SPEED
             - AfricanParrot.LOAD_FACTOR * self._number_of_coconuts,
         )
+        logger.debug("AfricanParrot.speed() -> %.2f (coconuts=%d)", speed, self._number_of_coconuts)
+        return speed
 
 
 class NorwegianBlueParrot(Parrot):
@@ -126,6 +139,7 @@ class NorwegianBlueParrot(Parrot):
         """
         self._voltage = voltage
         self._nailed = nailed
+        logger.debug("NorwegianBlueParrot created: voltage=%.2f, nailed=%s", voltage, nailed)
 
     def cry(self) -> str:
         """Produce the Norwegian blue parrot's cry.
@@ -133,6 +147,7 @@ class NorwegianBlueParrot(Parrot):
         Returns:
             str: "Bzzzzzz" if voltage is positive, otherwise "...".
         """
+        logger.debug("NorwegianBlueParrot.cry() at voltage=%.2f", self._voltage)
         return "Bzzzzzz" if self._voltage > 0 else "..."
 
     def speed(self) -> float:
@@ -145,16 +160,42 @@ class NorwegianBlueParrot(Parrot):
         Returns:
             float: The resulting speed, always >= 0.
         """
-        if self._nailed or self._voltage < 0:
+        if self._nailed:
+            logger.debug("NorwegianBlueParrot is nailed, speed forced to 0")
             return 0.0
-        return min(
+        if self._voltage < 0:
+            logger.warning("NorwegianBlueParrot has negative voltage=%.2f, speed forced to 0", self._voltage)
+            return 0.0
+        speed = min(
             NorwegianBlueParrot.MAX_SPEED,
             self._voltage * Parrot.BASE_SPEED,
         )
+        logger.debug("NorwegianBlueParrot.speed() -> %.2f", speed)
+        return speed
 
 
+def setup_logging() -> None:
+    """Configure logging to console and rotating file."""
+    fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)
+
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(fmt)
+    root_logger.addHandler(console_handler)
+
+    file_handler = RotatingFileHandler(
+        "lab_5/app.log", maxBytes=5_000_000, backupCount=3, encoding="utf-8"
+    )
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(fmt)
+    root_logger.addHandler(file_handler)
 
 def main() -> None:
+    setup_logging()
+    logger.info("Parrot simulation started")
+
     parrot1 = EuropeanParrot()
     print("European Parrot")
     print(f"Cry: {parrot1.cry()}")
@@ -194,6 +235,8 @@ def main() -> None:
     print("Norwegian Blue Parrot (no voltage)")
     print(f"Cry: {parrot8.cry()}")
     print(f"Speed: {parrot8.speed()}")
+
+    logger.info("Parrot simulation finished")
 
 
 if __name__ == "__main__":
