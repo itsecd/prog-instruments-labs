@@ -66,12 +66,12 @@ def generation_mode(settings: dict) -> None:
     print("Генерация завершена")
 
 
-def encryption_mode(settings: dict) -> None:
+def load_symmetric_key(settings: dict) -> bytes:
     """
-    Шифрует файл гибридной криптосистемой.
+    Загружает закрытый ключ RSA и расшифровывает им ключ Camellia.
 
     :param settings: словарь с настройками
-    :return: None
+    :return: ключ Camellia
     """
     print("Загрузка закрытого ключа RSA")
     private_key = load_private_key(settings["private_key"])
@@ -81,6 +81,18 @@ def encryption_mode(settings: dict) -> None:
 
     print("Расшифрование ключа Camellia")
     symmetric_key = decrypt_symmetric_key(encrypted_key, private_key)
+
+    return symmetric_key
+
+
+def encryption_mode(settings: dict) -> None:
+    """
+    Шифрует файл гибридной криптосистемой.
+
+    :param settings: словарь с настройками
+    :return: None
+    """
+    symmetric_key = load_symmetric_key(settings)
 
     print("Шифрование файла алгоритмом Camellia")
     encrypt_file_camellia(
@@ -99,14 +111,7 @@ def decryption_mode(settings: dict) -> None:
     :param settings: словарь с настройками
     :return: None
     """
-    print("Загрузка закрытого ключа RSA")
-    private_key = load_private_key(settings["private_key"])
-
-    print("Загрузка зашифрованного ключа Camellia")
-    encrypted_key = read_binary_file(settings["symmetric_key"])
-
-    print("Расшифрование ключа Camellia")
-    symmetric_key = decrypt_symmetric_key(encrypted_key, private_key)
+    symmetric_key = load_symmetric_key(settings)
 
     print("Дешифрование файла алгоритмом Camellia")
     decrypt_file_camellia(
