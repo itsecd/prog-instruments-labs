@@ -145,9 +145,11 @@ def apply_cli_overrides(settings: dict, args: argparse.Namespace) -> None:
             settings[name] = value
 
 
-def main() -> None:
+def parse_args() -> argparse.Namespace:
     """
-    Запускает выбранный режим программы.
+    Разбирает аргументы командной строки.
+
+    :return: разобранные аргументы
     """
     parser = argparse.ArgumentParser()
 
@@ -161,7 +163,14 @@ def main() -> None:
     parser.add_argument("--symmetric-key", dest="symmetric_key")
     parser.add_argument("--key-size", dest="key_size", type=int, choices=(128, 192, 256))
 
-    args = parser.parse_args()
+    return parser.parse_args()
+
+
+def main() -> None:
+    """
+    Запускает выбранный режим программы.
+    """
+    args = parse_args()
 
     try:
         mode = next(name for name in MODES if getattr(args, name) is not None)
