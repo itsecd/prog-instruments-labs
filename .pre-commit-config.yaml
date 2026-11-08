@@ -1,0 +1,27 @@
+repos:
+  - repo: local
+    hooks:
+     
+      - id: ruff-format
+        name: ruff format
+        entry: ruff format
+        language: system
+        types: [python]
+        files: ^lab_1/
+
+      
+      - id: ruff-lint
+        name: ruff check
+        entry: ruff check --fix
+        language: system
+        types: [python]
+        files: ^lab_1/
+
+      
+      - id: pyright
+        name: pyright
+        entry: pyright
+        language: system
+        types: [python]
+        files: ^lab_1/
+        stages: [pre-push]
