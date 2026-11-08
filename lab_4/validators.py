@@ -1,4 +1,5 @@
 """Pure validators that go beyond a single regex."""
+
 from datetime import datetime
 
 from patterns import PATTERNS

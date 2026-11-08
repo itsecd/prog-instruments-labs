@@ -23,9 +23,11 @@ class ValidationResult:
         default_factory=lambda: dict.fromkeys(COLUMN_NAMES, 0)
     )
 
+
 def validate_row(row: dict[str, str]) -> list[str]:
     """Return the names of invalid fields in a single CSV row."""
     return [column.name for column in COLUMNS if not column.validator(row[column.name])]
+
 
 def _validate_headers(headers: list[str]) -> None:
     """Raise if CSV headers don't match the expected columns."""
@@ -33,14 +35,10 @@ def _validate_headers(headers: list[str]) -> None:
         raise ValueError("CSV headers must match the ten variant 26 fields.")
 
 
-def _apply_row(
-    result: ValidationResult, row_number: int, row: dict[str, str]
-) -> None:
+def _apply_row(result: ValidationResult, row_number: int, row: dict[str, str]) -> None:
     """Update result counters for a single CSV row."""
     if None in row or any(value is None for value in row.values()):
-        raise ValueError(
-            f"Data row {row_number} has an incorrect number of cells."
-        )
+        raise ValueError(f"Data row {row_number} has an incorrect number of cells.")
     invalid_fields = validate_row(row)
     for name in invalid_fields:
         result.errors_by_field[name] += 1

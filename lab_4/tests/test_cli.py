@@ -1,4 +1,5 @@
 """Smoke test for the CLI entry point."""
+
 from pathlib import Path
 
 from main import main

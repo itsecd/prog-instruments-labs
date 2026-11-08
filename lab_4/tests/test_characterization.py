@@ -1,4 +1,5 @@
 """Characterization tests: freeze current behavior before refactoring."""
+
 from pathlib import Path
 
 import pytest
