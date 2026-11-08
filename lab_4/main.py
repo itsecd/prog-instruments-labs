@@ -16,6 +16,13 @@ from symmetric_crypto import (
 )
 
 
+KEY_PROMPTS = (
+    ("private_key", "Путь к приватному ключу"),
+    ("public_key", "Путь к публичному ключу"),
+    ("symmetric_key", "Путь к симметричному ключу"),
+)
+
+
 def request_settings(settings: dict) -> dict:
     """
     Запрашивает у пользователя пути к ключам и обновляет настройки.
@@ -23,17 +30,10 @@ def request_settings(settings: dict) -> dict:
     :param settings: исходный словарь настроек
     :return: обновлённый словарь настроек
     """
-    private = input(f"Путь к приватному ключу [{settings['private_key']}]: ")
-    if private:
-        settings["private_key"] = private
-
-    public = input(f"Путь к публичному ключу [{settings['public_key']}]: ")
-    if public:
-        settings["public_key"] = public
-
-    symmetric = input(f"Путь к симметричному ключу [{settings['symmetric_key']}]: ")
-    if symmetric:
-        settings["symmetric_key"] = symmetric
+    for name, description in KEY_PROMPTS:
+        value = input(f"{description} [{settings[name]}]: ")
+        if value:
+            settings[name] = value
 
     return settings
 
