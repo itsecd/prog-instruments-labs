@@ -35,7 +35,8 @@ def args_parse() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="Data parser", description="Parsing data from file"
     )
-    parser.add_argument("-f", "--file", type=str, help="Parse file")
+    parser.add_argument("-f", "--file", type=str,
+                        required=True, help="Input file")
     parser.add_argument("-o", "--output", type=str, help="Output file")
     return parser.parse_args()
 
@@ -91,10 +92,6 @@ def sort_questionnaires(
 
 def main():
     args = args_parse()
-
-    if not args.file:
-        print("Please specify input file with -f option")
-        return
 
     try:
         data = read_file(args.file)
