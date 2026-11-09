@@ -105,21 +105,22 @@ def main():
 
     try:
         data = read_file(args.file)
+
+        if not data:
+            return
+
+        sorted_data = process_questionnaires(data)
+        result = format_questionnaires(sorted_data)
+
+        if args.output:
+            write_file(args.output, result)
+            print(f"Sorted data written to {args.output}")
+        else:
+            print(result, end="")
+
     except OSError as error:
         print(f"File error: {error}")
         return
-
-    if not data:
-        return
-
-    sorted_data = process_questionnaires(data)
-    result = format_questionnaires(sorted_data)
-
-    if args.output:
-        write_file(args.output, result)
-        print(f"Sorted data written to {args.output}")
-    else:
-        print(result, end="")
 
 
 if __name__ == "__main__":
