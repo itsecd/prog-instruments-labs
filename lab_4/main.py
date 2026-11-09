@@ -36,34 +36,49 @@ def args_parse() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def parse_data(data: str) -> list[str]:
+def extract_questionnaire(part: str) -> dict[str, str] | None:
     """
-    Парсит и сортирует данные анкет.
+    Извлекает фамилию, имя и текст анкеты.
     """
-    parts = [p.strip() for p in re.split(r'\n\d+\)\s*', data) if p.strip()]
+    last_name_match = re.search(r"Фамилия:\s*([^\n]+)", part)
+    first_name_match = re.search(r"Имя:\s*([^\n]+)", part)
+
+    if not last_name_match or not first_name_match:
+        return None
+
+    return {
+        "last_name": last_name_match.group(1).strip(),
+        "first_name": first_name_match.group(1).strip(),
+        "text": part,
+    }
+
+
+def parse_data(data: str) -> list[dict[str, str]]:
+    """Разделяет текст на анкеты и извлекает данные."""
+    parts = [p.strip() for p in re.split(r"\n\d+\)\s*", data) if p.strip()]
 
     questionnaires = []
 
     for part in parts:
-        last_name_match = re.search(r'Фамилия:\s*([^\n]+)', part)
-        first_name_match = re.search(r'Имя:\s*([^\n]+)', part)
+        questionnaire = extract_questionnaire(part)
 
-        if last_name_match and first_name_match:
-            last_name = last_name_match.group(1).strip()
-            first_name = first_name_match.group(1).strip()
+        if questionnaire is not None:
+            questionnaires.append(questionnaire)
 
-            questionnaires.append({
-                'last_name': last_name,
-                'first_name': first_name,
-                'text': part
-            })
+    return questionnaires
 
-    sorted_questionnaires = sorted(
+
+def sort_questionnaires(
+    questionnaires: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    """Сортирует анкеты по фамилии и имени."""
+    return sorted(
         questionnaires,
-        key=lambda x: (x['last_name'].lower(), x['first_name'].lower())
+        key=lambda q: (
+            q["last_name"].lower(),
+            q["first_name"].lower(),
+        ),
     )
-
-    return [q['text'] for q in sorted_questionnaires]
 
 
 def main():
@@ -77,13 +92,15 @@ def main():
     if not data:
         return
 
-    parsed_data = parse_data(data)
+    questionnaires = parse_data(data)
+    sorted_questionnaires = sort_questionnaires(questionnaires)
+    sorted_data = [q["text"] for q in sorted_questionnaires]
 
     if args.output:
-        write_file(args.output, parsed_data)
+        write_file(args.output, sorted_data)
         print(f"Sorted data written to {args.output}")
     else:
-        for i, dat in enumerate(parsed_data, 1):
+        for i, dat in enumerate(sorted_data, 1):
             print(f"{i})\n{dat}\n")
 
 
