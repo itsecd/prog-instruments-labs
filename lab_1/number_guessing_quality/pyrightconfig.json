@@ -1,0 +1,7 @@
+{
+  "include": ["game.py", "tests"],
+  "exclude": [".venv", "**/__pycache__"],
+  "typeCheckingMode": "strict",
+  "pythonVersion": "3.12",
+  "reportMissingTypeStubs": "none"
+}
