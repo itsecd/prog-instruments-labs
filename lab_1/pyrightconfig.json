@@ -1,0 +1,14 @@
+{
+  "include": [
+    "lab_1"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    ".venv",
+    ".git"
+  ],
+  "typeCheckingMode": "strict",
+  "pythonVersion": "3.10",
+  "pythonPlatform": "Linux",
+  "reportMissingTypeStubs": false
+}
