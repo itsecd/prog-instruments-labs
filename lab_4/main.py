@@ -90,6 +90,16 @@ def sort_questionnaires(
     )
 
 
+def process_questionnaires(data: str) -> list[str]:
+    """
+    Обрабатывает и сортирует анкеты.
+    """
+    questionnaires = parse_data(data)
+    sorted_questionnaires = sort_questionnaires(questionnaires)
+
+    return [q["text"] for q in sorted_questionnaires]
+
+
 def main():
     args = args_parse()
 
@@ -102,10 +112,7 @@ def main():
     if not data:
         return
 
-    questionnaires = parse_data(data)
-    sorted_questionnaires = sort_questionnaires(questionnaires)
-
-    sorted_data = [q["text"] for q in sorted_questionnaires]
+    sorted_data = process_questionnaires(data)
     result = format_questionnaires(sorted_data)
 
     if args.output:
