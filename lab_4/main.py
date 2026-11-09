@@ -14,15 +14,10 @@ def format_questionnaires(data: list[str]) -> str:
     )
 
 
-def read_file(filename: str) -> str | None:
-    """
-    Читает содержимое файла.
-    """
-    try:
-        with open(filename, "r", encoding='utf-8') as file:
-            return file.read()
-    except FileNotFoundError:
-        print("File not found")
+def read_file(filename: str) -> str:
+    """Читает содержимое файла."""
+    with open(filename, "r", encoding="utf-8") as file:
+        return file.read()
 
 
 def write_file(filename: str, data: str) -> None:
@@ -101,7 +96,12 @@ def main():
         print("Please specify input file with -f option")
         return
 
-    data = read_file(args.file)
+    try:
+        data = read_file(args.file)
+    except OSError as error:
+        print(f"File error: {error}")
+        return
+
     if not data:
         return
 
