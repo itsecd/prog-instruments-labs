@@ -4,6 +4,16 @@ import re
 import argparse
 
 
+def format_questionnaires(data: list[str]) -> str:
+    """
+    Форматирует анкеты с нумерацией.
+    """
+    return "".join(
+        f"{i})\n{dat}\n\n"
+        for i, dat in enumerate(data, 1)
+    )
+
+
 def read_file(filename: str) -> str | None:
     """
     Читает содержимое файла.
@@ -15,13 +25,12 @@ def read_file(filename: str) -> str | None:
         print("File not found")
 
 
-def write_file(filename: str, data: list[str]):
+def write_file(filename: str, data: str) -> None:
     """
-    Записывает данные в файл с нумерацией.
+    Записывает готовый текст в файл.
     """
-    with open(filename, "w+", encoding='utf-8') as file:
-        for i, dat in enumerate(data, 1):
-            file.write(f"{i})\n{dat}\n\n")
+    with open(filename, "w", encoding="utf-8") as file:
+        file.write(data)
 
 
 def args_parse() -> argparse.Namespace:
@@ -54,7 +63,9 @@ def extract_questionnaire(part: str) -> dict[str, str] | None:
 
 
 def parse_data(data: str) -> list[dict[str, str]]:
-    """Разделяет текст на анкеты и извлекает данные."""
+    """
+    Разделяет текст на анкеты и извлекает данные.
+    """
     parts = [p.strip() for p in re.split(r"\n\d+\)\s*", data) if p.strip()]
 
     questionnaires = []
@@ -71,7 +82,9 @@ def parse_data(data: str) -> list[dict[str, str]]:
 def sort_questionnaires(
     questionnaires: list[dict[str, str]],
 ) -> list[dict[str, str]]:
-    """Сортирует анкеты по фамилии и имени."""
+    """
+    Сортирует анкеты по фамилии и имени.
+    """
     return sorted(
         questionnaires,
         key=lambda q: (
@@ -94,14 +107,15 @@ def main():
 
     questionnaires = parse_data(data)
     sorted_questionnaires = sort_questionnaires(questionnaires)
+
     sorted_data = [q["text"] for q in sorted_questionnaires]
+    result = format_questionnaires(sorted_data)
 
     if args.output:
-        write_file(args.output, sorted_data)
+        write_file(args.output, result)
         print(f"Sorted data written to {args.output}")
     else:
-        for i, dat in enumerate(sorted_data, 1):
-            print(f"{i})\n{dat}\n")
+        print(result, end="")
 
 
 if __name__ == "__main__":
