@@ -1,111 +1,86 @@
 import argparse
+from collections import Counter
 
-def take_key(filenamekey):
-    """
-    Читает файл к ключом
-    
-    :param filenamekey(str): Имя файла с ключом
-
-    Возвращает:
-    dict:Ключ 
-    """
-    key={}
-    with open(filenamekey,"r",encoding="utf-8") as file:
+def take_key(filenamekey: str) -> dict:
+    """Читает файл с ключом и возвращает словарь маппинга символов."""
+    key = {}
+    with open(filenamekey, "r", encoding="utf-8") as file:
         for line in file:
-            line=line.strip()
+            line = line.strip()
             if not line:
                 continue
-            parts=line.split(":",1)
+            parts = line.split(":", 1)
             if len(parts) != 2:
                 continue
-            key_part=parts[0].strip().strip('"').strip("'")
-            value_part=parts[1].strip().strip('"').strip("'")
-            key[key_part]=value_part
+            key_part = parts[0].strip().strip('"').strip("'")
+            value_part = parts[1].strip().strip('"').strip("'")
+            key[key_part] = value_part
     return key
 
+def read_file_text(filename: str) -> str:
+    """Читает файл с текстом."""
+    with open(filename, "r", encoding="utf-8") as file:
+        return file.read()
 
-def take_text(filenametext):
-    """
-    Читает файл с текстом
+def write_file_text(filename: str, content: str) -> None:
+    """Записывает текстовый контент в файл."""
+    with open(filename, "w", encoding="utf-8") as file:
+        file.write(content)
+
+def serialize_frequency(frequency: dict) -> str:
+    """Преобразует словарь частот в форматированную строку для записи."""
+    return "".join(f"{char}:{value}\n" for char, value in frequency.items())
+
+def parse_arguments():
+    """Получение аргументов командной строки."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("filenametext", type=str, help="Файл с исходным текстом")
+    parser.add_argument("filenamekey", type=str, help="Файл с ключом")
+    parser.add_argument("filenametextoutput", type=str, help="Файл результата")
+    parser.add_argument("filenametextfrequency", type=str, help="Файл для записи частоты")
+    return parser.parse_args()
+
+def calculate_frequencies(text: str, key: dict) -> dict:
+    """Подсчитывает частоту появления символов из ключа относительно всей длины текста."""
+    text_length = len(text)
+    if text_length == 0:
+        return {}
     
-    :param filenametext(str): Имя файла с текстом
-
-    Возвращает:
-    str:Текст
-    """
-    with open(filenametext,"r",encoding="utf-8") as file:
-        text=file.read()
-        return text
-    
-def write_result_text(encode_text,filenameoutput):
-    """
-    Записывает расшифрованный текст в файл
-    
-    :param encode_text: Расшифрованный текст
-    :param filenameoutput: Название файла
-    """
-    with open(filenameoutput,"w",encoding="utf-8") as file:
-        file.write(encode_text)
-
-def write_result_frequency(frequency,filenameoutput):
-    """
-    Записывает частоты в файл
-    
-    :param frequency(dict): Словарь частот
-    :param filenameoutput(str): Название файла
-    """
-    with open(filenameoutput,"w",encoding="utf-8") as file:
-        for char,value in frequency.items():
-            file.write(f"{char}:{value}\n")
-
-def parsing():
-    """
-    Получение аргументов командной строки
-    """
-    parser=argparse.ArgumentParser()
-    parser.add_argument("filenametext",type=str,help="Введите названия файла с исходным текстом")
-    parser.add_argument("filenamekey",type=str,help="Введите название файла с ключом")
-    parser.add_argument("filenametextoutput",type=str,help="Введите названия файла с результатом")
-    parser.add_argument("filenametextfrequency",type=str,help="Введите названия файла с частотой")
-    args=parser.parse_args()
-    return args.filenametext,args.filenamekey,args.filenametextoutput,args.filenametextfrequency
-
-def count_frequency_manual(text,key):
-    """
-    Подсчёт количества появления символов в тексте
-    
-    :param text: Текст
-    :param key: Ключ
-
-    Возвращает:
-    dict:Словарь количества появления символов в тексте
-    """
-    frequency={}
+    frequency = {}
     for char in key.keys():
-        frequency[char]=0
+        frequency[char] = 0
+        
     for char in text:
         if char in frequency:
-            frequency[char]+=1
-    for char,value in frequency.items():
-        frequency[char]=value/len(text)
+            frequency[char] = frequency[char] + 1
+            
+    for char, count in frequency.items():
+        frequency[char] = count / text_length
+        
     sorted_frequency = dict(sorted(frequency.items(), key=lambda x: x[1], reverse=True))
     return sorted_frequency
 
-def main():
-    filenametext,filenamekey,filenametextoutput,filenametextfrequency=parsing()
-    text=take_text(filenametext)
-    key=take_key(filenamekey)
-    frequency = count_frequency_manual(text,key)
-    
-    normal_text = ""
-
+def decrypt_text(text: str, key: dict) -> str:
+    """Выполняет замену символов в тексте согласно переданному словарю-ключу."""
+    result = ""
     for char in text:
         if char in key:
-            normal_text += key[char]
+            result = result + key[char]
         else:
-            normal_text += char
-    write_result_text(normal_text,filenametextoutput)
-    write_result_frequency(frequency,filenametextfrequency)
+            result = result + char
+    return result
 
-if __name__=="__main__":
+def main():
+    args = parse_arguments()
+    
+    text = read_file_text(args.filenametext)
+    key = take_key(args.filenamekey)
+    
+    frequency = calculate_frequencies(text, key)
+    decrypted_text = decrypt_text(text, key)
+    
+    write_file_text(args.filenametextoutput, decrypted_text)
+    write_file_text(args.filenametextfrequency, serialize_frequency(frequency))
+
+if __name__ == "__main__":
     main()
