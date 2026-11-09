@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from checksum import calculate_checksum
-from columns import COLUMNS, COLUMN_NAMES
+from columns import COLUMN_NAMES, COLUMNS
 from logging_config import setup_logging
 from reader import read_rows
 
@@ -45,15 +45,11 @@ def _validate_headers(headers: list[str]) -> None:
         raise ValueError("CSV headers must match the ten variant 26 fields.")
 
 
-def _apply_row(
-    result: ValidationResult, row_number: int, row: dict[str, str]
-) -> None:
+def _apply_row(result: ValidationResult, row_number: int, row: dict[str, str]) -> None:
     """Update result counters for a single CSV row."""
     if None in row or any(value is None for value in row.values()):
         logger.error("Row %d has an incorrect number of cells", row_number)
-        raise ValueError(
-            f"Data row {row_number} has an incorrect number of cells."
-        )
+        raise ValueError(f"Data row {row_number} has an incorrect number of cells.")
     invalid_fields = validate_row(row)
     if invalid_fields and not result.invalid_rows:
         logger.warning(
