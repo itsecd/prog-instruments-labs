@@ -177,15 +177,21 @@ def main():
         encoding="utf-8",
     )
 
+    logger.info("Application started")
+
     args = args_parse()
 
     if not args.output:
+        logger.warning("Output directory is not specified")
         print("Please specify output directory using -o argument")
         return
 
     if not args.file:
+        logger.warning("CSV file is not specified")
         print("Please specify file using -f argument")
         return
+
+    logger.info("Starting download to directory: %s", args.output)
 
     print(f"Starting to download songs to {args.output}")
 
@@ -194,6 +200,8 @@ def main():
 
     for filepath in FilePathIterator(args.output):
         print(filepath)
+
+    logger.info("Application finished")
 
 
 if __name__ == "__main__":
