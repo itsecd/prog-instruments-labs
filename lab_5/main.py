@@ -76,6 +76,9 @@ def download_single_track(music: Dict[str, str], dir: str, page_num: int) -> str
     """Скачивает один трек по music['link'] и сохраняет в dir."""
     name = music["name"]
     link = music["link"]
+
+    logger.debug("Starting download of track: %s", name)
+
     resp = requests.get(link, headers=HEADERS, timeout=10)
     resp.raise_for_status()
 
@@ -85,6 +88,9 @@ def download_single_track(music: Dict[str, str], dir: str, page_num: int) -> str
 
     with open(path, "wb") as f:
         f.write(resp.content)
+
+    logger.info("Track downloaded successfully: %s", path)
+
     print(f"Скачан: {path}")
 
     return path
@@ -181,8 +187,12 @@ def parser_with_pagination(source: str, csv_path: str) -> None:
                         "relative_path": rel_path,
                     })
                     csv_file.flush()
-                except Exception as e:
-                    print(f"Ошибка скачивания {track['name']}: {e}")
+                except Exception:
+                    logger.exception(
+                        "Failed to download track: %s", track["name"]
+                    )
+
+            logger.info("Page %s processing completed", page)
 
             time.sleep(1)
 
