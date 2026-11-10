@@ -1,0 +1,15 @@
+{
+    "python.linting.enabled": true,
+    "python.linting.ruffEnabled": true,
+    "python.linting.pylintEnabled": false,
+    
+    "editor.formatOnSave": true,
+    "python.formatting.provider": "ruff",
+    
+    "editor.codeActionsOnSave": {
+        "source.fixAll.ruff": "explicit",
+        "source.organizeImports.ruff": "explicit"
+    },
+    
+    "python.terminal.activateEnvironment": true
+}

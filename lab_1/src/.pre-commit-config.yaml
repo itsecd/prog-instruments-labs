@@ -1,0 +1,20 @@
+# .pre-commit-config.yaml
+repos:
+  # 1. Ruff: Линтер и форматтер (заменяет flake8, isort, black)
+  # Он автоматически исправит UP035 (устаревшие импорты) и другие ошибки.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Используйте актуальную версию. Ruff быстро обновляется.
+    rev: v0.11.8 
+    hooks:
+      - id: ruff
+        args: [--fix] # Автоматически исправлять ошибки, которые может
+      - id: ruff-format # Форматировать код
+
+  # 2. Mypy: Проверка статических типов
+  # Это поможет поймать ошибки, подобные reportUnknownMemberType.
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+      - id: mypy
+        # Если у вас сложные зависимости, их можно перечислить здесь:
+        # additional_dependencies: [types-requests]
