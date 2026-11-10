@@ -20,7 +20,7 @@ PATTERNS = {
         r"^[A-Za-zА-Яа-яЁё]+(?:[ -][A-Za-zА-Яа-яЁё]+)*$"
     ),
     "latitude": re.compile(
-        r"^-?(?:90(?:\.0+)?|[0-8]?\d(?:\.\d+)?)$"
+        r"^-?(?:90(?:\.0+)?|[0-8]?\d(?:\.\d+)?(?:[eE][-+]?\d+)?)$"
     ),
     "hex_color": re.compile(r"^#[0-9A-Fa-f]{6}$"),
     "issn": re.compile(r"^\d{4}-\d{4}$"),
@@ -38,10 +38,10 @@ PATTERNS = {
 
 
 def is_valid_row(row: Dict[str, str]) -> bool:
-    for field, value in row.items():
-        if value is None or not PATTERNS[field].fullmatch(value.strip()):
-            return False
-    return True
+    return all(
+        PATTERNS[field].fullmatch(value)
+        for field, value in row.items()
+    )
 
 
 def find_invalid_rows(csv_path: Path) -> List[int]:
@@ -51,8 +51,7 @@ def find_invalid_rows(csv_path: Path) -> List[int]:
         reader = csv.DictReader(file, delimiter=";")
 
         for row_number, row in enumerate(reader):
-            # Пропускаем полностью пустые строки
-            if not any(v and v.strip() for v in row.values() if v):
+            if not any(row.values()):
                 continue
 
             if not is_valid_row(row):
