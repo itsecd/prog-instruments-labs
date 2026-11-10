@@ -44,10 +44,17 @@ def sanitize_filename(name: str, max_length: int = MAX_FILENAME_LENGTH) -> str:
 
 def extract_tracks_from_page(page_num: int) -> List[Dict[str, str]]:
     """Получает список треков со страницы."""
+
+    logger.debug("Fetching tracks from page %s", page_num)
+
     resp = requests.get(
         URL_BASE, headers=HEADERS, params={"page": page_num}, timeout=10
     )
     resp.raise_for_status()
+
+    logger.debug("Page %s received, HTTP status: %s",
+                 page_num, resp.status_code)
+
     soup = BeautifulSoup(resp.text, "html.parser")
     items = soup.select("div.item-grid__item")
     music = []
@@ -59,6 +66,9 @@ def extract_tracks_from_page(page_num: int) -> List[Dict[str, str]]:
         )
         if name and link and link.startswith("http"):
             music.append({"name": name, "link": link})
+
+    logger.info("Found %s tracks on page %s", len(music), page_num)
+
     return music
 
 
@@ -82,6 +92,9 @@ def download_single_track(music: Dict[str, str], dir: str, page_num: int) -> str
 
 def get_total_pages() -> int:
     """Реализует подсчет страниц."""
+
+    logger.debug("Fetching total number of pages")
+
     resp = requests.get(URL_BASE, headers=HEADERS)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -95,6 +108,11 @@ def get_total_pages() -> int:
         for a in pagination.find_all("a", class_="pagination__link")
         if a.get_text(strip=True).isdigit()
     ]
+
+    total_pages = max(pages, default=1)
+
+    logger.info("Total pages found: %s", total_pages)
+
     return max(pages, default=1)
 
 
