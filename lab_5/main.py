@@ -1,4 +1,5 @@
 import argparse
+import logging
 import re
 import time
 from typing import Tuple, List, Dict, Iterator, Union
@@ -15,6 +16,9 @@ HEADERS = {
 }
 
 MAX_FILENAME_LENGTH = 50
+
+
+logger = logging.getLogger(__name__)
 
 
 def args_parse() -> argparse.Namespace:
@@ -166,6 +170,13 @@ def parser_with_pagination(source: str, csv_path: str) -> None:
 
 
 def main():
+    logging.basicConfig(
+        filename="app.log",
+        level=logging.DEBUG,
+        format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+        encoding="utf-8",
+    )
+
     args = args_parse()
 
     if not args.output:
