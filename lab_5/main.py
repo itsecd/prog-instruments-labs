@@ -1,19 +1,19 @@
 import argparse
+import csv
 import logging
-from logging.handlers import RotatingFileHandler
+import os
 import re
 import time
-from typing import Tuple, List, Dict, Iterator, Union
-import os
+from collections.abc import Iterator
+from logging.handlers import RotatingFileHandler
 
-from bs4 import BeautifulSoup
-import csv
 import requests
+from bs4 import BeautifulSoup
 
 URL_BASE = "https://mixkit.co/free-stock-music/instrument/piano/"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                  "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    "(KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 }
 
 MAX_FILENAME_LENGTH = 50
@@ -28,8 +28,9 @@ def args_parse() -> argparse.Namespace:
         prog="Data parser", description="Parsing data from file"
     )
     parser.add_argument("-f", "--file", type=str, help="file for csv")
-    parser.add_argument("-o", "--output", type=str,
-                        help="Output file for downloads music")
+    parser.add_argument(
+        "-o", "--output", type=str, help="Output file for downloads music"
+    )
 
     return parser.parse_args()
 
@@ -43,7 +44,7 @@ def sanitize_filename(name: str, max_length: int = MAX_FILENAME_LENGTH) -> str:
     return cleaned[:max_length]
 
 
-def extract_tracks_from_page(page_num: int) -> List[Dict[str, str]]:
+def extract_tracks_from_page(page_num: int) -> list[dict[str, str]]:
     """Получает список треков со страницы."""
 
     logger.debug("Fetching tracks from page %s", page_num)
@@ -53,8 +54,7 @@ def extract_tracks_from_page(page_num: int) -> List[Dict[str, str]]:
     )
     resp.raise_for_status()
 
-    logger.debug("Page %s received, HTTP status: %s",
-                 page_num, resp.status_code)
+    logger.debug("Page %s received, HTTP status: %s", page_num, resp.status_code)
 
     soup = BeautifulSoup(resp.text, "html.parser")
     items = soup.select("div.item-grid__item")
@@ -62,8 +62,8 @@ def extract_tracks_from_page(page_num: int) -> List[Dict[str, str]]:
 
     for item in items:
         name = item.select_one("h2.item-grid-card__title").get_text(strip=True)
-        link = item.select_one('div[data-audio-player-preview-url-value]').get(
-            'data-audio-player-preview-url-value'
+        link = item.select_one("div[data-audio-player-preview-url-value]").get(
+            "data-audio-player-preview-url-value"
         )
         if name and link and link.startswith("http"):
             music.append({"name": name, "link": link})
@@ -73,7 +73,7 @@ def extract_tracks_from_page(page_num: int) -> List[Dict[str, str]]:
     return music
 
 
-def download_single_track(music: Dict[str, str], dir: str, page_num: int) -> str:
+def download_single_track(music: dict[str, str], dir: str, page_num: int) -> str:
     """Скачивает один трек по music['link'] и сохраняет в dir."""
     name = music["name"]
     link = music["link"]
@@ -102,12 +102,13 @@ def get_total_pages() -> int:
 
     logger.debug("Fetching total number of pages")
 
-    resp = requests.get(URL_BASE, headers=HEADERS)
+    resp = requests.get(URL_BASE, headers=HEADERS, timeout=10)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
     pagination = soup.find("div", class_="pagination__wrapper")
 
     if not pagination:
+        logger.warning("Pagination not found, using one page")
         return 1
 
     pages = [
@@ -120,7 +121,7 @@ def get_total_pages() -> int:
 
     logger.info("Total pages found: %s", total_pages)
 
-    return max(pages, default=1)
+    return total_pages
 
 
 def get_correct_csv_path(csv_path: str) -> str:
@@ -131,7 +132,7 @@ def get_correct_csv_path(csv_path: str) -> str:
 
 
 class FilePathIterator(Iterator[str]):
-    def __init__(self, source: Union[str, os.PathLike]):
+    def __init__(self, source: str | os.PathLike):
         """
         source: путь к папке или к файлу, где каждая строка — путь к файлу.
         """
@@ -182,16 +183,16 @@ def parser_with_pagination(source: str, csv_path: str) -> None:
                     abs_path = os.path.abspath(local_path)
                     rel_path = os.path.relpath(local_path, start=os.getcwd())
 
-                    writer.writerow({
-                        "name": track["name"],
-                        "absolute_path": abs_path,
-                        "relative_path": rel_path,
-                    })
+                    writer.writerow(
+                        {
+                            "name": track["name"],
+                            "absolute_path": abs_path,
+                            "relative_path": rel_path,
+                        }
+                    )
                     csv_file.flush()
                 except Exception:
-                    logger.exception(
-                        "Failed to download track: %s", track["name"]
-                    )
+                    logger.exception("Failed to download track: %s", track["name"])
 
             logger.info("Page %s processing completed", page)
 
@@ -231,10 +232,15 @@ def main():
     print(f"Starting to download songs to {args.output}")
 
     out_csv = get_correct_csv_path(args.file)
-    parser_with_pagination(args.output, out_csv)
+    try:
+        parser_with_pagination(args.output, out_csv)
 
-    for filepath in FilePathIterator(args.output):
-        print(filepath)
+        for filepath in FilePathIterator(args.output):
+            print(filepath)
+
+    except Exception:
+        logger.exception("Application failed")
+        raise
 
     logger.info("Application finished")
 
