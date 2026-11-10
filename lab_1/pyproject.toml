@@ -1,0 +1,17 @@
+[tool.ruff]
+target-version = "py311"  # ваша версия Python
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "RET"]  # стандартные и полезные правила
+ignore = ["E501"]  # можно игнорировать длинные строки, если они уже есть
+
+[tool.ruff.format]
+line-ending = "auto"
+
+[tool.pyright]
+include = ["src", "."]
+exclude = ["tests", "venv"]
+strict = true  # максимальная строгость
+typeCheckingMode = "strict"
+reportMissingTypeStubs = "none"  # можно ослабить для старых библиотек

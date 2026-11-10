@@ -1,0 +1,8 @@
+title,price_raw,price,old_price_raw,old_price,rating,reviews,sku,sku_valid
+Ноутбук ASUS VivoBook,49 990 ₽,49990.0,59 990 ₽,59990.0,4,128,,False
+Смартфон Samsung Galaxy,32 500руб,32500.0,,,5,542,,False
+Наушники Sony WH-1000XM4,,,,,3,89,,False
+Клавиатура Logitech MX Keys,12 499 руб.,12499.0,,,4,215,,False
+Товар без цены,,,,,5,10,,False
+Товар без SKU,1 000 ₽,1000.0,,,2,5,,False
+Битый SKU,500 ₽,500.0,,,4,30,,False
