@@ -1,10 +1,22 @@
 import re
 import csv
 
-HTML_FILE = "test_shop.html"
-CSV_FILE = "products.csv"
+HTML_FILE = 'test_shop.html'
+CSV_FILE = 'products.csv'
 
-html = """<!DOCTYPE html>
+SKU_PATTERN = re.compile(r'SKU:\s*([A-Z]{2}-\d{5})')
+SKU_RAW_PATTERN = re.compile(r'SKU:\s*(\S+)')
+TITLE_PATTERN = re.compile(r'<h2 class="title">(.*?)</h2>')
+PRICE_PATTERN = re.compile(r'class="price">([\d\s,.]+(?:[₽$]|руб\.?))')
+OLD_PRICE_PATTERN = re.compile(r'class="old-price">([\d\s,.]+(?:[₽$]|руб\.?))')
+RATING_PATTERN = re.compile(r'([★]+)[☆]*')
+REVIEWS_PATTERN = re.compile(r'\((\d+)\s+(?:отзыв[а-я]*|reviews?)\)')
+PRODUCT_PATTERN = re.compile(r'<div class="product">(.*?)</div>', re.DOTALL)
+CLEAN_PRICE_PATTERN = re.compile(r'[^\d.,]')
+
+
+def generate_test_html():
+    return """<!DOCTYPE html>
 <html>
 <head><title>Test Shop</title></head>
 <body>
@@ -52,90 +64,113 @@ html = """<!DOCTYPE html>
 </body>
 </html>"""
 
-with open(HTML_FILE, "w", encoding="utf-8") as f:
-    f.write(html)
 
-with open(HTML_FILE, "r", encoding="utf-8") as f:
-    html = f.read()
+def save_html(path, content):
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(content)
 
-products = re.findall(r'<div class="product">(.*?)</div>', html, re.DOTALL)
 
-results = []
-invalid_skus = 0
-missing_fields = 0
+def load_html(path):
+    with open(path, 'r', encoding='utf-8') as f:
+        return f.read()
 
-for p in products:
-    title_m = re.search(r'<h2 class="title">(.*?)</h2>', p)
-    price_m = re.search(r'class="price">([\d\s,.]+(?:[₽$]|руб\.?))', p)
-    old_price_m = re.search(r'class="old-price">([\d\s,.]+(?:[₽$]|руб\.?))', p)
-    rating_m = re.search(r"([★]+)[☆]*", p)
-    reviews_m = re.search(r"\((\d+)\s+(?:отзыв[а-я]*|reviews?)\)", p)
-    sku_m = re.search(r"SKU:\s*([A-Z]{2}-\d{5})", p)
-    sku_raw_m = re.search(r"SKU:\s*(\S+)", p)
 
-    title = title_m.group(1).strip() if title_m else None
-    price_raw = price_m.group(1).strip() if price_m else None
-    old_price_raw = old_price_m.group(1).strip() if old_price_m else None
-    rating = len(rating_m.group(1)) if rating_m else 0
-    reviews = int(reviews_m.group(1)) if reviews_m else 0
-    sku = sku_m.group(1) if sku_m else None
-    sku_raw = sku_raw_m.group(1) if sku_raw_m else None
+def extract_title(block):
+    match = TITLE_PATTERN.search(block)
+    return match.group(1).strip() if match else None
 
-    if not sku and sku_raw:
-        invalid_skus += 1
 
-    if not price_raw or not sku:
-        missing_fields += 1
+def extract_price(block, pattern):
+    match = pattern.search(block)
+    return match.group(1).strip() if match else None
 
-    def normalize_price(raw):
-        if not raw:
-            return None
-        cleaned = re.sub(r"[^\d.,]", "", raw)
-        cleaned = cleaned.replace(" ", "").replace(",", ".")
-        try:
-            return float(cleaned)
-        except ValueError:
-            return None
 
-    results.append(
-        {
-            "title": title,
-            "price_raw": price_raw,
-            "price": normalize_price(price_raw),
-            "old_price_raw": old_price_raw,
-            "old_price": normalize_price(old_price_raw),
-            "rating": rating,
-            "reviews": reviews,
-            "sku": sku,
-            "sku_valid": bool(sku),
-        }
-    )
+def extract_rating(block):
+    match = RATING_PATTERN.search(block)
+    return len(match.group(1)) if match else 0
 
-with open(CSV_FILE, "w", newline="", encoding="utf-8") as f:
-    writer = csv.DictWriter(
-        f,
-        fieldnames=[
-            "title",
-            "price_raw",
-            "price",
-            "old_price_raw",
-            "old_price",
-            "rating",
-            "reviews",
-            "sku",
-            "sku_valid",
-        ],
-    )
-    writer.writeheader()
-    writer.writerows(results)
 
-prices = [r["price"] for r in results if r["price"] is not None]
+def extract_reviews(block):
+    match = REVIEWS_PATTERN.search(block)
+    return int(match.group(1)) if match else 0
 
-print(f"Всего товаров: {len(results)}")
-print(f"Валидных SKU: {sum(1 for r in results if r['sku_valid'])}")
-print(f"Невалидных SKU: {invalid_skus}")
-print(f"Товаров с пропущенными полями: {missing_fields}")
-print(f"Средняя цена: {sum(prices) / len(prices):.2f}" if prices else "Цен нет")
-print(f"Макс. цена: {max(prices):.2f}" if prices else "")
-print(f"Мин. цена: {min(prices):.2f}" if prices else "")
-print(f"\nCSV сохранён: {CSV_FILE}")
+
+def extract_sku(block):
+    valid_match = SKU_PATTERN.search(block)
+    raw_match = SKU_RAW_PATTERN.search(block)
+    return valid_match.group(1) if valid_match else None, raw_match.group(1) if raw_match else None
+
+
+def normalize_price(raw):
+    if not raw:
+        return None
+    cleaned = CLEAN_PRICE_PATTERN.sub('', raw).replace(' ', '').replace(',', '.')
+    try:
+        return float(cleaned)
+    except ValueError:
+        return None
+
+
+def parse_product(block):
+    title = extract_title(block)
+    price_raw = extract_price(block, PRICE_PATTERN)
+    old_price_raw = extract_price(block, OLD_PRICE_PATTERN)
+    rating = extract_rating(block)
+    reviews = extract_reviews(block)
+    sku, sku_raw = extract_sku(block)
+    return {
+        'title': title,
+        'price_raw': price_raw,
+        'price': normalize_price(price_raw),
+        'old_price_raw': old_price_raw,
+        'old_price': normalize_price(old_price_raw),
+        'rating': rating,
+        'reviews': reviews,
+        'sku': sku,
+        'sku_valid': bool(sku),
+        'sku_invalid_present': bool(sku_raw) and not sku,
+    }
+
+
+def save_to_csv(products, path):
+    fieldnames = [
+        'title', 'price_raw', 'price', 'old_price_raw', 'old_price',
+        'rating', 'reviews', 'sku', 'sku_valid'
+    ]
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        for product in products:
+            writer.writerow({k: product[k] for k in fieldnames})
+
+
+def print_statistics(products):
+    prices = [p['price'] for p in products if p['price'] is not None]
+    valid_skus = sum(1 for p in products if p['sku_valid'])
+    invalid_skus = sum(1 for p in products if p['sku_invalid_present'])
+    missing_fields = sum(1 for p in products if not p['price'] or not p['sku'])
+
+    print(f"Всего товаров: {len(products)}")
+    print(f"Валидных SKU: {valid_skus}")
+    print(f"Невалидных SKU: {invalid_skus}")
+    print(f"Товаров с пропущенными полями: {missing_fields}")
+    if prices:
+        print(f"Средняя цена: {sum(prices) / len(prices):.2f}")
+        print(f"Макс. цена: {max(prices):.2f}")
+        print(f"Мин. цена: {min(prices):.2f}")
+    else:
+        print("Цен нет")
+
+
+def main():
+    save_html(HTML_FILE, generate_test_html())
+    html = load_html(HTML_FILE)
+    blocks = PRODUCT_PATTERN.findall(html)
+    products = [parse_product(block) for block in blocks]
+    save_to_csv(products, CSV_FILE)
+    print_statistics(products)
+    print(f"\nCSV сохранён: {CSV_FILE}")
+
+
+if __name__ == '__main__':
+    main()
