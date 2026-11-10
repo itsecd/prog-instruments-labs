@@ -2,6 +2,13 @@ import argparse
 import re
 from dataclasses import dataclass
 
+PHONE_PATTERN = re.compile(r'(?:\+7|8)[\s\(\-]*\d{3}[\s\)\-]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}')
+
+FIELD_MAP = {
+    "Фамилия": "surname",
+    "Имя": "name",
+    "Номер телефона или email": "contact",
+}
 
 @dataclass
 class Profile:
@@ -10,15 +17,6 @@ class Profile:
     name: str = ""
     contact: str = ""
     phone: str | None = None
-
-
-def parse_arguments() -> argparse.Namespace:
-    """
-    Парсинг аргументов командной строки
-    """
-    parser = argparse.ArgumentParser(description='Поиск дубликатов номеров телефонов в анкетах')
-    parser.add_argument('filename', type=str, help='Путь к файлу с данными анкет')
-    return parser.parse_args()
 
 
 def extract_phone_number(text: str) -> str | None:
@@ -31,8 +29,7 @@ def extract_phone_number(text: str) -> str | None:
     Returns:
         Нормализованный номер телефона или None, если номер не найден
     """
-    phone_pattern = r'(?:\+7|8)[\s\(\-]*\d{3}[\s\)\-]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}'
-    phones = re.search(phone_pattern, text)
+    phones = PHONE_PATTERN.search(text)
     if phones:
         phone = phones.group()
         cleaned = re.sub(r'[^\d+]', '', phone)
