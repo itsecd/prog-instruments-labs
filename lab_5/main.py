@@ -1,5 +1,6 @@
 import argparse
 import logging
+from logging.handlers import RotatingFileHandler
 import re
 import time
 from typing import Tuple, List, Dict, Iterator, Union
@@ -198,11 +199,17 @@ def parser_with_pagination(source: str, csv_path: str) -> None:
 
 
 def main():
+    handler = RotatingFileHandler(
+        "app.log",
+        maxBytes=1024 * 1024,
+        backupCount=3,
+        encoding="utf-8",
+    )
+
     logging.basicConfig(
-        filename="app.log",
         level=logging.DEBUG,
         format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
-        encoding="utf-8",
+        handlers=[handler],
     )
 
     logger.info("Application started")
