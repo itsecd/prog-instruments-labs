@@ -34,6 +34,186 @@ def print_product(product):
     print("Цена:", product["price"])
     print("Количество:", product["quantity"])
 
+def find_product(products, name):
+    for product in products:
+        if product["name"].lower() == name.lower():
+            return product
+
+    return None
+
+
+def add_product(products):
+    print("\nДобавление товара")
+    name = input("Название: ").strip()
+
+    if name == "":
+        print("Название не может быть пустым")
+        return
+
+    if find_product(products, name) is not None:
+        print("Товар с таким названием уже существует")
+        return
+
+    category = input("Категория: ").strip()
+
+    try:
+        price = float(input("Цена за штуку: "))
+        quantity = int(input("Количество: "))
+
+        if price < 0 or quantity < 0:
+            print("Цена и количество не могут быть отрицательными")
+            return
+
+        product = {
+            "name": name,
+            "category": category,
+            "price": price,
+            "quantity": quantity
+        }
+
+        products.append(product)
+        print("Товар добавлен")
+
+    except ValueError:
+        print("Ошибка: цена и количество должны быть числами")
+
+
+def show_products(products):
+    print("\nСписок товаров")
+
+    if len(products) == 0:
+        print("На складе пока нет товаров")
+        return
+
+    number = 1
+
+    for product in products:
+        print("Товар №", number)
+        print_product(product)
+        print("Стоимость:", product["price"] * product["quantity"])
+        number = number + 1
+
+
+def search_products(products):
+    print("\nПоиск товара")
+    search = input("Введите название или его часть: ").strip().lower()
+
+    if search == "":
+        print("Поисковая строка не может быть пустой")
+        return
+
+    found = False
+
+    for product in products:
+        if search in product["name"].lower():
+            print_product(product)
+            found = True
+
+    if found == False:
+        print("Ничего не найдено")
+
+def change_quantity(products):
+    print("\n Изменение количества")
+    name = input("Введите название товара: ").strip().lower()
+    product = find_product(products, name)
+
+    if product is None:
+        print("Товар не найден")
+        return
+
+    print("Текущее количество:", product["quantity"])
+    print("1. Добавить товар")
+    print("2. Списать товар")
+    print("3. Установить новое количество")
+
+    action = input("Выберите действие: ")
+
+    if action == "1":
+        try:
+            amount = int(input("Сколько добавить: "))
+
+            if amount < 0:
+                print("Количество не может быть отрицательным")
+            else:
+                product["quantity"] = product["quantity"] + amount
+                print("Новое количество:", product["quantity"])
+
+        except ValueError:
+            print("Нужно ввести целое число")
+
+    elif action == "2":
+        try:
+            amount = int(input("Сколько списать: "))
+
+            if amount < 0:
+                print("Количество не может быть отрицательным")
+            elif amount > product["quantity"]:
+                print("На складе недостаточно товара")
+            else:
+                product["quantity"] = product["quantity"] - amount
+                print("Новое количество:", product["quantity"])
+
+        except ValueError:
+            print("Нужно ввести целое число")
+
+    elif action == "3":
+        try:
+            amount = int(input("Введите новое количество: "))
+
+            if amount < 0:
+                print("Количество не может быть отрицательным")
+            else:
+                product["quantity"] = amount
+                print("Количество изменено")
+
+        except ValueError:
+            print("Нужно ввести целое число")
+
+    else:
+        print("Такого действия нет")
+
+
+def change_price(products):
+    print("\n Изменение цены")
+    name = input("Введите название товара: ").strip().lower()
+    product = find_product(products, name)
+
+    if product is None:
+        print("Товар не найден")
+        return
+
+    print("Текущая цена:", product["price"])
+
+    try:
+        new_price = float(input("Введите новую цену: "))
+
+        if new_price < 0:
+            print("Цена не может быть отрицательной")
+        else:
+            product["price"] = new_price
+            print("Цена изменена")
+
+    except ValueError:
+        print("Нужно ввести число")
+
+
+def delete_product(products):
+    print("\nУдаление товара")
+    name = input("Введите название товара: ").strip().lower()
+    product = find_product(products, name)
+
+    if product is None:
+        print("Товар не найден")
+        return
+
+    answer = input("Удалить товар?").strip().lower()
+
+    if answer == "да":
+        products.remove(product)
+        print("Товар удалён")
+    else:
+        print("Удаление отменено")
+
 products = load_products()
 
 while True:
@@ -51,189 +231,22 @@ while True:
     choice = input("Выберите действие: ")
 
     if choice == "1":
-        print("\nДобавление товара")
-        name = input("Название: ").strip()
-
-        if name == "":
-            print("Название не может быть пустым")
-        else:
-            exists = False
-
-            for product in products:
-                if product["name"].lower() == name.lower():
-                    exists = True
-
-            if exists:
-                print("Товар с таким названием уже существует")
-            else:
-                category = input("Категория: ").strip()
-
-                try:
-                    price = float(input("Цена за штуку: "))
-                    quantity = int(input("Количество: "))
-
-                    if price < 0 or quantity < 0:
-                        print("Цена и количество не могут быть отрицательными")
-                    else:
-                        product = {
-                            "name": name,
-                            "category": category,
-                            "price": price,
-                            "quantity": quantity
-                        }
-
-                        products.append(product)
-                        print("Товар добавлен")
-
-                except ValueError:
-                    print("Ошибка: цена и количество должны быть числами")
+        add_product(products)
 
     elif choice == "2":
-        print("\nСписок товаров")
-
-        if len(products) == 0:
-            print("На складе пока нет товаров")
-        else:
-            number = 1
-
-            for product in products:
-                print("Товар №", number)
-                print_product(product)
-                print("Стоимость:", product["price"] * product["quantity"])
-                number = number + 1
+        show_products(products)
 
     elif choice == "3":
-        print("\nПоиск товара")
-        search = input("Введите название или его часть: ").strip().lower()
-
-        if search == "":
-            print("Поисковая строка не может быть пустой")
-        else:
-            found = False
-
-            for product in products:
-                if search in product["name"].lower():
-                    print_product(product)
-                    found = True
-
-            if found == False:
-                print("Ничего не найдено")
+        search_products(products)
 
     elif choice == "4":
-        print("\n Изменение количества")
-        name = input("Введите название товара: ").strip().lower()
-
-        found = False
-
-        for product in products:
-            if product["name"].lower() == name:
-                found = True
-
-                print("Текущее количество:", product["quantity"])
-                print("1. Добавить товар")
-                print("2. Списать товар")
-                print("3. Установить новое количество")
-
-                action = input("Выберите действие: ")
-
-                if action == "1":
-                    try:
-                        amount = int(input("Сколько добавить: "))
-
-                        if amount < 0:
-                            print("Количество не может быть отрицательным")
-                        else:
-                            product["quantity"] = product["quantity"] + amount
-                            print("Новое количество:", product["quantity"])
-
-                    except ValueError:
-                        print("Нужно ввести целое число")
-
-                elif action == "2":
-                    try:
-                        amount = int(input("Сколько списать: "))
-
-                        if amount < 0:
-                            print("Количество не может быть отрицательным")
-                        elif amount > product["quantity"]:
-                            print("На складе недостаточно товара")
-                        else:
-                            product["quantity"] = product["quantity"] - amount
-                            print("Новое количество:", product["quantity"])
-
-                    except ValueError:
-                        print("Нужно ввести целое число")
-
-                elif action == "3":
-                    try:
-                        amount = int(input("Введите новое количество: "))
-
-                        if amount < 0:
-                            print("Количество не может быть отрицательным")
-                        else:
-                            product["quantity"] = amount
-                            print("Количество изменено")
-
-                    except ValueError:
-                        print("Нужно ввести целое число")
-
-                else:
-                    print("Такого действия нет")
-
-                break
-
-        if found == False:
-            print("Товар не найден")
+        change_quantity(products)
 
     elif choice == "5":
-        print("\n Изменение цены")
-        name = input("Введите название товара: ").strip().lower()
-
-        found = False
-
-        for product in products:
-            if product["name"].lower() == name:
-                found = True
-                print("Текущая цена:", product["price"])
-
-                try:
-                    new_price = float(input("Введите новую цену: "))
-
-                    if new_price < 0:
-                        print("Цена не может быть отрицательной")
-                    else:
-                        product["price"] = new_price
-                        print("Цена изменена")
-
-                except ValueError:
-                    print("Нужно ввести число")
-
-                break
-
-        if found == False:
-            print("Товар не найден")
+        change_price(products)
 
     elif choice == "6":
-        print("\nУдаление товара")
-        name = input("Введите название товара: ").strip().lower()
-
-        found = False
-
-        for product in products:
-            if product["name"].lower() == name:
-                found = True
-                answer = input("Удалить товар? Да/нет: ").strip().lower()
-
-                if answer == "да":
-                    products.remove(product)
-                    print("Товар удалён")
-                else:
-                    print("Удаление отменено")
-
-                break
-
-        if found == False:
-            print("Товар не найден")
+        delete_product(products)
 
     elif choice == "7":
         print("\nТовары с маленьким остатком")
