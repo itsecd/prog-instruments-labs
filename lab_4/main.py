@@ -214,9 +214,58 @@ def delete_product(products):
     else:
         print("Удаление отменено")
 
-products = load_products()
+def show_low_stock(products):
+    print("\nТовары с маленьким остатком")
 
-while True:
+    try:
+        limit = int(input("Показать товары с количеством меньше: "))
+
+        if limit < 0:
+            print("Значение не может быть отрицательным")
+        else:
+            found = False
+
+            for product in products:
+                if product["quantity"] < limit:
+                    print_product(product)
+                    found = True
+
+            if found == False:
+                print("Таких товаров нет")
+
+    except ValueError:
+        print("Нужно ввести целое число")
+
+
+def show_cost(products):
+    print("\nСтоимость товаров")
+
+    if len(products) == 0:
+        print("На складе пока нет товаров")
+        return
+
+    total = 0
+    total_quantity = 0
+
+    for product in products:
+        product_cost = product["price"] * product["quantity"]
+        total = total + product_cost
+        total_quantity = total_quantity + product["quantity"]
+
+        print(
+            product["name"],
+            "-",
+            product["quantity"],
+            "шт. на сумму",
+            round(product_cost, 2)
+        )
+
+    print("Всего видов товаров:", len(products))
+    print("Всего единиц товаров:", total_quantity)
+    print("Общая стоимость:", round(total, 2))
+
+
+def print_menu():
     print("1. Добавить товар")
     print("2. Показать все товары")
     print("3. Найти товар по названию")
@@ -228,84 +277,48 @@ while True:
     print("9. Сохранить данные")
     print("0. Сохранить и выйти")
 
-    choice = input("Выберите действие: ")
+def main():
+    products = load_products()
 
-    if choice == "1":
-        add_product(products)
+    while True:
+        print_menu()
+        choice = input("Выберите действие: ")
 
-    elif choice == "2":
-        show_products(products)
+        if choice == "1":
+            add_product(products)
 
-    elif choice == "3":
-        search_products(products)
+        elif choice == "2":
+            show_products(products)
 
-    elif choice == "4":
-        change_quantity(products)
+        elif choice == "3":
+            search_products(products)
 
-    elif choice == "5":
-        change_price(products)
+        elif choice == "4":
+            change_quantity(products)
 
-    elif choice == "6":
-        delete_product(products)
+        elif choice == "5":
+            change_price(products)
 
-    elif choice == "7":
-        print("\nТовары с маленьким остатком")
+        elif choice == "6":
+            delete_product(products)
 
-        try:
-            limit = int(input("Показать товары с количеством меньше: "))
+        elif choice == "7":
+            show_low_stock(products)
 
-            if limit < 0:
-                print("Значение не может быть отрицательным")
-            else:
-                found = False
+        elif choice == "8":
+            show_cost(products)
 
-                for product in products:
-                    if product["quantity"] < limit:
-                        
-                        for product in products:
-                            if product["quantity"] < limit:
-                                print_product(product)
-                        found = True
+        elif choice == "9":
+            save_products(products)
 
-                if found == False:
-                    print("Таких товаров нет")
+        elif choice == "0":
+            save_products(products)
+            print("Программа завершена")
+            break
 
-        except ValueError:
-            print("Нужно ввести целое число")
-
-    elif choice == "8":
-        print("\nСтоимость товаров")
-
-        if len(products) == 0:
-            print("На складе пока нет товаров")
         else:
-            total = 0
-            total_quantity = 0
+            print("Такого пункта тут нет :)")
 
-            for product in products:
-                product_cost = product["price"] * product["quantity"]
-                total = total + product_cost
-                total_quantity = total_quantity + product["quantity"]
 
-                print(
-                    product["name"],
-                    "-",
-                    product["quantity"],
-                    "шт. на сумму",
-                    round(product_cost, 2)
-                )
-
-            print("Всего видов товаров:", len(products))
-            print("Всего единиц товаров:", total_quantity)
-            print("Общая стоимость:", round(total, 2))
-
-    elif choice == "9":
-        save_products(products)
-
-    elif choice == "0":
-        save_products(products)
-        print("Программа завершена")
-        break
-
-    else:
-        print("Такого пункта меню нет")
+if __name__ == "__main__":
+    main()
