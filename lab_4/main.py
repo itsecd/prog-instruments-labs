@@ -3,7 +3,6 @@ import os
 
 
 FILENAME = "warehouse.json"
-products = []
 
 def save_products(products):
     try:
@@ -13,16 +12,6 @@ def save_products(products):
         print("Данные сохранены")
     except Exception:
         print("Ошибка при сохранении данных")
-
-if os.path.exists(FILENAME):
-    try:
-        file = open(FILENAME, "r", encoding="utf-8")
-        products = json.load(file)
-        file.close()
-        print("Данные загружены из файла")
-    except Exception:
-        print("Не получилось загрузить данные из файла")
-        products = []
 
 def load_products():
     if os.path.exists(FILENAME):
@@ -260,10 +249,9 @@ while True:
                 for product in products:
                     if product["quantity"] < limit:
                         
-                        print("Название:", product["name"])
-                        print("Категория:", product["category"])
-                        print("Цена:", product["price"])
-                        print("Количество:", product["quantity"])
+                        for product in products:
+                            if product["quantity"] < limit:
+                                print_product(product)
                         found = True
 
                 if found == False:
