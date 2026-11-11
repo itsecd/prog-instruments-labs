@@ -2,21 +2,21 @@ import json
 import os
 
 
-filename = "warehouse.json"
+FILENAME = "warehouse.json"
 products = []
 
 def save_products(products):
     try:
-        with open(filename, "w", encoding="utf-8") as file:
+        with open(FILENAME, "w", encoding="utf-8") as file:
             json.dump(products, file, ensure_ascii=False, indent=4)
 
         print("Данные сохранены")
     except Exception:
         print("Ошибка при сохранении данных")
 
-if os.path.exists(filename):
+if os.path.exists(FILENAME):
     try:
-        file = open(filename, "r", encoding="utf-8")
+        file = open(FILENAME, "r", encoding="utf-8")
         products = json.load(file)
         file.close()
         print("Данные загружены из файла")
@@ -25,9 +25,9 @@ if os.path.exists(filename):
         products = []
 
 def load_products():
-    if os.path.exists(filename):
+    if os.path.exists(FILENAME):
         try:
-            with open(filename, "r", encoding="utf-8") as file:
+            with open(FILENAME, "r", encoding="utf-8") as file:
                 loaded_products = json.load(file)
 
             print("Данные загружены из файла")
