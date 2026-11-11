@@ -5,6 +5,15 @@ import os
 filename = "warehouse.json"
 products = []
 
+def save_products(products):
+    try:
+        with open(filename, "w", encoding="utf-8") as file:
+            json.dump(products, file, ensure_ascii=False, indent=4)
+
+        print("Данные сохранены")
+    except Exception:
+        print("Ошибка при сохранении данных")
+
 if os.path.exists(filename):
     try:
         file = open(filename, "r", encoding="utf-8")
@@ -274,23 +283,10 @@ while True:
             print("Общая стоимость:", round(total, 2))
 
     elif choice == "9":
-        try:
-            file = open(filename, "w", encoding="utf-8")
-            json.dump(products, file, ensure_ascii=False, indent=4)
-            file.close()
-            print("Данные сохранены")
-        except Exception:
-            print("Ошибка при сохранении данных")
+        save_products(products)
 
     elif choice == "0":
-        try:
-            file = open(filename, "w", encoding="utf-8")
-            json.dump(products, file, ensure_ascii=False, indent=4)
-            file.close()
-            print("Данные сохранены")
-        except Exception:
-            print("Ошибка при сохранении данных")
-
+        save_products(products)
         print("Программа завершена")
         break
 
