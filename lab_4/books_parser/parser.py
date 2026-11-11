@@ -3,6 +3,7 @@
 import re
 from html import unescape
 from urllib.parse import urljoin
+
 BASE_URL = "https://books.toscrape.com/"
 RATINGS = {
     "One": 1,
@@ -13,64 +14,82 @@ RATINGS = {
 }
 
 
-def parse_book(card_html: str, number: int) -> dict[str, str | int]:
-    """Разбирает одну карточку или сообщает номер карточки с ошибкой."""
-    title_match = re.search(
+def _required_match(
+    pattern: str, text: str, error_message: str
+) -> re.Match[str]:
+    """Находит обязательное совпадение или сообщает об ошибке."""
+    match = re.search(pattern, text)
+    if match is None:
+        raise ValueError(error_message)
+    return match
+
+
+def _normalize_text(value: str) -> str:
+    """Раскрывает HTML-сущности и нормализует пробелы."""
+    return " ".join(unescape(value).split())
+
+
+def _parse_title_and_url(card_html: str) -> tuple[str, str]:
+    """Извлекает название и формирует полную ссылку."""
+    match = _required_match(
         r'<h3><a\s+href="([^"]+)"\s+title="([^"]+)">',
         card_html,
+        "не найдены название и ссылка",
     )
-    if title_match is None:
-        raise ValueError(
-            f"В карточке №{number} не найдены название и ссылка"
-        )
 
-    relative_url = unescape(title_match.group(1)).strip()
-    title = " ".join(unescape(title_match.group(2)).split())
+    relative_url = unescape(match.group(1)).strip()
+    title = _normalize_text(match.group(2))
     if not relative_url or not title:
-        raise ValueError(
-            f"В карточке №{number} пустые название или ссылка"
-        )
+        raise ValueError("пустые название или ссылка")
 
-    price_match = re.search(
+    return title, urljoin(BASE_URL, relative_url)
+
+
+def _parse_price(card_html: str) -> tuple[str, str]:
+    """Извлекает цену и валюту."""
+    match = _required_match(
         r'<p\s+class="price_color">\s*(£)([0-9]+\.[0-9]{2})\s*</p>',
         card_html,
+        "не найдены цена и валюта",
     )
-    if price_match is None:
-        raise ValueError(
-            f"В карточке №{number} не найдены цена и валюта"
-        )
+    return match.group(2), match.group(1)
 
-    currency = price_match.group(1)
-    price = price_match.group(2)
 
-    rating_match = re.search(
+def _parse_rating(card_html: str) -> int:
+    """Преобразует словесный рейтинг в число."""
+    match = _required_match(
         r'<p\s+class="star-rating\s+(One|Two|Three|Four|Five)">',
         card_html,
+        "не найден допустимый рейтинг",
     )
-    if rating_match is None:
-        raise ValueError(
-            f"В карточке №{number} не найден допустимый рейтинг"
-        )
+    return RATINGS[match.group(1)]
 
-    rating = RATINGS[rating_match.group(1)]
 
-    availability_match = re.search(
+def _parse_availability(card_html: str) -> str:
+    """Извлекает и очищает информацию о наличии."""
+    match = _required_match(
         r'<p\s+class="instock\s+availability">\s*'
         r'<i\b[^>]*>\s*</i>\s*([^<]+?)\s*</p>',
         card_html,
+        "не найдена информация о наличии",
     )
-    if availability_match is None:
-        raise ValueError(
-            f"В карточке №{number} не найдена информация о наличии"
-        )
 
-    availability = " ".join(
-        unescape(availability_match.group(1)).split()
-    )
+    availability = _normalize_text(match.group(1))
     if not availability:
-        raise ValueError(
-            f"В карточке №{number} пустая информация о наличии"
-        )
+        raise ValueError("пустая информация о наличии")
+
+    return availability
+
+
+def parse_book(card_html: str, number: int) -> dict[str, str | int]:
+    """Собирает данные книги и добавляет номер карточки к ошибкам."""
+    try:
+        title, url = _parse_title_and_url(card_html)
+        price, currency = _parse_price(card_html)
+        rating = _parse_rating(card_html)
+        availability = _parse_availability(card_html)
+    except ValueError as error:
+        raise ValueError(f"В карточке №{number} {error}") from error
 
     return {
         "title": title,
@@ -78,7 +97,7 @@ def parse_book(card_html: str, number: int) -> dict[str, str | int]:
         "currency": currency,
         "rating": rating,
         "availability": availability,
-        "url": urljoin(BASE_URL, relative_url),
+        "url": url,
     }
 
 
