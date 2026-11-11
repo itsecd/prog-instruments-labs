@@ -24,6 +24,22 @@ if os.path.exists(filename):
         print("Не получилось загрузить данные из файла")
         products = []
 
+def load_products():
+    if os.path.exists(filename):
+        try:
+            with open(filename, "r", encoding="utf-8") as file:
+                loaded_products = json.load(file)
+
+            print("Данные загружены из файла")
+            return loaded_products
+
+        except Exception:
+            print("Не получилось загрузить данные из файла")
+            return []
+
+    return []
+
+products = load_products()
 
 while True:
     print("1. Добавить товар")
