@@ -3,7 +3,10 @@
 import re
 from html import unescape
 from urllib.parse import urljoin
+import logging
+from logging_config import APP_NAME
 
+logger = logging.getLogger(f"{APP_NAME}.parser")
 BASE_URL = "https://books.toscrape.com/"
 RATINGS = {
     "One": 1,
@@ -90,7 +93,16 @@ def parse_book(card_html: str, number: int) -> dict[str, str | int]:
         availability = _parse_availability(card_html)
     except ValueError as error:
         raise ValueError(f"В карточке №{number} {error}") from error
-
+    logger.debug(
+        "BOOK_PARSED",
+        extra={
+            "data": {
+                "card_number": number,
+                "url": url,
+                "rating": rating,
+            }
+        },
+    )
     return {
         "title": title,
         "price": price,
@@ -107,6 +119,10 @@ def parse_books(page_html: str) -> list[dict[str, str | int]]:
         r'<article class="product_pod">(.*?)</article>',
         page_html,
         flags=re.DOTALL,
+    )
+    logger.info(
+        "CARDS_FOUND",
+        extra={"data": {"count": len(cards)}},
     )
     if not cards:
         raise ValueError(
