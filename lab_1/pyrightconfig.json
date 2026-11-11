@@ -1,0 +1,8 @@
+{
+    "include": ["calc", "tests"],
+    "exclude": ["**/__pycache__", ".venv"],
+    "typeCheckingMode": "strict",
+    "reportMissingImports": true,
+    "reportMissingTypeStubs": false,
+    "pythonVersion": "3.11"
+  }
