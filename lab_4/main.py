@@ -39,6 +39,12 @@ def load_products():
 
     return []
 
+def print_product(product):
+    print("Название:", product["name"])
+    print("Категория:", product["category"])
+    print("Цена:", product["price"])
+    print("Количество:", product["quantity"])
+
 products = load_products()
 
 while True:
@@ -103,10 +109,7 @@ while True:
 
             for product in products:
                 print("Товар №", number)
-                print("Название:", product["name"])
-                print("Категория:", product["category"])
-                print("Цена:", product["price"])
-                print("Количество:", product["quantity"])
+                print_product(product)
                 print("Стоимость:", product["price"] * product["quantity"])
                 number = number + 1
 
@@ -121,10 +124,7 @@ while True:
 
             for product in products:
                 if search in product["name"].lower():
-                    print("Название:", product["name"])
-                    print("Категория:", product["category"])
-                    print("Цена:", product["price"])
-                    print("Количество:", product["quantity"])
+                    print_product(product)
                     found = True
 
             if found == False:
