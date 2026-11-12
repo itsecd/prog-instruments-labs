@@ -1,0 +1,35 @@
+name: Lab 1 checks
+
+on:
+  pull_request:
+    paths:
+      - "lab_1/**"
+      - ".github/workflows/lab_1_checks.yml"
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lab_1
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: lab_1/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Ruff lint
+        run: make lint
+
+      - name: Ruff format check
+        run: make format-check
+
+      - name: Pyright
+        run: make typecheck
