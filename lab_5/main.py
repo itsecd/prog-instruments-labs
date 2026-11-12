@@ -1,9 +1,12 @@
-from key_gen import generate_keys
-from encryption import encrypt
-from decryption import decrypt
 from typing import Literal
 
+from decryption import decrypt
+from encryption import encrypt
+from key_gen import generate_keys
+from loguru import logger
 
+
+@logger.catch(exclude=(FileNotFoundError, PermissionError))
 def main(settings: dict[str, str | int | bytes], mode: Literal["gen", "enc", "dec"]) -> None:
     """
     Точка входа в логику программы
@@ -47,6 +50,6 @@ if __name__ == "__main__":
 
         main(settings, args.mode)
     except FileNotFoundError as e:
-        print(f"Файл {e.filename} не найден!")
-    except Exception as e:
-        print(e)
+        logger.error(f"File {e.filename} not found!")
+    except PermissionError as e:
+        logger.error(f"Permission denied: {e.filename}")
