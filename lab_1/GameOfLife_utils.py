@@ -101,7 +101,8 @@ def make_movie(history, filename, trim=False):
     my_cmap = plt.get_cmap("gray_r")
     fig = plt.figure(figsize=MOVIE_FIGSIZE, dpi=MOVIE_DPI)
     ax = fig.add_subplot(111)
-
+    pc = None
+    im = None
     if not use_imshow:
         # First option : use pcolor
         pc = ax.pcolor(
@@ -130,13 +131,13 @@ def make_movie(history, filename, trim=False):
 
     # The function as it is called at the n-th iteration
     # It directly modifies the data within the image
-    def update_img(n):
+    def update_img(n: int) -> None:
         # Revert and scale from 0-1 to 0-255
         print("Frame " + str(n))
-        if not use_imshow:
+        if pc is not None:
             new_color = my_cmap(255 * history[n, :, :].T.ravel())
             pc.update({"facecolors": new_color})
-        else:
+        elif im is not None:
             im.set_data(history[n, :, ::-1].T)
         #
         cnt.set_text(str(n))
@@ -144,8 +145,6 @@ def make_movie(history, filename, trim=False):
         #    fov =
         #    ax.set_xlim()
         #    ax.set_ylim()
-
-        return True
 
     # Create the animation and save it
     print("Make animation")

@@ -18,3 +18,9 @@ select = [
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[tool.pyright]
+include = ["."]
+exclude = ["rle", "**/__pycache__"]
+pythonVersion = "3.14"
+typeCheckingMode = "standard"
