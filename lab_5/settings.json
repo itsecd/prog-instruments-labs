@@ -1,0 +1,12 @@
+{
+    "initial_file": "./file.txt",
+    "encrypted_file": "./file_encrypted.txt",
+    "decrypted_file": "./file_decrypted.txt",
+    "symmetric_key": "./keys/key.txt",
+    "public_key": "./keys/public_key.pem",
+    "secret_key": "./keys/secret_key.pem",
+    "rsa_public_exponent": 65537,
+    "rsa_key_size": 2048,
+    "3des_init_vector": [255, 241, 68, 43, 13, 31, 35, 86],
+    "3des_key_size": 128
+}
