@@ -4,6 +4,31 @@ import random
 import json
 import os
 
+from constants import (
+    ADV_ACCENT,
+    ADV_ACCENT_ACTIVE,
+    ADV_BG,
+    ADV_DANGER,
+    ADV_INVENTORY,
+    ADV_PANEL_BG,
+    ADV_SUCCESS,
+    ADV_TEXT,
+    BG_COLOR,
+    FONT_BOARD_LABEL,
+    FONT_BODY,
+    FONT_SMALL_BOLD,
+    FONT_SUBTITLE,
+    FONT_TEXT,
+    FONT_TITLE,
+    MODE_COMPUTER,
+    MODE_TWO_PLAYERS,
+    PLACEMENT_BG,
+    PLACEMENT_CELL_BG,
+    SIZE_BATTLESHIP,
+    SIZE_MENU,
+    SIZE_TEXT_ADVENTURE,
+)
+
 def load_hangman_words(filename="hangman_words.json"):
     """Loads a list of words from a JSON file using the script's absolute path."""
     
@@ -75,10 +100,10 @@ class GameApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.title("Python Text-based Games Collection")
-        self.geometry("600x500")
+        self.geometry(SIZE_MENU)
 
         # Container Frame: All other frames (pages) will be stacked on top of this.
-        container = tk.Frame(self, bg="#90EE90") 
+        container = tk.Frame(self, bg=BG_COLOR) 
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
@@ -105,11 +130,11 @@ class GameApp(tk.Tk):
 class MainMenu(tk.Frame):
     """The starting screen with buttons for all games."""
     def __init__(self, parent, controller):
-        bg="#90EE90"
+        bg=BG_COLOR
         tk.Frame.__init__(self, parent, bg=bg) 
         self.controller = controller
 
-        tk.Label(self, text="=== Python Text-based Games Collection ===", font=('Arial', 16, 'bold'), bg=bg).pack(pady=20)
+        tk.Label(self, text="=== Python Text-based Games Collection ===", font=FONT_TITLE, bg=bg).pack(pady=20)
         
         # List of all games to create buttons dynamically
         games = [
@@ -132,11 +157,11 @@ class MainMenu(tk.Frame):
 class MoreGamesMenu(tk.Frame):
     """The screen with additional games."""
     def __init__(self, parent, controller):
-        bg="#90EE90"
+        bg=BG_COLOR
         tk.Frame.__init__(self, parent, bg=bg) 
         self.controller = controller
 
-        tk.Label(self, text="=== More Games ===", font=('Arial', 16, 'bold'), bg=bg).pack(pady=20)
+        tk.Label(self, text="=== More Games ===", font=FONT_TITLE, bg=bg).pack(pady=20)
         
         # List of additional games
         more_games = [
@@ -149,9 +174,9 @@ class MoreGamesMenu(tk.Frame):
 
         for text, frame_name in more_games:
             if frame_name == "BattleshipGUI":
-                tk.Button(self, text=text, width=50, command=lambda name=frame_name: [controller.winfo_toplevel().geometry("1000x900"), controller.show_frame(name)]).pack(pady=5)
+                tk.Button(self, text=text, width=50, command=lambda name=frame_name: [controller.winfo_toplevel().geometry(SIZE_BATTLESHIP), controller.show_frame(name)]).pack(pady=5)
             elif frame_name == "TextAdventureGUI":
-                tk.Button(self, text=text, width=50, command=lambda name=frame_name: [controller.winfo_toplevel().geometry("900x750"), controller.show_frame(name)]).pack(pady=5)
+                tk.Button(self, text=text, width=50, command=lambda name=frame_name: [controller.winfo_toplevel().geometry(SIZE_TEXT_ADVENTURE), controller.show_frame(name)]).pack(pady=5)
             else:
                 tk.Button(self, text=text, width=50, command=lambda name=frame_name: controller.show_frame(name)).pack(pady=5)
 
@@ -160,7 +185,7 @@ class MoreGamesMenu(tk.Frame):
 # --- Mastermind (Bulls and Cows) GUI Frame ---
 class MastermindGUI(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # Game State Variables
@@ -169,23 +194,23 @@ class MastermindGUI(tk.Frame):
         self.max_attempts = 10
         
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Mastermind (Bulls and Cows) ===", font=('Arial', 16, 'bold'), bg="#90EE90").pack(pady=10)
+        tk.Label(self, text="=== Mastermind (Bulls and Cows) ===", font=FONT_TITLE, bg=BG_COLOR).pack(pady=10)
         
-        tk.Label(self, text="Guess the 4-digit number with unique digits!", font=('Arial', 12), bg="#90EE90").pack(pady=5)
+        tk.Label(self, text="Guess the 4-digit number with unique digits!", font=FONT_TEXT, bg=BG_COLOR).pack(pady=5)
         
         # A Text widget to act as the Game Log
         self.log_text = tk.Text(self, height=8, width=60, state=tk.DISABLED)
         self.log_text.pack(pady=10)
         
         # Label to show status (Attempts left)
-        self.status_label = tk.Label(self, text="", bg="#90EE90")
+        self.status_label = tk.Label(self, text="", bg=BG_COLOR)
         self.status_label.pack(pady=10)
         
         # Frame for Input and Button
-        input_frame = tk.Frame(self, bg="#90EE90")
+        input_frame = tk.Frame(self, bg=BG_COLOR)
         input_frame.pack(pady=10)
         
-        tk.Label(input_frame, text="Your Guess (4 digits):", bg="#90EE90").pack(side=tk.LEFT, padx=5)
+        tk.Label(input_frame, text="Your Guess (4 digits):", bg=BG_COLOR).pack(side=tk.LEFT, padx=5)
         
         # Entry widget for the player's guess
         self.guess_entry = tk.Entry(input_frame, width=15)
@@ -272,7 +297,7 @@ class MastermindGUI(tk.Frame):
 # --- Word Scramble (Anagrams) GUI Frame ---
 class WordScrambleGUI(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # Game State Variables
@@ -282,14 +307,14 @@ class WordScrambleGUI(tk.Frame):
         self.timer_id = None
         
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Word Scramble (Anagrams) ===", font=('Arial', 16, 'bold'), bg="#90EE90").pack(pady=10)
+        tk.Label(self, text="=== Word Scramble (Anagrams) ===", font=FONT_TITLE, bg=BG_COLOR).pack(pady=10)
         
         # Label for scrambled word
-        self.word_label = tk.Label(self, text="", font=('Arial', 20, 'bold'), bg="#90EE90", fg="blue")
+        self.word_label = tk.Label(self, text="", font=('Arial', 20, 'bold'), bg=BG_COLOR, fg="blue")
         self.word_label.pack(pady=20)
         
         # Label for timer
-        self.timer_label = tk.Label(self, text="Time: 0s", font=('Arial', 14), bg="#90EE90", fg="red")
+        self.timer_label = tk.Label(self, text="Time: 0s", font=('Arial', 14), bg=BG_COLOR, fg="red")
         self.timer_label.pack(pady=10)
         
         # A Text widget to act as the Game Log
@@ -297,10 +322,10 @@ class WordScrambleGUI(tk.Frame):
         self.log_text.pack(pady=10)
         
         # Frame for Input and Button
-        input_frame = tk.Frame(self, bg="#90EE90")
+        input_frame = tk.Frame(self, bg=BG_COLOR)
         input_frame.pack(pady=10)
         
-        tk.Label(input_frame, text="Your Answer:", bg="#90EE90").pack(side=tk.LEFT, padx=5)
+        tk.Label(input_frame, text="Your Answer:", bg=BG_COLOR).pack(side=tk.LEFT, padx=5)
         
         # Entry widget for the player's answer
         self.answer_entry = tk.Entry(input_frame, width=20)
@@ -406,7 +431,7 @@ class WordScrambleGUI(tk.Frame):
 # --- Battleship GUI Frame ---
 class BattleshipGUI(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # Game State Variables
@@ -423,7 +448,7 @@ class BattleshipGUI(tk.Frame):
         self.player_hits = {1: 0, 2: 0}
         self.total_ship_cells = 9  # 1 3-cell + 2 2-cell + 3 1-cell = 9 cells
         self.game_phase = "MODE_SELECTION"
-        self.game_mode = "COMPUTER"
+        self.game_mode = MODE_COMPUTER
         self.game_active = True
         self.current_player = 1
         self.placement_player = 1
@@ -437,20 +462,20 @@ class BattleshipGUI(tk.Frame):
         self.own_board_buttons = {}
         
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Battleship ===", font=('Arial', 16, 'bold'), bg="#90EE90").pack(pady=10)
+        tk.Label(self, text="=== Battleship ===", font=FONT_TITLE, bg=BG_COLOR).pack(pady=10)
         
         # Status label
-        self.status_label = tk.Label(self, text="Choose a game mode.", font=('Arial', 12), bg="#90EE90")
+        self.status_label = tk.Label(self, text="Choose a game mode.", font=FONT_TEXT, bg=BG_COLOR)
         self.status_label.pack(pady=5)
         
         # Scores (hidden during placement)
-        self.score_label = tk.Label(self, text="", font=('Arial', 11), bg="#90EE90")
+        self.score_label = tk.Label(self, text="", font=FONT_BODY, bg=BG_COLOR)
         
         # Placement instructions (shown during placement)
-        self.instruction_label = tk.Label(self, text="Ship placement goes here", font=('Arial', 10), bg="#90EE90")
+        self.instruction_label = tk.Label(self, text="Ship placement goes here", font=('Arial', 10), bg=BG_COLOR)
         
         # Main content frame
-        self.content_frame = tk.Frame(self, bg="#90EE90")
+        self.content_frame = tk.Frame(self, bg=BG_COLOR)
         self.content_frame.pack(pady=10, fill=tk.BOTH, expand=True)
         
         # Game log
@@ -458,7 +483,7 @@ class BattleshipGUI(tk.Frame):
         self.log_text.pack(pady=5)
         
         # Frame for Input
-        self.input_frame = tk.Frame(self, bg="#90EE90")
+        self.input_frame = tk.Frame(self, bg=BG_COLOR)
         
         # Letter entry
         self.letter_entry = tk.Entry(self.input_frame, width=3)
@@ -470,14 +495,14 @@ class BattleshipGUI(tk.Frame):
         self.fire_button = tk.Button(self.input_frame, text="Fire!", command=self.player_fire)
         
         # Control Buttons frame
-        self.button_frame = tk.Frame(self, bg="#90EE90")
+        self.button_frame = tk.Frame(self, bg=BG_COLOR)
         
         self.show_mode_selection()
     
     def show_mode_selection(self):
         """Show a simple mode selection screen before the game begins."""
         self.game_phase = "MODE_SELECTION"
-        self.game_mode = "COMPUTER"
+        self.game_mode = MODE_COMPUTER
         self.game_active = True
         self.current_player = 1
         self.placement_player = 1
@@ -489,16 +514,16 @@ class BattleshipGUI(tk.Frame):
         
         self.content_frame.pack_forget()
         self.content_frame.destroy()
-        self.content_frame = tk.Frame(self, bg="#90EE90")
+        self.content_frame = tk.Frame(self, bg=BG_COLOR)
         self.content_frame.pack(pady=10, fill=tk.BOTH, expand=True)
         
-        mode_frame = tk.Frame(self.content_frame, bg="#90EE90")
+        mode_frame = tk.Frame(self.content_frame, bg=BG_COLOR)
         mode_frame.pack(expand=True)
         
-        tk.Label(mode_frame, text="Select Battleship Mode", font=('Arial', 14, 'bold'), bg="#90EE90").pack(pady=10)
-        tk.Label(mode_frame, text="Play against the computer or a second player", font=('Arial', 11), bg="#90EE90").pack(pady=5)
-        tk.Button(mode_frame, text="1 Player (vs Computer)", width=22, command=lambda: self.start_mode("COMPUTER")).pack(pady=8)
-        tk.Button(mode_frame, text="2 Players (Hot Seat)", width=22, command=lambda: self.start_mode("TWOPLAYER")).pack(pady=8)
+        tk.Label(mode_frame, text="Select Battleship Mode", font=FONT_SUBTITLE, bg=BG_COLOR).pack(pady=10)
+        tk.Label(mode_frame, text="Play against the computer or a second player", font=FONT_BODY, bg=BG_COLOR).pack(pady=5)
+        tk.Button(mode_frame, text="1 Player (vs Computer)", width=22, command=lambda: self.start_mode(MODE_COMPUTER)).pack(pady=8)
+        tk.Button(mode_frame, text="2 Players (Hot Seat)", width=22, command=lambda: self.start_mode(MODE_TWO_PLAYERS)).pack(pady=8)
     
     def start_mode(self, mode):
         """Start a new game in the selected mode."""
@@ -526,7 +551,7 @@ class BattleshipGUI(tk.Frame):
         self.current_ship_idx = 0
         self.current_ship_size = self.ship_sizes[0]
         
-        if self.game_mode == "TWOPLAYER":
+        if self.game_mode == MODE_TWO_PLAYERS:
             if self.placement_player == 1:
                 self.status_label.config(text="Player 1, place your ships.")
             else:
@@ -541,31 +566,31 @@ class BattleshipGUI(tk.Frame):
         # Clear content frame efficiently
         self.content_frame.pack_forget()
         self.content_frame.destroy()
-        self.content_frame = tk.Frame(self, bg="#90EE90")
+        self.content_frame = tk.Frame(self, bg=BG_COLOR)
         self.content_frame.pack(pady=10, fill=tk.BOTH, expand=True)
         
         # Create placement board
-        placement_bg = "#E6F7FF" if self.placement_player == 1 else "#FFE6E6"
-        cell_bg = "lightblue" if self.placement_player == 1 else "lightpink"
+        placement_bg = PLACEMENT_BG[self.placement_player]
+        cell_bg = PLACEMENT_CELL_BG[self.placement_player]
         board_frame = tk.Frame(self.content_frame, bg=placement_bg, relief=tk.SUNKEN, bd=2)
         board_frame.pack(padx=10, fill=tk.BOTH, expand=True)
         
-        if self.game_mode == "TWOPLAYER":
+        if self.game_mode == MODE_TWO_PLAYERS:
             board_title = f"Player {self.placement_player} - Place Ships"
         else:
             board_title = "Your Board - Place Ships"
-        tk.Label(board_frame, text=board_title, font=('Arial', 10, 'bold'), bg=placement_bg).pack()
+        tk.Label(board_frame, text=board_title, font=FONT_SMALL_BOLD, bg=placement_bg).pack()
         
         grid_frame = tk.Frame(board_frame, bg=placement_bg)
         grid_frame.pack(padx=5, pady=5)
         
         tk.Label(grid_frame, text="  ", bg=placement_bg, width=2).grid(row=0, column=0)
         for col in range(self.grid_size):
-            tk.Label(grid_frame, text=chr(ord('A') + col), bg=placement_bg, width=2, font=('Arial', 8, 'bold')).grid(row=0, column=col + 1)
+            tk.Label(grid_frame, text=chr(ord('A') + col), bg=placement_bg, width=2, font=FONT_BOARD_LABEL).grid(row=0, column=col + 1)
         
         self.placement_board_buttons = {}
         for row in range(self.grid_size):
-            tk.Label(grid_frame, text=str(row + 1), bg=placement_bg, width=2, font=('Arial', 8, 'bold')).grid(row=row + 1, column=0)
+            tk.Label(grid_frame, text=str(row + 1), bg=placement_bg, width=2, font=FONT_BOARD_LABEL).grid(row=row + 1, column=0)
             for col in range(self.grid_size):
                 btn = tk.Label(grid_frame, text=" ", bg=cell_bg, width=2, height=1, font=('Arial', 8), relief=tk.RAISED, bd=1)
                 btn.grid(row=row + 1, column=col + 1)
@@ -573,17 +598,17 @@ class BattleshipGUI(tk.Frame):
                 self.placement_board_buttons[(row, col)] = btn
         
         # Placement buttons
-        placement_btn_frame = tk.Frame(self.content_frame, bg="#90EE90")
+        placement_btn_frame = tk.Frame(self.content_frame, bg=BG_COLOR)
         placement_btn_frame.pack(pady=10)
         tk.Button(placement_btn_frame, text="Random Placement", command=self.random_placement).pack(side=tk.LEFT, padx=5)
-        if self.game_mode == "TWOPLAYER" and self.placement_player == 1:
+        if self.game_mode == MODE_TWO_PLAYERS and self.placement_player == 1:
             tk.Button(placement_btn_frame, text="Second Player", command=self.start_game_from_placement).pack(side=tk.LEFT, padx=5)
         else:
             tk.Button(placement_btn_frame, text="Start Game", command=self.start_game_from_placement).pack(side=tk.LEFT, padx=5)
     
     def place_ship_on_board(self, row, col):
         """Try to place a ship at the given coordinates."""
-        board = self.player_boards[self.placement_player if self.game_mode == "TWOPLAYER" else 1]
+        board = self.player_boards[self.placement_player if self.game_mode == MODE_TWO_PLAYERS else 1]
         if not self.can_place_ship(board, row, col, self.current_ship_size, 'H'):
             if not self.can_place_ship(board, row, col, self.current_ship_size, 'V'):
                 self.instruction_label.config(text="Can't place there! Try another spot.")
@@ -604,9 +629,9 @@ class BattleshipGUI(tk.Frame):
         # Move to next ship
         self.current_ship_idx += 1
         if self.current_ship_idx >= 6:  # 6 total ships
-            if self.game_mode == "TWOPLAYER" and self.placement_player == 1:
+            if self.game_mode == MODE_TWO_PLAYERS and self.placement_player == 1:
                 self.instruction_label.config(text="Player 1 ships are ready. Click 'Second Player' to continue.")
-            elif self.game_mode == "TWOPLAYER" and self.placement_player == 2:
+            elif self.game_mode == MODE_TWO_PLAYERS and self.placement_player == 2:
                 self.instruction_label.config(text="Player 2 ships are ready. Click 'Start Game'.")
             else:
                 self.instruction_label.config(text="All ships placed! Click 'Start Game'.")
@@ -617,12 +642,12 @@ class BattleshipGUI(tk.Frame):
     
     def random_placement(self):
         """Randomly place all remaining ships."""
-        board = self.player_boards[self.placement_player if self.game_mode == "TWOPLAYER" else 1]
+        board = self.player_boards[self.placement_player if self.game_mode == MODE_TWO_PLAYERS else 1]
         board[:] = [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)]
         self.place_ships(board)
         
         # Update display using the active player's placement colors
-        cell_bg = "lightblue" if self.placement_player == 1 else "lightpink"
+        cell_bg = PLACEMENT_CELL_BG[self.placement_player]
         for (row, col), btn in self.placement_board_buttons.items():
             if board[row][col] == 'S':
                 btn.config(bg="gray")
@@ -638,7 +663,7 @@ class BattleshipGUI(tk.Frame):
             self.instruction_label.config(text="Place all ships first!")
             return
         
-        if self.game_mode == "TWOPLAYER" and self.placement_player == 1:
+        if self.game_mode == MODE_TWO_PLAYERS and self.placement_player == 1:
             self.placement_player = 2
             self.current_ship_idx = 0
             self.current_ship_size = self.ship_sizes[0]
@@ -646,7 +671,7 @@ class BattleshipGUI(tk.Frame):
             return
         
         self.game_phase = "PLAYING"
-        if self.game_mode == "COMPUTER":
+        if self.game_mode == MODE_COMPUTER:
             self.place_ships(self.player_boards[2])
         self.instruction_label.config(text="")
         self.instruction_label.pack_forget()
@@ -658,14 +683,14 @@ class BattleshipGUI(tk.Frame):
         # Clear content frame efficiently
         self.content_frame.pack_forget()
         self.content_frame.destroy()
-        self.content_frame = tk.Frame(self, bg="#90EE90")
+        self.content_frame = tk.Frame(self, bg=BG_COLOR)
         self.content_frame.pack(pady=10, fill=tk.BOTH, expand=True)
         
         # Main content frame with two boards
-        boards_frame = tk.Frame(self.content_frame, bg="#90EE90")
+        boards_frame = tk.Frame(self.content_frame, bg=BG_COLOR)
         boards_frame.pack(padx=10, fill=tk.BOTH, expand=True)
         
-        if self.game_mode == "COMPUTER":
+        if self.game_mode == MODE_COMPUTER:
             left_title = "Computer's Board"
             right_title = "Your Board"
         else:
@@ -676,18 +701,18 @@ class BattleshipGUI(tk.Frame):
         left_frame = tk.Frame(boards_frame, bg="white", relief=tk.SUNKEN, bd=2)
         left_frame.pack(side=tk.LEFT, padx=5, fill=tk.BOTH, expand=True)
         
-        tk.Label(left_frame, text=left_title, font=('Arial', 10, 'bold'), bg="white").pack()
+        tk.Label(left_frame, text=left_title, font=FONT_SMALL_BOLD, bg="white").pack()
         
         left_grid = tk.Frame(left_frame, bg="white")
         left_grid.pack(padx=5, pady=5)
         
         tk.Label(left_grid, text="  ", bg="white", width=2).grid(row=0, column=0)
         for col in range(self.grid_size):
-            tk.Label(left_grid, text=chr(ord('A') + col), bg="white", width=2, font=('Arial', 8, 'bold')).grid(row=0, column=col + 1)
+            tk.Label(left_grid, text=chr(ord('A') + col), bg="white", width=2, font=FONT_BOARD_LABEL).grid(row=0, column=col + 1)
         
         self.target_board_buttons = {}
         for row in range(self.grid_size):
-            tk.Label(left_grid, text=str(row + 1), bg="white", width=2, font=('Arial', 8, 'bold')).grid(row=row + 1, column=0)
+            tk.Label(left_grid, text=str(row + 1), bg="white", width=2, font=FONT_BOARD_LABEL).grid(row=row + 1, column=0)
             for col in range(self.grid_size):
                 btn = tk.Label(left_grid, text=" ", bg="lightblue", width=2, height=1, font=('Arial', 8), relief=tk.RAISED, bd=1)
                 btn.grid(row=row + 1, column=col + 1)
@@ -697,25 +722,25 @@ class BattleshipGUI(tk.Frame):
         right_frame = tk.Frame(boards_frame, bg="white", relief=tk.SUNKEN, bd=2)
         right_frame.pack(side=tk.LEFT, padx=5, fill=tk.BOTH, expand=True)
         
-        tk.Label(right_frame, text=right_title, font=('Arial', 10, 'bold'), bg="white").pack()
+        tk.Label(right_frame, text=right_title, font=FONT_SMALL_BOLD, bg="white").pack()
         
         right_grid = tk.Frame(right_frame, bg="white")
         right_grid.pack(padx=5, pady=5)
         
         tk.Label(right_grid, text="  ", bg="white", width=2).grid(row=0, column=0)
         for col in range(self.grid_size):
-            tk.Label(right_grid, text=chr(ord('A') + col), bg="white", width=2, font=('Arial', 8, 'bold')).grid(row=0, column=col + 1)
+            tk.Label(right_grid, text=chr(ord('A') + col), bg="white", width=2, font=FONT_BOARD_LABEL).grid(row=0, column=col + 1)
         
         self.own_board_buttons = {}
         for row in range(self.grid_size):
-            tk.Label(right_grid, text=str(row + 1), bg="white", width=2, font=('Arial', 8, 'bold')).grid(row=row + 1, column=0)
+            tk.Label(right_grid, text=str(row + 1), bg="white", width=2, font=FONT_BOARD_LABEL).grid(row=row + 1, column=0)
             for col in range(self.grid_size):
                 btn = tk.Label(right_grid, text=" ", bg="lightgreen", width=2, height=1, font=('Arial', 8), relief=tk.RAISED, bd=1)
                 btn.grid(row=row + 1, column=col + 1)
                 self.own_board_buttons[(row, col)] = btn
         
         # Log and input frame
-        log_input_frame = tk.Frame(self.content_frame, bg="#90EE90")
+        log_input_frame = tk.Frame(self.content_frame, bg=BG_COLOR)
         log_input_frame.pack(side=tk.RIGHT, padx=10, fill=tk.BOTH)
         
         self.log_text.config(height=8, width=30, state=tk.DISABLED)
@@ -723,14 +748,14 @@ class BattleshipGUI(tk.Frame):
         
         # Input frame
         self.input_frame.destroy()
-        self.input_frame = tk.Frame(log_input_frame, bg="#90EE90")
+        self.input_frame = tk.Frame(log_input_frame, bg=BG_COLOR)
         self.input_frame.pack(pady=5)
         
-        tk.Label(self.input_frame, text="Fire at:", bg="#90EE90").pack(side=tk.LEFT, padx=5)
-        tk.Label(self.input_frame, text="Letter:", bg="#90EE90").pack(side=tk.LEFT, padx=2)
+        tk.Label(self.input_frame, text="Fire at:", bg=BG_COLOR).pack(side=tk.LEFT, padx=5)
+        tk.Label(self.input_frame, text="Letter:", bg=BG_COLOR).pack(side=tk.LEFT, padx=2)
         self.letter_entry = tk.Entry(self.input_frame, width=3)
         self.letter_entry.pack(side=tk.LEFT, padx=2)
-        tk.Label(self.input_frame, text="Number:", bg="#90EE90").pack(side=tk.LEFT, padx=2)
+        tk.Label(self.input_frame, text="Number:", bg=BG_COLOR).pack(side=tk.LEFT, padx=2)
         self.number_entry = tk.Entry(self.input_frame, width=3)
         self.number_entry.pack(side=tk.LEFT, padx=2)
         self.fire_button = tk.Button(self.input_frame, text="Fire!", command=self.player_fire)
@@ -738,7 +763,7 @@ class BattleshipGUI(tk.Frame):
         
         # Control buttons
         self.button_frame.destroy()
-        self.button_frame = tk.Frame(self, bg="#90EE90")
+        self.button_frame = tk.Frame(self, bg=BG_COLOR)
         self.button_frame.pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=10)
         tk.Button(self.button_frame, text="New Game", command=self.reset_to_placement).pack(side=tk.LEFT, padx=10)
         tk.Button(self.button_frame, text="Back to More Games", command=self.back_to_menu).pack(side=tk.RIGHT, padx=10)
@@ -749,7 +774,7 @@ class BattleshipGUI(tk.Frame):
     
     def update_all_boards(self):
         """Updates the fixed boards for both players without swapping them on each turn."""
-        if self.game_mode == "COMPUTER":
+        if self.game_mode == MODE_COMPUTER:
             # Keep the single-player view unchanged.
             for row in range(self.grid_size):
                 for col in range(self.grid_size):
@@ -863,12 +888,12 @@ class BattleshipGUI(tk.Frame):
     def back_to_menu(self):
         """Return to more games menu and reset window size."""
         self.show_mode_selection()
-        self.controller.winfo_toplevel().geometry("600x550")
+        self.controller.winfo_toplevel().geometry(SIZE_MENU)
         self.controller.show_frame("MoreGamesMenu")
     
     def update_score_display(self):
         """Updates the score display."""
-        if self.game_mode == "COMPUTER":
+        if self.game_mode == MODE_COMPUTER:
             self.score_label.config(text=f"Your Hits: {self.player_hits[1]}/{self.total_ship_cells} | Computer Hits: {self.player_hits[2]}/{self.total_ship_cells}")
         else:
             self.score_label.config(text=f"Player 1 Hits: {self.player_hits[1]}/{self.total_ship_cells} | Player 2 Hits: {self.player_hits[2]}/{self.total_ship_cells}")
@@ -894,7 +919,7 @@ class BattleshipGUI(tk.Frame):
     
     def player_name(self, player_num):
         """Return a friendly name for each player."""
-        if self.game_mode == "COMPUTER" and player_num == 2:
+        if self.game_mode == MODE_COMPUTER and player_num == 2:
             return "Computer"
         return f"Player {player_num}"
     
@@ -914,7 +939,7 @@ class BattleshipGUI(tk.Frame):
         
         current_player = self.current_player
         target_player = 2 if current_player == 1 else 1
-        if self.game_mode == "COMPUTER":
+        if self.game_mode == MODE_COMPUTER:
             target_player = 2
         
         if self.player_shots[current_player][row][col] != ' ':
@@ -941,7 +966,7 @@ class BattleshipGUI(tk.Frame):
         self.update_all_boards()
         self.update_score_display()
         
-        if self.game_mode == "COMPUTER":
+        if self.game_mode == MODE_COMPUTER:
             self.computer_fire()
         else:
             self.switch_turn()
@@ -1000,7 +1025,7 @@ class BattleshipGUI(tk.Frame):
 # --- Slot Machine Game GUI Frame ---
 class SlotMachineGUI(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # Game State Variables
@@ -1010,14 +1035,14 @@ class SlotMachineGUI(tk.Frame):
         self.spinning = False
         
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Slot Machine ===", font=('Arial', 16, 'bold'), bg="#90EE90").pack(pady=10)
+        tk.Label(self, text="=== Slot Machine ===", font=FONT_TITLE, bg=BG_COLOR).pack(pady=10)
         
         # Balance display
-        self.balance_label = tk.Label(self, text=f"💰 Balance: ${self.balance}", font=('Arial', 14, 'bold'), bg="#90EE90")
+        self.balance_label = tk.Label(self, text=f"💰 Balance: ${self.balance}", font=FONT_SUBTITLE, bg=BG_COLOR)
         self.balance_label.pack(pady=10)
         
         # Reel display (three large symbols)
-        reel_frame = tk.Frame(self, bg="#90EE90")
+        reel_frame = tk.Frame(self, bg=BG_COLOR)
         reel_frame.pack(pady=20)
         
         self.reel_labels = []
@@ -1028,16 +1053,16 @@ class SlotMachineGUI(tk.Frame):
             self.reel_labels.append(label)
         
         # Bet input frame
-        bet_frame = tk.Frame(self, bg="#90EE90")
+        bet_frame = tk.Frame(self, bg=BG_COLOR)
         bet_frame.pack(pady=15)
         
-        tk.Label(bet_frame, text="Bet Amount:", font=('Arial', 12), bg="#90EE90").pack(side=tk.LEFT, padx=5)
-        self.bet_entry = tk.Entry(bet_frame, width=10, font=('Arial', 12))
+        tk.Label(bet_frame, text="Bet Amount:", font=FONT_TEXT, bg=BG_COLOR).pack(side=tk.LEFT, padx=5)
+        self.bet_entry = tk.Entry(bet_frame, width=10, font=FONT_TEXT)
         self.bet_entry.pack(side=tk.LEFT, padx=5)
         self.bet_entry.insert(0, "10")  # Default bet
         
         # Quick bet buttons
-        quick_bet_frame = tk.Frame(self, bg="#90EE90")
+        quick_bet_frame = tk.Frame(self, bg=BG_COLOR)
         quick_bet_frame.pack(pady=5)
         
         for amount in [5, 10, 20, 50]:
@@ -1045,16 +1070,16 @@ class SlotMachineGUI(tk.Frame):
                      command=lambda a=amount: self.set_bet(a), bg="lightblue").pack(side=tk.LEFT, padx=3)
         
         # Spin button
-        self.spin_button = tk.Button(self, text="SPIN!", font=('Arial', 14, 'bold'), 
+        self.spin_button = tk.Button(self, text="SPIN!", font=FONT_SUBTITLE, 
                                      bg="gold", width=20, command=self.spin)
         self.spin_button.pack(pady=15)
         
         # Result message
-        self.result_label = tk.Label(self, text="Place a bet and spin!", font=('Arial', 12), bg="#90EE90", fg="blue")
+        self.result_label = tk.Label(self, text="Place a bet and spin!", font=FONT_TEXT, bg=BG_COLOR, fg="blue")
         self.result_label.pack(pady=10)
         
         # Control buttons
-        button_frame = tk.Frame(self, bg="#90EE90")
+        button_frame = tk.Frame(self, bg=BG_COLOR)
         button_frame.pack(pady=15)
         
         tk.Button(button_frame, text="New Game (Reset)", command=self.reset_game, width=15).pack(side=tk.LEFT, padx=5)
@@ -1153,7 +1178,7 @@ class SlotMachineGUI(tk.Frame):
 # --- Text Adventure (Escape Room) GUI Frame ---
 class TextAdventureGUI(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg="#2C3E50")
+        tk.Frame.__init__(self, parent, bg=ADV_BG)
         self.controller = controller
         
         # Game State Variables
@@ -1241,37 +1266,37 @@ class TextAdventureGUI(tk.Frame):
         }
         
         # --- Widgets Setup ---
-        tk.Label(self, text="=== The Locked Study: Escape Room ===", font=('Arial', 16, 'bold'), 
-                bg="#2C3E50", fg="#ECF0F1").pack(pady=10)
+        tk.Label(self, text="=== The Locked Study: Escape Room ===", font=FONT_TITLE, 
+                bg=ADV_BG, fg=ADV_TEXT).pack(pady=10)
         
         # Scene title
-        self.title_label = tk.Label(self, text="", font=('Arial', 14, 'bold'), 
-                                   bg="#2C3E50", fg="#3498DB", wraplength=500)
+        self.title_label = tk.Label(self, text="", font=FONT_SUBTITLE, 
+                                   bg=ADV_BG, fg=ADV_ACCENT, wraplength=500)
         self.title_label.pack(pady=10)
         
         # Scene description
         self.description_text = tk.Text(self, height=12, width=80, state=tk.DISABLED, 
-                                        bg="#34495E", fg="#ECF0F1", font=('Arial', 11), wrap=tk.WORD)
+                                        bg=ADV_PANEL_BG, fg=ADV_TEXT, font=FONT_BODY, wrap=tk.WORD)
         self.description_text.pack(pady=15, padx=20, fill=tk.BOTH, expand=True)
         
         # Inventory display
-        self.inventory_label = tk.Label(self, text="Inventory: Code (7-3-8-4)", font=('Arial', 10, 'bold'), 
-                                       bg="#2C3E50", fg="#F39C12")
+        self.inventory_label = tk.Label(self, text="Inventory: Code (7-3-8-4)", font=FONT_SMALL_BOLD, 
+                                       bg=ADV_BG, fg=ADV_INVENTORY)
         self.inventory_label.pack(pady=5)
         
         # Choices frame
-        self.choices_frame = tk.Frame(self, bg="#2C3E50")
+        self.choices_frame = tk.Frame(self, bg=ADV_BG)
         self.choices_frame.pack(pady=15, fill=tk.BOTH, expand=True)
         
         # Control Buttons
-        button_frame = tk.Frame(self, bg="#2C3E50")
+        button_frame = tk.Frame(self, bg=ADV_BG)
         button_frame.pack(pady=10)
         
         tk.Button(button_frame, text="Restart Game", command=self.restart_game, 
-                 bg="#E74C3C", fg="white", font=('Arial', 10, 'bold')).pack(side=tk.LEFT, padx=5)
+                 bg=ADV_DANGER, fg="white", font=FONT_SMALL_BOLD).pack(side=tk.LEFT, padx=5)
         tk.Button(button_frame, text="Back to Menu", 
-                 command=lambda: [self.restart_game(), controller.winfo_toplevel().geometry("600x500"), controller.show_frame("MoreGamesMenu")],
-                 bg="#27AE60", fg="white", font=('Arial', 10, 'bold')).pack(side=tk.LEFT, padx=5)
+                 command=lambda: [self.restart_game(), controller.winfo_toplevel().geometry(SIZE_MENU), controller.show_frame("MoreGamesMenu")],
+                 bg=ADV_SUCCESS, fg="white", font=FONT_SMALL_BOLD).pack(side=tk.LEFT, padx=5)
         
         # Start the game
         self.show_scene("main_room")
@@ -1355,8 +1380,8 @@ class TextAdventureGUI(tk.Frame):
             for choice_text, next_scene in scene["choices"]:
                 btn = tk.Button(self.choices_frame, text=choice_text, width=60, 
                                command=lambda s=next_scene: self.show_scene(s),
-                               bg="#3498DB", fg="white", font=('Arial', 11),
-                               relief=tk.RAISED, bd=2, activebackground="#2980B9")
+                               bg=ADV_ACCENT, fg="white", font=FONT_BODY,
+                               relief=tk.RAISED, bd=2, activebackground=ADV_ACCENT_ACTIVE)
                 btn.pack(pady=5)
     
     def prompt_code_entry(self):
@@ -1396,7 +1421,7 @@ class TextAdventureGUI(tk.Frame):
 # --- Number Guessing Game GUI Frame ---
 class NumberGuessingGUI(tk.Frame):
     def __init__(self, parent, controller):
-        bg="#90EE90"
+        bg=BG_COLOR
         tk.Frame.__init__(self, parent, bg=bg)
         self.controller = controller
         
@@ -1405,7 +1430,7 @@ class NumberGuessingGUI(tk.Frame):
         self.attempts_left = 0
 
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Number Guessing Game ===", font=('Arial', 14, 'bold'), bg=bg).pack(pady=10)
+        tk.Label(self, text="=== Number Guessing Game ===", font=FONT_SUBTITLE, bg=bg).pack(pady=10)
         
         # A Text widget to act as the Game Log
         self.log_text = tk.Text(self, height=8, width=60, state=tk.DISABLED)
@@ -1502,7 +1527,7 @@ class NumberGuessingGUI(tk.Frame):
 class WordGuessingGUI(tk.Frame):
     def __init__(self, parent, controller):
         # Set the frame background color
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # Game State Variables
@@ -1512,18 +1537,18 @@ class WordGuessingGUI(tk.Frame):
         self.letter_buttons = {} # Dictionary to hold the A-Z buttons
 
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Word Guessing (Hangman) ===", font=('Arial', 14, 'bold'), bg="#90EE90").pack(pady=10)
+        tk.Label(self, text="=== Word Guessing (Hangman) ===", font=FONT_SUBTITLE, bg=BG_COLOR).pack(pady=10)
         
         # Label to display the masked word (e.g., P _ T H O N)
-        self.word_display = tk.Label(self, text="", font=('Courier', 24, 'bold'), bg="#90EE90")
+        self.word_display = tk.Label(self, text="", font=('Courier', 24, 'bold'), bg=BG_COLOR)
         self.word_display.pack(pady=10)
         
         # Label to display attempts left
-        self.status_label = tk.Label(self, text="Attempts left: 6", bg="#90EE90")
+        self.status_label = tk.Label(self, text="Attempts left: 6", bg=BG_COLOR)
         self.status_label.pack(pady=5)
         
         # Frame for the Letter Buttons
-        self.letter_frame = tk.Frame(self, bg="#90EE90")
+        self.letter_frame = tk.Frame(self, bg=BG_COLOR)
         self.letter_frame.pack(pady=20)
         
         self.create_letter_buttons()
@@ -1628,7 +1653,7 @@ class WordGuessingGUI(tk.Frame):
 class RockPaperScissorsGUI(tk.Frame):
     def __init__(self, parent, controller):
         # Set the frame background color
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # Game State Variables
@@ -1637,18 +1662,18 @@ class RockPaperScissorsGUI(tk.Frame):
         self.computer_score = 0
 
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Rock-Paper-Scissors ===", font=('Arial', 16, 'bold'), bg="#90EE90").pack(pady=10)
+        tk.Label(self, text="=== Rock-Paper-Scissors ===", font=FONT_TITLE, bg=BG_COLOR).pack(pady=10)
         
         # Label for displaying the current score
-        self.score_label = tk.Label(self, text="First to 3 wins!\nScore: You 0 - 0 Computer", bg="#90EE90", font=('Arial', 12))
+        self.score_label = tk.Label(self, text="First to 3 wins!\nScore: You 0 - 0 Computer", bg=BG_COLOR, font=FONT_TEXT)
         self.score_label.pack(pady=10)
 
         # Label for displaying round results and status messages
-        self.result_label = tk.Label(self, text="Choose your weapon!", bg="#90EE90", font=('Arial', 12, 'italic'))
+        self.result_label = tk.Label(self, text="Choose your weapon!", bg=BG_COLOR, font=('Arial', 12, 'italic'))
         self.result_label.pack(pady=10)
 
         # Frame for the Choice Buttons
-        button_frame = tk.Frame(self, bg="#90EE90")
+        button_frame = tk.Frame(self, bg=BG_COLOR)
         button_frame.pack(pady=20)
         
         # Create a button for each choice, mapping the choice to the play_round method
@@ -1722,7 +1747,7 @@ class RockPaperScissorsGUI(tk.Frame):
 class HigherOrLowerGUI(tk.Frame):
     def __init__(self, parent, controller):
         # Set the frame background color
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # Game State Variables
@@ -1730,21 +1755,21 @@ class HigherOrLowerGUI(tk.Frame):
         self.attempts = 0
 
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Higher or Lower (1-100) ===", font=('Arial', 16, 'bold'), bg="#90EE90").pack(pady=10)
+        tk.Label(self, text="=== Higher or Lower (1-100) ===", font=FONT_TITLE, bg=BG_COLOR).pack(pady=10)
         
         # A Text widget to act as the Game Log
         self.log_text = tk.Text(self, height=8, width=60, state=tk.DISABLED)
         self.log_text.pack(pady=10)
 
         # Label to show the status (Attempt count)
-        self.status_label = tk.Label(self, text="Attempts: 0", bg="#90EE90", font=('Arial', 12))
+        self.status_label = tk.Label(self, text="Attempts: 0", bg=BG_COLOR, font=FONT_TEXT)
         self.status_label.pack(pady=5)
 
         # Frame for Input and Button
-        input_frame = tk.Frame(self, bg="#90EE90")
+        input_frame = tk.Frame(self, bg=BG_COLOR)
         input_frame.pack(pady=10)
         
-        tk.Label(input_frame, text="Your Guess (1-100):", bg="#90EE90").pack(side=tk.LEFT, padx=5)
+        tk.Label(input_frame, text="Your Guess (1-100):", bg=BG_COLOR).pack(side=tk.LEFT, padx=5)
         
         # Entry widget for the player's guess
         self.guess_entry = tk.Entry(input_frame, width=10)
@@ -1819,7 +1844,7 @@ class HigherOrLowerGUI(tk.Frame):
 class DiceRollingGUI(tk.Frame):
     def __init__(self, parent, controller):
         # Set the frame background color
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # Game State Variables
@@ -1827,10 +1852,10 @@ class DiceRollingGUI(tk.Frame):
         self.bet_choice = tk.StringVar(value="h") # Tkinter variable for Radiobuttons (default to High)
 
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Dice Rolling Game ===", font=('Arial', 16, 'bold'), bg="#90EE90").pack(pady=10)
+        tk.Label(self, text="=== Dice Rolling Game ===", font=FONT_TITLE, bg=BG_COLOR).pack(pady=10)
         
         # Label for displaying current money
-        self.money_label = tk.Label(self, text=f"💰 Current Money: ${self.money}", bg="#90EE90", font=('Arial', 14, 'bold'))
+        self.money_label = tk.Label(self, text=f"💰 Current Money: ${self.money}", bg=BG_COLOR, font=FONT_SUBTITLE)
         self.money_label.pack(pady=10)
 
         # A Text widget to act as the Game Log (dice rolls and results)
@@ -1838,18 +1863,18 @@ class DiceRollingGUI(tk.Frame):
         self.log_text.pack(pady=10)
 
         # Frame for Betting Input
-        input_frame = tk.Frame(self, bg="#90EE90")
+        input_frame = tk.Frame(self, bg=BG_COLOR)
         input_frame.pack(pady=10)
         
-        tk.Label(input_frame, text="Bet Amount:", bg="#90EE90").pack(side=tk.LEFT, padx=5)
+        tk.Label(input_frame, text="Bet Amount:", bg=BG_COLOR).pack(side=tk.LEFT, padx=5)
         
         # Entry widget for the bet amount
         self.bet_entry = tk.Entry(input_frame, width=10)
         self.bet_entry.pack(side=tk.LEFT, padx=10)
 
         # Radiobuttons for Choice (High or Low)
-        tk.Radiobutton(input_frame, text="High (4-6)", variable=self.bet_choice, value="h", bg="#90EE90").pack(side=tk.LEFT)
-        tk.Radiobutton(input_frame, text="Low (1-3)", variable=self.bet_choice, value="l", bg="#90EE90").pack(side=tk.LEFT)
+        tk.Radiobutton(input_frame, text="High (4-6)", variable=self.bet_choice, value="h", bg=BG_COLOR).pack(side=tk.LEFT)
+        tk.Radiobutton(input_frame, text="Low (1-3)", variable=self.bet_choice, value="l", bg=BG_COLOR).pack(side=tk.LEFT)
         
         # Button to place the bet
         self.place_bet_button = tk.Button(self, text="Place Bet!", command=self.place_bet)
@@ -1932,21 +1957,21 @@ class DiceRollingGUI(tk.Frame):
 # --- Quiz Selection GUI Frame ---
 class QuizSelectionGUI(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Select Quiz Difficulty ===", font=('Arial', 16, 'bold'), bg="#90EE90").pack(pady=20)
+        tk.Label(self, text="=== Select Quiz Difficulty ===", font=FONT_TITLE, bg=BG_COLOR).pack(pady=20)
         
-        tk.Label(self, text="How many questions would you like to answer?", font=('Arial', 12), bg="#90EE90").pack(pady=10)
+        tk.Label(self, text="How many questions would you like to answer?", font=FONT_TEXT, bg=BG_COLOR).pack(pady=10)
         
         # Frame for the difficulty buttons
-        button_frame = tk.Frame(self, bg="#90EE90")
+        button_frame = tk.Frame(self, bg=BG_COLOR)
         button_frame.pack(pady=30)
         
-        tk.Button(button_frame, text="10 Questions", width=15, font=('Arial', 12), command=lambda: self.start_quiz(10)).pack(pady=10)
-        tk.Button(button_frame, text="20 Questions", width=15, font=('Arial', 12), command=lambda: self.start_quiz(20)).pack(pady=10)
-        tk.Button(button_frame, text="30 Questions", width=15, font=('Arial', 12), command=lambda: self.start_quiz(30)).pack(pady=10)
+        tk.Button(button_frame, text="10 Questions", width=15, font=FONT_TEXT, command=lambda: self.start_quiz(10)).pack(pady=10)
+        tk.Button(button_frame, text="20 Questions", width=15, font=FONT_TEXT, command=lambda: self.start_quiz(20)).pack(pady=10)
+        tk.Button(button_frame, text="30 Questions", width=15, font=FONT_TEXT, command=lambda: self.start_quiz(30)).pack(pady=10)
         
         # Control Buttons
         tk.Button(self, text="Back to Menu", command=lambda: controller.show_frame("MainMenu")).pack(pady=20)
@@ -1961,7 +1986,7 @@ class QuizSelectionGUI(tk.Frame):
 # --- Quiz Game GUI Frame ---
 class QuizGameGUI(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # Game State Variables
@@ -1971,21 +1996,21 @@ class QuizGameGUI(tk.Frame):
         self.num_questions = 10  # Default to 10 questions
 
         # --- Widgets Setup ---
-        tk.Label(self, text="=== Quiz Game ===", font=('Arial', 16, 'bold'), bg="#90EE90").pack(pady=10)
+        tk.Label(self, text="=== Quiz Game ===", font=FONT_TITLE, bg=BG_COLOR).pack(pady=10)
         
         # Label to display the current score
-        self.score_label = tk.Label(self, text="Score: 0/0", bg="#90EE90", font=('Arial', 12))
+        self.score_label = tk.Label(self, text="Score: 0/0", bg=BG_COLOR, font=FONT_TEXT)
         self.score_label.pack(pady=5)
 
         # Label for the question text
-        self.question_label = tk.Label(self, text="", wraplength=500, justify=tk.LEFT, bg="#90EE90", font=('Arial', 14))
+        self.question_label = tk.Label(self, text="", wraplength=500, justify=tk.LEFT, bg=BG_COLOR, font=('Arial', 14))
         self.question_label.pack(pady=20, padx=10)
 
         # Frame for Answer Input
-        input_frame = tk.Frame(self, bg="#90EE90")
+        input_frame = tk.Frame(self, bg=BG_COLOR)
         input_frame.pack(pady=10)
         
-        tk.Label(input_frame, text="Your Answer:", bg="#90EE90").pack(side=tk.LEFT, padx=5)
+        tk.Label(input_frame, text="Your Answer:", bg=BG_COLOR).pack(side=tk.LEFT, padx=5)
         
         self.answer_entry = tk.Entry(input_frame, width=30)
         self.answer_entry.pack(side=tk.LEFT, padx=5)
@@ -1994,7 +2019,7 @@ class QuizGameGUI(tk.Frame):
         self.submit_button.pack(side=tk.LEFT, padx=5)
         
         # Label for feedback (Correct/Wrong)
-        self.feedback_label = tk.Label(self, text="", bg="#90EE90", font=('Arial', 12, 'italic'))
+        self.feedback_label = tk.Label(self, text="", bg=BG_COLOR, font=('Arial', 12, 'italic'))
         self.feedback_label.pack(pady=10)
 
         # Control Buttons
@@ -2073,16 +2098,16 @@ class QuizGameGUI(tk.Frame):
 class TicTacToeSelectionGUI(tk.Frame):
     """Screen to select 1 player or 2 player mode."""
     def __init__(self, parent, controller):
-        bg="#90EE90"
+        bg=BG_COLOR
         tk.Frame.__init__(self, parent, bg=bg) 
         self.controller = controller
 
-        tk.Label(self, text="=== Tic-Tac-Toe Mode Selection ===", font=('Arial', 16, 'bold'), bg=bg).pack(pady=20)
+        tk.Label(self, text="=== Tic-Tac-Toe Mode Selection ===", font=FONT_TITLE, bg=bg).pack(pady=20)
         
-        tk.Label(self, text="Choose your game mode:", font=('Arial', 12), bg=bg).pack(pady=10)
+        tk.Label(self, text="Choose your game mode:", font=FONT_TEXT, bg=bg).pack(pady=10)
         
-        tk.Button(self, text="1 Player (vs Computer)", width=30, font=('Arial', 12), command=self.start_one_player).pack(pady=10)
-        tk.Button(self, text="2 Players (Local)", width=30, font=('Arial', 12), command=self.start_two_player).pack(pady=10)
+        tk.Button(self, text="1 Player (vs Computer)", width=30, font=FONT_TEXT, command=self.start_one_player).pack(pady=10)
+        tk.Button(self, text="2 Players (Local)", width=30, font=FONT_TEXT, command=self.start_two_player).pack(pady=10)
         
         tk.Button(self, text="Back to Menu", width=30, command=lambda: controller.show_frame("MainMenu")).pack(pady=20)
     
@@ -2101,7 +2126,7 @@ class TicTacToeSelectionGUI(tk.Frame):
 # --- Tic-Tac-Toe GUI Frame ---
 class TicTacToeGUI(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent, bg="#90EE90")
+        tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
         
         # Game State Variables
@@ -2113,15 +2138,15 @@ class TicTacToeGUI(tk.Frame):
         self.ai_thinking = False  # Flag to prevent clicks while computer is thinking
 
         # --- Widgets Setup ---
-        self.title_label = tk.Label(self, text="=== Tic-Tac-Toe (2-Player) ===", font=('Arial', 16, 'bold'), bg="#90EE90")
+        self.title_label = tk.Label(self, text="=== Tic-Tac-Toe (2-Player) ===", font=FONT_TITLE, bg=BG_COLOR)
         self.title_label.pack(pady=10)
         
         # Label to display current status
-        self.status_label = tk.Label(self, text="Player X's turn", bg="#90EE90", font=('Arial', 14))
+        self.status_label = tk.Label(self, text="Player X's turn", bg=BG_COLOR, font=('Arial', 14))
         self.status_label.pack(pady=10)
 
         # Frame for the 3x3 Game Board Grid
-        grid_frame = tk.Frame(self, bg="#90EE90")
+        grid_frame = tk.Frame(self, bg=BG_COLOR)
         grid_frame.pack(pady=20)
         
         # Create 9 buttons in a 3x3 grid
