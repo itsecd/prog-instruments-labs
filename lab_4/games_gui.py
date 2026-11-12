@@ -5,6 +5,15 @@ import json
 import os
 
 from game_frame import GameFrame
+from game_logic import (
+    can_place_ship,
+    check_winner,
+    coordinates_to_index,
+    count_bulls_and_cows,
+    index_to_coordinates,
+    normalize_answer,
+    slot_payout,
+)
 from constants import (
     ADV_ACCENT,
     ADV_ACCENT_ACTIVE,
@@ -77,23 +86,6 @@ def load_quiz_questions(filename="quiz_data.json"):
     except Exception as e:
         print(f"An unexpected error occurred while reading the file: {e}")
         return []
-
-def normalize_answer(answer):
-    """Normalizes answer by removing spaces and converting written numbers to digits."""
-    # Dictionary for written numbers to digits
-    word_to_num = {
-        'zero': '0', 'one': '1', 'two': '2', 'three': '3', 'four': '4',
-        'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9'
-    }
-    
-    # Convert to lowercase and remove spaces
-    normalized = answer.strip().lower().replace(" ", "")
-    
-    # Replace written numbers with digits
-    for word, digit in word_to_num.items():
-        normalized = normalized.replace(word, digit)
-    
-    return normalized
 
 # --- Global Class to Manage the Application ---
 class GameApp(tk.Tk):
@@ -267,12 +259,11 @@ class MastermindGUI(GameFrame):
         self.attempts += 1
         
         # Calculate bulls and cows
-        Bulls = sum(guess_str[i] == self.secret_number[i] for i in range(4))
-        Cows = sum(guess_str[i] in self.secret_number for i in range(4)) - Bulls
+        bulls, cows = count_bulls_and_cows(guess_str, self.secret_number)
         
-        self.log(f"Guess #{self.attempts}: {guess_str} | Bulls: {Bulls}, Cows: {Cows}")
+        self.log(f"Guess #{self.attempts}: {guess_str} | Bulls: {bulls}, Cows: {cows}")
         
-        if Bulls == 4:
+        if bulls == 4:
             self.log(f"🎉 Correct! You guessed it in {self.attempts} attempts!")
             self.end_game()
         elif self.attempts >= self.max_attempts:
@@ -587,8 +578,8 @@ class BattleshipGUI(GameFrame):
     def place_ship_on_board(self, row, col):
         """Try to place a ship at the given coordinates."""
         board = self.player_boards[self.placement_player if self.game_mode == MODE_TWO_PLAYERS else 1]
-        if not self.can_place_ship(board, row, col, self.current_ship_size, 'H'):
-            if not self.can_place_ship(board, row, col, self.current_ship_size, 'V'):
+        if not can_place_ship(board, row, col, self.current_ship_size, 'H', self.grid_size):
+            if not can_place_ship(board, row, col, self.current_ship_size, 'V', self.grid_size):
                 self.instruction_label.config(text="Can't place there! Try another spot.")
                 return
             direction = 'V'
@@ -825,7 +816,7 @@ class BattleshipGUI(GameFrame):
                     direction = random.choice(['H', 'V'])  # Horizontal or Vertical
                     
                     # Check if placement is valid
-                    if self.can_place_ship(board, row, col, size, direction):
+                    if can_place_ship(board, row, col, size, direction, self.grid_size):
                         # Place the ship
                         for i in range(size):
                             if direction == 'H':
@@ -833,23 +824,6 @@ class BattleshipGUI(GameFrame):
                             else:
                                 board[row + i][col] = 'S'
                         placed = True
-    
-    def can_place_ship(self, board, row, col, size, direction):
-        """Checks if a ship can be placed at the given position."""
-        if direction == 'H':
-            if col + size > self.grid_size:
-                return False
-            for i in range(size):
-                if board[row][col + i] == 'S':
-                    return False
-        else:  # Vertical
-            if row + size > self.grid_size:
-                return False
-            for i in range(size):
-                if board[row + i][col] == 'S':
-                    return False
-        return True
-    
     
     def reset_to_placement(self):
         """Go back to the placement phase."""
@@ -868,25 +842,6 @@ class BattleshipGUI(GameFrame):
         else:
             self.score_label.config(text=f"Player 1 Hits: {self.player_hits[1]}/{self.total_ship_cells} | Player 2 Hits: {self.player_hits[2]}/{self.total_ship_cells}")
     
-    def coordinates_to_index(self, letter, number):
-        """Converts letter and number to row and column indices."""
-        try:
-            col = ord(letter.upper()) - ord('A')
-            row = int(number) - 1
-            
-            if col < 0 or col >= self.grid_size or row < 0 or row >= self.grid_size:
-                return None, None
-            
-            return row, col
-        except (ValueError, TypeError):
-            return None, None
-    
-    def index_to_coordinates(self, row, col):
-        """Converts row and column indices to letter and number."""
-        letter = chr(ord('A') + col)
-        number = row + 1
-        return f"{letter} {number}"
-    
     def player_name(self, player_num):
         """Return a friendly name for each player."""
         if self.game_mode == MODE_COMPUTER and player_num == 2:
@@ -901,7 +856,7 @@ class BattleshipGUI(GameFrame):
         self.letter_entry.delete(0, tk.END)
         self.number_entry.delete(0, tk.END)
         
-        row, col = self.coordinates_to_index(letter, number)
+        row, col = coordinates_to_index(letter, number, self.grid_size)
         
         if row is None or col is None:
             self.log("⚠️ Invalid coordinates! Use format: A 5")
@@ -920,7 +875,7 @@ class BattleshipGUI(GameFrame):
         if self.player_boards[target_player][row][col] == 'S':
             self.player_shots[current_player][row][col] = 'H'  # Hit
             self.player_hits[current_player] += 1
-            coords = self.index_to_coordinates(row, col)
+            coords = index_to_coordinates(row, col)
             self.log(f"🎯 {self.player_name(current_player)} hit at {coords}!")
             
             if self.player_hits[current_player] >= self.total_ship_cells:
@@ -930,7 +885,7 @@ class BattleshipGUI(GameFrame):
                 return
         else:
             self.player_shots[current_player][row][col] = 'M'  # Miss
-            coords = self.index_to_coordinates(row, col)
+            coords = index_to_coordinates(row, col)
             self.log(f"❌ {self.player_name(current_player)} missed at {coords}.")
         
         self.update_all_boards()
@@ -970,7 +925,7 @@ class BattleshipGUI(GameFrame):
         if self.player_boards[1][row][col] == 'S':
             self.player_shots[2][row][col] = 'H'  # Hit
             self.player_hits[2] += 1
-            coords = self.index_to_coordinates(row, col)
+            coords = index_to_coordinates(row, col)
             self.log(f"💥 Computer hit at {coords}!")
             
             if self.player_hits[2] >= self.total_ship_cells:
@@ -980,7 +935,7 @@ class BattleshipGUI(GameFrame):
                 return
         else:
             self.player_shots[2][row][col] = 'M'  # Miss
-            coords = self.index_to_coordinates(row, col)
+            coords = index_to_coordinates(row, col)
             self.log(f"💭 Computer fired at {coords} and missed.")
         
         self.update_all_boards()
@@ -1100,21 +1055,14 @@ class SlotMachineGUI(tk.Frame):
     
     def calculate_result(self, bet):
         """Calculate win/loss and update balance."""
-        reel1, reel2, reel3 = self.current_reels
-        
-        # Check for matches
-        matches = sum([reel1 == reel2, reel2 == reel3, reel1 == reel3])
-        
-        winnings = 0
-        if reel1 == reel2 == reel3:  # All three match
-            winnings = bet * 10
+        winnings, outcome = slot_payout(self.current_reels, bet)
+        if outcome == 'jackpot':
             message = f"🎉 THREE OF A KIND! Won ${winnings}!"
             color = "green"
-        elif matches == 1:  # Two match
-            winnings = bet * 3
+        elif outcome == 'pair':
             message = f"✨ TWO MATCH! Won ${winnings}!"
             color = "green"
-        else:  # No match
+        else:
             message = f"💔 No match. Lost ${bet}."
             color = "red"
         
@@ -2216,25 +2164,7 @@ class TicTacToeGUI(tk.Frame):
 
     def check_winner(self):
         """Checks the 3x3 board for a winner."""
-        # Check rows, columns, and diagonals using the board array
-        
-        # Check rows
-        for i in range(3):
-            if self.board[i][0] == self.board[i][1] == self.board[i][2] != ' ':
-                return self.board[i][0]
-        
-        # Check columns
-        for j in range(3):
-            if self.board[0][j] == self.board[1][j] == self.board[2][j] != ' ':
-                return self.board[0][j]
-        
-        # Check diagonals
-        if self.board[0][0] == self.board[1][1] == self.board[2][2] != ' ':
-            return self.board[0][0]
-        if self.board[0][2] == self.board[1][1] == self.board[2][0] != ' ':
-            return self.board[0][2]
-        
-        return None
+        return check_winner(self.board)
 
     def button_click(self, row, col):
         """Handles the logic when a grid button is pressed."""
