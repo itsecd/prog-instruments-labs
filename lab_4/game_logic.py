@@ -77,7 +77,7 @@ def coordinates_to_index(letter, number, grid_size):
     try:
         col = ord(letter.upper()) - ord('A')
         row = int(number) - 1
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, AttributeError):
         return None, None
     if not (0 <= col < grid_size and 0 <= row < grid_size):
         return None, None
