@@ -1,8 +1,6 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog
+from tkinter import simpledialog
 import random
-# NOTE: We'll put your existing game logic into this file later, but we need to
-# refactor them to use GUI elements instead of 'print' and 'input'.
 import json
 import os
 
@@ -88,7 +86,7 @@ class GameApp(tk.Tk):
         self.frames = {}
         
         # Add all pages/frames to the dictionary
-        for F in (MainMenu, MoreGamesMenu, MastermindGUI, WordScrambleGUI, BattleshipGUI, SlotMachineGUI, TextAdventureGUI, NumberGuessingGUI, WordGuessingGUI, RockPaperScissorsGUI, HigherOrLowerGUI, DiceRollingGUI, QuizSelectionGUI, QuizGameGUI, TicTacToeSelectionGUI, TicTacToeGUI, GameWIP):
+        for F in (MainMenu, MoreGamesMenu, MastermindGUI, WordScrambleGUI, BattleshipGUI, SlotMachineGUI, TextAdventureGUI, NumberGuessingGUI, WordGuessingGUI, RockPaperScissorsGUI, HigherOrLowerGUI, DiceRollingGUI, QuizSelectionGUI, QuizGameGUI, TicTacToeSelectionGUI, TicTacToeGUI):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -125,10 +123,7 @@ class MainMenu(tk.Frame):
         ]
 
         for text, frame_name in games:
-            if frame_name:
-                tk.Button(self, text=text, width=50, command=lambda name=frame_name: controller.show_frame(name)).pack(pady=5)
-            else:
-                tk.Button(self, text=text, width=50, state=tk.DISABLED, command=lambda: messagebox.showinfo("WIP", "Game not yet implemented!")).pack(pady=5)
+            tk.Button(self, text=text, width=50, command=lambda name=frame_name: controller.show_frame(name)).pack(pady=5)
 
         tk.Button(self, text="More Games", width=30, command=lambda: controller.show_frame("MoreGamesMenu")).pack(pady=10)
         tk.Button(self, text="Exit", width=30, command=controller.quit).pack(pady=20)
@@ -1243,13 +1238,6 @@ class TextAdventureGUI(tk.Frame):
                     ("1. Return to main room", "main_room"),
                 ]
             },
-            "restart": {
-                "title": "New Game",
-                "description": "Restarting...",
-                "choices": [
-                    ("1. Begin", "main_room"),
-                ]
-            }
         }
         
         # --- Widgets Setup ---
@@ -1404,20 +1392,6 @@ class TextAdventureGUI(tk.Frame):
         self.has_seen_code = False
         self.in_code_entry = False
         self.show_scene("main_room")
-
-# --- Game WIP Screen ---
-class GameWIP(tk.Frame):
-    """Placeholder screen for work in progress games."""
-    def __init__(self, parent, controller):
-        bg="#90EE90"
-        tk.Frame.__init__(self, parent, bg=bg) 
-        self.controller = controller
-
-        tk.Label(self, text="=== Game Coming Soon ===", font=('Arial', 16, 'bold'), bg=bg).pack(pady=20)
-        
-        tk.Label(self, text="I Work!", font=('Arial', 24, 'bold'), bg=bg).pack(pady=50)
-
-        tk.Button(self, text="Back to More Games", width=30, command=lambda: controller.show_frame("MoreGamesMenu")).pack(pady=20)
 
 # --- Number Guessing Game GUI Frame ---
 class NumberGuessingGUI(tk.Frame):
