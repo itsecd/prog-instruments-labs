@@ -447,7 +447,6 @@ class BattleshipGUI(tk.Frame):
         
         self.player_hits = {1: 0, 2: 0}
         self.total_ship_cells = 9  # 1 3-cell + 2 2-cell + 3 1-cell = 9 cells
-        self.game_phase = "MODE_SELECTION"
         self.game_mode = MODE_COMPUTER
         self.game_active = True
         self.current_player = 1
@@ -501,7 +500,6 @@ class BattleshipGUI(tk.Frame):
     
     def show_mode_selection(self):
         """Show a simple mode selection screen before the game begins."""
-        self.game_phase = "MODE_SELECTION"
         self.game_mode = MODE_COMPUTER
         self.game_active = True
         self.current_player = 1
@@ -547,7 +545,6 @@ class BattleshipGUI(tk.Frame):
     
     def init_placement_phase(self):
         """Initialize the ship placement phase."""
-        self.game_phase = "PLACEMENT"
         self.current_ship_idx = 0
         self.current_ship_size = self.ship_sizes[0]
         
@@ -670,7 +667,6 @@ class BattleshipGUI(tk.Frame):
             self.init_placement_phase()
             return
         
-        self.game_phase = "PLAYING"
         if self.game_mode == MODE_COMPUTER:
             self.place_ships(self.player_boards[2])
         self.instruction_label.config(text="")
