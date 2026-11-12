@@ -4,9 +4,7 @@ from src.Book import Book
 class InventoryManager:
 
     def __init__(self):
-        """
-        Initialize the InventoryManager with an empty inventory.
-        """
+        """Initialize the InventoryManager with an empty inventory."""
         self._inventory = []
 
     def add_book(self, book: Book):
@@ -48,9 +46,7 @@ class InventoryManager:
                 break
 
     def view_inventory(self):
-        """
-        View the inventory, printing out details of each book.
-        """
+        """View the inventory, printing out details of each book."""
         if len(self._inventory) == 0:
             print("No books added yet")
 
@@ -156,11 +152,9 @@ class InventoryManager:
                 break
 
     def generate_report(self):
-        """
-        Generate and print an inventory report.
-        """
+        """Generate and print an inventory report."""
         total_books = len(self._inventory)
-        categories = set(book.category for book in self._inventory)
+        categories = {book.category for book in self._inventory}
 
         print("Inventory Report:")
         print("Total Number of Books:", total_books)

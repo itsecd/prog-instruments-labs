@@ -1,12 +1,13 @@
+import datetime
 import io
 import sys
 import unittest
+import uuid
+
+from src.Book import Book
+from src.InventoryManager import InventoryManager
 from src.OrderProcessor import OrderProcessor
 from src.ShoppingCart import ShoppingCart
-from src.InventoryManager import InventoryManager
-from src.Book import Book
-import uuid
-import datetime
 
 
 class TestOrderProcessor(unittest.TestCase):

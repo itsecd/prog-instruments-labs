@@ -1,11 +1,9 @@
-from src.InventoryManager import InventoryManager
 from src.Book import Book
+from src.InventoryManager import InventoryManager
 
 
 class ShoppingCart:
-    """
-    Represents a shopping cart for holding books.
-    """
+    """Represents a shopping cart for holding books."""
 
     def __init__(self, inventory):
         """
@@ -39,8 +37,7 @@ class ShoppingCart:
         for book in self._inventory.inventory:
             if book.title == title:
                 found = True
-                if quantity > book.quantity:
-                    quantity = book.quantity
+                quantity = min(quantity, book.quantity)
 
                 for item in self._books:
                     if item.title == title:
@@ -81,9 +78,7 @@ class ShoppingCart:
         self.update_total_price()
 
     def view_cart(self):
-        """
-        Displays the contents of the shopping cart.
-        """
+        """Displays the contents of the shopping cart."""
         if len(self._books) == 0:
             print("Shopping cart is empty")
 
@@ -96,9 +91,7 @@ class ShoppingCart:
 
     @property
     def total_price(self):
-        """
-        Total price of all books in the shopping cart.
-        """
+        """Total price of all books in the shopping cart."""
         return self._total_price
 
     def update_total_price(self):
@@ -107,9 +100,7 @@ class ShoppingCart:
             self._total_price += book.quantity * book.price
 
     def empty_cart(self):
-        """
-        Empties the shopping cart.
-        """
+        """Empties the shopping cart."""
         self._books = []
         self.update_total_price()
 
@@ -147,16 +138,12 @@ class ShoppingCart:
 
     @property
     def books(self):
-        """
-        List of books in the shopping cart.
-        """
+        """List of books in the shopping cart."""
         return self._books
 
     @property
     def inventory(self):
-        """
-        Inventory associated with the shopping cart.
-        """
+        """Inventory associated with the shopping cart."""
         return self._inventory
 
     @books.setter
@@ -198,5 +185,4 @@ class ShoppingCart:
                     if book.title == book_title:
                         return book
                 return None
-        else:
-            raise ValueError("Book must be in the inventory")
+        raise ValueError("Book must be in the inventory")

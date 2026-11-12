@@ -1,7 +1,8 @@
 import unittest
-from src.ShoppingCart import ShoppingCart
+
 from src.Book import Book
 from src.InventoryManager import InventoryManager
+from src.ShoppingCart import ShoppingCart
 
 
 class TestShoppingCart(unittest.TestCase):

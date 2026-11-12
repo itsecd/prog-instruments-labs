@@ -1,6 +1,7 @@
 import unittest
-from src.InventoryManager import InventoryManager
+
 from src.Book import Book
+from src.InventoryManager import InventoryManager
 
 
 class TestInventoryManager(unittest.TestCase):

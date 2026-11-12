@@ -1,7 +1,9 @@
+import ast
+
 from src.Book import Book
 from src.InventoryManager import InventoryManager
-from src.ShoppingCart import ShoppingCart
 from src.OrderProcessor import OrderProcessor, print_order_details
+from src.ShoppingCart import ShoppingCart
 
 
 def display_menu():
@@ -169,7 +171,7 @@ class Main:
 
         try:
             # Convert the input string to a dictionary
-            new_details = eval(details)
+            new_details = ast.literal_eval(details)
             if not isinstance(new_details, dict):
                 raise ValueError("Invalid input format. Please enter details as a dictionary.")
 

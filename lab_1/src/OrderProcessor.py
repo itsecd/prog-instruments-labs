@@ -1,8 +1,9 @@
-import uuid
 import datetime
-from src.ShoppingCart import ShoppingCart
-from src.InventoryManager import InventoryManager
+import uuid
+
 from src.Book import Book
+from src.InventoryManager import InventoryManager
+from src.ShoppingCart import ShoppingCart
 
 
 def generate_order_id():
@@ -34,9 +35,7 @@ def print_order_details(order):
 
 
 class OrderProcessor:
-    """
-    Process orders placed from a shopping cart.
-    """
+    """Process orders placed from a shopping cart."""
 
     def __init__(self, shopping_cart, inventory):
         """
@@ -56,12 +55,10 @@ class OrderProcessor:
         self.inventory = inventory
 
     def place_order(self):
-        """
-        Place an order using the shopping cart contents.
-        """
+        """Place an order using the shopping cart contents."""
         order_id = generate_order_id()
         order_date = datetime.datetime.now()
-        books = [book for book in self.shopping_cart.books]
+        books = list(self.shopping_cart.books)
         total_price = self.shopping_cart.total_price
 
         if not isinstance(books, list):
@@ -92,18 +89,14 @@ class OrderProcessor:
             self.inventory.remove_book(book.title, book.quantity)
 
     def view_orders(self):
-        """
-        View the details of all orders.
-        """
+        """View the details of all orders."""
         if len(self.orders) == 0:
             print("No orders added yet")
         for order in self.orders:
             print_order_details(order)
 
     def generate_report(self):
-        """
-        Generate and print a report of total orders and sales.
-        """
+        """Generate and print a report of total orders and sales."""
         total_orders = len(self.orders)
         total_sales = sum(order["total_price"] for order in self.orders)
         print("Total Orders:", total_orders)
