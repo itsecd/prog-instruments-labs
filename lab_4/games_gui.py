@@ -10,6 +10,7 @@ from game_logic import (
     check_winner,
     coordinates_to_index,
     count_bulls_and_cows,
+    empty_board,
     index_to_coordinates,
     normalize_answer,
     slot_payout,
@@ -24,6 +25,7 @@ from constants import (
     ADV_SUCCESS,
     ADV_TEXT,
     BG_COLOR,
+    FONT_BOARD_CELL,
     FONT_BOARD_LABEL,
     FONT_BODY,
     FONT_SMALL_BOLD,
@@ -410,14 +412,8 @@ class BattleshipGUI(GameFrame):
         
         # Game State Variables
         self.grid_size = 10
-        self.player_boards = {
-            1: [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)],
-            2: [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)]
-        }
-        self.player_shots = {
-            1: [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)],
-            2: [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)]
-        }
+        self.player_boards = {1: empty_board(self.grid_size), 2: empty_board(self.grid_size)}
+        self.player_shots = {1: empty_board(self.grid_size), 2: empty_board(self.grid_size)}
         
         self.player_hits = {1: 0, 2: 0}
         self.total_ship_cells = 9  # 1 3-cell + 2 2-cell + 3 1-cell = 9 cells
@@ -472,6 +468,33 @@ class BattleshipGUI(GameFrame):
         
         self.show_mode_selection()
     
+    def _reset_content_frame(self):
+        """Replace the content frame with a fresh empty one."""
+        self.content_frame.pack_forget()
+        self.content_frame.destroy()
+        self.content_frame = tk.Frame(self, bg=BG_COLOR)
+        self.content_frame.pack(pady=10, fill=tk.BOTH, expand=True)
+    
+    def _build_board_grid(self, parent, bg, cell_bg, on_click=None):
+        """Draw a lettered/numbered grid and return {(row, col): cell_label}.
+        
+        If on_click is given, it is called with (row, col) when a cell is clicked.
+        """
+        tk.Label(parent, text="  ", bg=bg, width=2).grid(row=0, column=0)
+        for col in range(self.grid_size):
+            tk.Label(parent, text=chr(ord('A') + col), bg=bg, width=2, font=FONT_BOARD_LABEL).grid(row=0, column=col + 1)
+        
+        cells = {}
+        for row in range(self.grid_size):
+            tk.Label(parent, text=str(row + 1), bg=bg, width=2, font=FONT_BOARD_LABEL).grid(row=row + 1, column=0)
+            for col in range(self.grid_size):
+                cell = tk.Label(parent, text=" ", bg=cell_bg, width=2, height=1, font=FONT_BOARD_CELL, relief=tk.RAISED, bd=1)
+                cell.grid(row=row + 1, column=col + 1)
+                if on_click is not None:
+                    cell.bind("<Button-1>", lambda e, r=row, c=col: on_click(r, c))
+                cells[(row, col)] = cell
+        return cells
+    
     def show_mode_selection(self):
         """Show a simple mode selection screen before the game begins."""
         self.game_mode = MODE_COMPUTER
@@ -484,10 +507,7 @@ class BattleshipGUI(GameFrame):
         self.input_frame.pack_forget()
         self.button_frame.pack_forget()
         
-        self.content_frame.pack_forget()
-        self.content_frame.destroy()
-        self.content_frame = tk.Frame(self, bg=BG_COLOR)
-        self.content_frame.pack(pady=10, fill=tk.BOTH, expand=True)
+        self._reset_content_frame()
         
         mode_frame = tk.Frame(self.content_frame, bg=BG_COLOR)
         mode_frame.pack(expand=True)
@@ -504,14 +524,8 @@ class BattleshipGUI(GameFrame):
         self.current_player = 1
         self.placement_player = 1
         self.player_hits = {1: 0, 2: 0}
-        self.player_boards = {
-            1: [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)],
-            2: [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)]
-        }
-        self.player_shots = {
-            1: [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)],
-            2: [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)]
-        }
+        self.player_boards = {1: empty_board(self.grid_size), 2: empty_board(self.grid_size)}
+        self.player_shots = {1: empty_board(self.grid_size), 2: empty_board(self.grid_size)}
         self.clear_log()
         self.init_placement_phase()
     
@@ -532,11 +546,7 @@ class BattleshipGUI(GameFrame):
         self.instruction_label.pack(pady=5)
         self.score_label.pack_forget()
         
-        # Clear content frame efficiently
-        self.content_frame.pack_forget()
-        self.content_frame.destroy()
-        self.content_frame = tk.Frame(self, bg=BG_COLOR)
-        self.content_frame.pack(pady=10, fill=tk.BOTH, expand=True)
+        self._reset_content_frame()
         
         # Create placement board
         placement_bg = PLACEMENT_BG[self.placement_player]
@@ -553,18 +563,8 @@ class BattleshipGUI(GameFrame):
         grid_frame = tk.Frame(board_frame, bg=placement_bg)
         grid_frame.pack(padx=5, pady=5)
         
-        tk.Label(grid_frame, text="  ", bg=placement_bg, width=2).grid(row=0, column=0)
-        for col in range(self.grid_size):
-            tk.Label(grid_frame, text=chr(ord('A') + col), bg=placement_bg, width=2, font=FONT_BOARD_LABEL).grid(row=0, column=col + 1)
-        
-        self.placement_board_buttons = {}
-        for row in range(self.grid_size):
-            tk.Label(grid_frame, text=str(row + 1), bg=placement_bg, width=2, font=FONT_BOARD_LABEL).grid(row=row + 1, column=0)
-            for col in range(self.grid_size):
-                btn = tk.Label(grid_frame, text=" ", bg=cell_bg, width=2, height=1, font=('Arial', 8), relief=tk.RAISED, bd=1)
-                btn.grid(row=row + 1, column=col + 1)
-                btn.bind("<Button-1>", lambda e, r=row, c=col: self.place_ship_on_board(r, c))
-                self.placement_board_buttons[(row, col)] = btn
+        self.placement_board_buttons = self._build_board_grid(
+            grid_frame, placement_bg, cell_bg, on_click=self.place_ship_on_board)
         
         # Placement buttons
         placement_btn_frame = tk.Frame(self.content_frame, bg=BG_COLOR)
@@ -612,7 +612,7 @@ class BattleshipGUI(GameFrame):
     def random_placement(self):
         """Randomly place all remaining ships."""
         board = self.player_boards[self.placement_player if self.game_mode == MODE_TWO_PLAYERS else 1]
-        board[:] = [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)]
+        board[:] = empty_board(self.grid_size)
         self.place_ships(board)
         
         # Update display using the active player's placement colors
@@ -648,11 +648,7 @@ class BattleshipGUI(GameFrame):
     
     def init_game_phase(self):
         """Initialize the actual game phase with two boards."""
-        # Clear content frame efficiently
-        self.content_frame.pack_forget()
-        self.content_frame.destroy()
-        self.content_frame = tk.Frame(self, bg=BG_COLOR)
-        self.content_frame.pack(pady=10, fill=tk.BOTH, expand=True)
+        self._reset_content_frame()
         
         # Main content frame with two boards
         boards_frame = tk.Frame(self.content_frame, bg=BG_COLOR)
@@ -674,17 +670,7 @@ class BattleshipGUI(GameFrame):
         left_grid = tk.Frame(left_frame, bg="white")
         left_grid.pack(padx=5, pady=5)
         
-        tk.Label(left_grid, text="  ", bg="white", width=2).grid(row=0, column=0)
-        for col in range(self.grid_size):
-            tk.Label(left_grid, text=chr(ord('A') + col), bg="white", width=2, font=FONT_BOARD_LABEL).grid(row=0, column=col + 1)
-        
-        self.target_board_buttons = {}
-        for row in range(self.grid_size):
-            tk.Label(left_grid, text=str(row + 1), bg="white", width=2, font=FONT_BOARD_LABEL).grid(row=row + 1, column=0)
-            for col in range(self.grid_size):
-                btn = tk.Label(left_grid, text=" ", bg="lightblue", width=2, height=1, font=('Arial', 8), relief=tk.RAISED, bd=1)
-                btn.grid(row=row + 1, column=col + 1)
-                self.target_board_buttons[(row, col)] = btn
+        self.target_board_buttons = self._build_board_grid(left_grid, "white", "lightblue")
         
         # RIGHT BOARD: Current player's board (where opponent fires)
         right_frame = tk.Frame(boards_frame, bg="white", relief=tk.SUNKEN, bd=2)
@@ -695,17 +681,7 @@ class BattleshipGUI(GameFrame):
         right_grid = tk.Frame(right_frame, bg="white")
         right_grid.pack(padx=5, pady=5)
         
-        tk.Label(right_grid, text="  ", bg="white", width=2).grid(row=0, column=0)
-        for col in range(self.grid_size):
-            tk.Label(right_grid, text=chr(ord('A') + col), bg="white", width=2, font=FONT_BOARD_LABEL).grid(row=0, column=col + 1)
-        
-        self.own_board_buttons = {}
-        for row in range(self.grid_size):
-            tk.Label(right_grid, text=str(row + 1), bg="white", width=2, font=FONT_BOARD_LABEL).grid(row=row + 1, column=0)
-            for col in range(self.grid_size):
-                btn = tk.Label(right_grid, text=" ", bg="lightgreen", width=2, height=1, font=('Arial', 8), relief=tk.RAISED, bd=1)
-                btn.grid(row=row + 1, column=col + 1)
-                self.own_board_buttons[(row, col)] = btn
+        self.own_board_buttons = self._build_board_grid(right_grid, "white", "lightgreen")
         
         # Log and input frame
         log_input_frame = tk.Frame(self.content_frame, bg=BG_COLOR)
@@ -741,66 +717,28 @@ class BattleshipGUI(GameFrame):
         self.update_score_display()
     
     def update_all_boards(self):
-        """Updates the fixed boards for both players without swapping them on each turn."""
-        if self.game_mode == MODE_COMPUTER:
-            # Keep the single-player view unchanged.
-            for row in range(self.grid_size):
-                for col in range(self.grid_size):
-                    btn = self.target_board_buttons[(row, col)]
-                    shot = self.player_shots[2][row][col]
-                    if shot == 'H':
-                        btn.config(bg="red", text="H")
-                    elif shot == 'M':
-                        btn.config(bg="lightgray", text="M")
-                    else:
-                        btn.config(bg="lightblue", text=" ")
-            
-            for row in range(self.grid_size):
-                for col in range(self.grid_size):
-                    btn = self.own_board_buttons[(row, col)]
-                    shot = self.player_shots[1][row][col]
-                    if self.player_boards[1][row][col] == 'S':
-                        if shot == 'H':
-                            btn.config(bg="darkred", text="H")
-                        elif shot == 'M':
-                            btn.config(bg="lightgreen", text=" ")
-                        else:
-                            btn.config(bg="lightgreen", text=" ")
-                    else:
-                        if shot == 'M':
-                            btn.config(bg="lightgray", text="M")
-                        else:
-                            btn.config(bg="lightgreen", text=" ")
-            return
-
-        # Two-player mode: keep Player 1's board and Player 2's board fixed.
+        """Redraw both boards. Boards stay fixed; they are not swapped on each turn."""
+        # In one-player mode the right board shows player 1's ships, in two-player mode player 2's.
+        own_ships = self.player_boards[1 if self.game_mode == MODE_COMPUTER else 2]
+        
         for row in range(self.grid_size):
             for col in range(self.grid_size):
-                btn = self.target_board_buttons[(row, col)]
-                shot = self.player_shots[2][row][col]
-                if shot == 'H':
-                    btn.config(bg="red", text="H")
-                elif shot == 'M':
-                    btn.config(bg="lightgray", text="M")
+                target_shot = self.player_shots[2][row][col]
+                if target_shot == 'H':
+                    self.target_board_buttons[(row, col)].config(bg="red", text="H")
+                elif target_shot == 'M':
+                    self.target_board_buttons[(row, col)].config(bg="lightgray", text="M")
                 else:
-                    btn.config(bg="lightblue", text=" ")
-
-        for row in range(self.grid_size):
-            for col in range(self.grid_size):
-                btn = self.own_board_buttons[(row, col)]
-                shot = self.player_shots[1][row][col]
-                if self.player_boards[2][row][col] == 'S':
-                    if shot == 'H':
-                        btn.config(bg="darkred", text="H")
-                    elif shot == 'M':
-                        btn.config(bg="lightgreen", text=" ")
-                    else:
-                        btn.config(bg="lightgreen", text=" ")
+                    self.target_board_buttons[(row, col)].config(bg="lightblue", text=" ")
+                
+                own_shot = self.player_shots[1][row][col]
+                own_cell = self.own_board_buttons[(row, col)]
+                if own_ships[row][col] == 'S' and own_shot == 'H':
+                    own_cell.config(bg="darkred", text="H")
+                elif own_ships[row][col] != 'S' and own_shot == 'M':
+                    own_cell.config(bg="lightgray", text="M")
                 else:
-                    if shot == 'M':
-                        btn.config(bg="lightgray", text="M")
-                    else:
-                        btn.config(bg="lightgreen", text=" ")
+                    own_cell.config(bg="lightgreen", text=" ")
     
     def place_ships(self, board):
         """Places ships on the board randomly."""

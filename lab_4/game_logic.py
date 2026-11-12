@@ -13,6 +13,11 @@ JACKPOT_MULTIPLIER = 10
 PAIR_MULTIPLIER = 3
 
 
+def empty_board(size):
+    """Returns a size x size grid of empty cells."""
+    return [[EMPTY for _ in range(size)] for _ in range(size)]
+
+
 def normalize_answer(answer):
     """Normalizes answer by removing spaces and converting written numbers to digits."""
     normalized = answer.strip().lower().replace(" ", "")

@@ -24,6 +24,7 @@ FONT_TEXT = ('Arial', 12)
 FONT_BODY = ('Arial', 11)
 FONT_SMALL_BOLD = ('Arial', 10, 'bold')
 FONT_BOARD_LABEL = ('Arial', 8, 'bold')
+FONT_BOARD_CELL = ('Arial', 8)
 
 # --- Window sizes ---
 SIZE_MENU = "600x500"
