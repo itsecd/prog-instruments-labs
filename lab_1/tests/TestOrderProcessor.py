@@ -42,7 +42,7 @@ class TestOrderProcessor(unittest.TestCase):
             "order_id": uuid.uuid4(),
             "order_date": datetime.datetime.now(),
             "books": [self.book1, self.book2],
-            "total_price": 250.0
+            "total_price": 250.0,
         }
         self.processor.process_order(order)
         self.assertNotIn(self.book1, self.shopping_cart.books)
@@ -69,5 +69,5 @@ class TestOrderProcessor(unittest.TestCase):
         self.assertEqual(generated_output, expected_output)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

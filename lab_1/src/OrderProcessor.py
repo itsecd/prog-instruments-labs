@@ -68,12 +68,7 @@ class OrderProcessor:
         if not isinstance(total_price, (int, float)) or total_price < 0:
             raise ValueError("Invalid total price. Must be a non-negative number.")
 
-        order = {
-            "order_id": order_id,
-            "order_date": order_date,
-            "books": books,
-            "total_price": total_price
-        }
+        order = {"order_id": order_id, "order_date": order_date, "books": books, "total_price": total_price}
         self.orders.append(order)
         self.process_order(order)
 
@@ -84,7 +79,7 @@ class OrderProcessor:
         Args:
             order (dict): The order to process.
         """
-        for book in order['books']:
+        for book in order["books"]:
             self.shopping_cart.remove_book(book.title, book.quantity)
             self.inventory.remove_book(book.title, book.quantity)
 

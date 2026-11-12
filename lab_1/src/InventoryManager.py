@@ -2,7 +2,6 @@ from src.Book import Book
 
 
 class InventoryManager:
-
     def __init__(self):
         """Initialize the InventoryManager with an empty inventory."""
         self._inventory = []

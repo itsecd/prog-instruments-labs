@@ -4,7 +4,6 @@ from src.Book import Book
 
 
 class TestBook(unittest.TestCase):
-
     def test_valid_input(self):
         book = Book("Title", "Author", 10.0, 5, "Category")
         self.assertEqual(book.title, "Title")
@@ -61,5 +60,5 @@ class TestBook(unittest.TestCase):
             book.category = 123
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

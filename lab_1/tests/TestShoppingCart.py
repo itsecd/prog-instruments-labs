@@ -158,5 +158,5 @@ class TestShoppingCart(unittest.TestCase):
             self.cart.search_book(123)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

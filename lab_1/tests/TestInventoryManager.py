@@ -119,5 +119,5 @@ class TestInventoryManager(unittest.TestCase):
         self.manager.generate_report()  # Test that it doesn't throw an error
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
