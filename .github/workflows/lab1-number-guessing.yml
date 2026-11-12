@@ -1,0 +1,29 @@
+name: Lab 1 - number guessing quality
+
+on:
+  pull_request:
+    paths:
+      - 'lab_1/number_guessing_quality/**'
+      - '.github/workflows/lab1-number-guessing.yml'
+      - '.pre-commit-config.yaml'
+  push:
+    paths:
+      - 'lab_1/number_guessing_quality/**'
+      - '.github/workflows/lab1-number-guessing.yml'
+      - '.pre-commit-config.yaml'
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lab_1/number_guessing_quality
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dev tools
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run lint, formatting, typing and tests
+        run: make fulltest

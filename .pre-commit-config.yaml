@@ -1,0 +1,27 @@
+repos:
+  - repo: local
+    hooks:
+      - id: lab1-ruff-lint
+        name: Lab 1 Ruff lint
+        entry: python -m ruff check lab_1/number_guessing_quality
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: lab1-ruff-format
+        name: Lab 1 Ruff format check
+        entry: python -m ruff format --check lab_1/number_guessing_quality
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: lab1-pyright
+        name: Lab 1 Pyright strict
+        entry: python -m pyright -p lab_1/number_guessing_quality/pyrightconfig.json
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
+      - id: lab1-tests
+        name: Lab 1 unittest
+        entry: python -m unittest discover -s lab_1/number_guessing_quality/tests -t lab_1/number_guessing_quality -v
+        language: system
+        pass_filenames: false
+        stages: [pre-push]
