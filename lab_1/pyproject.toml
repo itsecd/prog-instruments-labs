@@ -1,0 +1,26 @@
+[tool.ruff]
+line-length = 88
+target-version = "py314"
+extend-exclude = ["rle"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",
+    "F",
+    "I",
+    "N",
+    "B",
+    "UP",
+    "SIM",
+    "C4",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pyright]
+include = ["."]
+exclude = ["rle", "**/__pycache__"]
+pythonVersion = "3.14"
+typeCheckingMode = "standard"
