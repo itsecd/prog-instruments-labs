@@ -31,6 +31,12 @@ SIZE_MENU = "600x500"
 SIZE_BATTLESHIP = "1000x900"
 SIZE_TEXT_ADVENTURE = "900x750"
 
+# Games that need a bigger window than the menu (frame name -> size)
+GAME_WINDOW_SIZES = {
+    "BattleshipGUI": SIZE_BATTLESHIP,
+    "TextAdventureGUI": SIZE_TEXT_ADVENTURE,
+}
+
 # --- Battleship ---
 MODE_COMPUTER = "COMPUTER"
 MODE_TWO_PLAYERS = "TWOPLAYER"

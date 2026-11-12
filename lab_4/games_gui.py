@@ -1,9 +1,8 @@
 import tkinter as tk
 from tkinter import simpledialog
 import random
-import json
-import os
 
+from data_loader import load_hangman_words, load_quiz_questions
 from game_frame import GameFrame
 from game_logic import (
     can_place_ship,
@@ -32,6 +31,7 @@ from constants import (
     FONT_SUBTITLE,
     FONT_TEXT,
     FONT_TITLE,
+    GAME_WINDOW_SIZES,
     MODE_COMPUTER,
     MODE_TWO_PLAYERS,
     PLACEMENT_BG,
@@ -40,54 +40,6 @@ from constants import (
     SIZE_MENU,
     SIZE_TEXT_ADVENTURE,
 )
-
-def load_hangman_words(filename="hangman_words.json"):
-    """Loads a list of words from a JSON file using the script's absolute path."""
-    
-    # Use the same logic to find the absolute path
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    full_path = os.path.join(script_dir, filename)
-    
-    if not os.path.exists(full_path):
-        print(f"Error: Hangman data file not found at {full_path}")
-        return ["error"] # Return a default list so the game doesn't crash
-    
-    try:
-        with open(full_path, 'r') as f:
-            data = json.load(f)
-            # Ensure the loaded data is a list of strings
-            if isinstance(data, list) and all(isinstance(item, str) for item in data):
-                return [word.lower() for word in data]
-            else:
-                print(f"Error: Hangman data file is not a list of strings: {full_path}")
-                return ["error"]
-    except Exception as e:
-        print(f"An error occurred while reading the Hangman file: {e}")
-        return ["error"]
-
-def load_quiz_questions(filename="quiz_data.json"):
-    """Loads quiz questions from a JSON file using the script's absolute path."""
-
-    # 1. Get the directory of the currently executing script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # 2. Combine the script directory and the filename to create the full path
-    full_path = os.path.join(script_dir, filename)
-
-    if not os.path.exists(full_path):
-        print(f"Error: Quiz data file not found at {full_path}")
-        return []
-    
-    try:
-        with open(full_path, 'r') as f:
-            data = json.load(f)
-            return data
-    except json.JSONDecodeError:
-        print(f"Error: Failed to decode JSON from {filename}. Check the file format.")
-        return []
-    except Exception as e:
-        print(f"An unexpected error occurred while reading the file: {e}")
-        return []
 
 # --- Global Class to Manage the Application ---
 class GameApp(tk.Tk):
@@ -117,9 +69,11 @@ class GameApp(tk.Tk):
         self.show_frame("MainMenu")
 
     def show_frame(self, page_name):
-        """Raises the desired frame to the front."""
-        frame = self.frames[page_name]
-        frame.tkraise()
+        """Raises the desired frame to the front, resizing the window if the game needs it."""
+        size = GAME_WINDOW_SIZES.get(page_name)
+        if size is not None:
+            self.geometry(size)
+        self.frames[page_name].tkraise()
 
 # --- Main Menu Screen ---
 class MainMenu(tk.Frame):
@@ -168,12 +122,7 @@ class MoreGamesMenu(tk.Frame):
         ]
 
         for text, frame_name in more_games:
-            if frame_name == "BattleshipGUI":
-                tk.Button(self, text=text, width=50, command=lambda name=frame_name: [controller.winfo_toplevel().geometry(SIZE_BATTLESHIP), controller.show_frame(name)]).pack(pady=5)
-            elif frame_name == "TextAdventureGUI":
-                tk.Button(self, text=text, width=50, command=lambda name=frame_name: [controller.winfo_toplevel().geometry(SIZE_TEXT_ADVENTURE), controller.show_frame(name)]).pack(pady=5)
-            else:
-                tk.Button(self, text=text, width=50, command=lambda name=frame_name: controller.show_frame(name)).pack(pady=5)
+            tk.Button(self, text=text, width=50, command=lambda name=frame_name: controller.show_frame(name)).pack(pady=5)
 
         tk.Button(self, text="Back to Menu", width=30, command=lambda: controller.show_frame("MainMenu")).pack(pady=20)
 
