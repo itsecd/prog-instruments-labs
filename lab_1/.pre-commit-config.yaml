@@ -1,0 +1,36 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        files: ^lab_1/
+        exclude: ^lab_1/rle/
+      - id: end-of-file-fixer
+        files: ^lab_1/
+        exclude: ^lab_1/rle/
+
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: make -C lab_1 lint
+        language: system
+        pass_filenames: false
+        files: ^lab_1/.*\.py$
+        stages: [pre-commit]
+
+      - id: ruff-format
+        name: ruff format --check
+        entry: make -C lab_1 format-check
+        language: system
+        pass_filenames: false
+        files: ^lab_1/.*\.py$
+        stages: [pre-commit]
+
+      - id: pyright
+        name: pyright
+        entry: make -C lab_1 typecheck
+        language: system
+        pass_filenames: false
+        files: ^lab_1/.*\.py$
+        stages: [pre-push]

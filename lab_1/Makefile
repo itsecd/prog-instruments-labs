@@ -1,4 +1,4 @@
-.PHONY: help run lint lint-fix format format-check typecheck fullcheck clean
+.PHONY: help run lint lint-fix format format-check typecheck fullcheck clean precommit
 
 PYTHON ?= python
 
@@ -28,3 +28,6 @@ fullcheck: lint format-check typecheck  ## Все статические про�
 
 clean:  ## Удалить кэши и результаты запуска
 	rm -rf output .ruff_cache __pycache__
+
+precommit:  ## Установить git-хуки (pre-commit и pre-push)
+	cd $$(git rev-parse --show-toplevel) && pre-commit install -c lab_1/.pre-commit-config.yaml --hook-type pre-commit --hook-type pre-push
