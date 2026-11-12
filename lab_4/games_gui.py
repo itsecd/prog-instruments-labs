@@ -4,6 +4,7 @@ import random
 import json
 import os
 
+from game_frame import GameFrame
 from constants import (
     ADV_ACCENT,
     ADV_ACCENT_ACTIVE,
@@ -183,7 +184,7 @@ class MoreGamesMenu(tk.Frame):
         tk.Button(self, text="Back to Menu", width=30, command=lambda: controller.show_frame("MainMenu")).pack(pady=20)
 
 # --- Mastermind (Bulls and Cows) GUI Frame ---
-class MastermindGUI(tk.Frame):
+class MastermindGUI(GameFrame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
@@ -227,13 +228,6 @@ class MastermindGUI(tk.Frame):
         # Start the first game
         self.start_game()
     
-    def log(self, message):
-        """Helper function to update the Text widget (Game Log)"""
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.insert(tk.END, message + "\n")
-        self.log_text.see(tk.END)
-        self.log_text.config(state=tk.DISABLED)
-    
     def generate_secret_number(self):
         """Generates a 4-digit number with unique digits."""
         digits = random.sample(range(10), 4)
@@ -245,9 +239,7 @@ class MastermindGUI(tk.Frame):
         self.attempts = 0
         
         # Clear the log and reset status
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.delete('1.0', tk.END)
-        self.log_text.config(state=tk.DISABLED)
+        self.clear_log()
         
         self.log("New game started! Guess the 4-digit number.")
         self.log("Bulls = correct digit in correct position")
@@ -295,7 +287,7 @@ class MastermindGUI(tk.Frame):
         self.guess_entry.config(state=tk.DISABLED)
 
 # --- Word Scramble (Anagrams) GUI Frame ---
-class WordScrambleGUI(tk.Frame):
+class WordScrambleGUI(GameFrame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
@@ -342,13 +334,6 @@ class WordScrambleGUI(tk.Frame):
         # Start the first game
         self.start_game()
     
-    def log(self, message):
-        """Helper function to update the Text widget (Game Log)"""
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.insert(tk.END, message + "\n")
-        self.log_text.see(tk.END)
-        self.log_text.config(state=tk.DISABLED)
-    
     def scramble_word(self, word):
         """Scrambles a word by randomly shuffling its letters."""
         letters = list(word)
@@ -373,9 +358,7 @@ class WordScrambleGUI(tk.Frame):
         self.time_left = max(15, len(self.original_word) * 3)
         
         # Clear the log
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.delete('1.0', tk.END)
-        self.log_text.config(state=tk.DISABLED)
+        self.clear_log()
         
         self.log(f"Unscramble the word! Word length: {len(self.original_word)} letters")
         
@@ -429,7 +412,7 @@ class WordScrambleGUI(tk.Frame):
         self.answer_entry.config(state=tk.DISABLED)
 
 # --- Battleship GUI Frame ---
-class BattleshipGUI(tk.Frame):
+class BattleshipGUI(GameFrame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg=BG_COLOR)
         self.controller = controller
@@ -538,9 +521,7 @@ class BattleshipGUI(tk.Frame):
             1: [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)],
             2: [[' ' for _ in range(self.grid_size)] for _ in range(self.grid_size)]
         }
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.delete('1.0', tk.END)
-        self.log_text.config(state=tk.DISABLED)
+        self.clear_log()
         self.init_placement_phase()
     
     def init_placement_phase(self):
@@ -829,13 +810,6 @@ class BattleshipGUI(tk.Frame):
                         btn.config(bg="lightgray", text="M")
                     else:
                         btn.config(bg="lightgreen", text=" ")
-    
-    def log(self, message):
-        """Helper function to update the Text widget (Game Log)"""
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.insert(tk.END, message + "\n")
-        self.log_text.see(tk.END)
-        self.log_text.config(state=tk.DISABLED)
     
     def place_ships(self, board):
         """Places ships on the board randomly."""
@@ -1415,7 +1389,7 @@ class TextAdventureGUI(tk.Frame):
         self.show_scene("main_room")
 
 # --- Number Guessing Game GUI Frame ---
-class NumberGuessingGUI(tk.Frame):
+class NumberGuessingGUI(GameFrame):
     def __init__(self, parent, controller):
         bg=BG_COLOR
         tk.Frame.__init__(self, parent, bg=bg)
@@ -1459,22 +1433,13 @@ class NumberGuessingGUI(tk.Frame):
         # Start the first game automatically
         self.start_game()
         
-    def log(self, message):
-        """Helper function to update the Text widget (Game Log)"""
-        self.log_text.config(state=tk.NORMAL) # Enable editing
-        self.log_text.insert(tk.END, message + "\n")
-        self.log_text.see(tk.END) # Auto-scroll to the bottom
-        self.log_text.config(state=tk.DISABLED) # Disable editing
-
     def start_game(self):
         """Initializes the game state."""
         self.target_number = random.randint(1, 10)
         self.attempts_left = self.max_attempts
         
         # Clear the log and reset status
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.delete('1.0', tk.END)
-        self.log_text.config(state=tk.DISABLED)
+        self.clear_log()
         
         self.status_label.config(text=f"Attempts left: {self.attempts_left}")
         self.log("New game started! Guess the number between 1 and 10!")
@@ -1740,7 +1705,7 @@ class RockPaperScissorsGUI(tk.Frame):
         self.toggle_buttons(tk.NORMAL)
 
 # --- Higher or Lower GUI Frame ---
-class HigherOrLowerGUI(tk.Frame):
+class HigherOrLowerGUI(GameFrame):
     def __init__(self, parent, controller):
         # Set the frame background color
         tk.Frame.__init__(self, parent, bg=BG_COLOR)
@@ -1782,22 +1747,13 @@ class HigherOrLowerGUI(tk.Frame):
         # Start the first game automatically
         self.start_game()
         
-    def log(self, message):
-        """Helper function to update the Text widget (Game Log)"""
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.insert(tk.END, message + "\n")
-        self.log_text.see(tk.END)
-        self.log_text.config(state=tk.DISABLED)
-
     def start_game(self):
         """Initializes the game state."""
         self.target_number = random.randint(1, 100)
         self.attempts = 0
         
         # Clear the log and reset status
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.delete('1.0', tk.END)
-        self.log_text.config(state=tk.DISABLED)
+        self.clear_log()
         
         self.status_label.config(text="Attempts: 0")
         self.log("New game started! Guess the number between 1 and 100!")
@@ -1837,7 +1793,7 @@ class HigherOrLowerGUI(tk.Frame):
         self.guess_entry.config(state=tk.DISABLED)
 
 # --- Dice Rolling Game GUI Frame (Betting) ---
-class DiceRollingGUI(tk.Frame):
+class DiceRollingGUI(GameFrame):
     def __init__(self, parent, controller):
         # Set the frame background color
         tk.Frame.__init__(self, parent, bg=BG_COLOR)
@@ -1881,13 +1837,6 @@ class DiceRollingGUI(tk.Frame):
         tk.Button(self, text="Back to Menu", command=lambda: [self.reset_game(), controller.show_frame("MainMenu")]).pack(side=tk.RIGHT, padx=10, pady=10)
 
         self.log("Welcome! Bet on High (4-6) or Low (1-3)!")
-
-    def log(self, message):
-        """Helper function to update the Text widget (Game Log)"""
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.insert(tk.END, message + "\n")
-        self.log_text.see(tk.END)
-        self.log_text.config(state=tk.DISABLED)
 
     def update_money_display(self):
         """Updates the money label."""
@@ -1942,9 +1891,7 @@ class DiceRollingGUI(tk.Frame):
         self.money = 100
         self.update_money_display()
         
-        self.log_text.config(state=tk.NORMAL)
-        self.log_text.delete('1.0', tk.END)
-        self.log_text.config(state=tk.DISABLED)
+        self.clear_log()
         
         self.log("New game started. Bet wisely!")
         self.place_bet_button.config(state=tk.NORMAL)
