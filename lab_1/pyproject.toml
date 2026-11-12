@@ -34,8 +34,9 @@ convention = "google"
 "tests/**" = ["S101", "D", "PLR2004"]
 "src/main.py" = ["PLR0912", "PLR0915"]   
 
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-line-ending = "auto"
-docstring-code-format = true
+[tool.pyright]
+include = ["src", "tests"]
+exclude = ["**/__pycache__", ".venv"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+extraPaths = ["."]

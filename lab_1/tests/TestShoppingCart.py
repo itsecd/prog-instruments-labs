@@ -150,7 +150,7 @@ class TestShoppingCart(unittest.TestCase):
         self.cart.add_book(self.book1.title, self.book1.quantity)
         self.cart.add_book(self.book2.title, self.book2.quantity)
         found_book = self.cart.search_book("Book1")
-        self.assertIsNotNone(found_book)
+        assert found_book is not None
         self.assertEqual(found_book.title, "Book1")
 
     def test_search_book_with_invalid_data(self):

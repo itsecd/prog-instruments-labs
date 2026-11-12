@@ -25,7 +25,7 @@ class TestInventoryManager(unittest.TestCase):
 
     def test_add_book_with_invalid_data(self):
         with self.assertRaises(TypeError):
-            self.manager.add_book("Invalid Book Data")
+            self.manager.add_book("Invalid Book Data")  # pyright: ignore[reportArgumentType]
 
     def test_assign_category(self):
         self.manager.add_book(self.book1)
@@ -54,11 +54,13 @@ class TestInventoryManager(unittest.TestCase):
         self.manager.remove_book("Book1", 2)
 
         book1 = self.manager.search_book("Book1")
+        assert book1 is not None
         self.assertEqual(book1.quantity, 3)
 
         self.manager.remove_book("Book2", 5)
 
         book2 = self.manager.search_book("Book2")
+        assert book2 is not None
         self.assertEqual(book2.quantity, 5)
 
         # Try to remove a non-existent book
@@ -81,7 +83,7 @@ class TestInventoryManager(unittest.TestCase):
         self.manager.add_book(self.book1)
         self.manager.add_book(self.book2)
         found_book = self.manager.search_book("Book1")
-        self.assertIsNotNone(found_book)
+        assert found_book is not None
         self.assertEqual(found_book.title, "Book1")
 
     def test_search_book_with_invalid_data(self):
@@ -105,6 +107,7 @@ class TestInventoryManager(unittest.TestCase):
         self.manager.add_book(self.book1)
         self.manager.update_book_details("Book1", {"price": 15.0, "quantity": 8})
         updated_book = self.manager.search_book("Book1")
+        assert updated_book is not None
         self.assertEqual(updated_book.price, 15.0)
         self.assertEqual(updated_book.quantity, 8)
 
