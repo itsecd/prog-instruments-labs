@@ -108,44 +108,71 @@ def list_tasks(filter_status=None):
 
     for task in tasks:
         print(f"[{task['id']}] {task['description']} - {task['status']}")
-        
+
+def parse_task_id(raw_value):
+    try:
+        return int(raw_value)
+    except ValueError:
+        logger.warning("Invalid task id %r: an integer is expected", raw_value)
+        print(f"Invalid task id: {raw_value}")
+        return None
+
 def main():
     setup_logging()
     if len(sys.argv) < 2:
+        logger.warning("No command provided")
         print("Usage: task-cli <command> [arguments]")
         return
 
     command = sys.argv[1]
+    logger.debug("Command received: %s, argument_count=%d", command, len(sys.argv) - 2)
 
     if command == "add":
         if len(sys.argv) < 3:
+            logger.warning("Command 'add' called without a description")
             print("Usage: task-cli add <description>")
             return
         add_task(" ".join(sys.argv[2:]))
 
     elif command == "update":
         if len(sys.argv) < 4:
+            logger.warning("Command 'update' called with missing arguments")
             print("Usage: task-cli update <id> <description>")
             return
-        update_task(int(sys.argv[2]), " ".join(sys.argv[3:]))
+        task_id = parse_task_id(sys.argv[2])
+        if task_id is None:
+            return
+        update_task(task_id, " ".join(sys.argv[3:]))
 
     elif command == "delete":
         if len(sys.argv) < 3:
+            logger.warning("Command 'delete' called without an id")
             print("Usage: task-cli delete <id>")
             return
-        delete_task(int(sys.argv[2]))
+        task_id = parse_task_id(sys.argv[2])
+        if task_id is None:
+            return
+        delete_task(task_id)
 
     elif command == "mark-in-progress":
         if len(sys.argv) < 3:
+            logger.warning("Command 'mark-in-progress' called without an id")
             print("Usage: task-cli mark-in-progress <id>")
             return
-        mark_status(int(sys.argv[2]), "in-progress")
+        task_id = parse_task_id(sys.argv[2])
+        if task_id is None:
+            return
+        mark_status(task_id, "in-progress")
 
     elif command == "mark-done":
         if len(sys.argv) < 3:
+            logger.warning("Command 'mark-done' called without an id")
             print("Usage: task-cli mark-done <id>")
             return
-        mark_status(int(sys.argv[2]), "done")
+        task_id = parse_task_id(sys.argv[2])
+        if task_id is None:
+            return
+        mark_status(task_id, "done")
 
     elif command == "list":
         if len(sys.argv) == 2:
@@ -153,11 +180,13 @@ def main():
         else:
             status = sys.argv[2]
             if status not in ["todo", "in-progress", "done"]:
+                logger.warning("Invalid status filter: %r", status)
                 print("Invalid status. Use: todo, in-progress, or done")
             else:
                 list_tasks(status)
 
     else:
+        logger.warning("Unknown command: %r", command)
         print("Unknown command")
 
 if __name__ == "__main__":
