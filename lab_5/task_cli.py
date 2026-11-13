@@ -50,7 +50,11 @@ def add_task(description):
     }
     tasks.append(task)
     save_tasks(tasks)
+    logger.info(
+        "Task added: id=%d, description_length=%d", task["id"], len(description)
+    )
     print(f"Task added successfully (ID: {task['id']})")
+
 
 def update_task(task_id, description):
     tasks = load_tasks()
@@ -59,18 +63,24 @@ def update_task(task_id, description):
             task["description"] = description
             task["updatedAt"] = datetime.now().isoformat()
             save_tasks(tasks)
+            logger.info("Task updated: id=%d", task_id)
             print("Task updated successfully")
             return
+    logger.warning("Cannot update task: id=%d not found", task_id)
     print("Task not found")
+
 
 def delete_task(task_id):
     tasks = load_tasks()
     new_tasks = [task for task in tasks if task["id"] != task_id]
     if len(tasks) == len(new_tasks):
+        logger.warning("Cannot delete task: id=%d not found", task_id)
         print("Task not found")
     else:
         save_tasks(new_tasks)
+        logger.info("Task deleted: id=%d", task_id)
         print("Task deleted successfully")
+
 
 def mark_status(task_id, status):
     tasks = load_tasks()
@@ -79,14 +89,18 @@ def mark_status(task_id, status):
             task["status"] = status
             task["updatedAt"] = datetime.now().isoformat()
             save_tasks(tasks)
+            logger.info("Task status changed: id=%d, status=%s", task_id, status)
             print(f"Task marked as {status}")
             return
+    logger.warning("Cannot change status: task id=%d not found", task_id)
     print("Task not found")
+
 
 def list_tasks(filter_status=None):
     tasks = load_tasks()
     if filter_status:
         tasks = [task for task in tasks if task["status"] == filter_status]
+    logger.debug("Listing tasks: filter=%s, count=%d", filter_status, len(tasks))
 
     if not tasks:
         print("No tasks found")
@@ -94,7 +108,7 @@ def list_tasks(filter_status=None):
 
     for task in tasks:
         print(f"[{task['id']}] {task['description']} - {task['status']}")
-
+        
 def main():
     setup_logging()
     if len(sys.argv) < 2:
