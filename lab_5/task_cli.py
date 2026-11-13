@@ -1,23 +1,40 @@
 #!/usr/bin/env python3
 import sys
 import json
+import logging
 import os
 from datetime import datetime
 
+from logging_setup import setup_logging
+
 TASKS_FILE = "tasks.json"
+
+logger = logging.getLogger("task_cli")
 
 def load_tasks():
     if not os.path.exists(TASKS_FILE):
+        logger.info("Tasks file %s not found, starting with an empty list", TASKS_FILE)
         return []
     with open(TASKS_FILE, "r") as f:
         try:
-            return json.load(f)
-        except json.JSONDecodeError:
+            tasks = json.load(f)
+        except json.JSONDecodeError as exc:
+            logger.error(
+                "Tasks file %s is corrupted (%s), using an empty list", TASKS_FILE, exc
+            )
             return []
+    logger.debug("Loaded %d tasks from %s", len(tasks), TASKS_FILE)
+    return tasks
+
 
 def save_tasks(tasks):
-    with open(TASKS_FILE, "w") as f:
-        json.dump(tasks, f, indent=4)
+    try:
+        with open(TASKS_FILE, "w") as f:
+            json.dump(tasks, f, indent=4)
+    except OSError:
+        logger.exception("Failed to save tasks to %s", TASKS_FILE)
+        raise
+    logger.debug("Saved %d tasks to %s", len(tasks), TASKS_FILE)
 
 def generate_id(tasks):
     return max([task["id"] for task in tasks], default=0) + 1
@@ -79,6 +96,7 @@ def list_tasks(filter_status=None):
         print(f"[{task['id']}] {task['description']} - {task['status']}")
 
 def main():
+    setup_logging()
     if len(sys.argv) < 2:
         print("Usage: task-cli <command> [arguments]")
         return
