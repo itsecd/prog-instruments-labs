@@ -1,0 +1,27 @@
+name: Code quality
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install project and tools
+        run: python -m pip install -e ".[dev]"
+      - name: Run Ruff lint
+        run: ruff check src tests
+      - name: Check formatting
+        run: ruff format --check src tests
+      - name: Check types
+        run: pyright
+      - name: Run tests
+        run: python -m pytest -q
