@@ -1,6 +1,14 @@
+import logging
 import sys
 import time
 from typing import Optional
+
+from log_config import LOGGER_NAME, configure_logging
+
+logger = logging.getLogger(f"{LOGGER_NAME}.gui")
+
+if __name__ == "__main__":
+    configure_logging()
 
 try:
     from PyQt6.QtWidgets import (
@@ -12,6 +20,7 @@ try:
     from PyQt6.QtCore import Qt, QThread, pyqtSignal, QTimer
     from PyQt6.QtGui import QFont, QColor, QPalette, QLinearGradient, QBrush
 except ImportError:
+    logger.critical("Could not start the avalanche GUI: PyQt6 import failed")
     print("Ошибка: PyQt6 не установлен. Выполните: pip install PyQt6")
     sys.exit(1)
 
@@ -44,10 +53,15 @@ from hash_core import (
 
 
 
+class ExperimentCancelled(Exception):
+    """Рабочий поток получил запрос на остановку."""
+
+
 class ExperimentWorker(QThread):
     progress = pyqtSignal(int, int)         
     result_ready = pyqtSignal(list)       
     error_occurred = pyqtSignal(str)
+    cancelled = pyqtSignal()
 
     def __init__(self, text: str, count: int, algorithm: str):
         super().__init__()
@@ -56,16 +70,45 @@ class ExperimentWorker(QThread):
         self.algorithm = algorithm
 
     def run(self):
+        started = time.perf_counter()
+        completed = 0
+
+        def report_progress(current, total):
+            nonlocal completed
+            completed = current
+            if self.isInterruptionRequested():
+                raise ExperimentCancelled
+            self.progress.emit(current, total)
+
         try:
+            if self.isInterruptionRequested():
+                raise ExperimentCancelled
             results = run_experiments(
                 self.text,
                 count=self.count,
                 algorithm=self.algorithm,
-                progress_callback=lambda c, t: self.progress.emit(c, t),
+                progress_callback=report_progress,
+            )
+            if self.isInterruptionRequested():
+                raise ExperimentCancelled
+        except ExperimentCancelled:
+            logger.info(
+                "Cancelled a GUI experiment series: algorithm=%s, completed=%d, planned=%d",
+                self.algorithm, completed, self.count * len(MODIFICATION_TYPES),
+            )
+            self.cancelled.emit()
+        except Exception as e:
+            logger.error(
+                "The GUI experiment series failed: algorithm=%s, completed=%d, planned=%d, error_type=%s",
+                self.algorithm, completed, self.count * len(MODIFICATION_TYPES), type(e).__name__,
+            )
+            self.error_occurred.emit(str(e))
+        else:
+            logger.info(
+                "Completed a GUI experiment series: algorithm=%s, completed=%d, duration_ms=%.1f",
+                self.algorithm, len(results), (time.perf_counter() - started) * 1000,
             )
             self.result_ready.emit(results)
-        except Exception as e:
-            self.error_occurred.emit(str(e))
 
 
 
@@ -371,11 +414,16 @@ class MainWindow(QMainWindow):
             # Переносим для читаемости
             self.hash_preview.setText(h[:HASH_PREVIEW_LENGTH] + "\n" + h[HASH_PREVIEW_LENGTH:])
         except Exception as e:
+            logger.error(
+                "Could not compute the GUI hash preview: algorithm=%s, error_type=%s",
+                algo, type(e).__name__,
+            )
             self.hash_preview.setText(f"Ошибка: {e}")
 
     def _run_experiments(self):
         text = self.text_input.text().strip()
         if not text:
+            logger.warning("Rejected a GUI experiment series because the source text is empty")
             QMessageBox.warning(self, "Ошибка", "Введите исходную строку.")
             return
 
@@ -383,9 +431,14 @@ class MainWindow(QMainWindow):
         algo = self.algo_combo.currentText()
 
         self.run_btn.setEnabled(False)
+        self.cancel_btn.setEnabled(True)
         self.cancel_btn.setVisible(True)
         self.progress_bar.setVisible(True)
         total_experiments = count * len(MODIFICATION_TYPES)
+        logger.info(
+            "Started a GUI experiment series: algorithm=%s, modifications=%s, planned=%d",
+            algo, ",".join(MODIFICATION_TYPES), total_experiments,
+        )
         self.progress_bar.setRange(0, total_experiments)
         self.progress_bar.setValue(0)
         self.results_table.setRowCount(0)
@@ -397,13 +450,23 @@ class MainWindow(QMainWindow):
         self.worker.progress.connect(self._on_progress)
         self.worker.result_ready.connect(self._on_results)
         self.worker.error_occurred.connect(self._on_error)
+        self.worker.cancelled.connect(self._on_cancelled)
         self.worker.start()
 
     def _cancel_experiments(self):
         if self.worker and self.worker.isRunning():
-            self.worker.terminate()
-            self._finish_ui()
-            self.status.showMessage("Остановлено пользователем")
+            self.cancel_btn.setEnabled(False)
+            self.worker.requestInterruption()
+
+    def _on_cancelled(self):
+        self._finish_ui()
+        self.status.showMessage("Остановлено пользователем")
+
+    def closeEvent(self, event):
+        if self.worker and self.worker.isRunning():
+            self.worker.requestInterruption()
+            self.worker.wait()
+        super().closeEvent(event)
 
     def _on_progress(self, current: int, total: int):
         self.progress_bar.setValue(current)
@@ -428,6 +491,7 @@ class MainWindow(QMainWindow):
         self.cancel_btn.setVisible(False)
         self.progress_bar.setVisible(False)
         if self.worker:
+            self.worker.wait()
             self.worker = None
 
     def _populate_table(self, results: list[AvalancheResult]):
@@ -501,15 +565,22 @@ class MainWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
+    logger.info("Started the avalanche GUI")
     app.setStyle("Fusion")
     window = MainWindow()
     window.show()
-    sys.exit(app.exec())
+    exit_code = app.exec()
+    logger.info("Closed the avalanche GUI: exit_code=%d", exit_code)
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
     try:
         main()
     except Exception as e:
+        logger.critical(
+            "The avalanche GUI stopped after an unexpected error: error_type=%s",
+            type(e).__name__,
+        )
         print(f"Критическая ошибка: {e}", file=sys.stderr)
         sys.exit(1)
