@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 import random
 from dataclasses import dataclass
 from typing import Callable, Iterable
 
 import config_loader as settings
+from log_config import LOGGER_NAME
+
+logger = logging.getLogger(f"{LOGGER_NAME}.hash_core")
 
 
 @dataclass(frozen=True)
@@ -183,7 +187,7 @@ def summarize_results(results: list[AvalancheResult]) -> dict:
             2,
         )
 
-    return {
+    summary = {
         "total_experiments": total_experiments,
         "avg_diff_percent": round(avg_diff, 2),
         "min_diff_percent": round(min(r.diff_percent for r in results), 2),
@@ -192,6 +196,15 @@ def summarize_results(results: list[AvalancheResult]) -> dict:
         "total_bits": total_bits,
         "by_modification": by_modification,
     }
+    logger.debug(
+        "Computed avalanche statistics: experiments=%d, hash_bits=%d, mean=%.2f%%, min=%.2f%%, max=%.2f%%",
+        total_experiments,
+        total_bits,
+        summary["avg_diff_percent"],
+        summary["min_diff_percent"],
+        summary["max_diff_percent"],
+    )
+    return summary
 
 
 def get_avalanche_quality(percent: float) -> AvalancheQuality:

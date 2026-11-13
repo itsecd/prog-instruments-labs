@@ -4,8 +4,13 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 from typing import Any
+
+from log_config import LOGGER_NAME
+
+logger = logging.getLogger(f"{LOGGER_NAME}.config_loader")
 
 CONFIG_PATH = Path(__file__).with_name("config.json")
 
@@ -17,7 +22,13 @@ def load_config(path: str | Path = CONFIG_PATH) -> dict[str, Any]:
         return json.load(file)
 
 
-CONFIG: dict[str, Any] = load_config()
+try:
+    CONFIG: dict[str, Any] = load_config()
+except (OSError, ValueError) as error:
+    logger.critical("Could not load config.json: error_type=%s", type(error).__name__)
+    raise
+else:
+    logger.debug("Loaded the application configuration from config.json")
 
 
 DEFAULT_ALGORITHM = CONFIG["hashing"]["default_algorithm"]
