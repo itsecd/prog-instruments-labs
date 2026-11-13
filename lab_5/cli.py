@@ -1,5 +1,15 @@
 import argparse
+import logging
 import sys
+import time
+
+from log_config import LOGGER_NAME, configure_logging
+
+logger = logging.getLogger(f"{LOGGER_NAME}.cli")
+
+if __name__ == "__main__":
+    configure_logging()
+    logger.info("Started the avalanche CLI")
 
 try:
     from tqdm import tqdm
@@ -208,12 +218,17 @@ def main():
             _use_color = False
 
     if args.count < MIN_EXPERIMENT_COUNT:
+        logger.warning(
+            "Rejected the CLI experiment count: count=%d, minimum=%d",
+            args.count, MIN_EXPERIMENT_COUNT,
+        )
         parser.error(messages["count_error"].format(min_count=MIN_EXPERIMENT_COUNT))
 
     print_banner()
 
     labels = cli_config("labels")
     h_orig = compute_hash(args.text, args.algo)
+    logger.debug("Computed the CLI source hash: algorithm=%s", args.algo)
     print(f"  {labels['source_text']} : {yellow(repr(args.text))}")
     print(f"  {args.algo.upper()} {labels['hash']}      : {dim(h_orig)}")
     print()
@@ -224,6 +239,11 @@ def main():
         case mod:
             modifications = (mod,)
     total = args.count * len(modifications)
+    started = time.perf_counter()
+    logger.info(
+        "Started a CLI experiment series: algorithm=%s, modifications=%s, planned=%d",
+        args.algo, ",".join(modifications), total,
+    )
 
     print(bold(f"  {messages['starting'].format(total=total)}\n"))
 
@@ -244,6 +264,7 @@ def main():
 
     try:
         for mod in modifications:
+            completed_before = len(results)
             for _ in range(args.count):
                 try:
                     r = run_single_experiment(args.text, mod, args.algo)
@@ -266,6 +287,17 @@ def main():
                     callback(len(results), total)
                 except ValueError as e:
                     sys.stderr.write("\n  " + messages["warning"].format(error=e) + "\n")
+            completed = len(results) - completed_before
+            if completed < args.count:
+                logger.warning(
+                    "Skipped CLI experiments after validation errors: "
+                    "algorithm=%s, modification=%s, skipped=%d",
+                    args.algo, mod, args.count - completed,
+                )
+            logger.debug(
+                "Processed a CLI modification group: algorithm=%s, modification=%s, completed=%d, planned=%d",
+                args.algo, mod, completed, args.count,
+            )
     finally:
         if tqdm is not None:
             pbar.close()
@@ -273,6 +305,10 @@ def main():
     print()
 
     if not results:
+        logger.error(
+            "The CLI experiment series produced no results: algorithm=%s, modifications=%s, planned=%d",
+            args.algo, ",".join(modifications), total,
+        )
         print(red("  " + messages["no_results"]))
         sys.exit(1)
 
@@ -293,14 +329,25 @@ def main():
 
     summary = summarize_results(results)
     print_summary_table(summary, args.algo)
+    logger.info(
+        "Completed a CLI experiment series: "
+        "algorithm=%s, completed=%d, planned=%d, mean=%.2f%%, duration_ms=%.1f",
+        args.algo, len(results), total, summary["avg_diff_percent"],
+        (time.perf_counter() - started) * 1000,
+    )
 
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
+        logger.info("The user interrupted the avalanche CLI")
         print("\n\n  " + cli_config("messages", "interrupted"))
         sys.exit(0)
     except Exception as e:
+        logger.critical(
+            "The avalanche CLI stopped after an unexpected error: error_type=%s",
+            type(e).__name__,
+        )
         print(f"\n  {red(cli_config('messages', 'error'))} {e}")
         sys.exit(1)
