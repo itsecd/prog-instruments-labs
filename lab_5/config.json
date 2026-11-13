@@ -1,0 +1,134 @@
+{
+  "hashing": {
+    "default_algorithm": "sha256",
+    "supported_algorithms": [
+      "sha256",
+      "sha1",
+      "md5",
+      "sha3_256"
+    ],
+    "text_encoding": "utf-8",
+    "decode_errors": "replace"
+  },
+  "experiments": {
+    "default_count": 10,
+    "min_count": 1,
+    "max_count": 100,
+    "all_modifications_alias": "all",
+    "modification_types": [
+      "char",
+      "bit",
+      "case"
+    ],
+    "modification_labels": {
+      "char": "Замена символа",
+      "bit": "Инверсия бита (байт {byte_i}, бит {bit_i})",
+      "case": "Смена регистра (позиция {pos})"
+    }
+  },
+  "bits": {
+    "hex_digit": 4,
+    "byte": 8
+  },
+  "quality": {
+    "excellent_percent": 45,
+    "moderate_percent": 30,
+    "warning_percent": 25,
+    "ideal_percent": 50,
+    "levels": {
+      "excellent": {
+        "title": "Отличный лавинный эффект",
+        "description": "алгоритм качественный"
+      },
+      "moderate": {
+        "title": "Умеренный лавинный эффект",
+        "description": "есть слабые места"
+      },
+      "weak": {
+        "title": "Слабый лавинный эффект",
+        "description": "алгоритм ненадёжен"
+      }
+    }
+  },
+  "display": {
+    "hash_preview_length": 32,
+    "table_hash_preview_length": 16,
+    "text_preview_length": 30,
+    "progress_bar_length": 40,
+    "progress_ncols": 70
+  },
+  "gui": {
+    "window_title": "Лавинный эффект хеш-функций — Лабораторная №4",
+    "min_width": 1000,
+    "min_height": 680,
+    "default_text": "SSAU is the best university",
+    "splitter_sizes": [
+      320,
+      680
+    ],
+    "colors": {
+      "excellent": "#a8d8a8",
+      "warning": "#f9ca24",
+      "weak": "#ff6b6b"
+    }
+  },
+  "cli": {
+    "prog": "lab4_cli",
+    "description": "Исследование лавинного эффекта криптографических хеш-функций.",
+    "epilog": "Примеры:\n  python cli.py --text \"hello world\" --count 10\n  python cli.py --text \"пароль\" --count 5 --algo md5 --mod bit\n  python cli.py --text \"cryptography\" --count 15 --algo sha3_256 --no-color",
+    "banner": "\n  Лабораторная №4 · Лавинный эффект хеш-функций\n",
+    "progress": {
+      "description": "  Эксперименты",
+      "unit": "эксп.",
+      "bar_format": "{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]"
+    },
+    "ansi_codes": {
+      "green": "92",
+      "yellow": "93",
+      "cyan": "96",
+      "bold": "1",
+      "red": "91",
+      "dim": "2"
+    },
+    "table": {
+      "modification_column_width": 35,
+      "percent_column_width": 15,
+      "separator_length": 52,
+      "summary_top": "  ╔══════════════════════════════════════════╗",
+      "summary_title": "  ║         СВОДНАЯ СТАТИСТИКА               ║",
+      "summary_bottom": "  ╚══════════════════════════════════════════╝"
+    },
+    "labels": {
+      "source_text": "Исходный текст",
+      "modified_text": "Изменённый",
+      "bit_difference": "Различий бит",
+      "algorithm": "Алгоритм",
+      "experiments": "Экспериментов",
+      "average_percent": "Среднее %",
+      "min_percent": "Мин. %",
+      "max_percent": "Макс. %",
+      "average_bits": "Сред. бит",
+      "modification_type": "Тип модификации",
+      "average_difference_percent": "Ср. % различий",
+      "result": "Вывод",
+      "hash": "хеш"
+    },
+    "messages": {
+      "count_help": "Количество экспериментов каждого типа",
+      "algo_help": "Алгоритм хеширования",
+      "mod_help_prefix": "Тип модификации",
+      "text_help": "Исходная строка для хеширования.",
+      "no_color_help": "Отключить ANSI-цвета в выводе.",
+      "verbose_help": "Подробный вывод каждого эксперимента.",
+      "count_error": "--count должен быть >= {min_count}",
+      "starting": "Запуск {total} экспериментов…",
+      "warning": "[предупреждение] {error}",
+      "no_results": "Нет результатов. Проверьте параметры.",
+      "sample_result": "Пример результата (последний эксперимент):",
+      "interrupted": "Прервано пользователем.",
+      "error": "Ошибка:",
+      "experiment_label": "Эксперимент #{number} ({modification_type})",
+      "default_note": "по умолчанию"
+    }
+  }
+}
