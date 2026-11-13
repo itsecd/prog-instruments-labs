@@ -1,0 +1,9 @@
+{
+    "key_size": 256,
+    "input_file": "input.txt",
+    "encrypted_file": "encrypted.bin",
+    "decrypted_file": "decrypted.txt",
+    "symmetric_key": "keys/encrypted_camellia_key.bin",
+    "public_key": "keys/public_key.pem",
+    "private_key": "keys/private_key.pem"
+}

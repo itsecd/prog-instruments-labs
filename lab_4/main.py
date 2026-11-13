@@ -1,0 +1,193 @@
+import argparse
+
+from asymmetric_crypto import (
+    decrypt_symmetric_key,
+    encrypt_symmetric_key,
+    generate_rsa_key,
+    load_private_key,
+    save_private_key,
+    save_public_key,
+)
+from file_utils import read_binary_file, read_json_file, write_binary_file, write_json_file
+from symmetric_crypto import (
+    decrypt_file_camellia,
+    encrypt_file_camellia,
+    generate_symmetric_key,
+)
+
+
+CLI_OVERRIDES = ("private_key", "public_key", "symmetric_key", "key_size")
+KEY_PROMPTS = (
+    ("private_key", "Путь к приватному ключу"),
+    ("public_key", "Путь к публичному ключу"),
+    ("symmetric_key", "Путь к симметричному ключу"),
+)
+
+
+def request_settings(settings: dict) -> dict:
+    """
+    Запрашивает у пользователя пути к ключам и обновляет настройки.
+
+    :param settings: исходный словарь настроек
+    :return: обновлённый словарь настроек
+    """
+    for name, description in KEY_PROMPTS:
+        value = input(f"{description} [{settings[name]}]: ")
+        if value:
+            settings[name] = value
+
+    return settings
+
+
+def generation_mode(settings: dict) -> None:
+    """
+    Генерирует ключи гибридной криптосистемы.
+
+    :param settings: словарь с настройками
+    :return: None
+    """
+    print("Генерация ключа Camellia")
+    symmetric_key = generate_symmetric_key(settings["key_size"])
+
+    print("Генерация ключей RSA")
+    private_key, public_key = generate_rsa_key()
+
+    print("Сохранение закрытого ключа RSA")
+    save_private_key(private_key, settings["private_key"])
+
+    print("Сохранение открытого ключа RSA")
+    save_public_key(public_key, settings["public_key"])
+
+    print("Шифрование ключа Camellia открытым ключом RSA")
+    encrypted_key = encrypt_symmetric_key(symmetric_key, public_key)
+
+    print("Сохранение зашифрованного ключа Camellia")
+    write_binary_file(settings["symmetric_key"], encrypted_key)
+
+    print("Генерация завершена")
+
+
+def load_symmetric_key(settings: dict) -> bytes:
+    """
+    Загружает закрытый ключ RSA и расшифровывает им ключ Camellia.
+
+    :param settings: словарь с настройками
+    :return: ключ Camellia
+    """
+    print("Загрузка закрытого ключа RSA")
+    private_key = load_private_key(settings["private_key"])
+
+    print("Загрузка зашифрованного ключа Camellia")
+    encrypted_key = read_binary_file(settings["symmetric_key"])
+
+    print("Расшифрование ключа Camellia")
+    symmetric_key = decrypt_symmetric_key(encrypted_key, private_key)
+
+    return symmetric_key
+
+
+def encryption_mode(settings: dict) -> None:
+    """
+    Шифрует файл гибридной криптосистемой.
+
+    :param settings: словарь с настройками
+    :return: None
+    """
+    symmetric_key = load_symmetric_key(settings)
+
+    print("Шифрование файла алгоритмом Camellia")
+    encrypt_file_camellia(
+        settings["input_file"],
+        settings["encrypted_file"],
+        symmetric_key,
+    )
+
+    print("Шифрование завершено")
+
+
+def decryption_mode(settings: dict) -> None:
+    """
+    Дешифрует файл гибридной криптосистемой.
+
+    :param settings: словарь с настройками
+    :return: None
+    """
+    symmetric_key = load_symmetric_key(settings)
+
+    print("Дешифрование файла алгоритмом Camellia")
+    decrypt_file_camellia(
+        settings["encrypted_file"],
+        settings["decrypted_file"],
+        symmetric_key,
+    )
+
+    print("Дешифрование завершено")
+
+
+MODES = {
+    "generation": ("Режим генерации ключей", generation_mode),
+    "encryption": ("Режим шифрования", encryption_mode),
+    "decryption": ("Режим дешифрования", decryption_mode),
+}
+
+
+def apply_cli_overrides(settings: dict, args: argparse.Namespace) -> None:
+    """
+    Заменяет настройки значениями, переданными в командной строке.
+
+    :param settings: словарь с настройками
+    :param args: разобранные аргументы командной строки
+    :return: None
+    """
+    for name in CLI_OVERRIDES:
+        value = getattr(args, name)
+        if value is not None:
+            settings[name] = value
+
+
+def parse_args() -> argparse.Namespace:
+    """
+    Разбирает аргументы командной строки.
+
+    :return: разобранные аргументы
+    """
+    parser = argparse.ArgumentParser()
+
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--gen", "--generation", dest="generation")
+    group.add_argument("--enc", "--encryption", dest="encryption")
+    group.add_argument("--dec", "--decryption", dest="decryption")
+
+    parser.add_argument("--private-key", dest="private_key")
+    parser.add_argument("--public-key", dest="public_key")
+    parser.add_argument("--symmetric-key", dest="symmetric_key")
+    parser.add_argument("--key-size", dest="key_size", type=int, choices=(128, 192, 256))
+
+    return parser.parse_args()
+
+
+def main() -> None:
+    """
+    Запускает выбранный режим программы.
+    """
+    args = parse_args()
+
+    try:
+        mode = next(name for name in MODES if getattr(args, name) is not None)
+        settings_path = getattr(args, mode)
+        settings = read_json_file(settings_path)
+
+        settings = request_settings(settings)
+        write_json_file(settings_path, settings)
+
+        apply_cli_overrides(settings, args)
+
+        title, run_mode = MODES[mode]
+        print(title)
+        run_mode(settings)
+    except (FileNotFoundError, OSError, ValueError) as error:
+        print(f"Ошибка: {error}")
+
+
+if __name__ == "__main__":
+    main()
