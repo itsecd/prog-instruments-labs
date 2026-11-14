@@ -1,0 +1,106 @@
+Jan 08 00:01:12 srv-prod-01 sshd[1204]: Accepted publickey for deploy from 10.0.0.5 port 54321 ssh2: RSA SHA256:Zm9vYmFyYmF6cXV4MTIzNDU2Nzg5MGFiY2RlZmdoaWo
+Jan 08 00:03:45 bastion sshd[1187]: Failed password for invalid user admin from 185.220.101.45 port 44221 ssh2
+Jan 08 00:05:01 web-01 sshd[2231]: Failed password for root from 45.155.205.233 port 33210 ssh2
+Jan 08 00:07:33 srv-prod-02 sshd[1450]: Accepted password for ubuntu from 192.168.1.10 port 50211 ssh2
+Jan 08 00:09:58 bastion sshd[1622]: Invalid user test from 103.145.13.7 port 22114
+Jan 08 00:12:40 db-01 sshd[1789]: Failed publickey for git from 89.248.165.74 port 41022 ssh2
+Jan 08 00:15:02 srv-prod-01 sshd[1901]: Connection closed by authenticating user deploy 10.0.0.17 port 49123 [preauth]
+Jan 08 00:18:27 bastion sshd[2033]: Failed password for invalid user oracle from 194.26.135.91 port 28901 ssh2
+Jan 08 00:21:11 web-01 sshd[2145]: Accepted keyboard-interactive for admin from 172.16.5.3 port 55120 ssh2
+Jan 08 00:23:49 srv-prod-02 sshd[2267]: Failed password for root from 5.188.206.14 port 37112 ssh2
+Jan 08 00:26:03 bastion sshd[2388]: Received disconnect from 141.98.10.181 port 40101:11: Bye Bye [preauth]
+Jan 08 00:28:37 db-01 sshd[2499]: Failed password for invalid user postgres from 218.92.0.112 port 31100 ssh2
+Jan 08 00:31:20 srv-prod-01 sshd[2610]: Accepted publickey for git from 10.10.20.8 port 51234 ssh2: ED25519 SHA256:QWxphGFiZXRhZ2FtbWExMjM0NTY3ODkwYWJjZGVmZ2hp
+Jan 08 00:34:56 web-01 sshd[2721]: Failed password for admin from 61.177.172.140 port 22120 ssh2
+Jan 08 00:37:14 bastion sshd[2833]: Invalid user guest from 193.32.162.45 port 44001
+Jan 08 00:40:02 srv-prod-02 sshd[2944]: Disconnected from authenticating user ubuntu 192.168.1.42 port 48901 [preauth]
+Jan 08 00:42:38 db-01 sshd[3055]: Failed password for invalid user ftpuser from 185.220.101.45 port 33215 ssh2
+Jan 08 00:45:11 srv-prod-01 sshd[3166]: Accepted password for root from 10.0.0.5 port 52100 ssh2
+Jan 08 00:47:59 bastion sshd[3277]: error: maximum authentication attempts exceeded for admin from 45.155.205.233 port 31220 ssh2 [preauth]
+Jan 08 00:50:23 web-01 sshd[3388]: Failed password for invalid user nagios from 103.145.13.7 port 20110 ssh2
+BROKEN_LINE_1
+Jan 08 00:55:41 srv-prod-02 sshd[3499]: Failed password for root from 89.248.165.74 port 42100 ssh2
+999.999.999.999 - - [28/Aug/2025:14:34:20 +0800] "GET /broken-ip HTTP/1.1" 200 100
+Jan 08 01:00:12 srv-prod-01 sshd[3610]: Accepted publickey for deploy from 10.0.0.17 port 53321 ssh2: RSA SHA256:YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY3ODkw
+Jan 08 01:03:44 bastion sshd[3721]: Failed password for invalid user support from 194.26.135.91 port 28010 ssh2
+Jan 08 01:06:09 web-01 sshd[3833]: Failed password for root port 22 ssh2
+Jan 08 01:09:33 db-01 sshd[3944]: Invalid user pi from 5.188.206.14 port 36100
+Jan 08 01:12:50 srv-prod-02 sshd[4055]: Accepted password for www-data from 172.16.5.3 port 56100 ssh2
+Jan 08 01:15:22 bastion sshd[4166]: Failed password for admin from 141.98.10.181 port 39100 ssh2
+Jan 08 01:18:47 srv-prod-01 sshd[4277]: Received disconnect from 218.92.0.112 port 30100:11: Bye Bye [preauth]
+Xyz 99 25:99:99 bastion sshd[4388]: Failed password for root from 1.2.3.4 port 22 ssh2
+Jan 08 01:24:11 web-01 sshd[4499]: Accepted keyboard-interactive for admin from 10.0.0.5 port 57100 ssh2
+Jan 08 01:27:38 db-01 sshd[4610]: Failed password for invalid user user1 from 61.177.172.140 port 21100 ssh2
+Jan 08 01:30:02 srv-prod-02 sshd[4721]: Failed publickey for git from 193.32.162.45 port 43100 ssh2
+Jan 08 01:33:29 bastion sshd[4833]: Accepted publickey for deploy from 10.10.20.8 port 58100 ssh2: RSA SHA256:QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVoxMjM0NTY3ODkwMQ
+Jan 08 01:36:51 srv-prod-01 sshd[4944]: Failed password for invalid user guest from 185.220.101.45 port 34100 ssh2
+Jan 08 01:39:15 web-01 sshd[5055]: Connection closed by authenticating user ubuntu 192.168.1.10 port 47100 [preauth]
+INVALID TIMESTAMP HERE
+Jan 08 01:45:02 db-01 sshd[5166]: Failed password for root from 45.155.205.233 port 32100 ssh2
+Jan 08 01:48:27 srv-prod-02 sshd[5277]: Invalid user test from 103.145.13.7 port 23100
+Jan 08 01:51:44 bastion sshd[5388]: Accepted password for deploy from 10.0.0.5 port 59100 ssh2
+Jan 08 01:54:09 srv-prod-01 sshd[5499]: Failed password for invalid user oracle from 89.248.165.74 port 44100 ssh2
+Jan 08 01:57:33 web-01 sshd[5610]: Disconnected from authenticating user admin 172.16.5.3 port 48100 [preauth]
+Jan 08 02:00:58 db-01 sshd[5721]: Failed password for root from 194.26.135.91 port 26100 ssh2
+Jan 08 02:03:21 bastion sshd[5833]: Accepted publickey for git from 10.0.0.17 port 60100 ssh2: ECDSA SHA256:YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmNkZWZnaGlqa2w
+Jan 08 02:06:47 srv-prod-02 sshd[5944]: Failed password for invalid user ftpuser from 5.188.206.14 port 35100 ssh2
+Jan 08 02:09:11 srv-prod-01 sshd[6055]: Failed password for us er from 141.98.10.181 port 38100 ssh2
+Jan 08 02:12:38 web-01 sshd[6166]: Invalid user nagios from 218.92.0.112 port 29100
+Jan 08 02:15:02 db-01 sshd[6277]: Accepted password for ubuntu from 192.168.1.42 port 61100 ssh2
+Jan 08 02:18:29 bastion sshd[6388]: Failed password for invalid user pi from 61.177.172.140 port 22100 ssh2
+Feb 30 02:21:51 srv-prod-02 sshd[6499]: Failed password for root from 1.2.3.4 port 22 ssh2
+Jan 08 02:25:14 srv-prod-01 sshd[6610]: Failed password for root from 193.32.162.45 port 45100 ssh2
+Jan 08 02:28:37 web-01 sshd[6721]: Accepted keyboard-interactive for www-data from 10.0.0.5 port 62100 ssh2
+Jan 08 02:31:02 db-01 sshd[6833]: Received disconnect from 185.220.101.45 port 33100:11: Bye Bye [preauth]
+Jan 08 02:34:29 bastion sshd[6944]: Failed password for invalid user support from 45.155.205.233 port 31100 ssh2
+Jan 08 02:37:53 srv-prod-02 sshd[7055]: Accepted for root from 1.2.3.4 port 22 ssh2
+Jan 08 02:40:18 srv-prod-01 sshd[7166]: Failed password for admin from 103.145.13.7 port 24100 ssh2
+Jan 08 02:43:41 web-01 sshd[7277]: Invalid user admin from 89.248.165.74 port 43100
+Jan 08 02:47:05 db-01 sshd[7388]: Failed password for invalid user postgres from 194.26.135.91 port 27100 ssh2
+Jan 08 02:50:29 bastion sshd[7499]: Accepted password for admin from 172.16.5.3 port 63100 ssh2
+Jan 08 02:53:52 srv-prod-02 sshd[7610]: Failed password for root from 5.188.206.14 port 36100 ssh2
+Apr 31 02:56:14 srv-prod-01 sshd[7721]: Failed password for root from 1.2.3.4 port 22 ssh2
+Jan 08 02:59:38 web-01 sshd[7833]: Failed password for invalid user guest from 141.98.10.181 port 39100 ssh2
+Jan 08 03:02:01 db-01 sshd[7944]: Connection closed by authenticating user ubuntu 192.168.1.10 port 48100 [preauth]
+THIS IS NOT A LOG LINE AT ALL
+Jan 08 03:08:29 bastion sshd[8055]: Failed password for root from 218.92.0.112 port 30100 ssh2
+Jan 08 03:11:53 srv-prod-02 sshd[8166]: Accepted publickey for deploy from 10.0.0.5 port 64100 ssh2: RSA SHA256:QWxhZGRpbjpvcGVuIHNlc2FtZTEyMzQ1Njc4OTBhYmNkZWZnaGk
+Jan 08 03:14:17 srv-prod-01 sshd[8277]: Failed password for invalid user test from 61.177.172.140 port 22100 ssh2
+Jan 08 03:17:40 web-01 sshd[8388]: Invalid user oracle from 193.32.162.45 port 45100
+Jan 08 03:21:04 db-01 sshd[8499]: Failed password for admin from 185.220.101.45 port 33100 ssh2
+Jan 08 03:24:27 bastion sshd[8610]: Accepted password for git from 10.0.0.17 port 65100 ssh2
+Jan 08 03:27:51 srv-prod-02 sshd[8721]: Failed password for invalid user ftpuser from 45.155.205.233 port 31100 ssh2
+Jan 08 03:31:12 srv-prod-01 sshd[8833]: Accepted publickey for root from 10.10.20.8 port 66100 ssh2
+Jan 08 03:34:36 web-01 sshd[8944]: Failed password for root from 103.145.13.7 port 24100 ssh2
+Jan 08 03:37:59 db-01 sshd[9055]: Disconnected from authenticating user deploy 172.16.5.3 port 49100 [preauth]
+Jan 08 03:41:23 bastion sshd[9166]: Failed password for invalid user pi from 89.248.165.74 port 43100 ssh2
+Jan 08 03:44:47 srv-prod-02 sshd[9277]: Accepted keyboard-interactive for admin from 10.0.0.5 port 67100 ssh2
+Jan 08 03:48:10 srv-prod-01 sshd[9388]: Failed password for admin from 194.26.135.91 port 27100 ssh2
+Jan 08 03:51:34 web-01 sshd[9499]: Invalid user support from 5.188.206.14 port 36100
+Jan 08 03:54:58 db-01 sshd[9610]: Failed password for root from 141.98.10.181 port 39100 ssh2
+Jan 08 03:58:21 bastion sshd[9721]: Accepted password for ubuntu from 192.168.1.42 port 68100 ssh2
+Jan 08 04:01:45 srv-prod-02 sshd[9833]: Failed password for invalid user nagios from 218.92.0.112 port 30100 ssh2
+Jan 08 04:05:09 srv-prod-01 sshd[9944]: Failed password for invalid user user1 from 61.177.172.140 port 22100 ssh2
+Jan 08 04:08:32 web-01 sshd[10055]: Connection closed by authenticating user admin 172.16.5.3 port 50100 [preauth]
+Jan 08 04:11:56 db-01 sshd[10166]: Failed publickey for deploy from 193.32.162.45 port 45100 ssh2
+Jan 08 04:15:20 bastion sshd[10277]: Accepted publickey for git from 10.0.0.17 port 69100 ssh2: RSA SHA256:YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXphYmNkZWZnaGlqa2w
+Jan 08 04:18:43 srv-prod-02 sshd[10388]: Failed password for root from 185.220.101.45 port 33100 ssh2
+Jan 08 04:22:07 srv-prod-01 sshd[10499]: Invalid user test from 45.155.205.233 port 31100
+Jan 08 04:25:31 web-01 sshd[10610]: Failed password for invalid user oracle from 103.145.13.7 port 24100 ssh2
+Jan 08 04:28:54 db-01 sshd[10721]: Accepted password for www-data from 10.0.0.5 port 70100 ssh2
+Jan 08 04:32:18 bastion sshd[10833]: Failed password for admin from 89.248.165.74 port 43100 ssh2
+Jan 08 04:35:42 srv-prod-02 sshd[10944]: Received disconnect from 194.26.135.91 port 27100:11: Bye Bye [preauth]
+Jan 08 04:39:05 srv-prod-01 sshd[11055]: Failed password for invalid user postgres from 5.188.206.14 port 36100 ssh2
+Jan 08 04:42:29 web-01 sshd[11166]: Accepted password for deploy from 10.10.20.8 port 71100 ssh2
+Jan 08 04:45:53 db-01 sshd[11277]: Invalid user guest from 141.98.10.181 port 39100
+Jan 08 04:49:16 bastion sshd[11388]: Failed password for invalid user ftpuser from 218.92.0.112 port 30100 ssh2
+Jan 08 04:52:40 srv-prod-02 sshd[11499]: Accepted publickey for ubuntu from 192.168.1.10 port 72100 ssh2: ED25519 SHA256:QWxwaGFiZXRhZ2FtbWExMjM0NTY3ODkwYWJjZGVmZ2hp
+Jan 08 04:56:04 srv-prod-01 sshd[11610]: Failed password for root from 61.177.172.140 port 22100 ssh2
+Jan 08 04:59:27 web-01 sshd[11721]: Failed password for invalid user pi from 193.32.162.45 port 45100 ssh2
+Jan 08 05:02:51 db-01 sshd[11833]: Failed password for root from 185.220.101.45 port 33100 ssh2
+GET /missing-quotes HTTP/1.1" 200 100
+Jan 08 05:09:38 bastion sshd[11944]: Accepted password for admin from 172.16.5.3 port 73100 ssh2
+Jan 08 05:13:02 srv-prod-02 sshd[12055]: Failed password for invalid user support from 45.155.205.233 port 31100 ssh2
+Jan 08 05:16:25 srv-prod-01 sshd[12166]: Invalid user admin from 103.145.13.7 port 24100
+Jan 08 05:19:49 web-01 sshd[12277]: Accepted keyboard-interactive for git from 10.0.0.5 port 74100 ssh2
+Jan 08 05:23:13 db-01 sshd[12388]: Failed password for invalid user nagios from 89.248.165.74 port 43100 ssh2
