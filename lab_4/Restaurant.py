@@ -8,6 +8,21 @@ ANIMATION_REPEATS = 4  # how many times the dots are repeated
 ANIMATION_DELAY = 0.5  # seconds between animation frames
 
 
+def read_int(prompt, minimum=None):
+    """Ask for a whole number until the user enters a correct one."""
+    while True:
+        text = input(prompt)
+        try:
+            value = int(text)
+        except ValueError:
+            print("Please enter a number")
+            continue
+        if minimum is not None and value < minimum:
+            print("The number must be at least", minimum)
+            continue
+        return value
+
+
 def register(users):
     print("---------------------------Register-------------------------")
     name = input("Enter Name :")
@@ -41,7 +56,7 @@ def authenticate(users):
     while True:
         print("1.Login")
         print("2.Register")
-        auth_choice = int(input("Enter your choice :"))
+        auth_choice = read_int("Enter your choice :")
         if auth_choice == 1:
             logged_in = login(users)
         else:
@@ -57,12 +72,12 @@ def admin(users, menu):
         print("1.Modify Menu")
         print("2.Display Menu")
         print("3.Logout")
-        menu_choice = int(input("Enter your choice :"))
+        menu_choice = read_int("Enter your choice :")
         if menu_choice == 1:
             print("1.Add item")
             print("2.Delete item")
             print("3.Go Back")
-            edit_choice = int(input("Enter your choice :"))
+            edit_choice = read_int("Enter your choice :")
             if edit_choice == 1:
                 add_item(menu)
             elif edit_choice == 2:
@@ -81,7 +96,7 @@ def customer(users, menu):
         print("1.Display Menu")
         print("2.Order food")
         print("3.Logout")
-        menu_choice = int(input("Enter your choice :"))
+        menu_choice = read_int("Enter your choice :")
         if menu_choice == 1:
             display_menu(menu)
         elif menu_choice == 2:
@@ -93,8 +108,11 @@ def customer(users, menu):
 
 def add_item(menu):
     print("---------------------------Add Item-------------------------")
-    dish_name = input("Enter Name of Dish :")
-    price = int(input("Enter Price :"))
+    dish_name = input("Enter Name of Dish :").strip()
+    if dish_name == "":
+        print("\nName of the dish can't be empty")
+        return
+    price = read_int("Enter Price :", 1)
     menu[dish_name] = price
     print("\nItem Added Successfully")
 
@@ -130,11 +148,11 @@ def order_food(menu):
     dishes = list(menu)  # dish number in the menu = position in this list + 1
     order = {}  # dish name: quantity
     while True:
-        dish_number = int(input("Enter dish number :-"))
+        dish_number = read_int("Enter dish number :-")
         if not 1 <= dish_number <= len(dishes):
             print("There is no dish with this number, try again")
             continue
-        quantity = int(input("Enter Quantity :-"))
+        quantity = read_int("Enter Quantity :-", 1)
         order[dishes[dish_number - 1]] = quantity
         more = input("Want to add more ?(y/n): ")
         if more.lower() != "y":
@@ -192,7 +210,7 @@ def main():
         print("1.Admin panel")
         print("2.Customer panel")
         print("3.Exit")
-        choice = int(input("Enter your choice :"))
+        choice = read_int("Enter your choice :")
         if choice == 1:
             admin(users, menu)
         elif choice == 2:
