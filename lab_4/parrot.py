@@ -1,7 +1,12 @@
 # Original code: Emily Bache, MIT License
 # https://github.com/emilybache/Parrot-Refactoring-Kata
-
+"""Parrot speed and cry, refactored with polymorphic subclasses."""
+from abc import ABC, abstractmethod
 from enum import Enum
+
+BASE_SPEED = 12.0
+LOAD_FACTOR = 9.0
+MAX_SPEED = 24.0
 
 
 class ParrotType(Enum):
@@ -10,54 +15,61 @@ class ParrotType(Enum):
     NORWEGIAN_BLUE = 3
 
 
-class Parrot:
+class Parrot(ABC):
+    """Common interface for all kinds of parrots."""
 
-    def __init__(self, type_of_parrot, number_of_coconuts, voltage, nailed):
-        self._type = type_of_parrot
+    @abstractmethod
+    def speed(self):
+        """Return the flying speed of the parrot."""
+
+    @abstractmethod
+    def cry(self):
+        """Return the sound the parrot makes."""
+
+
+class EuropeanParrot(Parrot):
+
+    def speed(self):
+        return BASE_SPEED
+
+    def cry(self):
+        return "Sqoork!"
+
+
+class AfricanParrot(Parrot):
+
+    def __init__(self, number_of_coconuts):
         self._number_of_coconuts = number_of_coconuts
+
+    def speed(self):
+        load = LOAD_FACTOR * self._number_of_coconuts
+        return max(0, BASE_SPEED - load)
+
+    def cry(self):
+        return "Sqaark!"
+
+
+class NorwegianBlueParrot(Parrot):
+
+    def __init__(self, voltage, nailed):
         self._voltage = voltage
         self._nailed = nailed
 
     def speed(self):
-        match self._type:
-            case ParrotType.EUROPEAN:
-                return self._european_speed()
-            case ParrotType.AFRICAN:
-                return self._african_speed()
-            case ParrotType.NORWEGIAN_BLUE:
-                return self._norwegian_blue_speed()
-        raise ValueError("should be unreachable")
-
-    def cry(self):
-        match self._type:
-            case ParrotType.EUROPEAN:
-                return "Sqoork!"
-            case ParrotType.AFRICAN:
-                return "Sqaark!"
-            case ParrotType.NORWEGIAN_BLUE:
-                return self._norwegian_blue_cry()
-        raise ValueError("should be unreachable")
-
-    def _european_speed(self):
-        return self._base_speed()
-
-    def _african_speed(self):
-        load = self._load_factor() * self._number_of_coconuts
-        return max(0, self._base_speed() - load)
-
-    def _norwegian_blue_speed(self):
         if self._nailed:
             return 0
-        return self._compute_base_speed_for_voltage(self._voltage)
+        return min(MAX_SPEED, self._voltage * BASE_SPEED)
 
-    def _norwegian_blue_cry(self):
+    def cry(self):
         return "Bzzzzzz" if self._voltage > 0 else "..."
 
-    def _compute_base_speed_for_voltage(self, voltage):
-        return min([24.0, voltage * self._base_speed()])
 
-    def _load_factor(self):
-        return 9.0
-
-    def _base_speed(self):
-        return 12.0
+def create_parrot(type_of_parrot, number_of_coconuts, voltage, nailed):
+    """Create a parrot of the given type (same arguments as the original)."""
+    if type_of_parrot == ParrotType.EUROPEAN:
+        return EuropeanParrot()
+    if type_of_parrot == ParrotType.AFRICAN:
+        return AfricanParrot(number_of_coconuts)
+    if type_of_parrot == ParrotType.NORWEGIAN_BLUE:
+        return NorwegianBlueParrot(voltage, nailed)
+    raise ValueError(f"Unknown parrot type: {type_of_parrot}")
