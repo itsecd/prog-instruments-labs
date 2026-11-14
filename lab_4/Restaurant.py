@@ -20,47 +20,31 @@ def register(call):  # call is 1 if called by admin(), 2 if called by customer()
     name = input("Enter Name :")
     username = input("Enter Username :")
     password = input("Enter Password :")
-    for saved_username in passwords.keys():
-        if saved_username == username:
-            print("\nUser Already Exits! Please Login")
-            if call == 1:
-                return login(1)
-            else:
-                return login(2)
+    if username in passwords:
+        print("\nUser Already Exits! Please Login")
     else:
         passwords[username] = password
         user_names[username] = name
         print("\nHeyy", name, "You Are Registered successfully...\nLogin to Continue")
-        if call == 1:
-            return login(1)
-        else:
-            return login(2)
+    return login(call)
 
 
 def login(call):
     print("---------------------------Login-------------------------")
     username = input("Enter Username :")
     password = input("Enter Password :")
-    user_exists = False
-    for saved_username in passwords.keys():
-        if saved_username == username:
-            user_exists = True
-            if passwords[username] == password:
-                print("\nLogin Successful")
-                print("Welcome ", user_names[username], " Explore things easily here!\n")
-                return True
-            else:
-                print("\nIncorrect Username/Password.... Please Try again")
-                if call == 1:
-                    return login(1)
-                else:
-                    return login(2)
-    if user_exists == False:
+    if username not in passwords:
         print("\nUser not found... Please register or login with different account to continue")
         if call == 1:
             return admin()
         else:
             return customer()
+    if passwords[username] == password:
+        print("\nLogin Successful")
+        print("Welcome ", user_names[username], " Explore things easily here!\n")
+        return True
+    print("\nIncorrect Username/Password.... Please Try again")
+    return login(call)
 
 
 def admin():
@@ -72,7 +56,7 @@ def admin():
     else:
         logged_in = register(1)
 
-    while logged_in == True:
+    while logged_in:
         print("------------------------------------------------------------")
         print("1.Modify Menu")
         print("2.Display Menu")
@@ -106,7 +90,7 @@ def customer():
     else:
         logged_in = register(2)
 
-    while logged_in == True:
+    while logged_in:
         print("------------------------------------------------------------")
         print("1.Display Menu")
         print("2.Order food")
@@ -139,13 +123,11 @@ def delete_item():
         print("Nothing left to delete")
     else:
         dish_name = input("Enter Name of Dish :")
-        for i in range(len(menu)):
-            if dish_name in menu.keys():
-                del menu[dish_name]
-                print("\nItem deleted Successfully")
-            else:
-                print("\nIncorrect Details... try again")
-                break
+        if dish_name in menu:
+            del menu[dish_name]
+            print("\nItem deleted Successfully")
+        else:
+            print("\nIncorrect Details... try again")
 
 
 def display_menu():
@@ -153,10 +135,8 @@ def display_menu():
     if len(menu) == 0:
         print("Nothing to Show for now")
     else:
-        number = 1
-        for dish_name in menu.keys():
-            print(number, ".", dish_name, "\t= ", menu[dish_name])
-            number += 1
+        for number, (dish_name, price) in enumerate(menu.items(), start=1):
+            print(number, ".", dish_name, "\t= ", price)
 
 
 def order_food():
@@ -164,34 +144,24 @@ def order_food():
     print("----------------Order Food from above Menu--------------")
     if len(menu) == 0:
         print("Oops...Nothing to order for now!")
-        ordering = False
-    else:
-        ordering = True
-    while ordering == True:
+        return True
+    while True:
         dish_number = int(input("Enter dish number :-"))
         quantity = int(input("Enter Quantity :-"))
         order[dish_numbers[dish_number]] = quantity
         more = input("Want to add more ?(y/n): ")
-        if more == "Y" or more == "y":
-            ordering = True
-        else:
-            ordering = False
+        if more.lower() != "y":
+            break
     print("\nFood Ordered successfuly\n\n")
     return generate_bill()
 
 
 def animate_bill():
-    for i in range(ANIMATION_REPEATS):
-        print("\rGenerating your BILL    ", end="")
-        time.sleep(ANIMATION_DELAY)
-        print("\rGenerating your BILL.   ", end="")
-        time.sleep(ANIMATION_DELAY)
-        print("\rGenerating your BILL..  ", end="")
-        time.sleep(ANIMATION_DELAY)
-        print("\rGenerating your BILL... ", end="")
-        time.sleep(ANIMATION_DELAY)
-        print("\rGenerating your BILL....", end="")
-        time.sleep(ANIMATION_DELAY)
+    frames = ["    ", ".   ", "..  ", "... ", "...."]
+    for _ in range(ANIMATION_REPEATS):
+        for frame in frames:
+            print("\rGenerating your BILL" + frame, end="")
+            time.sleep(ANIMATION_DELAY)
     print("\n\tBill Generated Successfully")
 
 
