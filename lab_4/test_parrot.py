@@ -54,3 +54,20 @@ def test_cry_norwegian_blue_parrot_high_voltage():
 def test_cry_norwegian_blue_parrot_no_voltage():
     parrot = Parrot(ParrotType.NORWEGIAN_BLUE, 0, 0, False)
     assert parrot.cry() == "..."
+
+def test_speed_of_african_parrot_never_negative():
+    parrot = Parrot(ParrotType.AFRICAN, 5, 0, False)
+    assert parrot.speed() == 0.0
+
+def test_speed_norwegian_blue_parrot_no_voltage():
+    parrot = Parrot(ParrotType.NORWEGIAN_BLUE, 0, 0, False)
+    assert parrot.speed() == 0.0
+
+def test_cry_norwegian_blue_parrot_nailed_with_voltage():
+    parrot = Parrot(ParrotType.NORWEGIAN_BLUE, 0, 4, True)
+    assert parrot.cry() == "Bzzzzzz"
+    
+def test_european_parrot_ignores_other_parameters():
+    parrot = Parrot(ParrotType.EUROPEAN, 3, 2, True)
+    assert parrot.speed() == 12.0
+    assert parrot.cry() == "Sqoork!"
