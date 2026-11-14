@@ -2,6 +2,11 @@
 
 import time
 
+GST_PERCENT = 5
+CGST_PERCENT = 5
+ANIMATION_REPEATS = 4  # how many times the dots are repeated
+ANIMATION_DELAY = 0.5  # seconds between animation frames
+
 user_names = {}  # username: real name of the user
 passwords = {}  # username: password
 menu = {}  # dish name: price
@@ -176,17 +181,17 @@ def order_food():
 
 
 def animate_bill():
-    for i in range(4):
+    for i in range(ANIMATION_REPEATS):
         print("\rGenerating your BILL    ", end="")
-        time.sleep(0.5)
+        time.sleep(ANIMATION_DELAY)
         print("\rGenerating your BILL.   ", end="")
-        time.sleep(0.5)
+        time.sleep(ANIMATION_DELAY)
         print("\rGenerating your BILL..  ", end="")
-        time.sleep(0.5)
+        time.sleep(ANIMATION_DELAY)
         print("\rGenerating your BILL... ", end="")
-        time.sleep(0.5)
+        time.sleep(ANIMATION_DELAY)
         print("\rGenerating your BILL....", end="")
-        time.sleep(0.5)
+        time.sleep(ANIMATION_DELAY)
     print("\n\tBill Generated Successfully")
 
 
@@ -201,12 +206,14 @@ def generate_bill():
         total += item_total
         number += 1
     print("--------------------------------------------------")
+    gst = total * GST_PERCENT / 100
+    cgst = total * CGST_PERCENT / 100
+    grand_total = total + gst + cgst
     print(" TOTAL BILL    =      ", total)
-    print(" Gst 5%        =      " + "{:.2f}".format((total / 100) * 5))
-    print(" Cgst 5%       =      " + "{:.2f}".format((total / 100) * 5))
-    total += total / 10
+    print(" Gst " + str(GST_PERCENT) + "%        =      " + "{:.2f}".format(gst))
+    print(" Cgst " + str(CGST_PERCENT) + "%       =      " + "{:.2f}".format(cgst))
     print("                     --------------")
-    print("Grand Total    =      ", total)
+    print("Grand Total    =      ", grand_total)
     print("                     --------------")
     thank_msg()
     return True  # this will be accepted by order_food() function
