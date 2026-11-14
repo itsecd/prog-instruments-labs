@@ -153,12 +153,15 @@ def order_food(menu):
             print("There is no dish with this number, try again")
             continue
         quantity = read_int("Enter Quantity :-", 1)
-        order[dishes[dish_number - 1]] = quantity
+        dish_name = dishes[dish_number - 1]
+        order[dish_name] = order.get(dish_name, 0) + quantity
         more = input("Want to add more ?(y/n): ")
         if more.lower() != "y":
             break
     print("\nFood Ordered successfuly\n\n")
-    generate_bill(order, menu)
+    animate_bill()
+    print_bill(order, menu)
+    thank_msg()
 
 
 def animate_bill():
@@ -170,36 +173,34 @@ def animate_bill():
     print("\n\tBill Generated Successfully")
 
 
-def generate_bill(order, menu):
-    animate_bill()
-    print("\n-------------------------Bill-------------------------")
-    number = 1
-    total = 0
-    for dish_name in order.keys():
-        item_total = order[dish_name] * menu[dish_name]
-        print(number, ".", dish_name, "\t", order[dish_name], "x", menu[dish_name], " = ", item_total)
-        total += item_total
-        number += 1
-    print("--------------------------------------------------")
+def calculate_bill(order, menu):
+    """Return total, GST, CGST and grand total for the order."""
+    total = sum(quantity * menu[dish_name] for dish_name, quantity in order.items())
     gst = total * GST_PERCENT / 100
     cgst = total * CGST_PERCENT / 100
-    grand_total = total + gst + cgst
+    return total, gst, cgst, total + gst + cgst
+
+
+def print_bill(order, menu):
+    print("\n-------------------------Bill-------------------------")
+    for number, (dish_name, quantity) in enumerate(order.items(), start=1):
+        price = menu[dish_name]
+        print(number, ".", dish_name, "\t", quantity, "x", price, " = ", quantity * price)
+    total, gst, cgst, grand_total = calculate_bill(order, menu)
+    print("--------------------------------------------------")
     print(" TOTAL BILL    =      ", total)
     print(" Gst " + str(GST_PERCENT) + "%        =      " + "{:.2f}".format(gst))
     print(" Cgst " + str(CGST_PERCENT) + "%       =      " + "{:.2f}".format(cgst))
     print("                     --------------")
     print("Grand Total    =      ", grand_total)
     print("                     --------------")
-    thank_msg()
 
 
 def thank_msg():
-    print(
-        "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\
-                     THANK YOU                                         \n\
-                    Visit Again !                                        \
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
-    )
+    print("^" * 60)
+    print("THANK YOU".center(60))
+    print("Visit Again !".center(60))
+    print("^" * 60)
 
 
 def main():
