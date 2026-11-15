@@ -1,19 +1,18 @@
 from config import DATA_PATH, VARIANT
-
+from reader import read_csv
 # main.py
-import csv
 # уточните имя функции в докстрингах модуля
 from checksum import calculate_checksum, serialize_result
 from src.validators import validate_row
 
 
-def process_csv(filepath: str) -> list[int]:
+def process_csv(filepath) -> list[int]:
     invalid_rows = []
-    with open(filepath, encoding="utf-16", newline="") as f:
-        reader = csv.DictReader(f, delimiter=";")
-        for line_num, row in enumerate(reader, start=0):
-            if not validate_row(row):
-                invalid_rows.append(line_num)   # ← list[int], 1-based
+    for line_num, row in enumerate(
+        read_csv(filepath), start=FIRST_DATA_ROW_INDEX
+    ):
+        if not validate_row(row):
+            invalid_rows.append(line_num)
     return invalid_rows
 
 
