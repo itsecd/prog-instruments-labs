@@ -2,7 +2,7 @@
 import csv
 from collections.abc import Iterator
 
-from config import CSV_DELIMITER, CSV_ENCODING
+from src.config import CSV_DELIMITER, CSV_ENCODING
 
 
 def read_csv(filepath) -> Iterator[dict]:

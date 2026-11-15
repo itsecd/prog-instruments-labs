@@ -1,5 +1,5 @@
 import argparse
-from config import DATA_PATH, VARIANT, FIRST_DATA_ROW_INDEX
+from src.config import DATA_PATH, VARIANT, FIRST_DATA_ROW_INDEX
 from src.reader import read_csv
 # main.py
 # уточните имя функции в докстрингах модуля
