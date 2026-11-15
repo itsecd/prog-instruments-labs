@@ -5,7 +5,8 @@ from main import extract_audio_urls
 import csv
 from main import write_csv_annotation
 from main import FileIterator
-
+from types import SimpleNamespace
+import main
 
 def test_build_url():
     result = build_url("rain")
@@ -65,3 +66,20 @@ def test_file_iterator_finds_mp3(tmp_path):
 def test_file_iterator_reject_source():
     with pytest.raises(TypeError, match="Source must be path"):
         FileIterator("sounds")
+
+def test_file_iterator_rejects_missing_path(tmp_path):
+    missing = tmp_path / "missing"
+
+    with pytest.raises(ValueError, match="Source must be dir or csv file"):
+        FileIterator(missing)
+
+
+def test_fetch_html(monkeypatch):
+    def fake_get(url, headers):
+        return SimpleNamespace(text="<h1>Rain</h1>")
+
+    monkeypatch.setattr(main.requests, "get", fake_get)
+
+    soup = main.fetch_html("https://example.com")
+
+    assert soup.h1.text == "Rain"
