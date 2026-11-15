@@ -43,6 +43,10 @@ class ShortHashCollisionFinder:
     """
 
     VALID_BITS = {8, 12, 16}
+    DEFAULT_MAX_ATTEMPTS = 100_000
+    MIN_STRING_LEN = 8
+    MAX_STRING_LEN = 16
+    STRING_ALPHABET = string.ascii_letters + string.digits
 
     def __init__(self, trunc_bits: int = 8):
         """
@@ -126,13 +130,12 @@ class ShortHashCollisionFinder:
         Возвращает:
             bytes: Случайная строка в байтовом представлении.
         """
-        length = random.randint(8, 16)
-        letters = string.ascii_letters + string.digits
-        return ''.join(random.choice(letters) for _ in range(length)).encode()
+        length = random.randint(self.MIN_STRING_LEN, self.MAX_STRING_LEN)
+        return ''.join(random.choice(self.STRING_ALPHABET) for _ in range(length)).encode()
 
     def find_collision(
         self,
-        max_attempts: int = 100000,
+        max_attempts: int = DEFAULT_MAX_ATTEMPTS,
         show_progress: bool = True
     ) -> CollisionResult:
         """

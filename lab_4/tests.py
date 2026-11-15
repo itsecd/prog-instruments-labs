@@ -128,12 +128,15 @@ class TestShortHashCollision(unittest.TestCase):
     def test_random_string_generation(self):
         """Проверка генерации случайных строк"""
         finder = ShortHashCollisionFinder(trunc_bits=8)
-        
-        # Проверка длины (метод _random_string не принимает аргументы, он генерирует длину 8-16)
-        # Поэтому проверим несколько сгенерированных строк на соответствие диапазону длин
+
+        # Проверяем, что длина попадает в диапазон, заданный константами класса
         for _ in range(20):
             s = finder._random_string()
-            self.assertTrue(8 <= len(s) <= 16)
+            self.assertTrue(
+                ShortHashCollisionFinder.MIN_STRING_LEN
+                <= len(s)
+                <= ShortHashCollisionFinder.MAX_STRING_LEN
+            )
             self.assertIsInstance(s, bytes)
         
         # Проверка на разные значения
