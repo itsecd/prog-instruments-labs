@@ -1,0 +1,14 @@
+{
+  "1234": {
+    "hash": "cf290da95cee8dd8d8e5e43639525effa973860c98ce011404ab08099ce92741",
+    "salt": "2c9aa5534a88270f9f84185a71a95ea8",
+    "method": "SHA-256 with salt",
+    "created_at": 1780481239.1084435
+  },
+  "12345": {
+    "hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+    "salt": null,
+    "method": "SHA-256 without salt (UNSAFE)",
+    "created_at": 1780481290.8083818
+  }
+}
