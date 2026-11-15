@@ -60,23 +60,27 @@ class TestShortHashCollision(unittest.TestCase):
     def test_collision_finder_8bit(self):
         """Поиск коллизии для 8 бит должен быть быстрым и успешным"""
         finder = ShortHashCollisionFinder(trunc_bits=8)
-        msg1, msg2, sh, attempts = finder.find_collision(max_attempts=200, show_progress=False)
-        
-        if msg1 is None or msg2 is None:
+        result = finder.find_collision(max_attempts=200, show_progress=False)
+
+        if not result.found:
             self.fail("Коллизия не найдена для 8 бит за 200 попыток")
         else:
-            self.assertNotEqual(msg1, msg2)
-            self.assertEqual(finder._compute_hash(msg1), finder._compute_hash(msg2))
-            self.assertLessEqual(attempts, 200)
+            self.assertNotEqual(result.msg1, result.msg2)
+            self.assertEqual(
+                finder._compute_hash(result.msg1), finder._compute_hash(result.msg2)
+            )
+            self.assertLessEqual(result.attempts, 200)
     
     def test_collision_finder_16bit(self):
         """Поиск коллизии для 16 бит"""
         finder = ShortHashCollisionFinder(trunc_bits=16)
-        msg1, msg2, sh, attempts = finder.find_collision(max_attempts=2000, show_progress=False)
-        
-        if msg1 is not None:
-            self.assertNotEqual(msg1, msg2)
-            self.assertEqual(finder._compute_hash(msg1), finder._compute_hash(msg2))
+        result = finder.find_collision(max_attempts=2000, show_progress=False)
+
+        if result.found:
+            self.assertNotEqual(result.msg1, result.msg2)
+            self.assertEqual(
+                finder._compute_hash(result.msg1), finder._compute_hash(result.msg2)
+            )
     
     def test_theoretical_expected_attempts(self):
         """Проверка теоретических расчётов"""

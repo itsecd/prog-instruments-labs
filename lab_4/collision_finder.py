@@ -9,8 +9,22 @@ import hashlib
 import random
 import string
 import math
+from dataclasses import dataclass
 from typing import Optional, Tuple, Dict, Union
 from tqdm import tqdm
+
+@dataclass(frozen=True)
+class CollisionResult:
+    """Результат поиска коллизии."""
+    msg1: Optional[bytes]
+    msg2: Optional[bytes]
+    short_hash: Optional[str]
+    attempts: int
+
+    @property
+    def found(self) -> bool:
+        return self.msg1 is not None and self.msg2 is not None
+
 
 
 class ShortHashCollisionFinder:
@@ -120,7 +134,7 @@ class ShortHashCollisionFinder:
         self,
         max_attempts: int = 100000,
         show_progress: bool = True
-    ) -> Tuple[Optional[bytes], Optional[bytes], Optional[str], int]:
+    ) -> CollisionResult:
         """
         Ищет коллизию — два разных сообщения с одинаковым укороченным хешем.
 
@@ -161,12 +175,16 @@ class ShortHashCollisionFinder:
                 if existing != candidate:
                     # Дополнительная проверка перед возвратом
                     if self._compute_hash(existing) == self._compute_hash(candidate):
-                        hex_hash = self.short_hash_hex(candidate)
-                        return existing, candidate, hex_hash, attempt + 1
+                        return CollisionResult(
+                            msg1=existing,
+                            msg2=candidate,
+                            short_hash=self.short_hash_hex(candidate),
+                            attempts=attempt + 1,
+                        )
             else:
                 seen[hash_val] = candidate
 
-        return None, None, None, max_attempts
+        return CollisionResult(msg1=None, msg2=None, short_hash=None, attempts=max_attempts)    
 
     def verify_collision(self, msg1: bytes, msg2: bytes) -> Tuple[bool, int, int]:
         """
@@ -179,10 +197,8 @@ class ShortHashCollisionFinder:
             msg2 (bytes): Второе сообщение.
 
         Возвращает:
-            Tuple[bool, int, int]:
-                - bool: True, если хеши совпадают (коллизия), иначе False
-                - int: Значение укороченного хеша первого сообщения
-                - int: Значение укороченного хеша второго сообщения
+            CollisionResult: результат с полями msg1, msg2, short_hash, attempts.
+            Если коллизия не найдена, msg1/msg2/short_hash = None.
         """
         hash1 = self._compute_hash(msg1)
         hash2 = self._compute_hash(msg2)
@@ -246,16 +262,13 @@ class ShortHashCollisionFinder:
         print(f"\nПроведение {num_experiments} экспериментов для {self.trunc_bits} бит...")
 
         for i in range(num_experiments):
-            msg1, msg2, _, attempts = self.find_collision(
-                max_attempts=max_attempts,
-                show_progress=False
-            )
+            result = self.find_collision(max_attempts=max_attempts, show_progress=False)
 
-            if msg1 is not None:
-                is_valid, _, _ = self.verify_collision(msg1, msg2)
+            if result.found:
+                is_valid, _, _ = self.verify_collision(result.msg1, result.msg2)
                 if is_valid:
-                    results[i + 1] = attempts
-                    print(f"  Эксперимент {i+1}: коллизия найдена за {attempts} попыток ✓")
+                    results[i + 1] = result.attempts
+                    print(f"  Эксперимент {i+1}: коллизия найдена за {result.attempts} попыток ✓")
                 else:
                     results[i + 1] = None
                     print(f"  Эксперимент {i+1}: ложная коллизия ✗")

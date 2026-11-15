@@ -33,12 +33,14 @@ class CollisionWorker(QThread):
     def run(self):
         try:
             finder = ShortHashCollisionFinder(trunc_bits=self.trunc_bits)
-            msg1, msg2, sh, attempts = finder.find_collision(max_attempts=self.max_attempts)
-            
+            result = finder.find_collision(max_attempts=self.max_attempts)
+
             if self._is_cancelled:
                 self.finished.emit(None, None, None, 0, "Поиск отменён")
             else:
-                self.finished.emit(msg1, msg2, sh, attempts, None)
+                self.finished.emit(
+                    result.msg1, result.msg2, result.short_hash, result.attempts, None
+                )
         except Exception as e:
             self.finished.emit(None, None, None, 0, str(e))
 
@@ -76,9 +78,11 @@ class ExperimentsWorker(QThread):
                 if self._is_cancelled:
                     self.finished.emit({}, "Эксперименты отменены")
                     return
-                
-                _, _, _, attempts = finder.find_collision(max_attempts=self.max_attempts, show_progress=False)
-                exp_results[i + 1] = attempts if attempts < self.max_attempts else None
+
+                result = finder.find_collision(
+                    max_attempts=self.max_attempts, show_progress=False
+                )
+                exp_results[i + 1] = result.attempts if result.found else None
                 current += 1
                 self.progress.emit(current, total)
             
