@@ -1,0 +1,52 @@
+2026-11-12 11:30:38,804 | INFO | __main__ | Ищу музыку: rain
+2026-11-12 11:30:39,496 | INFO | __main__ | Найдено 36 ссылок
+2026-11-12 11:36:57,903 | INFO | __main__ | Ищу музыку: raiksdl
+2026-11-12 11:36:59,642 | INFO | __main__ | Найдено 0 ссылок
+2026-11-12 11:36:59,643 | WARNING | __main__ | Не найдено MP3 на сайте
+2026-11-12 11:40:03,289 | INFO | __main__ | Ищу музыку: rain
+2026-11-12 11:40:03,292 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): mixkit.co:443
+2026-11-12 11:40:03,805 | DEBUG | urllib3.connectionpool | https://mixkit.co:443 "GET /free-sound-effects/rain/ HTTP/1.1" 200 None
+2026-11-12 11:40:03,887 | INFO | __main__ | Найдено 36 ссылок
+2026-11-12 11:40:03,888 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:04,449 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/2393/2393-preview.mp3 HTTP/1.1" 200 506302
+2026-11-12 11:40:04,692 | DEBUG | __main__ | Скачан файл: task\2393-preview.mp3
+2026-11-12 11:40:04,694 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:05,169 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/2390/2390-preview.mp3 HTTP/1.1" 200 921953
+2026-11-12 11:40:05,492 | DEBUG | __main__ | Скачан файл: task\2390-preview.mp3
+2026-11-12 11:40:05,494 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:06,043 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/2415/2415-preview.mp3 HTTP/1.1" 200 1594136
+2026-11-12 11:40:06,469 | DEBUG | __main__ | Скачан файл: task\2415-preview.mp3
+2026-11-12 11:40:06,471 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:06,977 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/2395/2395-preview.mp3 HTTP/1.1" 200 1640155
+2026-11-12 11:40:07,380 | DEBUG | __main__ | Скачан файл: task\2395-preview.mp3
+2026-11-12 11:40:07,381 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:07,933 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/1247/1247-preview.mp3 HTTP/1.1" 200 10477989
+2026-11-12 11:40:08,479 | DEBUG | __main__ | Скачан файл: task\1247-preview.mp3
+2026-11-12 11:40:08,480 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:08,988 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/2399/2399-preview.mp3 HTTP/1.1" 200 388209
+2026-11-12 11:40:09,229 | DEBUG | __main__ | Скачан файл: task\2399-preview.mp3
+2026-11-12 11:40:09,230 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:09,834 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/1253/1253-preview.mp3 HTTP/1.1" 200 1292028
+2026-11-12 11:40:10,314 | DEBUG | __main__ | Скачан файл: task\1253-preview.mp3
+2026-11-12 11:40:10,316 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:10,779 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/1294/1294-preview.mp3 HTTP/1.1" 200 620932
+2026-11-12 11:40:11,066 | DEBUG | __main__ | Скачан файл: task\1294-preview.mp3
+2026-11-12 11:40:11,068 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:11,550 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/2394/2394-preview.mp3 HTTP/1.1" 200 1817152
+2026-11-12 11:40:11,940 | DEBUG | __main__ | Скачан файл: task\2394-preview.mp3
+2026-11-12 11:40:11,942 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:12,389 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/1249/1249-preview.mp3 HTTP/1.1" 200 3009690
+2026-11-12 11:40:12,823 | DEBUG | __main__ | Скачан файл: task\1249-preview.mp3
+2026-11-12 11:40:12,824 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:13,258 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/2397/2397-preview.mp3 HTTP/1.1" 200 1402045
+2026-11-12 11:40:13,583 | DEBUG | __main__ | Скачан файл: task\2397-preview.mp3
+2026-11-12 11:40:13,585 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:14,036 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/1248/1248-preview.mp3 HTTP/1.1" 200 1213276
+2026-11-12 11:40:14,376 | DEBUG | __main__ | Скачан файл: task\1248-preview.mp3
+2026-11-12 11:40:14,378 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:14,839 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/2402/2402-preview.mp3 HTTP/1.1" 200 1700703
+2026-11-12 11:40:15,202 | DEBUG | __main__ | Скачан файл: task\2402-preview.mp3
+2026-11-12 11:40:15,203 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
+2026-11-12 11:40:15,655 | DEBUG | urllib3.connectionpool | https://assets.mixkit.co:443 "GET /active_storage/sfx/2678/2678-preview.mp3 HTTP/1.1" 200 3876161
+2026-11-12 11:40:16,105 | DEBUG | __main__ | Скачан файл: task\2678-preview.mp3
+2026-11-12 11:40:16,106 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): assets.mixkit.co:443
