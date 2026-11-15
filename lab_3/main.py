@@ -6,13 +6,12 @@ from src.validators import validate_row
 
 
 def process_csv(filepath: str) -> list[int]:
-    """Читает CSV и возвращает номера невалидных строк (1-based)."""
     invalid_rows = []
-    with open(filepath, encoding="utf-16") as f:
+    with open(filepath, encoding="utf-16", newline="") as f:
         reader = csv.DictReader(f, delimiter=";")
-        for line_num, row in enumerate(reader, start=1):
-            if validate_row(row):
-                invalid_rows.append(line_num)
+        for line_num, row in enumerate(reader, start=0):
+            if not validate_row(row):
+                invalid_rows.append(line_num)   # ← list[int], 1-based
     return invalid_rows
 
 
