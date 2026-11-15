@@ -1,3 +1,5 @@
+from config import DATA_PATH, VARIANT
+
 # main.py
 import csv
 # уточните имя функции в докстрингах модуля
@@ -16,8 +18,8 @@ def process_csv(filepath: str) -> list[int]:
 
 
 if __name__ == "__main__":
-    invalid = process_csv("data/36.csv")
+    invalid = process_csv(DATA_PATH)
     checksum = calculate_checksum(invalid)  # см. докстринги checksum.py
     print(f"Невалидных строк: {len(invalid)}")
     print(f"Контрольная сумма: {checksum}")
-    serialize_result(36, checksum=checksum)
+    serialize_result(VARIANT, checksum=checksum)
