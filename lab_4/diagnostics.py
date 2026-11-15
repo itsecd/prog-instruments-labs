@@ -1,34 +1,39 @@
-import csv
+"""Диагностика валидации: количество невалидных значений по полям."""
+import argparse
 from collections import Counter
-from src.validators import VALIDATORS
+
+from config import DATA_PATH
+from reader import read_csv
+from validators import find_invalid_fields
 
 
-def count_per_field(filepath: str) -> None:
+def count_per_field(filepath, examples_limit: int = 5) -> Counter:
+    """Считает невалидные значения по полям и печатает примеры."""
     counter = Counter()
-    examples = {}  # field -> 5 примеров невалидных значений
+    examples: dict[str, list[str]] = {}
 
-    with open(filepath, encoding="utf-16", newline="") as f:
-        reader = csv.DictReader(f, delimiter=';')
-        for row in reader:
-            for field, value in row.items():
-                pattern = VALIDATORS.get(field)
-                if pattern is None:
-                    print(f"⚠️  НЕТ ВАЛИДАТОРА для поля {field!r}")
-                    continue
-                if not pattern.fullmatch((value or "").strip()):
-                    counter[field] += 1
-                    examples.setdefault(field, []).append(value)
+    for row in read_csv(filepath):
+        for field in find_invalid_fields(row):
+            counter[field] += 1
+            examples.setdefault(field, []).append(row.get(field, ""))
 
     print(f"\n{'поле':25} {'невалидных':>12}")
     print("-" * 40)
     for field, n in counter.most_common():
         print(f"{field:25} {n:>12}")
-        # показываем примеры «битых» значений
-        for v in examples[field][:5]:
-            print(f"    {v!r}")
+        for value in examples[field][:examples_limit]:
+            print(f"    {value!r}")
     print("-" * 40)
     print(f"{'ИТОГО':25} {sum(counter.values()):>12}")
+    return counter
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Диагностика валидации CSV")
+    parser.add_argument("--data", default=DATA_PATH, help="путь к CSV")
+    args = parser.parse_args()
+    count_per_field(args.data)
 
 
 if __name__ == "__main__":
-    count_per_field("data/36.csv")
+    main()
