@@ -1,5 +1,4 @@
 class TennisGame2:
-    # 1. Выносим магические строки в константы
     SCORE_NAMES = ["Love", "Fifteen", "Thirty", "Forty"]
     DEUCE = "Deuce"
     ADVANTAGE_P1 = "Advantage player1"
@@ -19,61 +18,36 @@ class TennisGame2:
         else:
             self.p2_score()
 
+    def _get_score_name(self, points):
+        if points < 4:
+            return self.SCORE_NAMES[points]
+        return ""
+
     def score(self):
         result = ""
         if self.p1points == self.p2points and self.p1points < 3:
-            if self.p1points == 0:
-                result = self.SCORE_NAMES[0]
-            if self.p1points == 1:
-                result = self.SCORE_NAMES[1]
-            if self.p1points == 2:
-                result = self.SCORE_NAMES[2]
-            result += "-All"
+            result = self._get_score_name(self.p1points) + "-All"
         if self.p1points == self.p2points and self.p1points > 2:
             result = self.DEUCE
 
         p1res = ""
         p2res = ""
         if self.p1points > 0 and self.p2points == 0:
-            if self.p1points == 1:
-                p1res = self.SCORE_NAMES[1]
-            if self.p1points == 2:
-                p1res = self.SCORE_NAMES[2]
-            if self.p1points == 3:
-                p1res = self.SCORE_NAMES[3]
-
-            p2res = self.SCORE_NAMES[0]
+            p1res = self._get_score_name(self.p1points)
+            p2res = self._get_score_name(self.p2points)
             result = p1res + "-" + p2res
         if self.p2points > 0 and self.p1points == 0:
-            if self.p2points == 1:
-                p2res = self.SCORE_NAMES[1]
-            if self.p2points == 2:
-                p2res = self.SCORE_NAMES[2]
-            if self.p2points == 3:
-                p2res = self.SCORE_NAMES[3]
-
-            p1res = self.SCORE_NAMES[0]
+            p2res = self._get_score_name(self.p2points)
+            p1res = self._get_score_name(self.p1points)
             result = p1res + "-" + p2res
 
         if self.p1points > self.p2points and self.p1points < 4:
-            if self.p1points == 2:
-                p1res = self.SCORE_NAMES[2]
-            if self.p1points == 3:
-                p1res = self.SCORE_NAMES[3]
-            if self.p2points == 1:
-                p2res = self.SCORE_NAMES[1]
-            if self.p2points == 2:
-                p2res = self.SCORE_NAMES[2]
+            p1res = self._get_score_name(self.p1points)
+            p2res = self._get_score_name(self.p2points)
             result = p1res + "-" + p2res
         if self.p2points > self.p1points and self.p2points < 4:
-            if self.p2points == 2:
-                p2res = self.SCORE_NAMES[2]
-            if self.p2points == 3:
-                p2res = self.SCORE_NAMES[3]
-            if self.p1points == 1:
-                p1res = self.SCORE_NAMES[1]
-            if self.p1points == 2:
-                p1res = self.SCORE_NAMES[2]
+            p2res = self._get_score_name(self.p2points)
+            p1res = self._get_score_name(self.p1points)
             result = p1res + "-" + p2res
 
         if self.p1points > self.p2points and self.p2points >= 3:
