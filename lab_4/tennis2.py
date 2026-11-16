@@ -12,8 +12,9 @@ class TennisGame2:
         self.p1points = 0
         self.p2points = 0
 
+
     def won_point(self, player_name):
-        if player_name == "player1":
+        if player_name == self.player1_name:
             self.p1_score()
         else:
             self.p2_score()
@@ -22,7 +23,6 @@ class TennisGame2:
         if points < 4:
             return self.SCORE_NAMES[points]
         return ""
-
 
     def score(self):
         if self._is_win(self.p1points, self.p2points):
@@ -42,7 +42,6 @@ class TennisGame2:
             return self._get_score_name(self.p1points) + "-All"
             
         return self._get_score_name(self.p1points) + "-" + self._get_score_name(self.p2points)
-
 
     def _is_win(self, p1_pts, p2_pts):
         return p1_pts >= 4 and (p1_pts - p2_pts) >= 2
