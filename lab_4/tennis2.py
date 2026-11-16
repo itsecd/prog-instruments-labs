@@ -23,52 +23,36 @@ class TennisGame2:
             return self.SCORE_NAMES[points]
         return ""
 
+
     def score(self):
-        result = ""
-        if self.p1points == self.p2points and self.p1points < 3:
-            result = self._get_score_name(self.p1points) + "-All"
-        if self.p1points == self.p2points and self.p1points > 2:
-            result = self.DEUCE
+        if self._is_win(self.p1points, self.p2points):
+            return self.WIN_P1
+        if self._is_win(self.p2points, self.p1points):
+            return self.WIN_P2
+            
+        if self._is_deuce():
+            return self.DEUCE
+            
+        if self._is_advantage(self.p1points, self.p2points):
+            return self.ADVANTAGE_P1
+        if self._is_advantage(self.p2points, self.p1points):
+            return self.ADVANTAGE_P2
+            
+        if self.p1points == self.p2points:
+            return self._get_score_name(self.p1points) + "-All"
+            
+        return self._get_score_name(self.p1points) + "-" + self._get_score_name(self.p2points)
 
-        p1res = ""
-        p2res = ""
-        if self.p1points > 0 and self.p2points == 0:
-            p1res = self._get_score_name(self.p1points)
-            p2res = self._get_score_name(self.p2points)
-            result = p1res + "-" + p2res
-        if self.p2points > 0 and self.p1points == 0:
-            p2res = self._get_score_name(self.p2points)
-            p1res = self._get_score_name(self.p1points)
-            result = p1res + "-" + p2res
 
-        if self.p1points > self.p2points and self.p1points < 4:
-            p1res = self._get_score_name(self.p1points)
-            p2res = self._get_score_name(self.p2points)
-            result = p1res + "-" + p2res
-        if self.p2points > self.p1points and self.p2points < 4:
-            p2res = self._get_score_name(self.p2points)
-            p1res = self._get_score_name(self.p1points)
-            result = p1res + "-" + p2res
+    def _is_win(self, p1_pts, p2_pts):
+        return p1_pts >= 4 and (p1_pts - p2_pts) >= 2
 
-        if self.p1points > self.p2points and self.p2points >= 3:
-            result = self.ADVANTAGE_P1
+    def _is_deuce(self):
+        return self.p1points == self.p2points and self.p1points >= 3
 
-        if self.p2points > self.p1points and self.p1points >= 3:
-            result = self.ADVANTAGE_P2
+    def _is_advantage(self, p1_pts, p2_pts):
+        return p1_pts > p2_pts and p2_pts >= 3
 
-        if (
-            self.p1points >= 4
-            and self.p2points >= 0
-            and (self.p1points - self.p2points) >= 2
-        ):
-            result = self.WIN_P1
-        if (
-            self.p2points >= 4
-            and self.p1points >= 0
-            and (self.p2points - self.p1points) >= 2
-        ):
-            result = self.WIN_P2
-        return result
 
     def set_p1_score(self, number):
         for i in range(number):
