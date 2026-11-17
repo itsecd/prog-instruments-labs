@@ -1,0 +1,86 @@
+import csv
+import json 
+import re
+from typing import Dict, List
+from checksum import calculate_checksum,    serialize_result
+
+
+PATTERNS: Dict[str, re.Pattern] = {
+    "email": re.compile(
+        r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$"
+    ),
+    "http_status_message": re.compile(r"^\d{3}\s+[A-Za-z\s]+$"),
+    "snils": re.compile(r"^\d{11}$"),
+    "passport": re.compile(r"^\d{2}\s+\d{2}\s+\d{6}$"),
+    "ip_v4": re.compile(
+        r"^(?:(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}"
+        r"(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$"
+    ),
+    "longitude": re.compile(
+        r"^[-+]?(?:180(?:\.0+)?|(?:1[0-7]\d|\d{1,2})(?:\.\d+)?)$"
+    ),
+    "hex_color": re.compile(r"^#[0-9a-fA-F]{6}$"),
+    "isbn": re.compile(r"^(?:\d{3}-)?(?:\d+-){3}[\dX]$"),
+    "locale_code": re.compile(r"^[a-z]{2}(?:-[a-z]{2,})?$"),
+    "time": re.compile(r"^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\.\d{6}$"),
+}
+
+
+class RowValidator:
+    """The class is responsible for validating the data."""
+    def __init__(self, patterns: Dict[str, re.Pattern]):
+        self.patterns = patterns
+
+    def is_valid(self, row: Dict[str, str]) -> bool:
+        for col_name, pattern in self.patterns.items():
+            val = row.get(col_name, "") 
+            val = val.strip() 
+            if not pattern.match(val):
+                return False
+        return True
+        
+
+class InvalidDataScanner:
+    """The class is responsible for reading the file and scanning for lines containing errors."""
+    def __init__(self, validator: RowValidator):
+        self.validator = validator
+
+    def scan_csv(self, file_path: str, encoding: str = "utf-16", delimiter: str = ";") -> List[int]:
+        invalid_indices: List[int] = []
+        try:
+            with open(file_path, "r", encoding=encoding) as file:
+                reader = csv.DictReader(file, delimiter=delimiter)
+                for idx, row in enumerate(reader):
+                    if not self.validator.is_valid(row):
+                        invalid_indices.append(idx)
+        except FileNotFoundError:
+            print(f"Error: File '{file_path}' not found.")
+        return invalid_indices            
+
+
+def main() -> None:
+    """Main function."""
+    variant_number = 25
+    file_path = f"{variant_number}.csv"
+    expected_errors = 1000
+
+    validator = RowValidator(PATTERNS)
+    scanner = InvalidDataScanner(validator)
+
+    invalid_indices = scanner.scan_csv(file_path)
+    
+    if len(invalid_indices) != expected_errors:
+         print(f"Warning: Expected exactly {expected_errors} invalid rows, but found {len(invalid_indices)}. " 
+               "Please check your regular expressions!") 
+
+    if invalid_indices:
+        checksum = calculate_checksum(invalid_indices)
+        print(f"Calculated Checksum: {checksum}")
+        serialize_result(variant_number, checksum)
+        print("Update successfully!")
+    else:
+        print("No invalid rows found. Processing stopped.")
+
+if __name__ == "__main__":
+    main()
+        
