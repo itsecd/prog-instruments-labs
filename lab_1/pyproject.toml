@@ -12,5 +12,6 @@ indent-style = "space"
 
 [tool.pyright]
 typeCheckingMode = "basic"
+reportMissingImports = false
 pythonVersion = "3.10"
 exclude = ["venv", ".ruff_cache"]

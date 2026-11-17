@@ -1,6 +1,6 @@
 ﻿repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
         files: \.py$
@@ -19,7 +19,7 @@
         types_or: [python, pyi]
 
   - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.361
+    rev: v1.1.414
     hooks:
       - id: pyright
         types_or: [python, pyi]
