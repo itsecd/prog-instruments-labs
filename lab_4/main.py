@@ -59,11 +59,27 @@ class InvalidDataScanner:
 
 
 def main() -> None:
+    """Main function."""
     variant_number = 25
     file_path = f"{variant_number}.csv"
     expected_errors = 1000
 
+    validator = RowValidator(PATTERNS)
+    scanner = InvalidDataScanner(validator)
 
+    invalid_indices = scanner.scan_csv(file_path)
+    
+    if len(invalid_indices) != expected_errors:
+         print(f"Warning: Expected exactly {expected_errors} invalid rows, but found {len(invalid_indices)}. " 
+               "Please check your regular expressions!") 
+
+    if invalid_indices:
+        checksum = calculate_checksum(invalid_indices)
+        print(f"Calculated Checksum: {checksum}")
+        serialize_result(variant_number, checksum)
+        print("Update successfully!")
+    else:
+        print("No invalid rows found. Processing stopped.")
 
 if __name__ == "__main__":
     main()
