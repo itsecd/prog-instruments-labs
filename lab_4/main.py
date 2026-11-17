@@ -1,7 +1,27 @@
 import re
 import argparse
-from datetime import datetime
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Pattern
+
+DEFAULT_ENCODING = 'utf-8'
+DEFAULT_OUTPUT_FILENAME = '21st_century_profiles.txt'
+
+TWO_DIGIT_YEAR_CUTOFF = 23
+TWENTIETH_CENTURY_PREFIX = '19'
+TWENTY_FIRST_CENTURY_PREFIX = '20'
+TWENTY_FIRST_CENTURY_MIN_YEAR = 2001
+
+PROFILE_SEPARATOR_PATTERN: Pattern[str] = re.compile(r'\n\d+\)\n')
+DATE_PATTERN: Pattern[str] = re.compile(r'(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})')
+
+PROFILE_FIELD_PATTERNS: Dict[str, Pattern[str]] = {
+    'surname': re.compile(r'Фамилия:\s*([^\n]+)'),
+    'name': re.compile(r'Имя:\s*([^\n]+)'),
+    'gender': re.compile(r'Пол:\s*([^\n]+)'),
+    'birth_date': re.compile(r'Дата рождения:\s*([^\n]+)'),
+    'contact': re.compile(r'Номер телефона или email:\s*([^\n]+)'),
+    'city': re.compile(r'Город:\s*([^\n]+)'),
+}
+
 
 def parse_arguments() -> argparse.Namespace:
     """
@@ -19,6 +39,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('filename', type=str, help='Имя файла с данными')
     return parser.parse_args()
 
+
 def read_file(filename) -> Optional[str]:
     """
     Читает содержимое файла в строку.
@@ -34,7 +55,7 @@ def read_file(filename) -> Optional[str]:
         IOError: При ошибках ввода-вывода
     """
     try:
-        with open(filename, 'r', encoding='utf-8') as file:
+        with open(filename, 'r', encoding=DEFAULT_ENCODING) as file:
             return file.read()
     except FileNotFoundError:
         print(f"Ошибка: Файл {filename} не найден")
@@ -42,6 +63,7 @@ def read_file(filename) -> Optional[str]:
     except Exception as e:
         print(f"Ошибка при чтении файла: {e}")
         return None
+
 
 def split_profiles(content) -> List[str]:
     """
@@ -56,8 +78,9 @@ def split_profiles(content) -> List[str]:
     Note:
         Разделителем анкет считается шаблон '\\nчисло)\\n'
     """
-    profiles = re.split(r'\n\d+\)\n', content)[1:]  # Пропускаем первый элемент (пустой)
+    profiles = PROFILE_SEPARATOR_PATTERN.split(content)[1:]  # Пропускаем первый элемент (пустой)
     return profiles
+
 
 def parse_profile(profile_text) -> Dict[str, str]:
     """
@@ -76,23 +99,14 @@ def parse_profile(profile_text) -> Dict[str, str]:
         {'surname': 'Иванов', 'name': 'Иван', ...}
     """
     data = {}
-    
-    # Извлекаем основные поля с помощью регулярных выражений
-    fields = {
-        'surname': r'Фамилия:\s*([^\n]+)',
-        'name': r'Имя:\s*([^\n]+)',
-        'gender': r'Пол:\s*([^\n]+)',
-        'birth_date': r'Дата рождения:\s*([^\n]+)',
-        'contact': r'Номер телефона или email:\s*([^\n]+)',
-        'city': r'Город:\s*([^\n]+)'
-    }
-    
-    for field, pattern in fields.items():
-        match = re.search(pattern, profile_text)
+
+    for field, pattern in PROFILE_FIELD_PATTERNS.items():
+        match = pattern.search(profile_text)
         if match:
             data[field] = match.group(1).strip()
-    
+
     return data
+
 
 def is_21st_century(birth_date) -> bool:
     """
@@ -110,23 +124,23 @@ def is_21st_century(birth_date) -> bool:
         - 00-23 как 2000-2023
         - 24-99 как 1924-1999
     """
-    # Регулярное выражение для различных форматов даты
-    date_pattern = r'(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})'
-    match = re.search(date_pattern, birth_date)
-    
+    match = DATE_PATTERN.search(birth_date)
+
     if match:
         day, month, year = match.groups()
-        
-        # Если год указан двумя цифрами, преобразуем в четыре
+
         if len(year) == 2:
-            year = '20' + year if int(year) <= 23 else '19' + year
-        
-        year = int(year)
-        
-        # Проверяем, что год > 2000
-        return year > 2000
-    
+            prefix = (
+                TWENTY_FIRST_CENTURY_PREFIX
+                if int(year) <= TWO_DIGIT_YEAR_CUTOFF
+                else TWENTIETH_CENTURY_PREFIX
+            )
+            year = prefix + year
+
+        return int(year) >= TWENTY_FIRST_CENTURY_MIN_YEAR
+
     return False
+
 
 def process_profiles(profiles) -> List[str]:
     """
@@ -139,16 +153,17 @@ def process_profiles(profiles) -> List[str]:
         List[str]: Список анкет людей, родившихся после 2000 года
     """
     twenty_first_century_profiles = []
-    
+
     for profile_text in profiles:
         profile = parse_profile(profile_text)
-        
+
         if 'birth_date' in profile and is_21st_century(profile['birth_date']):
             twenty_first_century_profiles.append(profile_text)
-    
+
     return twenty_first_century_profiles
 
-def save_results(profiles, filename='21st_century_profiles.txt')  -> Optional[str]:
+
+def save_results(profiles, filename=DEFAULT_OUTPUT_FILENAME) -> Optional[str]:
     """
     Сохраняет отобранные анкеты в файл.
     
@@ -160,11 +175,12 @@ def save_results(profiles, filename='21st_century_profiles.txt')  -> Optional[st
         Optional[str]: Имя файла, в который сохранены данные, или None если нечего сохранять
     """
     if profiles:
-        with open(filename, 'w', encoding='utf-8') as output_file:
+        with open(filename, 'w', encoding=DEFAULT_ENCODING) as output_file:
             for i, profile in enumerate(profiles, 1):
                 output_file.write(f"{i})\n{profile}\n")
         return filename
     return None
+
 
 def print_statistics(profiles) -> None:
     """
@@ -175,6 +191,7 @@ def print_statistics(profiles) -> None:
     """
     count = len(profiles)
     print(f"Количество людей, родившихся в 21 веке: {count}")
+
 
 def main() -> None:
     """
@@ -188,28 +205,21 @@ def main() -> None:
     5. Вывод статистики
     6. Сохранение результатов
     """
-
-    # Парсинг аргументов
     args = parse_arguments()
-    
-    # Чтение файла
+
     content = read_file(args.filename)
     if content is None:
         return
-    
-    # Разделение на анкеты
+
     profiles = split_profiles(content)
-    
-    # Обработка анкет
     twenty_first_century_profiles = process_profiles(profiles)
-    
-    # Вывод статистики
+
     print_statistics(twenty_first_century_profiles)
-    
-    # Сохранение результатов
+
     output_file = save_results(twenty_first_century_profiles)
     if output_file:
         print(f"Анкеты сохранены в файл: {output_file}")
+
 
 if __name__ == "__main__":
     main()
