@@ -26,13 +26,19 @@ PATTERNS: Dict[str, re.Pattern] = {
 }
 
 
-def check_row_valid(row: Dict[str, str]) -> bool:
-    for col_name, pattern in PATTERNS.items():
-        val = row.get(col_name, " ")
-        if not pattern.match(val):
-            return False
-    return True         
+class RowValidator:
+    """The class is responsible for validating the data."""
+    def __init__(self, patterns: Dict[str, re.Pattern]):
+        self.patterns = patterns
 
+    def is_valid(self, row: Dict[str, str]) -> bool:
+        for col_name, pattern in self.patterns.items():
+            val = row.get(col_name, "") 
+            val = val.strip() 
+            if not pattern.match(val):
+                return False
+        return True
+        
 
 def find_invalid_row(csv_path: str) -> List[int]:
     invalid_indexs: List[int] = []
