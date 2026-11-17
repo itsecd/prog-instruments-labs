@@ -1,7 +1,7 @@
 import argparse
 import csv
 import os
-from typing import Iterator
+from collections.abc import Iterator  # <--- ВОТ ЭТО ГЛАВНОЕ ИСПРАВЛЕНИЕ
 
 from icrawler.builtin import BingImageCrawler
 
@@ -13,15 +13,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "file_save", type=str, help="Path to directory for saving photos"
     )
-    parser.add_argument(
-        "annotation", type=str, help="Path to annotation CSV file"
-    )
-    parser.add_argument(
-        "number", type=int, help="Number of images (from 50 to 1000)"
-    )
-    parser.add_argument(
-        "keywords", nargs="+", help="Keywords for image search"
-    )
+    parser.add_argument("annotation", type=str, help="Path to annotation CSV file")
+    parser.add_argument("number", type=int, help="Number of images (from 50 to 1000)")
+    parser.add_argument("keywords", nargs="+", help="Keywords for image search")
     args = parser.parse_args()
 
     if not (50 <= args.number <= 1000):
@@ -62,9 +56,7 @@ class AnnotationIterator:
         self.data: list[dict[str, str]] = []
         self.index = 0
 
-        with open(
-            annotation_path, mode="r", encoding="utf-8", newline=""
-        ) as file:
+        with open(annotation_path, encoding="utf-8", newline="") as file:
             reader = csv.DictReader(file)
             self.data = list(reader)
 
@@ -79,14 +71,10 @@ class AnnotationIterator:
         return value
 
 
-def write_annotation(
-    annotation_path: str, data: list[dict[str, str]]
-) -> None:
+def write_annotation(annotation_path: str, data: list[dict[str, str]]) -> None:
     fieldnames = ["absolute_path", "relative_path", "keyword"]
 
-    with open(
-        annotation_path, mode="w", encoding="utf-8", newline=""
-    ) as file:
+    with open(annotation_path, mode="w", encoding="utf-8", newline="") as file:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(data)

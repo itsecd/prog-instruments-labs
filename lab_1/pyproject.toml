@@ -1,7 +1,7 @@
 [tool.ruff]
 src = ["lab_1"]
 line-length = 88
-target-version = "py315"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = [
@@ -24,3 +24,5 @@ known-first-party = ["lab_1"]
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+[tool.pyright]
+extraPaths = ["."]
