@@ -1,6 +1,6 @@
 import argparse
 import re
-from typing import Dict, List, Optional, Pattern
+from typing import Callable, Dict, List, Optional, Pattern
 
 DEFAULT_ENCODING = 'utf-8'
 DEFAULT_OUTPUT_FILENAME = '21st_century_profiles.txt'
@@ -10,7 +10,7 @@ TWENTIETH_CENTURY_PREFIX = '19'
 TWENTY_FIRST_CENTURY_PREFIX = '20'
 TWENTY_FIRST_CENTURY_MIN_YEAR = 2001
 
-PROFILE_SEPARATOR_PATTERN: Pattern[str] = re.compile(r'\n\d+\)\n')
+PROFILE_SEPARATOR_PATTERN: Pattern[str] = re.compile(r'(?:^|\n)\d+\)\n')
 DATE_PATTERN: Pattern[str] = re.compile(r'(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})')
 
 PROFILE_FIELD_PATTERNS: Dict[str, Pattern[str]] = {
@@ -38,13 +38,15 @@ def read_file(filename: str, encoding: str = DEFAULT_ENCODING) -> Optional[str]:
     except FileNotFoundError:
         print(f"Ошибка: Файл {filename} не найден")
         return None
-    except Exception as e:
+    except OSError as e:
         print(f"Ошибка при чтении файла: {e}")
         return None
 
 
 def split_profiles(content: str) -> List[str]:
-    """Разделяет содержимое файла на отдельные анкеты по шаблону '\\nчисло)\\n'."""
+    """Разделяет содержимое файла на отдельные анкеты."""
+    if not content.strip():
+        return []
     return PROFILE_SEPARATOR_PATTERN.split(content)[1:]
 
 
@@ -85,16 +87,24 @@ def is_21st_century(birth_date: str) -> bool:
     return year is not None and year >= TWENTY_FIRST_CENTURY_MIN_YEAR
 
 
+def filter_profiles(
+    profiles: List[str],
+    predicate: Callable[[Dict[str, str]], bool],
+) -> List[str]:
+    """Фильтрует список текстовых анкет по заданному условию на распарсенные поля."""
+    return [
+        profile_text
+        for profile_text in profiles
+        if predicate(parse_profile(profile_text))
+    ]
+
+
 def process_profiles(profiles: List[str]) -> List[str]:
     """Отбирает анкеты людей, родившихся в XXI веке."""
-    twenty_first_century_profiles: List[str] = []
-
-    for profile_text in profiles:
-        profile = parse_profile(profile_text)
-        if 'birth_date' in profile and is_21st_century(profile['birth_date']):
-            twenty_first_century_profiles.append(profile_text)
-
-    return twenty_first_century_profiles
+    return filter_profiles(
+        profiles,
+        lambda profile: 'birth_date' in profile and is_21st_century(profile['birth_date']),
+    )
 
 
 def save_results(
@@ -103,12 +113,16 @@ def save_results(
     encoding: str = DEFAULT_ENCODING,
 ) -> Optional[str]:
     """Сохраняет отобранные анкеты в файл и возвращает его имя."""
-    if profiles:
+    if not profiles:
+        return None
+    try:
         with open(filename, 'w', encoding=encoding) as output_file:
             for index, profile in enumerate(profiles, start=1):
                 output_file.write(f"{index})\n{profile}\n")
         return filename
-    return None
+    except OSError as e:
+        print(f"Ошибка при сохранении файла: {e}")
+        return None
 
 
 def print_statistics(profiles: List[str]) -> None:
