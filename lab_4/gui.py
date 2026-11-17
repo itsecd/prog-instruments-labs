@@ -1,18 +1,20 @@
 """
-gui.py - Графический интерфейс на PyQt6 (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+gui.py - Графический интерфейс на PyQt6 (ОТРЕФАКТОРЕННАЯ ВЕРСИЯ)
 """
 import sys
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
-                             QHBoxLayout, QLabel, QLineEdit, QPushButton, 
+                             QLabel, QLineEdit, QPushButton, 
                              QTextEdit, QTabWidget, QMessageBox, QGroupBox,
                              QRadioButton, QProgressBar, QComboBox)
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
-from auth_core import PasswordHasher, UserDatabase, CollisionDemo
+from PyQt6.QtCore import QThread, pyqtSignal
+from auth_core import (
+    AuthService, UserDatabase, CollisionDemo, 
+    AuthError, UserExistsError, UserNotFoundError, InvalidPasswordError
+)
 
 
 class CollisionThread(QThread):
     """Поток для поиска коллизий"""
-    progress = pyqtSignal(int)
     result = pyqtSignal(str)
     finished_signal = pyqtSignal()
     
@@ -22,7 +24,7 @@ class CollisionThread(QThread):
         self.max_attempts = max_attempts
     
     def run(self):
-        found = CollisionDemo.find_collision_demo(self.target_hash, self.max_attempts)
+        found = CollisionDemo.find_collision(self.target_hash, self.max_attempts)
         self.result.emit(found if found else "Не найдено")
         self.finished_signal.emit()
 
@@ -33,27 +35,25 @@ class AuthGUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.db = UserDatabase()
+        self.auth_service = AuthService(self.db)
         self.initUI()
     
     def initUI(self):
-        self.setWindowTitle(" Система аутентификации - Лабораторная №4")
+        self.setWindowTitle("🔐 Система аутентификации - Лабораторная №4")
         self.setGeometry(100, 100, 650, 550)
         
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         layout = QVBoxLayout(central_widget)
         
-        # Вкладки
         tabs = QTabWidget()
-        tabs.addTab(self.create_auth_tab(), " Авторизация")
-        tabs.addTab(self.create_register_tab(), " Регистрация")
-        tabs.addTab(self.create_users_tab(), " Пользователи")
-        tabs.addTab(self.create_collision_tab(), " Поиск коллизий")
-        tabs.addTab(self.create_analysis_tab(), " Анализ")
+        tabs.addTab(self.create_auth_tab(), "🔑 Авторизация")
+        tabs.addTab(self.create_register_tab(), "📝 Регистрация")
+        tabs.addTab(self.create_users_tab(), "👥 Пользователи")
+        tabs.addTab(self.create_collision_tab(), "🔎 Поиск коллизий")
+        tabs.addTab(self.create_analysis_tab(), "📊 Анализ")
         
         layout.addWidget(tabs)
-        
-        # Статусная строка
         self.statusBar().showMessage("Готов к работе")
     
     def create_auth_tab(self) -> QWidget:
@@ -70,7 +70,7 @@ class AuthGUI(QMainWindow):
         self.auth_password.setEchoMode(QLineEdit.EchoMode.Password)
         
         self.auth_method_safe = QRadioButton("С солью (безопасно)")
-        self.auth_method_unsafe = QRadioButton("Без соли (уязвимо)")
+        self.auth_method_unsafe = QRadioButton("Без соли (небезопасно)")
         self.auth_method_safe.setChecked(True)
         
         auth_btn = QPushButton("Войти")
@@ -88,7 +88,6 @@ class AuthGUI(QMainWindow):
         group.setLayout(group_layout)
         layout.addWidget(group)
         layout.addStretch()
-        
         return tab
     
     def create_register_tab(self) -> QWidget:
@@ -128,7 +127,6 @@ class AuthGUI(QMainWindow):
         group.setLayout(group_layout)
         layout.addWidget(group)
         layout.addStretch()
-        
         return tab
     
     def create_users_tab(self) -> QWidget:
@@ -187,11 +185,9 @@ class AuthGUI(QMainWindow):
         group_layout.addWidget(self.collision_progress)
         group_layout.addWidget(self.collision_result)
         
-        
         group.setLayout(group_layout)
         layout.addWidget(group)
         layout.addStretch()
-        
         return tab
     
     def create_analysis_tab(self) -> QWidget:
@@ -206,20 +202,16 @@ class AuthGUI(QMainWindow):
         
         layout.addWidget(analyze_btn)
         layout.addWidget(self.analysis_text)
-        
         return tab
     
     def refresh_user_list_for_collision(self):
-        """Обновить список пользователей для выбора атаки"""
         self.collision_user_select.clear()
         self.collision_user_select.addItem("-- Выберите пользователя для атаки --")
         
         users = self.db.get_all_users()
         for username, data in users.items():
-            if not data.get("salt"):
-                self.collision_user_select.addItem(f" {username} (без соли)")
-            else:
-                self.collision_user_select.addItem(f" {username} (с солью)")
+            suffix = "(без соли)" if not data.get("salt") else "(с солью)"
+            self.collision_user_select.addItem(f"👤 {username} {suffix}")
     
     def do_login(self):
         username = self.auth_login.text().strip()
@@ -230,29 +222,12 @@ class AuthGUI(QMainWindow):
             QMessageBox.warning(self, "Ошибка", "Введите логин и пароль")
             return
         
-        user = self.db.get_user(username)
-        if not user:
-            QMessageBox.warning(self, "Ошибка", "Пользователь не найден")
-            return
-        
         try:
-            if use_salt:
-                if not user.get("salt"):
-                    QMessageBox.warning(self, "Ошибка", 
-                                         "Этот пользователь зарегистрирован без соли. "
-                                         "Используйте метод 'Без соли'")
-                    return
-                success = PasswordHasher.verify_with_salt(password, user["salt"], user["hash"])
-            else:
-                success = PasswordHasher.verify_unsafe(password, user["hash"])
-            
-            if success:
-                QMessageBox.information(self, "Успех", f"Добро пожаловать, {username}!")
-                self.statusBar().showMessage(f"Пользователь {username} вошёл в систему")
-            else:
-                QMessageBox.critical(self, "Ошибка", "Неверный пароль")
-        except Exception as e:
-            QMessageBox.critical(self, "Ошибка", f"Произошла ошибка: {e}")
+            self.auth_service.login(username, password, use_salt)
+            QMessageBox.information(self, "Успех", f"Добро пожаловать, {username}!")
+            self.statusBar().showMessage(f"Пользователь {username} вошёл в систему")
+        except AuthError as e:
+            QMessageBox.warning(self, "Ошибка авторизации", str(e))
     
     def do_register(self):
         username = self.reg_login.text().strip()
@@ -268,22 +243,9 @@ class AuthGUI(QMainWindow):
             QMessageBox.warning(self, "Ошибка", "Пароли не совпадают")
             return
         
-        if self.db.user_exists(username):
-            QMessageBox.warning(self, "Ошибка", "Пользователь уже существует")
-            return
-        
         try:
-            if use_salt:
-                password_hash, salt = PasswordHasher.hash_with_salt(password)
-                method = "SHA-256 with salt"
-                self.db.add_user(username, password_hash, salt, method)
-                msg = f"Пользователь {username} зарегистрирован с солью (безопасно)"
-            else:
-                password_hash = PasswordHasher.hash_unsafe(password)
-                method = "SHA-256 without salt (UNSAFE)"
-                self.db.add_user(username, password_hash, None, method)
-                msg = f" Пользователь {username} зарегистрирован БЕЗ соли (Очень плохо!)"
-            
+            method = self.auth_service.register(username, password, use_salt)
+            msg = f"Пользователь {username} зарегистрирован ({method})"
             QMessageBox.information(self, "Успех", msg)
             self.statusBar().showMessage(msg)
             self.reg_login.clear()
@@ -291,25 +253,25 @@ class AuthGUI(QMainWindow):
             self.reg_password_confirm.clear()
             self.refresh_users_list()
             self.refresh_user_list_for_collision()
-        except Exception as e:
-            QMessageBox.critical(self, "Ошибка", f"Не удалось зарегистрировать: {e}")
+        except UserExistsError as e:
+            QMessageBox.warning(self, "Ошибка", str(e))
     
     def refresh_users_list(self):
         users = self.db.get_all_users()
         if not users:
-            self.users_text.setText(" Нет зарегистрированных пользователей\n\n"
+            self.users_text.setText("ℹ️ Нет зарегистрированных пользователей\n\n"
                                    "Нажмите на вкладку 'Регистрация', чтобы добавить пользователя.")
             return
         
-        text = " ЗАРЕГИСТРИРОВАННЫЕ ПОЛЬЗОВАТЕЛИ:\n" + "="*50 + "\n\n"
+        text = "👥 ЗАРЕГИСТРИРОВАННЫЕ ПОЛЬЗОВАТЕЛИ:\n" + "="*50 + "\n\n"
         for username, data in users.items():
             if data.get('salt'):
-                text += f" {username}\n"
+                text += f"🔒 {username}\n"
                 text += f"    Хеш: {data['hash'][:32]}...\n"
                 text += f"    Метод: {data['method']} - БЕЗОПАСНО\n"
                 text += f"    Соль: {data['salt'][:16]}...\n"
             else:
-                text += f" {username} (УЯЗВИМЫЙ!)\n"
+                text += f"⚠️ {username} (УЯЗВИМЫЙ!)\n"
                 text += f"    Хеш: {data['hash'][:32]}...\n"
                 text += f"    Метод: {data['method']} - НЕБЕЗОПАСНО!\n"
                 text += f"    НЕТ СОЛИ! Подвержен rainbow table атакам!\n"
@@ -318,7 +280,6 @@ class AuthGUI(QMainWindow):
         self.users_text.setText(text)
     
     def clear_all_users(self):
-        """Очистка всех пользователей с подтверждением"""
         reply = QMessageBox.question(self, "Подтверждение", 
                                      "ВНИМАНИЕ! Это удалит ВСЕХ пользователей.\n"
                                      "Продолжить?",
@@ -332,62 +293,58 @@ class AuthGUI(QMainWindow):
             self.statusBar().showMessage("База пользователей очищена")
     
     def start_collision_search(self):
-        """Начать поиск коллизии с корректной проверкой"""
-        
-        target_hash = None
-        
-        selected = self.collision_user_select.currentText()
-        
-        if selected and not selected.startswith("-- Выберите"):
-            username = selected.split(" ", 1)[-1].split(" (")[0]
-            user = self.db.get_user(username)
-            
-            if user:
-                if user.get("salt"):
-                    reply = QMessageBox.question(self, "Предупреждение",
-                                                "Этот пользователь использует соль!\n"
-                                                "Поиск пароля для хеша с солью практически невозможен.\n"
-                                                "Продолжить? (это займёт очень много времени)",
-                                                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-                    if reply == QMessageBox.StandardButton.No:
-                        return
-                
-                target_hash = user["hash"]
-                self.statusBar().showMessage(f"Поиск пароля для пользователя {username}...")
-        
+        target_hash = self._get_target_hash()
         if not target_hash:
-            hash_input = self.collision_hash.text().strip()
-            if hash_input:
-                target_hash = hash_input
-                self.statusBar().showMessage("Поиск по введённому хешу...")
-            else:
-                reply = QMessageBox.question(self, "Демо-режим",
-                                            "Вы не выбрали пользователя и не ввели хеш.\n"
-                                            "Запустить ДЕМО-режим (поиск тестового пароля 'password_12345')?\n\n"
-                                            "Это не имеет отношения к вашей базе пользователей!",
-                                            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-                if reply == QMessageBox.StandardButton.Yes:
-                    target_hash = PasswordHasher.hash_unsafe("password_12345")
-                    self.statusBar().showMessage("ДЕМО-режим: поиск тестового пароля...")
-                else:
-                    return
-        
-        # Запускаем поиск
+            return
+            
         self.collision_progress.setVisible(True)
         self.collision_progress.setRange(0, 0)  
-        self.collision_result.setText(" Поиск коллизии... Смотрите консоль")
+        self.collision_result.setText("🔎 Поиск коллизии...")
         
         self.collision_thread = CollisionThread(target_hash, 100000)
         self.collision_thread.result.connect(self.on_collision_result)
         self.collision_thread.finished_signal.connect(self.on_collision_finished)
         self.collision_thread.start()
+
+    def _get_target_hash(self) -> str | None:
+        """Вспомогательный метод для получения хеша (Extract Method)"""
+        selected = self.collision_user_select.currentText()
+        
+        if selected and not selected.startswith("-- Выберите"):
+            username = selected.split(" ", 1)[-1].split(" (")[0]
+            user = self.db.get_user(username) # Может выбросить UserNotFoundError, но мы выбираем из списка
+            
+            if user and user.get("salt"):
+                reply = QMessageBox.question(self, "Предупреждение",
+                                            "Этот пользователь использует соль!\n"
+                                            "Поиск пароля для хеша с солью практически невозможен.\n"
+                                            "Продолжить? (займёт много времени)",
+                                            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                if reply == QMessageBox.StandardButton.No:
+                    return None
+            
+            if user:
+                return user["hash"]
+        
+        hash_input = self.collision_hash.text().strip()
+        if hash_input:
+            return hash_input
+            
+        reply = QMessageBox.question(self, "Демо-режим",
+                                    "Вы не выбрали пользователя и не ввели хеш.\n"
+                                    "Запустить ДЕМО-режим (поиск тестового пароля 'password_12345')?",
+                                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if reply == QMessageBox.StandardButton.Yes:
+            from auth_core import PasswordHasher
+            return PasswordHasher.hash_unsafe("password_12345")
+        return None
     
     def on_collision_result(self, result):
         if result and result != "Не найдено":
-            self.collision_result.setText(f" Найден пароль: {result}")
+            self.collision_result.setText(f"🎯 Найден пароль: {result}")
             self.statusBar().showMessage(f"Коллизия найдена! Пароль: {result}")
         else:
-            self.collision_result.setText(" Коллизия не найдена за допустимое время")
+            self.collision_result.setText("❌ Коллизия не найдена за допустимое время")
             self.statusBar().showMessage("Коллизия не найдена")
     
     def on_collision_finished(self):
@@ -395,28 +352,25 @@ class AuthGUI(QMainWindow):
     
     def do_analysis(self):
         analysis_text = "=" * 60 + "\n"
-        analysis_text += "Анализ безопастности паролей\n"
+        analysis_text += "📊 Анализ безопасности паролей\n"
         analysis_text += "=" * 60 + "\n\n"
         
         users = self.db.get_all_users()
         
         if not users:
-            analysis_text += " В базе нет пользователей!\n\n"
+            analysis_text += "ℹ️ В базе нет пользователей!\n\n"
             analysis_text += "Сначала зарегистрируйте хотя бы одного пользователя\n"
             analysis_text += "для демонстрации уязвимостей.\n"
         else:
             unsafe_users = self.db.get_unsafe_users()
             
             if unsafe_users:
-                analysis_text += f" Найдены уязвимые пользователи ({len(unsafe_users)} шт.):\n"
+                analysis_text += f"⚠️ Найдены уязвимые пользователи ({len(unsafe_users)} шт.):\n"
                 for user in unsafe_users:
                     analysis_text += f"  - {user}\n"
-                
-                
+                analysis_text += "\nРекомендации: Используйте соль для всех новых паролей!\n"
             else:
-                analysis_text += " Все супер!\n\n"
-
-        
+                analysis_text += "✅ Все супер! Все пользователи используют соль.\n\n"
         
         self.analysis_text.setText(analysis_text)
 
