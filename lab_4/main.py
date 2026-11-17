@@ -40,16 +40,22 @@ class RowValidator:
         return True
         
 
-def find_invalid_row(csv_path: str) -> List[int]:
-    invalid_indexs: List[int] = []
+class InvalidDataScanner:
+    """The class is responsible for reading the file and scanning for lines containing errors."""
+    def __init__(self, validator: RowValidator):
+        self.validator = validator
 
-    with open(csv_path, "r", encoding="utf-16") as file:
-        reader = csv.DictReader(file, delimiter=";")
-        for idx, row in enumerate(reader):
-            if not check_row_valid(row):
-                invalid_indexs.append(idx)
-
-    return invalid_indexs                
+    def scan_csv(self, file_path: str, encoding: str = "utf-16", delimiter: str = ";") -> List[int]:
+        invalid_indices: List[int] = []
+        try:
+            with open(file_path, "r", encoding=encoding) as file:
+                reader = csv.DictReader(file, delimiter=delimiter)
+                for idx, row in enumerate(reader):
+                    if not self.validator.is_valid(row):
+                        invalid_indices.append(idx)
+        except FileNotFoundError:
+            print(f"Error: File '{file_path}' not found.")
+        return invalid_indices            
 
 
 def main() -> None:
