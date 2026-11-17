@@ -1,0 +1,99 @@
+name: Assign Issue for code review
+
+on:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  issues: write
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Parsing issue title for group number
+        env:
+          TITLE: ${{ github.event.issue.title }}
+        run: |
+          for VAR in 6311 6312 6313
+          do
+              if echo "$TITLE" | grep -iqF "$VAR"; then
+                  echo "GROUP=$VAR" >> "$GITHUB_ENV"
+                  break
+              fi
+          done
+
+      - name: Checking group number
+        run: |
+          if [[ ${GROUP:-} == '' ]]; then
+              echo "Issue title does not contain a valid group number"
+              exit 1
+          fi
+
+          echo "Your group was parsed correctly - $GROUP"
+
+      - name: Determine Issue parity for group 6313
+        if: env.GROUP == '6313'
+        run: |
+          ISSUE_NUMBER=${{ github.event.issue.number }}
+
+          if (( ISSUE_NUMBER % 2 == 0 )); then
+              echo "ISSUE_PARITY=even" >> "$GITHUB_ENV"
+              echo "Issue #$ISSUE_NUMBER is EVEN"
+          else
+              echo "ISSUE_PARITY=odd" >> "$GITHUB_ENV"
+              echo "Issue #$ISSUE_NUMBER is ODD"
+          fi
+
+      - name: Assign issue to IlyaOv
+        if: env.GROUP == '6311'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: ['IlyaOv']
+            });
+
+      - name: Assign issue to mxwrlld
+        if: env.GROUP == '6312'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: ['mxwrlld']
+            });
+
+      - name: Assign issue to IlyaOv - odd Issue
+        if: env.GROUP == '6313' && env.ISSUE_PARITY == 'odd'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: ['IlyaOv']
+            });
+
+      - name: Assign issue to mxwrlld - even Issue
+        if: env.GROUP == '6313' && env.ISSUE_PARITY == 'even'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              assignees: ['mxwrlld']
+            });
