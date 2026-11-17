@@ -3,52 +3,35 @@ main.py - Точка входа с поддержкой командной ст�
 """
 import argparse
 import sys
-from auth_core import PasswordHasher, UserDatabase, CollisionDemo
+from tqdm import tqdm
+from auth_core import (
+    AuthService, UserDatabase, CollisionDemo, 
+    AuthError, UserExistsError, UserNotFoundError, InvalidPasswordError
+)
 from gui import run_gui
 
 
 def cli_register(args):
-    """Регистрация через CLI"""
     db = UserDatabase(args.db)
-    if db.user_exists(args.username):
-        print(f"Ошибка: пользователь '{args.username}' уже существует")
-        return
-    
-    if args.safe:
-        pwd_hash, salt = PasswordHasher.hash_with_salt(args.password)
-        db.add_user(args.username, pwd_hash, salt, "SHA-256 with salt")
-        print(f" Пользователь '{args.username}' зарегистрирован (с солью)")
-    else:
-        pwd_hash = PasswordHasher.hash_unsafe(args.password)
-        db.add_user(args.username, pwd_hash, None, "SHA-256 without salt")
-        print(f" Пользователь '{args.username}' зарегистрирован БЕЗ соли")
+    service = AuthService(db)
+    try:
+        method = service.register(args.username, args.password, args.safe)
+        print(f"✅ Пользователь '{args.username}' зарегистрирован ({method})")
+    except UserExistsError as e:
+        print(f"❌ Ошибка: {e}")
 
 
 def cli_login(args):
-    """Авторизация через CLI"""
     db = UserDatabase(args.db)
-    user = db.get_user(args.username)
-    
-    if not user:
-        print(f"Ошибка: пользователь '{args.username}' не найден")
-        return
-    
-    if args.safe:
-        if not user.get("salt"):
-            print("Ошибка: этот пользователь зарегистрирован без соли")
-            return
-        success = PasswordHasher.verify_with_salt(args.password, user["salt"], user["hash"])
-    else:
-        success = PasswordHasher.verify_unsafe(args.password, user["hash"])
-    
-    if success:
-        print(f" Добро пожаловать, {args.username}!")
-    else:
-        print(" Неверный пароль")
+    service = AuthService(db)
+    try:
+        service.login(args.username, args.password, args.safe)
+        print(f"✅ Добро пожаловать, {args.username}!")
+    except (UserNotFoundError, InvalidPasswordError, AuthError) as e:
+        print(f"❌ Ошибка: {e}")
 
 
 def cli_list(args):
-    """Список пользователей"""
     db = UserDatabase(args.db)
     users = db.get_all_users()
     
@@ -56,47 +39,61 @@ def cli_list(args):
         print("Нет зарегистрированных пользователей")
         return
     
-    print("\n Список юзеров:")
+    print("\n👥 Список юзеров:")
     print("-" * 50)
     for username, data in users.items():
-        unsafe = " Уязвимо(ай ай ай)" if not data.get("salt") else " Безопасно"
+        unsafe = "⚠️ Уязвимо(ай ай ай)" if not data.get("salt") else "🔒 Безопасно"
         print(f"  {username}: {data['method']} - {unsafe}")
         print(f"    Хеш: {data['hash'][:32]}...")
 
 
 def cli_collision(args):
-    """Поиск коллизии"""
-    target_hash = args.hash or PasswordHasher.hash_unsafe("test_password")
-    result = CollisionDemo.find_collision_demo(target_hash, args.max_attempts)
+    target_hash = args.hash or CollisionDemo.hash_unsafe("test_password") if hasattr(CollisionDemo, 'hash_unsafe') else args.hash
+    # Т.к. мы убрали хеширование из CollisionDemo, используем PasswordHasher напрямую, если хеш не задан
+    from auth_core import PasswordHasher
+    if not target_hash:
+         target_hash = PasswordHasher.hash_unsafe("test_password")
+
+    print(f"\n🔎 Поиск пароля для хеша: {target_hash[:16]}...")
+    
+    # tqdm теперь в CLI
+    with tqdm(total=args.max_attempts, desc="Перебор паролей", unit="попытка") as pbar:
+        result = None
+        for i in range(args.max_attempts):
+            test_password = f"password_{i}"
+            if PasswordHasher.hash_unsafe(test_password) == target_hash:
+                result = test_password
+                pbar.set_description("🎯 Коллизия найдена!")
+                break
+            pbar.update(1)
     
     if result:
-        print(f"\n Найден пароль: {result}")
+        print(f"\n✅ Найден пароль: {result}")
     else:
-        print(f"\n Коллизия не найдена за {args.max_attempts} попыток")
+        print(f"\n❌ Коллизия не найдена за {args.max_attempts} попыток")
 
 
 def cli_analyze(args):
-    """Анализ безопасности"""
     db = UserDatabase(args.db)
     unsafe = db.get_unsafe_users()
     
-    print("Анализ безопастности")
+    print("📊 Анализ безопасности")
     
     if unsafe:
-        print(f"\n Найдено {len(unsafe)} уязвимых пользователей:")
+        print(f"\n⚠️ Найдено {len(unsafe)} уязвимых пользователей:")
         for u in unsafe:
             print(f"  - {u}")
-        print("\n Уязвимости:")
+        print("\nУязвимости:")
         print("  - Подвержены rainbow table атакам")
         print("  - Одинаковые пароли дают одинаковые хеши")
         print("  - Высокая скорость перебора")
     else:
-        print("\n Все пользователи используют соль!")
+        print("\n✅ Все пользователи используют соль!")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description=" Система аутентификации с хешированием паролей",
+        description="🔐 Система аутентификации с хешированием паролей",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Примеры использования:
@@ -151,7 +148,7 @@ def main():
         else:
             parser.print_help()
     except Exception as e:
-        print(f" Ошибка: {e}")
+        print(f"❌ Критическая ошибка: {e}")
         sys.exit(1)
 
 
