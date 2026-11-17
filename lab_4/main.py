@@ -1,6 +1,6 @@
-import re
 import argparse
-from typing import List, Dict, Optional, Pattern
+import re
+from typing import Dict, List, Optional, Pattern
 
 DEFAULT_ENCODING = 'utf-8'
 DEFAULT_OUTPUT_FILENAME = '21st_century_profiles.txt'
@@ -24,38 +24,16 @@ PROFILE_FIELD_PATTERNS: Dict[str, Pattern[str]] = {
 
 
 def parse_arguments() -> argparse.Namespace:
-    """
-    Парсит аргументы командной строки.
-    
-    Returns:
-        argparse.Namespace: Объект с разобранными аргументами командной строки
-        
-    Example:
-        >>> args = parse_arguments()
-        >>> print(args.filename)
-        'data.txt'
-    """
+    """Парсит аргументы командной строки."""
     parser = argparse.ArgumentParser(description='Анализ анкет людей')
     parser.add_argument('filename', type=str, help='Имя файла с данными')
     return parser.parse_args()
 
 
-def read_file(filename) -> Optional[str]:
-    """
-    Читает содержимое файла в строку.
-    
-    Args:
-        filename (str): Путь к файлу для чтения
-        
-    Returns:
-        Optional[str]: Содержимое файла как строка или None в случае ошибки
-        
-    Raises:
-        FileNotFoundError: Если файл не существует
-        IOError: При ошибках ввода-вывода
-    """
+def read_file(filename: str, encoding: str = DEFAULT_ENCODING) -> Optional[str]:
+    """Читает содержимое текстового файла в строку."""
     try:
-        with open(filename, 'r', encoding=DEFAULT_ENCODING) as file:
+        with open(filename, 'r', encoding=encoding) as file:
             return file.read()
     except FileNotFoundError:
         print(f"Ошибка: Файл {filename} не найден")
@@ -65,146 +43,81 @@ def read_file(filename) -> Optional[str]:
         return None
 
 
-def split_profiles(content) -> List[str]:
-    """
-    Разделяет содержимое файла на отдельные анкеты.
-    
-    Args:
-        content (str): Полное содержимое файла с анкетами
-        
-    Returns:
-        List[str]: Список строк, каждая из которых представляет одну анкету
-        
-    Note:
-        Разделителем анкет считается шаблон '\\nчисло)\\n'
-    """
-    profiles = PROFILE_SEPARATOR_PATTERN.split(content)[1:]  # Пропускаем первый элемент (пустой)
-    return profiles
+def split_profiles(content: str) -> List[str]:
+    """Разделяет содержимое файла на отдельные анкеты по шаблону '\\nчисло)\\n'."""
+    return PROFILE_SEPARATOR_PATTERN.split(content)[1:]
 
 
-def parse_profile(profile_text) -> Dict[str, str]:
-    """
-    Извлекает данные из текста одной анкеты.
-    
-    Args:
-        profile_text (str): Текст анкеты для анализа
-        
-    Returns:
-        Dict[str, str]: Словарь с извлеченными полями анкеты.
-        Возможные ключи: 'surname', 'name', 'gender', 'birth_date', 'contact', 'city'
-        
-    Example:
-        >>> profile = "Фамилия: Иванов\\nИмя: Иван\\n..."
-        >>> parse_profile(profile)
-        {'surname': 'Иванов', 'name': 'Иван', ...}
-    """
-    data = {}
-
+def parse_profile(profile_text: str) -> Dict[str, str]:
+    """Извлекает структурированные поля из текста одной анкеты."""
+    profile_data: Dict[str, str] = {}
     for field, pattern in PROFILE_FIELD_PATTERNS.items():
         match = pattern.search(profile_text)
         if match:
-            data[field] = match.group(1).strip()
+            profile_data[field] = match.group(1).strip()
+    return profile_data
 
-    return data
+
+def normalize_year(raw_year: str) -> int:
+    """Преобразует строковое представление года (2 или 4 цифры) в целое число."""
+    if len(raw_year) == 2:
+        prefix = (
+            TWENTY_FIRST_CENTURY_PREFIX
+            if int(raw_year) <= TWO_DIGIT_YEAR_CUTOFF
+            else TWENTIETH_CENTURY_PREFIX
+        )
+        return int(prefix + raw_year)
+    return int(raw_year)
 
 
-def is_21st_century(birth_date) -> bool:
-    """
-    Проверяет, родился ли человек в 21 веке (после 2000 года).
-    
-    Args:
-        birth_date (str): Строка с датой рождения в различных форматах
-        
-    Returns:
-        bool: True если человек родился после 2000 года, иначе False
-        
-    Note:
-        Поддерживаются форматы дат: дд.мм.гггг, дд/мм/гггг, дд-мм-гггг
-        Годы, записанные двумя цифрами, интерпретируются:
-        - 00-23 как 2000-2023
-        - 24-99 как 1924-1999
-    """
+def extract_birth_year(birth_date: str) -> Optional[int]:
+    """Извлекает год рождения из строки даты или возвращает None."""
     match = DATE_PATTERN.search(birth_date)
-
-    if match:
-        day, month, year = match.groups()
-
-        if len(year) == 2:
-            prefix = (
-                TWENTY_FIRST_CENTURY_PREFIX
-                if int(year) <= TWO_DIGIT_YEAR_CUTOFF
-                else TWENTIETH_CENTURY_PREFIX
-            )
-            year = prefix + year
-
-        return int(year) >= TWENTY_FIRST_CENTURY_MIN_YEAR
-
-    return False
+    if not match:
+        return None
+    _, _, raw_year = match.groups()
+    return normalize_year(raw_year)
 
 
-def process_profiles(profiles) -> List[str]:
-    """
-    Обрабатывает все анкеты и находит родившихся в 21 веке.
-    
-    Args:
-        profiles (List[str]): Список текстов анкет
-        
-    Returns:
-        List[str]: Список анкет людей, родившихся после 2000 года
-    """
-    twenty_first_century_profiles = []
+def is_21st_century(birth_date: str) -> bool:
+    """Проверяет, относится ли дата рождения к XXI веку (начиная с 2001 года)."""
+    year = extract_birth_year(birth_date)
+    return year is not None and year >= TWENTY_FIRST_CENTURY_MIN_YEAR
+
+
+def process_profiles(profiles: List[str]) -> List[str]:
+    """Отбирает анкеты людей, родившихся в XXI веке."""
+    twenty_first_century_profiles: List[str] = []
 
     for profile_text in profiles:
         profile = parse_profile(profile_text)
-
         if 'birth_date' in profile and is_21st_century(profile['birth_date']):
             twenty_first_century_profiles.append(profile_text)
 
     return twenty_first_century_profiles
 
 
-def save_results(profiles, filename=DEFAULT_OUTPUT_FILENAME) -> Optional[str]:
-    """
-    Сохраняет отобранные анкеты в файл.
-    
-    Args:
-        profiles (List[str]): Список анкет для сохранения
-        filename (str): Имя файла для сохранения (по умолчанию '21st_century_profiles.txt')
-        
-    Returns:
-        Optional[str]: Имя файла, в который сохранены данные, или None если нечего сохранять
-    """
+def save_results(
+    profiles: List[str],
+    filename: str = DEFAULT_OUTPUT_FILENAME,
+    encoding: str = DEFAULT_ENCODING,
+) -> Optional[str]:
+    """Сохраняет отобранные анкеты в файл и возвращает его имя."""
     if profiles:
-        with open(filename, 'w', encoding=DEFAULT_ENCODING) as output_file:
-            for i, profile in enumerate(profiles, 1):
-                output_file.write(f"{i})\n{profile}\n")
+        with open(filename, 'w', encoding=encoding) as output_file:
+            for index, profile in enumerate(profiles, start=1):
+                output_file.write(f"{index})\n{profile}\n")
         return filename
     return None
 
 
-def print_statistics(profiles) -> None:
-    """
-    Выводит статистику по обработанным анкетам.
-    
-    Args:
-        profiles (List[str]): Список анкет для анализа
-    """
-    count = len(profiles)
-    print(f"Количество людей, родившихся в 21 веке: {count}")
+def print_statistics(profiles: List[str]) -> None:
+    """Выводит в консоль количество отобранных анкет."""
+    print(f"Количество людей, родившихся в 21 веке: {len(profiles)}")
 
 
 def main() -> None:
-    """
-    Основная функция программы.
-    
-    Координирует выполнение всех этапов обработки:
-    1. Чтение аргументов командной строки
-    2. Чтение файла с данными
-    3. Разделение на отдельные анкеты
-    4. Обработка и фильтрация анкет
-    5. Вывод статистики
-    6. Сохранение результатов
-    """
+    """Координирует чтение, фильтрацию и сохранение анкет."""
     args = parse_arguments()
 
     content = read_file(args.filename)
