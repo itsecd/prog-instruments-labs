@@ -1,0 +1,17 @@
+# .pre-commit-config.yaml
+repos:
+  # 1. Ruff: Линтер и форматтер (заменяет flake8, isort, black)
+  # Он автоматически исправит UP035 (устаревшие импорты) и другие ошибки.
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Используйте актуальную версию. Ruff быстро обновляется.
+    rev: v0.11.8
+    hooks:
+      - id: ruff
+        args: [--fix] # Автоматически исправлять ошибки, которые может
+      - id: ruff-format # Форматировать код
+
+  # 2. Pyright: Проверка статических типов
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.396
+    hooks:
+      - id: pyright
