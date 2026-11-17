@@ -24,8 +24,6 @@ PATTERNS: Dict[str, re.Pattern] = {
     "locale_code": re.compile(r"^[a-z]{2}(?:-[a-z]{2,})?$"),
     "time": re.compile(r"^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d\.\d{6}$"),
 }
-VARIANT_NUMBER = 25
-FILE_PATH_CSV = f"25.csv"
 
 
 def check_row_valid(row: Dict[str, str]) -> bool:
@@ -49,17 +47,10 @@ def find_invalid_row(csv_path: str) -> List[int]:
 
 
 def main() -> None:
-    invalid_indexs = find_invalid_row(FILE_PATH_CSV)
-  
-    if len(invalid_indexs) != 1000:
-        print(f"Warning: Expected exactly 1000 invalid rows, but found {len(invalid_indexs)}." 
-              "Please check your regular expressions!")        
-    checksum = calculate_checksum(invalid_indexs)
-    print(f"Calculated Checksum: {checksum}")
+    variant_number = 25
+    file_path = f"{variant_number}.csv"
+    expected_errors = 1000
 
-    serialize_result(VARIANT_NUMBER, checksum);
-
-    print("Update successfully!")
 
 
 if __name__ == "__main__":
