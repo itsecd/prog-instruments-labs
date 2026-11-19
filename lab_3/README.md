@@ -198,4 +198,3 @@
 * в разделе [Q&A](https://github.com/itsecd/prog-instruments-labs/discussions/categories/questions) дискуссий в этом репозитории,
 * телеграм-чате предмета,
 * телеграм-чате вашего курса.
-
