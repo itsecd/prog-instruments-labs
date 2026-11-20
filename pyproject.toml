@@ -11,3 +11,6 @@ select = ["E", "W", "F", "I", "UP"]
 include = ["lab_1"]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
