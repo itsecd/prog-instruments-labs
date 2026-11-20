@@ -1,24 +1,23 @@
 repos:
   - repo: local
     hooks:
-      
       - id: ruff-format
         name: ruff format
-        entry: ruff format
+        entry: python -m ruff format
         language: system
         types: [python]
         files: ^lab_1/
 
       - id: ruff-lint
         name: ruff check
-        entry: ruff check --fix
+        entry: python -m ruff check --fix
         language: system
         types: [python]
         files: ^lab_1/
 
       - id: pyright
         name: pyright
-        entry: pyright
+        entry: python -m pyright
         language: system
         types: [python]
         files: ^lab_1/
@@ -26,7 +25,7 @@ repos:
 
       - id: pytest
         name: pytest
-        entry: pytest lab_1
+        entry: python -m pytest lab_1
         language: system
         types: [python]
         files: ^lab_1/
