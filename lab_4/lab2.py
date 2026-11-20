@@ -1,148 +1,175 @@
-import numpy as np
+"""Лабораторная работа №2 (вариант 4): нормы и обусловленность матриц, метод Гаусса."""
+
+from typing import Sequence, Union
+
 import matplotlib.pyplot as plt
+import numpy as np
 
-print("=" * 60)
-print("ЛАБОРАТОРНАЯ РАБОТА №2")
-print("Вариант 4")
-print("=" * 60)
+NormOrder = Union[int, float, str]
 
-# ==============================================================================
-# ЗАДАНИЕ 1: Вычисление норм матрицы
-# ==============================================================================
+LINE_WIDTH = 60
+SINGULARITY_EPS = 1e-15
+NORM_LABEL_WIDTH = 24
+COND_LABEL_WIDTH = 39
 
-# Задаём матрицу A для варианта 4
-A = np.array([
-    [5.0, -2.0,  0.0],
+# Вариант 4
+MATRIX_A = np.array([
+    [5.0, -2.0, 0.0],
     [-2.0, 5.0, -2.0],
-    [0.0, -2.0,  5.0]
+    [0.0, -2.0, 5.0],
 ])
+VECTOR_B = np.array([1.0, -1.0, 1.0])
 
-print("\n--- Задание 1: Нормы матрицы ---")
-print("Матрица A:")
-print(A)
+# (подпись для нормы, подпись для обусловленности, порядок нормы)
+NORMS = (
+    ("1-норма:", "cond_1 (по 1-норме):", 1),
+    ("Бесконечная норма:", "cond_inf (по бесконечной норме):", np.inf),
+    ("Норма Фробениуса:", "cond_fro (по норме Фробениуса):", "fro"),
+)
 
-# Вычисляем нормы с помощью numpy
-norm1 = np.linalg.norm(A, ord=1)
-norm_inf = np.linalg.norm(A, ord=np.inf)
-norm_fro = np.linalg.norm(A, ord='fro')
+HILBERT_SIZES = list(range(2, 11))
 
-print(f"1-норма:                {norm1:.4f}")
-print(f"Бесконечная норма:      {norm_inf:.4f}")
-print(f"Норма Фробениуса:       {norm_fro:.4f}")
+PLOT_FIGSIZE = (8, 5)
+PLOT_COLOR = "red"
+PLOT_LINE_WIDTH = 2
+GRID_ALPHA = 0.7
 
-# ==============================================================================
-# ЗАДАНИЕ 2: Обусловленность матрицы
-# ==============================================================================
 
-# Вычисляем число обусловленности
-cond_1 = np.linalg.cond(A, p=1)
-cond_inf = np.linalg.cond(A, p=np.inf)
-cond_fro = np.linalg.cond(A, p='fro')
+def print_banner(*lines: str) -> None:
+    """Печатает строки между двумя горизонтальными линиями."""
+    print("=" * LINE_WIDTH)
+    for line in lines:
+        print(line)
+    print("=" * LINE_WIDTH)
 
-print("\n--- Задание 2: Число обусловленности ---")
-print(f"cond_1 (по 1-норме):                   {cond_1:.4f}")
-print(f"cond_inf (по бесконечной норме):       {cond_inf:.4f}")
-print(f"cond_fro (по норме Фробениуса):        {cond_fro:.4f}")
 
-# ==============================================================================
-# ЗАДАНИЕ 3: Решение СЛАУ методом Гаусса
-# ==============================================================================
+def print_task_title(title: str) -> None:
+    """Печатает заголовок задания."""
+    print(f"\n--- {title} ---")
 
-def gauss_solve(A, b):
-    """
-    Решает СЛАУ Ax = b методом Гаусса с выбором главного элемента по столбцу (частичный выбор).
-    Возвращает вектор решения x.
-    """
-    n = len(A)
-    # Создаём копии, чтобы не испортить исходные данные
-    a = A.astype(float).copy()
-    bb = b.astype(float).copy()
 
-    # Прямой ход
+def hilbert(size: int) -> np.ndarray:
+    """Возвращает матрицу Гильберта порядка size."""
+    indices = np.arange(size)
+    return 1.0 / (np.add.outer(indices, indices) + 1)
+
+
+def choose_pivot_row(a: np.ndarray, column: int) -> int:
+    """Возвращает индекс строки с максимальным по модулю элементом в столбце (от диагонали вниз)."""
+    return column + int(np.argmax(np.abs(a[column:, column])))
+
+
+def swap_rows(a: np.ndarray, b: np.ndarray, first: int, second: int) -> None:
+    """Меняет местами строки first и second в матрице a и векторе b."""
+    a[[first, second]] = a[[second, first]]
+    b[[first, second]] = b[[second, first]]
+
+
+def forward_elimination(a: np.ndarray, b: np.ndarray) -> None:
+    """Прямой ход метода Гаусса с частичным выбором главного элемента (изменяет a и b на месте)."""
+    n = len(a)
     for i in range(n):
-        # Поиск главного элемента в столбце i (начиная со строки i)
-        max_row = i
-        max_val = abs(a[i][i])
-        for k in range(i + 1, n):
-            if abs(a[k][i]) > max_val:
-                max_val = abs(a[k][i])
-                max_row = k
+        pivot_row = choose_pivot_row(a, i)
+        if pivot_row != i:
+            swap_rows(a, b, i, pivot_row)
 
-        # Перестановка строк (если главный элемент не на диагонали)
-        if max_row != i:
-            a[[i, max_row]] = a[[max_row, i]]
-            bb[[i, max_row]] = bb[[max_row, i]]
-
-        # Проверка на вырожденность
-        if abs(a[i][i]) < 1e-15:
+        if abs(a[i][i]) < SINGULARITY_EPS:
             raise ValueError("Матрица вырождена (главный элемент близок к нулю)")
 
-        # Исключение элементов ниже главной диагонали
         for j in range(i + 1, n):
             factor = a[j][i] / a[i][i]
             a[j][i:] -= factor * a[i][i:]
-            bb[j] -= factor * bb[i]
+            b[j] -= factor * b[i]
 
-    # Обратный ход
+
+def back_substitution(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """Обратный ход метода Гаусса для верхнетреугольной матрицы a."""
+    n = len(a)
     x = np.zeros(n)
     for i in range(n - 1, -1, -1):
-        x[i] = (bb[i] - np.dot(a[i][i + 1:], x[i + 1:])) / a[i][i]
-
+        x[i] = (b[i] - np.dot(a[i][i + 1:], x[i + 1:])) / a[i][i]
     return x
 
-# Задаём правую часть b для варианта 4
-b = np.array([1.0, -1.0, 1.0])
 
-print("\n--- Задание 3: Решение СЛАУ методом Гаусса ---")
-print("Вектор правой части b:")
-print(b)
+def gauss_solve(matrix: np.ndarray, rhs: np.ndarray) -> np.ndarray:
+    """Решает СЛАУ Ax = b методом Гаусса с выбором главного элемента по столбцу."""
+    a = matrix.astype(float).copy()
+    b = rhs.astype(float).copy()
+    forward_elimination(a, b)
+    return back_substitution(a, b)
 
-# Решаем методом Гаусса
-x_gauss = gauss_solve(A, b)
-print("Решение методом Гаусса (с выбором главного элемента):")
-print(x_gauss)
 
-# Сравниваем со встроенным решателем numpy
-x_numpy = np.linalg.solve(A, b)
-print("Решение встроенным методом numpy.linalg.solve:")
-print(x_numpy)
+def task_matrix_norms(matrix: np.ndarray) -> None:
+    """Задание 1: нормы матрицы."""
+    print_task_title("Задание 1: Нормы матрицы")
+    print("Матрица A:")
+    print(matrix)
 
-# Оцениваем погрешность
-error = np.linalg.norm(x_gauss - x_numpy, ord=np.inf)
-print(f"Максимальная погрешность (бесконечная норма): {error:.2e}")
+    for label, _, order in NORMS:
+        value = np.linalg.norm(matrix, ord=order)
+        print(f"{label:<{NORM_LABEL_WIDTH}}{value:.4f}")
 
-# ==============================================================================
-# ЗАДАНИЕ 4: Исследование погрешности для плохо обусловленных матриц
-# ==============================================================================
 
-print("\n--- Задание 4: Исследование плохо обусловленных матриц ---")
+def task_condition_numbers(matrix: np.ndarray) -> None:
+    """Задание 2: числа обусловленности матрицы."""
+    print_task_title("Задание 2: Число обусловленности")
 
-# Матрица Гильберта (плохо обусловлена)
-def hilbert(n):
-    H = np.zeros((n, n))
-    for i in range(n):
-        for j in range(n):
-            H[i, j] = 1.0 / (i + j + 1)
-    return H
+    for _, label, order in NORMS:
+        value = np.linalg.cond(matrix, p=order)
+        print(f"{label:<{COND_LABEL_WIDTH}}{value:.4f}")
 
-sizes = [2, 3, 4, 5, 6, 7, 8, 9, 10]
-cond_numbers = []
 
-for n in sizes:
-    H = hilbert(n)
-    cond = np.linalg.cond(H, p=np.inf)
-    cond_numbers.append(cond)
-    print(f"n = {n:2d}: cond(H) = {cond:.2e}")
+def task_gauss(matrix: np.ndarray, rhs: np.ndarray) -> None:
+    """Задание 3: решение СЛАУ методом Гаусса и сравнение с numpy."""
+    print_task_title("Задание 3: Решение СЛАУ методом Гаусса")
+    print("Вектор правой части b:")
+    print(rhs)
 
-# Строим график роста числа обусловленности
-plt.figure(figsize=(8, 5))
-plt.semilogy(sizes, cond_numbers, 'o-', color='red', linewidth=2)
-plt.title('Рост числа обусловленности матрицы Гильберта')
-plt.xlabel('Размер матрицы n')
-plt.ylabel('Число обусловленности (логарифм. шкала)')
-plt.grid(True, which='both', linestyle='--', alpha=0.7)
-plt.show()
+    x_gauss = gauss_solve(matrix, rhs)
+    print("Решение методом Гаусса (с выбором главного элемента):")
+    print(x_gauss)
 
-print("\n" + "=" * 60)
-print("ВСЕ ЗАДАНИЯ ВЫПОЛНЕНЫ")
-print("=" * 60)
+    x_numpy = np.linalg.solve(matrix, rhs)
+    print("Решение встроенным методом numpy.linalg.solve:")
+    print(x_numpy)
+
+    error = np.linalg.norm(x_gauss - x_numpy, ord=np.inf)
+    print(f"Максимальная погрешность (бесконечная норма): {error:.2e}")
+
+
+def plot_condition_growth(sizes: Sequence[int], cond_numbers: Sequence[float]) -> None:
+    """Строит график роста числа обусловленности в логарифмической шкале."""
+    plt.figure(figsize=PLOT_FIGSIZE)
+    plt.semilogy(sizes, cond_numbers, "o-", color=PLOT_COLOR, linewidth=PLOT_LINE_WIDTH)
+    plt.title("Рост числа обусловленности матрицы Гильберта")
+    plt.xlabel("Размер матрицы n")
+    plt.ylabel("Число обусловленности (логарифм. шкала)")
+    plt.grid(True, which="both", linestyle="--", alpha=GRID_ALPHA)
+    plt.show()
+
+
+def task_hilbert(sizes: Sequence[int]) -> None:
+    """Задание 4: рост числа обусловленности матриц Гильберта."""
+    print_task_title("Задание 4: Исследование плохо обусловленных матриц")
+
+    cond_numbers = []
+    for size in sizes:
+        cond = np.linalg.cond(hilbert(size), p=np.inf)
+        cond_numbers.append(cond)
+        print(f"n = {size:2d}: cond(H) = {cond:.2e}")
+
+    plot_condition_growth(sizes, cond_numbers)
+
+
+def main() -> None:
+    print_banner("ЛАБОРАТОРНАЯ РАБОТА №2", "Вариант 4")
+    task_matrix_norms(MATRIX_A)
+    task_condition_numbers(MATRIX_A)
+    task_gauss(MATRIX_A, VECTOR_B)
+    task_hilbert(HILBERT_SIZES)
+    print()
+    print_banner("ВСЕ ЗАДАНИЯ ВЫПОЛНЕНЫ")
+
+
+if __name__ == "__main__":
+    main()
