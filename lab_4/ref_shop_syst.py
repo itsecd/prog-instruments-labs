@@ -36,16 +36,13 @@ class OrderSystem:
                 return order
         return None
 
-    def process_order(self, user_id, items):
-        print(f"Начинаем обработку заказа для {user_id}")
-        
+    def _validate_user(self, user_id):
         if user_id not in self.users:
             print("Ошибка: Пользователь не найден")
             return False
-        
-        user = self.users[user_id]
-        
-        total = 0
+        return True
+
+    def _validate_items(self, items):
         for item in items:
             if item['price'] <= 0:
                 print(f"Ошибка: Неверная цена для {item['name']}")
@@ -53,24 +50,30 @@ class OrderSystem:
             if item['quantity'] <= 0:
                 print(f"Ошибка: Неверное количество для {item['name']}")
                 return False
-                
+        return True
+
+    def _calculate_items_total(self, items):
+        total = 0
+        for item in items:
             if item['category'] == 'electronics':
                 total += item['price'] * item['quantity'] * ELECTRONICS_DISCOUNT
             elif item['category'] == 'clothes':
                 total += item['price'] * item['quantity'] * CLOTHES_DISCOUNT
             else:
                 total += item['price'] * item['quantity']
+        return total
 
+    def _apply_discounts(self, total, user):
         if total > DISCOUNT_THRESHOLD:
             total = total * LARGE_ORDER_DISCOUNT
             print("Применена скидка 10% за крупную сумму")
-            
         if user['is_vip']:
             total = total * VIP_DISCOUNT
             print("Применена VIP скидка 5%")
+        return total
 
+    def _apply_tax_and_delivery(self, total):
         total = total + (total * TAX_RATE)
-        
         if total < SMALL_ORDER_THRESHOLD:
             total = total + DELIVERY_FEE_SMALL
             print(f"Добавлена стоимость доставки: {DELIVERY_FEE_SMALL}")
@@ -79,7 +82,9 @@ class OrderSystem:
         else:
             total = total + DELIVERY_FEE_MEDIUM
             print(f"Добавлена стоимость доставки: {DELIVERY_FEE_MEDIUM}")
+        return total
 
+    def _save_order(self, user_id, items, total):
         order_id = len(self.orders) + 1
         order_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
@@ -92,8 +97,25 @@ class OrderSystem:
             "status": "created"
         }
         self.orders.append(order)
+        return order
+
+    def process_order(self, user_id, items):
+        print(f"Начинаем обработку заказа для {user_id}")
         
-        print(f"Заказ {order_id} успешно создан. Итоговая сумма: {round(total, 2)}")
+        if not self._validate_user(user_id):
+            return False
+        if not self._validate_items(items):
+            return False
+            
+        user = self.users[user_id]
+        
+        total = self._calculate_items_total(items)
+        total = self._apply_discounts(total, user)
+        total = self._apply_tax_and_delivery(total)
+
+        order = self._save_order(user_id, items, total)
+        
+        print(f"Заказ {order['id']} успешно создан. Итоговая сумма: {order['total']}")
         return order
 
     def print_receipt(self, order_id):
