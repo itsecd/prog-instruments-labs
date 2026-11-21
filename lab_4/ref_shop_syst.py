@@ -30,6 +30,12 @@ class OrderSystem:
                 "user2": {"name": "Petr", "email": "petr@mail.ru", "is_vip": True}
             }
 
+    def _find_order_by_id(self, order_id):
+        for order in self.orders:
+            if order['id'] == order_id:
+                return order
+        return None
+
     def process_order(self, user_id, items):
         print(f"Начинаем обработку заказа для {user_id}")
         
@@ -92,11 +98,7 @@ class OrderSystem:
 
     def print_receipt(self, order_id):
         print(f"--- ЧЕК ПО ЗАКАЗУ #{order_id} ---")
-        order = None
-        for o in self.orders:
-            if o['id'] == order_id:
-                order = o
-                break
+        order = self._find_order_by_id(order_id)
         
         if not order:
             print("Заказ не найден")
@@ -117,17 +119,19 @@ class OrderSystem:
             print("Ошибка: Неверный статус")
             return False
             
-        for order in self.orders:
-            if order['id'] == order_id:
-                if order['status'] == "cancelled" and new_status != "cancelled":
-                    print("Ошибка: Нельзя изменить отмененный заказ")
-                    return False
-                if order['status'] == "delivered" and new_status != "delivered":
-                    print("Ошибка: Нельзя изменить доставленный заказ")
-                    return False
-                order['status'] = new_status
-                print(f"Статус заказа {order_id} изменен на {new_status}")
-                return True
+        order = self._find_order_by_id(order_id)
+        
+        if order:
+            if order['status'] == "cancelled" and new_status != "cancelled":
+                print("Ошибка: Нельзя изменить отмененный заказ")
+                return False
+            if order['status'] == "delivered" and new_status != "delivered":
+                print("Ошибка: Нельзя изменить доставленный заказ")
+                return False
+            order['status'] = new_status
+            print(f"Статус заказа {order_id} изменен на {new_status}")
+            return True
+            
         print("Заказ не найден")
         return False
 
