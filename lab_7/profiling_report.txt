@@ -1,0 +1,18 @@
+         1000016 function calls in 0.971 seconds
+
+   Ordered by: cumulative time
+   List reduced from 16 to 10 due to restriction <10>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.470    0.470    0.971    0.971 C:\Users\Настя\Desktop\git\prog-instruments-labs\lab_7\profiling.py:13(simpson_slow)
+  1000001    0.496    0.000    0.496    0.000 C:\Users\Настя\Desktop\git\prog-instruments-labs\lab_7\profiling.py:9(f)
+        1    0.003    0.003    0.005    0.005 C:\Users\Настя\Desktop\git\prog-instruments-labs\lab_1\.venv\Lib\site-packages\numpy\_core\function_base.py:27(linspace)
+        1    0.003    0.003    0.003    0.003 {built-in method numpy.arange}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 {method 'reshape' of 'numpy.ndarray' objects}
+        1    0.000    0.000    0.000    0.000 C:\Users\Настя\Desktop\git\prog-instruments-labs\lab_1\.venv\Lib\site-packages\numpy\_core\numeric.py:1911(isscalar)
+        1    0.000    0.000    0.000    0.000 {method 'astype' of 'numpy.ndarray' objects}
+        1    0.000    0.000    0.000    0.000 C:\Users\Настя\Desktop\git\prog-instruments-labs\lab_1\.venv\Lib\site-packages\numpy\_core\fromnumeric.py:3520(ndim)
+        1    0.000    0.000    0.000    0.000 {method 'result_type' of 'numpy._core._multiarray_umath._array_converter' objects}
+
+
