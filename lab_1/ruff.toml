@@ -1,0 +1,5 @@
+target-version = "py310"
+[lint]
+extend-select = ["I001", "UP006", "UP035", "UP037", "EXE001", "S112", "BLE001", "LOG015"]
+[format]
+quote-style = "double"
