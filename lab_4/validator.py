@@ -3,9 +3,10 @@ import re
 import argparse
 from checksum import calculate_checksum, serialize_result
 
+
 class CSVValidator:
     """Класс для валидации CSV-файлов с помощью регулярных выражений."""
-    
+
     def __init__(self, file_path: str, encoding: str = 'utf-16', delimiter: str = ';'):
         self.file_path = file_path
         self.encoding = encoding
@@ -26,9 +27,9 @@ class CSVValidator:
     def _is_row_valid(self, row: dict) -> bool:
         """Проверяет одну строку. Возвращает True, если строка валидна."""
         for field, value in row.items():
-            if field in self.patterns:
-                if not re.match(self.patterns[field], value):
-                    return False
+            # Объединенное условие в один if, как просил преподаватель
+            if field in self.patterns and not re.match(self.patterns[field], value):
+                return False
         return True
 
     def find_invalid_rows(self) -> list:
@@ -46,7 +47,7 @@ class CSVValidator:
         except UnicodeDecodeError:
             print(f"Ошибка: Не удалось прочитать файл в кодировке {self.encoding}.")
             return []
-        
+
         return invalid_rows
 
 
@@ -56,19 +57,20 @@ def main():
     parser.add_argument("--encoding", default="utf-16", help="Кодировка файла (по умолчанию utf-16)")
     parser.add_argument("--delimiter", default=";", help="Разделитель (по умолчанию ;)")
     parser.add_argument("--variant", type=int, default=11, help="Номер варианта (по умолчанию 11)")
-    
+
     args = parser.parse_args()
 
     validator = CSVValidator(file_path=args.file, encoding=args.encoding, delimiter=args.delimiter)
-    
+
     invalid_rows = validator.find_invalid_rows()
-    
+
     checksum = calculate_checksum(invalid_rows)
     print(f"Файл: {args.file}")
     print(f"Найдено невалидных строк: {len(invalid_rows)}")
     print(f"Контрольная сумма: {checksum}")
-    
+
     serialize_result(variant=args.variant, checksum=checksum)
+
 
 if __name__ == "__main__":
     main()
