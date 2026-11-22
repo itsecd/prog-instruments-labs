@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Date Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+        #output {
+            font-size: 24px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Current Date from WebSocket</h1>
+    <div id="output">Waiting for server...</div>
+
+    <script>
+        const output = document.getElementById("output");
+        const socket = new WebSocket("ws://localhost:8020");
+
+        socket.onopen = () => {
+            console.log("Connected to WebSocket server.");
+        };
+
+        socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            if (message.type === "date") {
+                output.textContent = message.data;
+            }
+        };
+
+        socket.onclose = () => {
+            output.textContent = "Connection closed.";
+        };
+
+        socket.onerror = (err) => {
+            console.error("WebSocket error:", err);
+        };
+    </script>
+</body>
+</html>
