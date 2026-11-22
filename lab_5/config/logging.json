@@ -1,0 +1,65 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "brief": {
+            "format": "%(asctime)s,%(msecs)03d | %(levelname)-8s | %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S"
+        },
+        "detailed": {
+            "format": "%(asctime)s,%(msecs)03d | %(levelname)-8s | %(name)s | %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S"
+        },
+        "precise": {
+            "format": "%(asctime)s,%(msecs)03d | %(levelname)-8s | %(name)s | %(filename)s:%(lineno)d | %(funcName)s() | pid=%(process)d | %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S"
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "INFO",
+            "formatter": "brief",
+            "stream": "ext://sys.stdout"
+        },
+        "app_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "detailed",
+            "filename": "logs/app.log",
+            "maxBytes": 1048576,
+            "backupCount": 5,
+            "encoding": "utf-8"
+        },
+        "error_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "ERROR",
+            "formatter": "precise",
+            "filename": "logs/errors.log",
+            "maxBytes": 524288,
+            "backupCount": 3,
+            "encoding": "utf-8"
+        }
+    },
+    "loggers": {
+        "__main__": {
+            "level": "DEBUG",
+            "handlers": [ "console", "app_file", "error_file" ],
+            "propagate": false
+        },
+        "icrawler": {
+            "level": "WARNING",
+            "handlers": [ "console", "app_file", "error_file" ],
+            "propagate": false
+        },
+        "urllib3": {
+            "level": "ERROR",
+            "handlers": [ "app_file", "error_file" ],
+            "propagate": false
+        }
+    },
+    "root": {
+        "level": "WARNING",
+        "handlers": [ "console", "app_file" ]
+    }
+}
