@@ -1,0 +1,13 @@
+extend-exclude = ["../", "!lab_1"]
+# ruff.toml
+line-length = 88
+target-version = "py311"
+
+[lint]
+# Выберите набор правил. Например, стандартный набор + импорты + баги.
+select = ["E", "F", "I", "B", "UP"]
+ignore = []
+
+[format]
+# Настройки форматирования (по умолчанию близки к Black)
+quote-style = "double"

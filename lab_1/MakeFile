@@ -1,0 +1,30 @@
+.PHONY: lint format typecheck fullcheck test fulltest precommit
+
+# Определите переменные для команд, если нужно (например, путь к venv)
+# RUFF = ruff
+# PYRIGHT = pyright
+
+lint:
+	ruff check .
+
+format:
+	ruff format .
+
+format-check:
+	ruff format --check .
+
+typecheck:
+	pyright
+
+fullcheck: lint format-check typecheck
+	@echo "All static checks passed."
+
+test:
+	pytest  # или ваша команда для запуска тестов
+
+fulltest: fullcheck test
+	@echo "All checks and tests passed."
+
+precommit:
+	pre-commit install
+	pre-commit install --hook-type pre-push
