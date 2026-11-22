@@ -19,6 +19,11 @@ typecheck:
 fullcheck: lint format-check typecheck
 	@echo "All static checks passed."
 
+test:
+	pytest  # или ваша команда для запуска тестов
+
+fulltest: fullcheck test
+	@echo "All checks and tests passed."
 
 precommit:
 	pre-commit install
