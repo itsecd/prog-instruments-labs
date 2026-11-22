@@ -1,6 +1,18 @@
 import json
 import os
+import logging
 from datetime import datetime
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[
+        logging.FileHandler("app.log", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 filename = "todo.json"
 if os.path.exists(filename) and os.path.getsize(filename) > 0:
@@ -98,6 +110,9 @@ def update_task(uw):
 def saver():
     with open(filename, "w") as file:
         json.dump(tasks, file, indent=2)
+
+logger.info("Application started")
+
 while(True):    
     uc = input("what do you want to do\nAdd task(a)\nDisplay tasks(d)\nUpdate task(u)\nExit(e)\n(Save the file)(l)").lower()
     if uc not in ['a','d','u','e','l']:
@@ -118,17 +133,3 @@ while(True):
     if uc == 'e':
         print("Finish tasks on time")
         break
-
-        
-
-
-        
-
-  
-    
-        
-
-
-             
-
-
