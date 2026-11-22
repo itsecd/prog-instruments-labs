@@ -20,7 +20,6 @@ fullcheck: lint format-check typecheck
 	@echo "All static checks passed."
 
 
-
 precommit:
 	pre-commit install
 	pre-commit install --hook-type pre-push
