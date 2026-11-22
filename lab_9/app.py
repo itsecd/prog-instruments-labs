@@ -1,14 +1,7 @@
 import argparse
-from omegaconf import OmegaConf
 from fileworks import *
 from assymetric import *
 from symmetric import *
-
-
-def load_config(filepath: str, env: str) -> OmegaConf:
-    base = OmegaConf.load(filepath)
-    env_cfg = OmegaConf.load(env)
-    return OmegaConf.merge(base, env_cfg)
 
 
 def main():

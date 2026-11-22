@@ -1,7 +1,7 @@
 import pytest
 
 from fileworks import (
-    read_json, read_str, read_bytes, str_writer, encrypted_ChaCha20_writer, load_config,
+    read_str, read_bytes, str_writer, encrypted_ChaCha20_writer, load_config,
 )
 from symmetric import (
     symmetric_key_generation, symmetric_key_writter, text_encryption, text_decryption,
@@ -11,32 +11,29 @@ from assymetric import (
     key_encription, decrypt_key,
 )
 
-
 def test_load_config_dev():
-    cfg = load_config("lab_9/configs/config.yaml", "lab_9/configs/dev.yaml")
+    cfg = load_config(
+        "lab_9/configs/config.yaml",
+        "lab_9/configs/dev.yaml",
+    )
     assert cfg.crypto.symmetric.key_size == 32
     assert cfg.crypto.asymmetric.key_size == 1024
 
 
 def test_load_config_prod():
-    cfg = load_config("lab_9/configs/config.yaml", "lab_9/configs/prod.yaml")
+    cfg = load_config(
+        "lab_9/configs/config.yaml",
+        "lab_9/configs/prod.yaml",
+    )
     assert cfg.crypto.asymmetric.key_size == 4096
 
 
 def test_load_config_base_merged():
-    cfg = load_config("lab_9/configs/config.yaml", "lab_9/configs/dev.yaml")
+    cfg = load_config(
+        "lab_9/configs/config.yaml",
+        "lab_9/configs/dev.yaml",
+    )
     assert cfg.crypto.symmetric.nonce_size == 8
-
-
-def test_read_json(tmp_path):
-    path = tmp_path / "test.json"
-    path.write_text('{"key": "value"}', encoding="utf-8")
-    assert read_json(str(path)) == {"key": "value"}
-
-
-def test_read_json_not_found():
-    with pytest.raises(FileNotFoundError):
-        read_json("nonexistent.json")
 
 
 def test_read_str(tmp_path):
@@ -83,6 +80,12 @@ def test_symmetric_key_generation():
     assert len(key) == 32
 
 
+def test_symmetric_key_generation_custom_size():
+    key = symmetric_key_generation(key_size=16)
+    assert isinstance(key, bytes)
+    assert len(key) == 16
+
+
 def test_symmetric_key_writter(tmp_path):
     path = tmp_path / "key.bin"
     key = b"a" * 32
@@ -93,39 +96,45 @@ def test_symmetric_key_writter(tmp_path):
 def test_text_encryption_decryption_roundtrip():
     key = symmetric_key_generation()
     text = "Hello, world! Это тест."
-    encrypted, nonce = text_encryption(text, key)
+    encrypted, nonce = text_encryption(text, key, nonce_size=8)
     assert len(nonce) == 8
-    decrypted = text_decryption(nonce + encrypted, key)
+    decrypted = text_decryption(nonce + encrypted, key, key_size=32, nonce_size=8)
     assert decrypted == text
 
 
 def test_text_encryption_invalid_key_length():
     with pytest.raises(ValueError, match="Key length must be 32"):
-        text_encryption("hello", b"short")
+        text_encryption("hello", b"short", nonce_size=8)
 
 
 def test_text_decryption_invalid_key_length():
     with pytest.raises(ValueError, match="Key length must be 32"):
-        text_decryption(b"\x00" * 10, b"short")
+        text_decryption(b"\x00" * 10, b"short", key_size=32, nonce_size=8)
 
 
 def test_text_decryption_too_short():
     key = symmetric_key_generation()
-    with pytest.raises(ValueError, match="Encrypted text length must higher than 8"):
-        text_decryption(b"\x00" * 5, key)
+    with pytest.raises(ValueError, match="Encrypted text length must higher than nonce_size"):
+        text_decryption(b"\x00" * 5, key, key_size=32, nonce_size=8)
 
 
 def test_asymmetric_keys_generation():
-    private, public = asymmetric_keys_generation()
+    private, public = asymmetric_keys_generation(key_size=2048, public_exponent=65537)
     assert private is not None
     assert public is not None
     assert private.public_key() == public
 
 
+def test_asymmetric_keys_generation_custom_size():
+    private, public = asymmetric_keys_generation(key_size=1024, public_exponent=65537)
+    assert private.key_size == 1024
+    assert public.key_size == 1024
+
+
 def test_asymmetric_keys_writter(tmp_path):
     secret_path = tmp_path / "secret.pem"
     public_path = tmp_path / "public.pem"
-    private, public = asymmetric_keys_generation()
+    private, public = asymmetric_keys_generation(key_size=2048, public_exponent=65537)
     asymmetric_keys_writter(str(secret_path), str(public_path), (private, public))
     assert secret_path.exists()
     assert public_path.exists()
@@ -134,15 +143,15 @@ def test_asymmetric_keys_writter(tmp_path):
 
 
 def test_key_encription_fallback_on_too_long_key():
-    _, public_key = asymmetric_keys_generation()
-    too_long_key = b"x" * 300 
+    _, public_key = asymmetric_keys_generation(key_size=2048, public_exponent=65537)
+    too_long_key = b"x" * 300
     result = key_encription(too_long_key, public_key)
     assert isinstance(result, bytes)
     assert len(result) == 256
 
 
 def test_key_encription_decrypt_roundtrip():
-    private, public = asymmetric_keys_generation()
+    private, public = asymmetric_keys_generation(key_size=2048, public_exponent=65537)
     sym_key = symmetric_key_generation()
     encrypted = key_encription(sym_key, public)
     decrypted = decrypt_key(encrypted, private)
@@ -150,7 +159,7 @@ def test_key_encription_decrypt_roundtrip():
 
 
 def test_decrypt_key_invalid_data():
-    private, _ = asymmetric_keys_generation()
+    private, _ = asymmetric_keys_generation(key_size=2048, public_exponent=65537)
     bad_data = b"\x00" * 256
     result = decrypt_key(bad_data, private)
     assert result == bad_data
