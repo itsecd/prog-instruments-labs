@@ -64,7 +64,7 @@ _Скриншот: Установка хуков. Обратите вниман�
 Настроен workflow для автоматической проверки Pull Requests. При создании PR запускаются джобы по проверке линтером, форматтером, типами и тестами.
 
 Обратите внимание на скриншот!
-![GitHub Actions Workflow](report_screenshots/github_actions.png)
+![GitHub Actions Workflow](report_screenshots/ci_check_success.png)
 _Скриншот: Успешное прохождение проверок в GitHub Actions (зеленые галочки)._
 
 ---
