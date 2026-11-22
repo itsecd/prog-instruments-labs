@@ -67,6 +67,8 @@ _Скриншот: Установка хуков. Обратите вниман�
 ![GitHub Actions Workflow](report_screenshots/ci_check_success.png)
 _Скриншот: Успешное прохождение проверок в GitHub Actions (зеленые галочки)._
 
+![GitHub Actions Workflow Details](report_screenshots/ci_check_details.png)
+
 ---
 
 **Ссылка на исходный проект:** [Укажите ссылку на репозиторий, откуда был взят код, если применимо]
