@@ -13,6 +13,17 @@ import cv2
 import matplotlib.pyplot as plt
 
 
+def tile_regions(n: int, tile_size: Tuple[int, int]):
+    """Возвращает срезы ячеек сетки слева направо и сверху вниз."""
+    height, width = tile_size
+    for row in range(n):
+        for column in range(n):
+            yield (
+                slice(row * height, (row + 1) * height),
+                slice(column * width, (column + 1) * width),
+            )
+
+
 class ImagePuzzle:
     """Создатель пазлов из изображений."""
     
@@ -47,37 +58,20 @@ class ImagePuzzle:
         self.tile_size = (tile_h, tile_w)
         self.tile_count = n * n
         
-        tiles = []
-        for i in range(n):
-            for j in range(n):
-                tile = self.original[
-                    i * tile_h:(i + 1) * tile_h,
-                    j * tile_w:(j + 1) * tile_w
-                ]
-                tiles.append(tile)
-        
+        tiles = [self.original[region] for region in tile_regions(n, self.tile_size)]
+
         print(f"Создано {self.tile_count} частей размером {tile_w}x{tile_h}")
         return tiles
     
     def shuffle_and_build(self, tiles: List[np.ndarray], n: int) -> np.ndarray:
         """Перемешивает и собирает части в новое изображение."""
-        tile_h, tile_w = self.tile_size
-        height, width = self.original.shape[:2]
-        
         shuffled = tiles.copy()
         random.shuffle(shuffled)
         
         result = np.zeros_like(self.original)
-        idx = 0
-        
-        for i in range(n):
-            for j in range(n):
-                result[
-                    i * tile_h:(i + 1) * tile_h,
-                    j * tile_w:(j + 1) * tile_w
-                ] = shuffled[idx]
-                idx += 1
-        
+        for index, region in enumerate(tile_regions(n, self.tile_size)):
+            result[region] = shuffled[index]
+
         self.puzzle = result
         return result
     
