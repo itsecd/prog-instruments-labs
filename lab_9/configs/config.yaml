@@ -1,0 +1,16 @@
+crypto:
+  symmetric:
+    key_size: 32 
+    nonce_size: 8
+  asymmetric:
+    key_size: 2048
+    public_exponent: 65537
+    algorithm: "SHA256"
+
+files:
+    "symmetric_key": "lab_9/keys/sym.key"
+    "secret_key": "lab_9/keys/secret_key.pem"
+    "public_key": "lab_9/keys/public_key.pem"
+    "initial_file": "lab_9/texts/initial_file.txt"
+    "encrypted_file": "lab_9/texts/encrypted_file.bin"
+    "decrypted_file": "lab_9/texts/decrypted_file.txt"
