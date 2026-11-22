@@ -1,6 +1,13 @@
 from math import erfc, sqrt
-
 from scipy.special import gammainc
+import sys
+from loguru import logger
+
+# Настройка логгера
+logger.remove()
+logger.add(sys.stdout, level="INFO",
+           format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>")
+logger.add("logs/app.log", rotation="10 MB", retention="7 days", level="DEBUG")
 
 
 def psi(omega: bool) -> int:
@@ -89,7 +96,7 @@ def V(seq: list[bool]) -> list[int]:
     """
     res_V = [0, 0, 0, 0]
     for i in range(0, len(seq), 8):
-        bl = analyze_block(seq[i : i + 8])
+        bl = analyze_block(seq[i: i + 8])
         if bl <= 1:
             res_V[0] += 1
         elif bl == 2:
@@ -139,9 +146,15 @@ def print_statistics(datalist: list[float], language: str) -> None:
     print("repeating analysis p_value = ", rep)
     max_len = datalist[2]
     print("maximum block lenght p_value = ", max_len)
+
+    # Логирование результатов анализа
     if freq >= 0.01 and rep >= 0.01 and max_len >= 0.01:
+        logger.info(
+            f"Анализ для языка {language} завершен успешно. Все тесты пройдены (вектор случайный).")
         print("All tested PASSED, vector is random")
     else:
+        logger.warning(
+            f"Анализ для языка {language} показал, что вектор НЕ является случайным (один или несколько тестов не пройдены).")
         print("One or more test NOT PASSED, vector isn'nt random")
     print("_____________________________")
 
@@ -150,23 +163,32 @@ def write_statistics(datalist: list[float], language: str) -> None:
     """
     Запись итоговой статистики в файл
     """
-    with open("statistics.txt", "a+") as out_file:
-        out_file.write("_____________________________\n")
-        out_file.write("language = " + language + "\n")
-        freq = datalist[0]
-        out_file.write("frequency analysis p_value = " + str(freq) + "\n")
-        rep = datalist[1]
-        out_file.write("repeating analysis p_value = " + str(rep) + "\n")
-        max_len = datalist[2]
-        out_file.write("maximum block lenght p_value = " + str(max_len) + "\n")
-        if freq >= 0.01 and rep >= 0.01 and max_len >= 0.01:
-            out_file.write("All tested PASSED, vector is random\n")
-        else:
-            out_file.write("One or more test NOT PASSED, vector isn'nt random\n")
-        out_file.write("_____________________________\n")
+    try:
+        with open("statistics.txt", "a+") as out_file:
+            out_file.write("_____________________________\n")
+            out_file.write("language = " + language + "\n")
+            freq = datalist[0]
+            out_file.write("frequency analysis p_value = " + str(freq) + "\n")
+            rep = datalist[1]
+            out_file.write("repeating analysis p_value = " + str(rep) + "\n")
+            max_len = datalist[2]
+            out_file.write("maximum block lenght p_value = " +
+                           str(max_len) + "\n")
+            if freq >= 0.01 and rep >= 0.01 and max_len >= 0.01:
+                out_file.write("All tested PASSED, vector is random\n")
+            else:
+                out_file.write(
+                    "One or more test NOT PASSED, vector isn'nt random\n")
+            out_file.write("_____________________________\n")
+    except Exception as e:
+        logger.error(f"Ошибка при записи статистики в файл: {e}")
 
 
 def analyze_sequence(seq: list[bool], language: str) -> None:
+    logger.debug(
+        f"Запуск анализа последовательности для {language}. Длина: {len(seq)}")
     stats = get_statistics(seq)
     print_statistics(stats, language)
     write_statistics(stats, language)
+    logger.info(
+        f"Результаты анализа для {language} сохранены в statistics.txt")

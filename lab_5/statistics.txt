@@ -9,13 +9,13 @@ _____________________________
 language = Java
 frequency analysis p_value = 0.4795001221869535
 repeating analysis p_value = 0.12045611856348976
-maximum block lenght p_value = 0.47931658579654046
+maximum block lenght p_value = 0.47931658579654035
 All tested PASSED, vector is random
 _____________________________
 _____________________________
 language = Python
-frequency analysis p_value = 0.9292919989256294
-repeating analysis p_value = 0.09164553666087522
-maximum block lenght p_value = 0.7206229049818716
+frequency analysis p_value = 0.4245102891773692
+repeating analysis p_value = 0.29931676164186427
+maximum block lenght p_value = 0.029631448548760653
 All tested PASSED, vector is random
 _____________________________
