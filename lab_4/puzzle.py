@@ -7,6 +7,7 @@
 import sys
 import os
 import random
+from math import isqrt
 from typing import Tuple, List
 import numpy as np
 import cv2
@@ -94,19 +95,17 @@ class ImagePuzzle:
         if self.original is None or self.puzzle is None:
             raise ValueError("Нет данных для отображения")
         
-        original_rgb = cv2.cvtColor(self.original, cv2.COLOR_BGR2RGB)
-        puzzle_rgb = cv2.cvtColor(self.puzzle, cv2.COLOR_BGR2RGB)
-        
-        fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-        
-        axes[0].imshow(original_rgb)
-        axes[0].set_title('Оригинальное изображение', fontsize=14)
-        axes[0].axis('off')
-        
-        axes[1].imshow(puzzle_rgb)
-        axes[1].set_title(f'Пазл ({int(np.sqrt(self.tile_count))}×{int(np.sqrt(self.tile_count))})', fontsize=14)
-        axes[1].axis('off')
-        
+        side = isqrt(self.tile_count)
+        panels = (
+            (self.original, "Оригинальное изображение"),
+            (self.puzzle, f"Пазл ({side}×{side})"),
+        )
+        _, axes = plt.subplots(1, 2, figsize=(14, 6))
+        for axis, (image, title) in zip(axes, panels):
+            axis.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+            axis.set_title(title, fontsize=14)
+            axis.axis("off")
+
         plt.suptitle('Сравнение: оригинал и пазл', fontsize=16)
         plt.tight_layout()
         plt.show()
