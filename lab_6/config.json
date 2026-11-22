@@ -1,0 +1,9 @@
+{
+    "input_file": "data/input.txt",
+    "encrypted_file": "data/encrypted.bin",
+    "decrypted_file": "data/output.txt",
+    "encrypted_key_file": "key/aes_key.enc",
+    "public_key_file": "key/public.pem",
+    "private_key_file": "key/private.pem",
+    "aes_key_size": 192
+}

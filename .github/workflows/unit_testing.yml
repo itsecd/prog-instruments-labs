@@ -1,6 +1,12 @@
 name: Unit testing for lab 6
 
 on:
+  push:
+    branches:
+      - 'lab_6'
+    paths:
+      - 'lab_6/**'
+      - '.github/workflows/unit_testing.yml'
   pull_request:
     types: [assigned, opened, synchronize, reopened]
     branches:
@@ -34,8 +40,8 @@ jobs:
 
       - name: Run tests
         run: |
-          coverage run -m pytest
+          coverage run --source=lab_6 -m pytest lab_6
 
       - name: Calculate code coverage
         run: |
-          coverage report
+          coverage report --omit='*/test_*.py'
