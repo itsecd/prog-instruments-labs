@@ -1,0 +1,33 @@
+name: CI Checks
+
+on:
+  push:
+    branches: ["**"] # Запускать при пуше в любую ветку
+  pull_request:
+    branches: ["**"] # И при создании PR
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff pyright pytest
+
+      - name: Run Ruff Lint
+        run: ruff check lab_1/
+
+      - name: Run Ruff Format Check
+        run: ruff format --check lab_1/
+
+      - name: Run Pyright
+        run: pyright lab_1/
