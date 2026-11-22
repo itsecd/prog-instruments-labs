@@ -1,0 +1,21 @@
+_____________________________
+language = C++
+frequency analysis p_value = 0.4795001221869535
+repeating analysis p_value = 0.39923839789091575
+maximum block lenght p_value = 0.9087610381824585
+All tested PASSED, vector is random
+_____________________________
+_____________________________
+language = Java
+frequency analysis p_value = 0.4795001221869535
+repeating analysis p_value = 0.12045611856348976
+maximum block lenght p_value = 0.47931658579654046
+All tested PASSED, vector is random
+_____________________________
+_____________________________
+language = Python
+frequency analysis p_value = 0.9292919989256294
+repeating analysis p_value = 0.09164553666087522
+maximum block lenght p_value = 0.7206229049818716
+All tested PASSED, vector is random
+_____________________________
