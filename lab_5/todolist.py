@@ -115,9 +115,13 @@ def update_task(uw):
                     logger.info("Task description updated: number=%s", c1)
                     break
 def saver():
-    with open(filename, "w") as file:
-        json.dump(tasks, file, indent=2)
-    logger.info("Tasks saved: file=%s, count=%s", filename, len(tasks))
+    try:
+        with open(filename, "w") as file:
+            json.dump(tasks, file, indent=2)
+        logger.info("Tasks saved: file=%s, count=%s", filename, len(tasks))
+    except OSError:
+        logger.exception("Failed to save tasks to file: %s", filename)
+        raise
 
 logger.info("Application started")
 
