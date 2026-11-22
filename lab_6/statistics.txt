@@ -9,7 +9,7 @@ _____________________________
 language = Java
 frequency analysis p_value = 0.4795001221869535
 repeating analysis p_value = 0.12045611856348976
-maximum block lenght p_value = 0.47931658579654046
+maximum block lenght p_value = 0.47931658579654035
 All tested PASSED, vector is random
 _____________________________
 _____________________________
