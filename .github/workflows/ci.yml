@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff pyright pytest
+          pip install ruff pyright pytest scipy
 
       - name: Run Ruff Lint
         run: ruff check lab_1/
