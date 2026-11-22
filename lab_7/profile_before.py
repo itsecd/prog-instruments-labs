@@ -1,6 +1,6 @@
 import time
 import os
-from memory_profiler import memory_usage
+import tracemalloc
 from crypto.hybrid import HybridCrypto
 import json
 
@@ -20,9 +20,14 @@ def encrypt_file_before():
 if __name__ == "__main__":
     print(f"Размер файла: {os.path.getsize('big_data.txt') / (1024*1024):.2f} МБ")
     
+    tracemalloc.start()
+    
     start_time = time.time()
-    mem_usage = memory_usage((encrypt_file_before, ()), max_usage=True)
+    encrypt_file_before()
     end_time = time.time()
+    
+    current, peak = tracemalloc.get_traced_memory()
+    tracemalloc.stop()
 
     print(f"Время выполнения: {end_time - start_time:.2f} сек")
-    print(f"Пиковое потребление RAM: {mem_usage:.2f} МБ")
+    print(f"Пиковое потребление RAM: {peak / 10**6:.2f} МБ")
