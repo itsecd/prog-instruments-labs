@@ -53,6 +53,7 @@ def add_task():
             except ValueError:
                 Duedate = input("Enter a valid due date:")
         tasks.append({"Tasknumber":Tasknumber,"Description":Description,"Priority":Priority,"Duedate":Duedate,"status":False})
+        logger.info("Task added: number=%s, priority=%s", Tasknumber, Priority)
 def display_tasks(uw):
     if uw not in ['all','hp']:
         while(True):
@@ -60,10 +61,12 @@ def display_tasks(uw):
             if uw in ['all','hp']:
                 break
     if uw == 'all':
+        logger.info("Displaying all tasks: count=%s", len(tasks))
         for task in tasks:
             print(f"Taskno:{task['Tasknumber']},Description:{task['Description']},Priority:{task['Priority']},Duedate:{task['Duedate']},Status:{task['status']}")
     else:
         highprioritytasks = [task for task in tasks if task['Priority'] == 'high']
+        logger.info("Displaying high-priority tasks: count=%s", len(highprioritytasks))
         for task in highprioritytasks:
             print(f"Taskno:{task['Tasknumber']},Description:{task['Description']},Priority:{task['Priority']},Duedate:{task['Duedate']},Status:{task['status']}")
 def update_task(uw):
@@ -73,12 +76,14 @@ def update_task(uw):
             if c == int(task['Tasknumber']):
                 print('hi')
                 task['status'] = True
+                logger.info("Task status updated: number=%s, status=%s", c, task['status'])
                 break
     elif uw == 'x':
         c = int(input("Enter the tasknumber to delete that task:"))
         for task in tasks:
             if c == int(task['Tasknumber']):
                 tasks.remove(task)
+                logger.info("Task deleted: number=%s", c)
                 break
     else:
         c = input("Enter the entitity you want to modify in a task(e.g Due date,Description) :").lower()
@@ -100,16 +105,19 @@ def update_task(uw):
             for task in tasks:
                 if c1 == int(task['Tasknumber']):
                     task['Duedate'] = Duedaten
+                    logger.info("Task due date updated: number=%s, new_date=%s", c1, Duedaten)
                     break
         else:
             for task in tasks:
                 if c1 == int(task['Tasknumber']):
                     Newdescription = input("Enter the new description")
                     task['Description'] = Newdescription
+                    logger.info("Task description updated: number=%s", c1)
                     break
 def saver():
     with open(filename, "w") as file:
         json.dump(tasks, file, indent=2)
+    logger.info("Tasks saved: file=%s, count=%s", filename, len(tasks))
 
 logger.info("Application started")
 
@@ -117,6 +125,7 @@ while(True):
     uc = input("what do you want to do\nAdd task(a)\nDisplay tasks(d)\nUpdate task(u)\nExit(e)\n(Save the file)(l)").lower()
     if uc not in ['a','d','u','e','l']:
         while(True):
+            logger.warning("Invalid menu option: %r", uc)
             uc = input("Choose a valid option")
             if uc in ['a','d','u','e','l']:
                 break
