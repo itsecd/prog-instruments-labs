@@ -1,5 +1,6 @@
 import json
 import hashlib
+from pathlib import Path
 from typing import List
 
 """
@@ -28,17 +29,17 @@ def calculate_checksum(row_numbers: List[int]) -> str:
 
 def serialize_result(variant: int, checksum: str) -> None:
     """
-    Метод для сериализации результатов лабораторной пишите сами.
-    Вам нужно заполнить данными - номером варианта и контрольной суммой - файл, лежащий в папке с лабораторной.
-    Файл называется, очевидно, result.json.
-
-    ВНИМАНИЕ, ВАЖНО! На json натравлен github action, который проверяет корректность выполнения лабораторной.
-    Так что не перемещайте, не переименовывайте и не изменяйте его структуру, если планируете успешно сдать лабу.
-
+    Метод для сериализации результатов.
     :param variant: номер вашего варианта
     :param checksum: контрольная сумма, вычисленная через calculate_checksum()
     """
-    pass
+    result_path = Path(__file__).resolve().parent / "result.json"
+    data = {
+        "variant": str(variant),
+        "checksum": checksum,
+    }
+    with result_path.open("w", encoding="utf-8") as file:
+        json.dump(data, file, indent=2)
 
 
 if __name__ == "__main__":
