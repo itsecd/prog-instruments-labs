@@ -99,7 +99,8 @@ class Convert:
             # ============= Method For Converting the value ================
         def Converted_value():
             s = value_0.get()
-            # ============== Fetch the value of rates from the table ======
+            amount = convert.get()
+            logger.info("Convert requested: amount=%s, target_currency=%s", amount, s)
             rate = Soup.find('table', class_ = 'tablesorter ratesTable').find('td', text = lambda x : x == s).find_next('td').get_text()
             canvasCal()
             x = float(convert.get() * float(rate))
@@ -107,6 +108,7 @@ class Convert:
             currency.set(Final_value)
             var1.set(Final_value)
             var2.set(convert.get())
+            logger.info("Conversion successful: %s INR = %s %s (rate=%s)", amount, Final_value, s, rate)
             def animate():
                 s = value_0.get()
                 c1 = int(convert.get())
@@ -122,7 +124,7 @@ class Convert:
             c1 = int(convert.get())
             u = Soup.find('table', class_ = 'tablesorter ratesTable').find('td', text = lambda x : x == s).find_next('td').get_text()
             c2 = (float(c1) * float(u))
-            print(c1, c2)
+            logger.debug("Canvas data: INR=%s, converted=%s", c1, c2)
             
             #ax3.scatter(c1, c2)
             scatter3 = FigureCanvasTkAgg(fig3, Frame_2ButtomL)
