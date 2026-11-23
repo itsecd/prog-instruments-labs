@@ -1,7 +1,5 @@
-#!/usr/bin/env python3
-
-import re
 import argparse
+import re
 
 
 def read_file(filename: str) -> str | None:
@@ -9,7 +7,7 @@ def read_file(filename: str) -> str | None:
     Читает содержимое файла.
     """
     try:
-        with open(filename, "r", encoding='utf-8') as file:
+        with open(filename, "r", encoding="utf-8") as file:
             return file.read()
     except FileNotFoundError:
         print("File not found")
@@ -19,9 +17,8 @@ def write_file(filename: str, data: list[str]):
     """
     Записывает данные в файл с нумерацией.
     """
-    with open(filename, "w+", encoding='utf-8') as file:
-        for i, dat in enumerate(data, 1):
-            file.write(f"{i})\n{dat}\n\n")
+    with open(filename, "w+", encoding="utf-8") as file:
+        file.writelines(f"{i})\n{dat}\n\n" for i, dat in enumerate(data, 1))
 
 
 def args_parse() -> argparse.Namespace:
@@ -40,30 +37,27 @@ def parse_data(data: str) -> list[str]:
     """
     Парсит и сортирует данные анкет.
     """
-    parts = [p.strip() for p in re.split(r'\n\d+\)\s*', data) if p.strip()]
+    parts = [p.strip() for p in re.split(r"\n\d+\)\s*", data) if p.strip()]
 
     questionnaires = []
 
     for part in parts:
-        last_name_match = re.search(r'Фамилия:\s*([^\n]+)', part)
-        first_name_match = re.search(r'Имя:\s*([^\n]+)', part)
+        last_name_match = re.search(r"Фамилия:\s*([^\n]+)", part)
+        first_name_match = re.search(r"Имя:\s*([^\n]+)", part)
 
         if last_name_match and first_name_match:
             last_name = last_name_match.group(1).strip()
             first_name = first_name_match.group(1).strip()
 
-            questionnaires.append({
-                'last_name': last_name,
-                'first_name': first_name,
-                'text': part
-            })
+            questionnaires.append(
+                {"last_name": last_name, "first_name": first_name, "text": part}
+            )
 
     sorted_questionnaires = sorted(
-        questionnaires,
-        key=lambda x: (x['last_name'].lower(), x['first_name'].lower())
+        questionnaires, key=lambda x: (x["last_name"].lower(), x["first_name"].lower())
     )
 
-    return [q['text'] for q in sorted_questionnaires]
+    return [q["text"] for q in sorted_questionnaires]
 
 
 def main():
