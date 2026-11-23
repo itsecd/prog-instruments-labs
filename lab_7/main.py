@@ -41,9 +41,12 @@ def parse_data(data: str) -> list[str]:
 
     questionnaires = []
 
+    last_name_pattern = re.compile(r"Фамилия:\s*([^\n]+)")
+    first_name_pattern = re.compile(r"Имя:\s*([^\n]+)")
+
     for part in parts:
-        last_name_match = re.search(r"Фамилия:\s*([^\n]+)", part)
-        first_name_match = re.search(r"Имя:\s*([^\n]+)", part)
+        last_name_match = last_name_pattern.search(part)
+        first_name_match = first_name_pattern.search(part)
 
         if last_name_match and first_name_match:
             last_name = last_name_match.group(1).strip()
