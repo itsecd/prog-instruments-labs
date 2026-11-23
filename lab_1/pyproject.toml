@@ -1,0 +1,22 @@
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+# Если проект лежит в lab_1 внутри общего форка:
+# include = ["lab_1/**/*.py"]
+exclude = [".git", ".venv", "__pycache__", "build", "dist"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort (сортировка импортов)
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "SIM", # flake8-simplify
+]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
