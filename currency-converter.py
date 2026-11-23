@@ -83,13 +83,16 @@ class Convert:
 
             # ============= Method For Exit =================================
         def cExit():
+            logger.info("Exit requested by user")
             cExit = tkinter.messagebox.askyesno("Exit System", "Confirm if you want to exit")
             if (cExit > 0):
+                logger.info("Application closed by user")
                 root.destroy()
                 return
 
             # ============= Method For Reset the Screen ====================
         def Reset():
+            logger.info("Reset button pressed: clearing inputs and results")
             value_0.set("")
             convert.set(1)
             currency.set("0.00")
