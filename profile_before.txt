@@ -1,0 +1,19 @@
+Peak RAM: 9.47 MB
+         26900069 function calls (26458113 primitive calls) in 94.944 seconds
+
+   Ordered by: cumulative time
+   List reduced from 860 to 10 due to restriction <10>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.054    0.054   94.944   94.944 C:\Users\gayvo\timp\profile_benchmark.py:34(simulate_bottlenecks)
+     1001    0.106    0.000   83.863    0.084 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axes\_base.py:1445(clear)
+     1001    0.438    0.000   83.718    0.084 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axes\_base.py:1313(__clear)
+     2002    0.097    0.000   69.199    0.035 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axis.py:845(clear)
+7998/4002    0.105    0.000   67.662    0.017 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axis.py:1115(set_clip_path)
+6002/2006    0.625    0.000   63.743    0.032 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axis.py:888(reset_ticks)
+8000/2006    0.432    0.000   58.551    0.029 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axis.py:534(__get__)
+8000/2006    0.122    0.000   58.323    0.029 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axis.py:1585(_get_tick)
+36000/8024    0.394    0.000   47.031    0.006 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\spines.py:346(get_spine_transform)
+36000/8024    0.016    0.000   46.899    0.006 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\spines.py:203(_ensure_position_is_set)
+
+

@@ -1,0 +1,19 @@
+Peak RAM: 1.12 MB
+         26656908 function calls (26016572 primitive calls) in 181.066 seconds
+
+   Ordered by: cumulative time
+   List reduced from 891 to 10 due to restriction <10>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     6000    1.649    0.000   27.271    0.005 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axis.py:1276(_update_ticks)
+     2000    0.076    0.000   23.593    0.012 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axis.py:2223(_get_tick_boxes_siblings)
+    12013    5.006    0.000   21.687    0.002 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\backends\backend_agg.py:248(_prepare_font)
+     1000    0.047    0.000   20.018    0.020 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axis.py:2665(_update_label_position)
+     1000    0.045    0.000   16.625    0.017 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\axis.py:2438(_update_label_position)
+    36000   15.927    0.000   15.959    0.000 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\lines.py:758(draw)
+     1000    0.008    0.000   15.244    0.015 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\collections.py:1005(draw)
+     1000   15.127    0.015   15.129    0.015 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\collections.py:352(draw)
+     3000    0.503    0.000   14.483    0.005 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\path.py:627(get_extents)
+    12000    0.137    0.000   13.363    0.001 C:\Users\gayvo\AppData\Local\Programs\Python\Python312\Lib\site-packages\matplotlib\ticker.py:2228(__call__)
+
+
