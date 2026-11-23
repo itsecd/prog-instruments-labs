@@ -1,5 +1,24 @@
+import logging
+
 import numpy as np
 import matplotlib.pyplot as plt
+
+LOG_FILE = "lab3.log"
+LOG_FORMAT = "%(asctime)s | %(levelname)-8s | %(funcName)s:%(lineno)d | %(message)s"
+
+logger = logging.getLogger("lab3")
+
+
+def setup_logging(log_file=LOG_FILE):
+    """Настраивает логирование в файл: уровень DEBUG, формат со временем, уровнем и местом вызова."""
+    handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
+    handler.setFormatter(logging.Formatter(LOG_FORMAT))
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+
+
+setup_logging()
+logger.info("Программа запущена")
 
 print("=" * 60)
 print("ЛАБОРАТОРНАЯ РАБОТА №3")
@@ -24,21 +43,27 @@ def newton(f, df, x0, eps=1e-8, max_iter=100):
     x0 - начальное приближение, eps - точность, max_iter - макс. число итераций.
     Возвращает (корень, число итераций, список приближений).
     """
+    logger.debug("Метод Ньютона: x0=%s, eps=%s, max_iter=%s", x0, eps, max_iter)
     x = x0
     history = [x]
     for i in range(max_iter):
         fx = f(x)
         dfx = df(x)
         if abs(dfx) < 1e-15:
+            logger.error("Метод Ньютона: производная равна нулю при x=%s (итерация %s)", x, i + 1)
             raise ValueError("Производная равна нулю (метод Ньютона не применим)")
         x_new = x - fx / dfx
         history.append(x_new)
+        logger.debug("Ньютон, итерация %s: x=%.12f", i + 1, x_new)
         if abs(x_new - x) < eps or abs(f(x_new)) < eps:
+            logger.info("Метод Ньютона сошёлся за %s итераций (x0=%s, корень=%.10f)", i + 1, x0, x_new)
             return x_new, i + 1, history
         x = x_new
+    logger.error("Метод Ньютона не сошёлся за %s итераций (x0=%s)", max_iter, x0)
     raise RuntimeError("Метод Ньютона не сошёлся за заданное число итераций")
 
 # Начальное приближение
+logger.info("Задание 1: метод Ньютона")
 x0 = 0.8
 root, iterations, hist = newton(f, df, x0)
 print("\n--- Задание 1: Метод Ньютона ---")
@@ -64,20 +89,26 @@ def fixed_point(phi, x0, eps=1e-8, max_iter=2000):
     Возвращает (корень, число итераций, список приближений) или
     (None, число итераций, history), если метод не сошёлся.
     """
+    logger.debug("Простые итерации: x0=%s, eps=%s, max_iter=%s", x0, eps, max_iter)
     x = x0
     history = [x]
     for i in range(max_iter):
         x_new = phi(x)
         history.append(x_new)
+        logger.debug("Простые итерации, итерация %s: x=%.12f", i + 1, x_new)
         # защита от расходимости (переполнения)
         if not np.isfinite(x_new) or abs(x_new) > 1e10:
+            logger.warning("Простые итерации расходятся (x0=%s, итерация %s, x=%s)", x0, i + 1, x_new)
             return None, i + 1, history
         if abs(x_new - x) < eps:
+            logger.info("Простые итерации сошлись за %s итераций (x0=%s, корень=%.10f)", i + 1, x0, x_new)
             return x_new, i + 1, history
         x = x_new
+    logger.warning("Простые итерации не сошлись за %s итераций (x0=%s)", max_iter, x0)
     return None, max_iter, history
 
 # Начальное приближение (то же, что для метода Ньютона)
+logger.info("Задание 2: метод простых итераций")
 x0_fixed = 0.8
 root_fixed, iter_fixed, hist_fixed = fixed_point(phi, x0_fixed)
 print("\n--- Задание 2: Метод простых итераций ---")
@@ -96,6 +127,7 @@ else:
 # ЗАДАНИЕ 3: Сравнение методов
 # =====================================================================
 
+logger.info("Задание 3: сравнение методов")
 print("\n--- Задание 3: Сравнение методов ---")
 print(f"{'Метод':<20} {'Нач. прибл.':<12} {'Итераций':<10} {'Корень':<15} {'Невязка':<12}")
 print("-" * 70)
@@ -107,7 +139,8 @@ for x0_t in [x0 - 0.5, x0, x0 + 0.5]:
         root_n_str = f"{root_n:.8f}"
         res_n_str = f"{f(root_n):.2e}"
         it_n_str = str(it_n)
-    except Exception:
+    except Exception as exc:
+        logger.warning("Метод Ньютона не дал результат при x0=%.2f: %s", x0_t, exc)
         root_n_str, it_n_str, res_n_str = "не сошёлся", "-", "-"
 
     # Метод простых итераций
@@ -126,6 +159,7 @@ for x0_t in [x0 - 0.5, x0, x0 + 0.5]:
 # ЗАДАНИЕ 4: Визуализация сходимости
 # =====================================================================
 
+logger.info("Задание 4: построение графиков")
 print("\n--- Задание 4: График сходимости ---")
 x_vals = np.linspace(0, 1.5, 400)
 y_vals = f(x_vals)
@@ -144,6 +178,7 @@ plt.ylabel('f(x)')
 plt.legend()
 plt.grid(True, alpha=0.6)
 plt.savefig('lab3_fig1.png', dpi=150, bbox_inches='tight')
+logger.info("График метода Ньютона сохранён в lab3_fig1.png")
 plt.show()
 
 # График 2: сходимость x_n -> x*
@@ -161,8 +196,10 @@ plt.xlim(-0.5, 40)
 plt.legend()
 plt.grid(True, alpha=0.6)
 plt.savefig('lab3_fig2.png', dpi=150, bbox_inches='tight')
+logger.info("График сравнения сходимости сохранён в lab3_fig2.png")
 plt.show()
 
 print("\n" + "=" * 60)
 print("ВСЕ ЗАДАНИЯ ВЫПОЛНЕНЫ")
 print("=" * 60)
+logger.info("Программа завершена")
