@@ -46,6 +46,8 @@ header = {
 webpage = req.get(url, headers = header)
 Soup = BeautifulSoup(webpage.text, 'html.parser')
 
+logger.info("Successfully loaded exchange rates page from %s", url)
+
 
 style.use("ggplot")
 
@@ -61,6 +63,8 @@ class Convert:
         self.root.title("Currency Converter | Foreign Exchange Rates")
         self.root.geometry("1350x800+0+0")
         self.root.configure(background = "#F2C496")
+
+        logger.info("GUI initialized: window title, geometry and background set")
 
 
         #=============================== VAriables ===============================
