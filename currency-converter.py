@@ -43,10 +43,15 @@ header = {
 }
 
 # Getting the access to webpage and Creating the Soup object
-webpage = req.get(url, headers = header)
-Soup = BeautifulSoup(webpage.text, 'html.parser')
-
-logger.info("Successfully loaded exchange rates page from %s", url)
+try:
+    logger.debug("Fetching exchange rates from %s", url)
+    webpage = req.get(url, headers = header)
+    webpage.raise_for_status()
+    Soup = BeautifulSoup(webpage.text, 'html.parser')
+    logger.info("Successfully loaded exchange rates page from %s", url)
+except req.RequestException as e:
+    logger.error("Failed to fetch exchange rates from %s: %s", url, e)
+    Soup = None
 
 
 style.use("ggplot")
@@ -104,23 +109,31 @@ class Convert:
             s = value_0.get()
             amount = convert.get()
             logger.info("Convert requested: amount=%s, target_currency=%s", amount, s)
-            rate = Soup.find('table', class_ = 'tablesorter ratesTable').find('td', text = lambda x : x == s).find_next('td').get_text()
-            canvasCal()
-            x = float(convert.get() * float(rate))
-            Final_value = str('%.2f' %(x))
-            currency.set(Final_value)
-            var1.set(Final_value)
-            var2.set(convert.get())
-            logger.info("Conversion successful: %s INR = %s %s (rate=%s)", amount, Final_value, s, rate)
-            def animate():
-                s = value_0.get()
-                c1 = int(convert.get())
-                u = Soup.find('table', class_ = 'tablesorter ratesTable').find('td', text = lambda x : x == s).find_next('td').get_text()
-                c2 = (float(c1) * float(u)) 
-                ax3.clear()
-                ax3.scatter(c1 + c1, c2)
-            animate()
-            return Final_value
+            try:
+                if Soup is None:
+                    raise ValueError("Exchange rates table is not loaded")
+                rate = Soup.find('table', class_ = 'tablesorter ratesTable').find('td', text = lambda x : x == s).find_next('td').get_text()
+                logger.debug("Rate for %s: %s", s, rate)
+                canvasCal()
+                x = float(convert.get() * float(rate))
+                Final_value = str('%.2f' %(x))
+                currency.set(Final_value)
+                var1.set(Final_value)
+                var2.set(convert.get())
+                logger.info("Conversion successful: %s INR = %s %s (rate=%s)", amount, Final_value, s, rate)
+                def animate():
+                    s = value_0.get()
+                    c1 = int(convert.get())
+                    u = Soup.find('table', class_ = 'tablesorter ratesTable').find('td', text = lambda x : x == s).find_next('td').get_text()
+                    c2 = (float(c1) * float(u)) 
+                    ax3.clear()
+                    ax3.scatter(c1 + c1, c2)
+                animate()
+                return Final_value
+            except Exception as e:
+                logger.error("Conversion failed for %s -> %s: %s", amount, s, e)
+                tkinter.messagebox.showerror("Error", f"Could not convert: {e}")
+                return
 
         def canvasCal():
             s = value_0.get()
