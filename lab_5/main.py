@@ -2,7 +2,6 @@ import argparse
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
-import soundfile as sf
 import sys
 import os
 
@@ -39,159 +38,235 @@ def setup_logging(log_file: str = "audio_trimmer.log") -> logging.Logger:
 logger = setup_logging()
 
 
-def read_audio_file(file_path: str)-> Tuple[int, np.ndarray]:
-    """
-    Чтение аудиофайла с помощью soundfile
-    Возвращает частоту дискретизации и аудиоданные
-    """
+def read_audio_file(file_path: str) -> Tuple[int, np.ndarray]:
+    """Read an audio file using soundfile and return sample rate and audio data."""
+    import soundfile as sf
+
+    logger.debug("Attempting to read audio file from path: %s", file_path)
     try:
         data, samplerate = sf.read(file_path)
+        logger.debug(
+            "Successfully read audio file '%s' with shape %s and sample rate %d Hz",
+            file_path,
+            data.shape,
+            samplerate,
+        )
         return samplerate, data
-    except Exception as e:
-        print(f"Ошибка при чтении файла: {e}")
+    except Exception:
+        logger.exception("Failed to read audio file: %s", file_path)
         sys.exit(1)
 
 
-def print_audio_info(sample_rate: int, audio_data: np.ndarray)-> float:
-    """Отображение информации об аудиофайле"""
+def print_audio_info(sample_rate: int, audio_data: np.ndarray) -> float:
+    """Log and return summary information about the audio signal."""
     duration = len(audio_data) / sample_rate
-    print(f"Частота дискретизации: {sample_rate} Hz")
-    print(f"Размер аудио: {len(audio_data)} сэмплов")
-    print(f"Длительность: {duration:.2f} секунд")
-    
-    if len(audio_data.shape) == 1:
-        print("Тип: Моно")
-        print(f"Диапазон амплитуд: [{audio_data.min():.3f}, {audio_data.max():.3f}]")
+    logger.info("Sample rate: %d Hz", sample_rate)
+    logger.info("Audio length: %d samples", len(audio_data))
+    logger.info("Duration: %.2f seconds", duration)
+
+    if audio_data.ndim == 1:
+        logger.info("Channel mode: Mono")
+        logger.info(
+            "Amplitude range: [%.3f, %.3f]",
+            float(audio_data.min()),
+            float(audio_data.max()),
+        )
     else:
-        print("Тип: Стерео")
-        print(f"Количество каналов: {audio_data.shape[1]}")
-        print(f"Диапазон амплитуд левого канала: [{audio_data[:, 0].min():.3f}, {audio_data[:, 0].max():.3f}]")
-        print(f"Диапазон амплитуд правого канала: [{audio_data[:, 1].min():.3f}, {audio_data[:, 1].max():.3f}]")
-    
+        logger.info("Channel mode: Stereo (%d channels)", audio_data.shape[1])
+        logger.info(
+            "Left channel amplitude range: [%.3f, %.3f]",
+            float(audio_data[:, 0].min()),
+            float(audio_data[:, 0].max()),
+        )
+        logger.info(
+            "Right channel amplitude range: [%.3f, %.3f]",
+            float(audio_data[:, 1].min()),
+            float(audio_data[:, 1].max()),
+        )
+
     return duration
 
 
 def trim_audio(audio_data: np.ndarray, sample_rate: int, start_time: float, end_time: float)-> np.ndarray:
-    """
-    Обрезка аудио в указанном временном интервале
-    start_time: время начала (секунды)
-    end_time: время окончания (секунды)
-    """
-    start_sample = int(start_time * sample_rate)
-    end_sample = int(end_time * sample_rate)
-    
-    start_sample = max(0, start_sample)
-    end_sample = min(len(audio_data), end_sample)
-    
+    """Trim audio data to the specified [start_time, end_time] interval in seconds."""
+    start_sample = max(0, int(start_time * sample_rate))
+    end_sample = min(len(audio_data), int(end_time * sample_rate))
+    logger.debug(
+        "Calculated sample range: [%d, %d] for interval [%.2fs, %.2fs]",
+        start_sample,
+        end_sample,
+        start_time,
+        end_time,
+    )
+
     if start_sample >= end_sample:
-        print("Ошибка: Время начала должно быть меньше времени окончания")
+        logger.error(
+            "Invalid trim range: start_sample (%d) >= end_sample (%d)",
+            start_sample,
+            end_sample,
+        )
         sys.exit(1)
-    
-    if len(audio_data.shape) == 1:
-        trimmed_audio = audio_data[start_sample:end_sample]
-    else:
-        trimmed_audio = audio_data[start_sample:end_sample, :]
-    
-    return trimmed_audio
+
+    if audio_data.ndim == 1:
+        return audio_data[start_sample:end_sample]
+    return audio_data[start_sample:end_sample, :]
 
 
 def plot_audio_comparison(original_audio: np.ndarray, trimmed_audio: np.ndarray, original_duration: float, start_time: float, end_time: float) -> None:
-    """Построение графика сравнения исходного и обрезанного аудио"""
+    """Plot waveform comparison between original and trimmed audio."""
+    logger.debug("Generating waveform comparison plot")
     time_original = np.linspace(0, original_duration, len(original_audio))
     time_trimmed = np.linspace(start_time, end_time, len(trimmed_audio))
-    
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
-    
-    if len(original_audio.shape) == 1:
-        ax1.plot(time_original, original_audio, 'b-', alpha=0.7, linewidth=0.5)
-        ax1.set_ylabel('Амплитуда')
-        ax1.set_title('Исходное аудио')
+
+    _, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
+
+    if original_audio.ndim == 1:
+        ax1.plot(time_original, original_audio, "b-", alpha=0.7, linewidth=0.5)
+        ax1.set_ylabel("Amplitude")
+        ax1.set_title("Original Audio (Mono)")
     else:
-        ax1.plot(time_original, original_audio[:, 0], 'b-', alpha=0.7, linewidth=0.5, label='Левый канал')
-        ax1.plot(time_original, original_audio[:, 1], 'r-', alpha=0.7, linewidth=0.5, label='Правый канал')
-        ax1.legend()
-        ax1.set_ylabel('Амплитуда')
-        ax1.set_title('Исходное аудио (Стерео)')
-    
-    ax1.axvspan(start_time, end_time, color='red', alpha=0.3, label='Область обрезки')
+        ax1.plot(
+            time_original,
+            original_audio[:, 0],
+            "b-",
+            alpha=0.7,
+            linewidth=0.5,
+            label="Left channel",
+        )
+        ax1.plot(
+            time_original,
+            original_audio[:, 1],
+            "r-",
+            alpha=0.7,
+            linewidth=0.5,
+            label="Right channel",
+        )
+        ax1.set_ylabel("Amplitude")
+        ax1.set_title("Original Audio (Stereo)")
+
+    ax1.axvspan(start_time, end_time, color="red", alpha=0.3, label="Trim region")
     ax1.legend()
     ax1.grid(True, alpha=0.3)
-    
-    if len(trimmed_audio.shape) == 1:
-        ax2.plot(time_trimmed, trimmed_audio, 'g-', alpha=0.7, linewidth=0.5)
-        ax2.set_ylabel('Амплитуда')
-        ax2.set_title('Обрезанное аудио')
+
+    if trimmed_audio.ndim == 1:
+        ax2.plot(time_trimmed, trimmed_audio, "g-", alpha=0.7, linewidth=0.5)
+        ax2.set_ylabel("Amplitude")
+        ax2.set_title("Trimmed Audio (Mono)")
     else:
-        ax2.plot(time_trimmed, trimmed_audio[:, 0], 'b-', alpha=0.7, linewidth=0.5, label='Левый канал')
-        ax2.plot(time_trimmed, trimmed_audio[:, 1], 'r-', alpha=0.7, linewidth=0.5, label='Правый канал')
-        ax2.legend()
-        ax2.set_ylabel('Амплитуда')
-        ax2.set_title('Обрезанное аудио (Стерео)')
-    
-    ax2.set_xlabel('Время (секунды)')
+        ax2.plot(
+            time_trimmed,
+            trimmed_audio[:, 0],
+            "b-",
+            alpha=0.7,
+            linewidth=0.5,
+            label="Left channel",
+        )
+        ax2.plot(
+            time_trimmed,
+            trimmed_audio[:, 1],
+            "r-",
+            alpha=0.7,
+            linewidth=0.5,
+            label="Right channel",
+        )
+        ax2.set_ylabel("Amplitude")
+        ax2.set_title("Trimmed Audio (Stereo)")
+
+    ax2.set_xlabel("Time (seconds)")
     ax2.grid(True, alpha=0.3)
-    
+
     plt.tight_layout()
     plt.show()
 
 
 def save_audio_file(file_path: str, sample_rate: int, audio_data: np.ndarray)-> None:
-    """Сохранение аудиофайла с помощью soundfile"""
+    """Save trimmed audio data to disk using soundfile."""
+    import soundfile as sf
+
+    logger.debug("Writing trimmed audio to '%s' at %d Hz", file_path, sample_rate)
     try:
         sf.write(file_path, audio_data, sample_rate)
-        print(f"Обрезанное аудио сохранено в: {file_path}")
-    except Exception as e:
-        print(f"Ошибка при сохранении файла: {e}")
+        logger.info("Trimmed audio saved successfully to: %s", file_path)
+    except Exception:
+        logger.exception("Failed to save trimmed audio to: %s", file_path)
         sys.exit(1)
 
 
-def main()-> None:
-    "Основая Функция."
-    parser = argparse.ArgumentParser(description='Обрезка аудио в указанном временном интервале')
-    parser.add_argument('input_file', help='Путь к входному аудиофайлу')
-    parser.add_argument('output_file', help='Путь для сохранения выходного аудиофайла')
-    parser.add_argument('start_time', type=float, help='Время начала обрезки (секунды)')
-    parser.add_argument('end_time', type=float, help='Время окончания обрезки (секунды)')
-    
+def main() -> None:
+    """Parse CLI arguments, trim audio, display comparison, and save output."""
+    parser = argparse.ArgumentParser(
+        description="Trim audio within a specified time interval"
+    )
+    parser.add_argument("input_file", help="Path to input audio file")
+    parser.add_argument("output_file", help="Path to save trimmed audio file")
+    parser.add_argument("start_time", type=float, help="Start time in seconds")
+    parser.add_argument("end_time", type=float, help="End time in seconds")
+
     args = parser.parse_args()
-    
+    logger.info(
+        "Starting audio trimmer | input='%s' | output='%s' | start=%.2fs | end=%.2fs",
+        args.input_file,
+        args.output_file,
+        args.start_time,
+        args.end_time,
+    )
+
     if not os.path.exists(args.input_file):
-        print(f"Ошибка: Входной файл '{args.input_file}' не существует")
+        logger.error("Input file does not exist: %s", args.input_file)
         sys.exit(1)
-    
+
     if args.start_time < 0 or args.end_time < 0:
-        print("Ошибка: Время не может быть отрицательным")
+        logger.error(
+            "Time values cannot be negative: start=%.2f, end=%.2f",
+            args.start_time,
+            args.end_time,
+        )
         sys.exit(1)
-    
+
     if args.start_time >= args.end_time:
-        print("Ошибка: Время начала должно быть меньше времени окончания")
+        logger.error(
+            "Start time (%.2fs) must be less than end time (%.2fs)",
+            args.start_time,
+            args.end_time,
+        )
         sys.exit(1)
-    
-    print("Чтение аудиофайла...")
+
     sample_rate, original_audio = read_audio_file(args.input_file)
-    
-    print("\n=== ИНФОРМАЦИЯ ОБ ИСХОДНОМ АУДИО ===")
+
+    logger.info("=== Original Audio Info ===")
     original_duration = print_audio_info(sample_rate, original_audio)
-    
-    if args.end_time > original_duration:
-        print(f"Предупреждение: Время окончания ({args.end_time}s) превышает длительность аудио ({original_duration:.2f}s)")
-        args.end_time = original_duration
-    
-    print(f"\nОбрезка аудио с {args.start_time}s по {args.end_time}s...")
-    trimmed_audio = trim_audio(original_audio, sample_rate, args.start_time, args.end_time)
-    
-    print("\n=== ИНФОРМАЦИЯ ОБ ОБРЕЗАННОМ АУДИО ===")
+
+    end_time = args.end_time
+    if end_time > original_duration:
+        logger.warning(
+            "Requested end time (%.2fs) exceeds audio duration (%.2fs); clamping to %.2fs",
+            end_time,
+            original_duration,
+            original_duration,
+        )
+        end_time = original_duration
+
+    logger.info("Trimming audio from %.2fs to %.2fs...", args.start_time, end_time)
+    trimmed_audio = trim_audio(original_audio, sample_rate, args.start_time, end_time)
+
+    logger.info("=== Trimmed Audio Info ===")
     trimmed_duration = len(trimmed_audio) / sample_rate
     print_audio_info(sample_rate, trimmed_audio)
-    
-    print("\nОтображение графика сравнения...")
-    plot_audio_comparison(original_audio, trimmed_audio, original_duration, args.start_time, args.end_time)
-    
-    print("\nСохранение обрезанного аудио...")
+
+    plot_audio_comparison(
+        original_audio,
+        trimmed_audio,
+        original_duration,
+        args.start_time,
+        end_time,
+    )
+
     save_audio_file(args.output_file, sample_rate, trimmed_audio)
-    
-    print(f"\nЗавершено! Аудио успешно обрезано и сохранено.")
-    print(f"Новая длительность: {trimmed_duration:.2f} секунд")
+    logger.info(
+        "Finished! New duration: %.2f seconds | Log saved to audio_trimmer.log",
+        trimmed_duration,
+    )
+
 
 if __name__ == "__main__":
     main()
