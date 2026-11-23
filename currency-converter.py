@@ -11,6 +11,29 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.animation as animation
 from matplotlib import style
 
+import logging
+from logging.handlers import RotatingFileHandler
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+formatter = logging.Formatter(
+    '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+)
+
+file_handler = RotatingFileHandler(
+    'currency_converter.log', maxBytes=1024*1024, backupCount=3
+)
+file_handler.setFormatter(formatter)
+file_handler.setLevel(logging.DEBUG)
+
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(formatter)
+console_handler.setLevel(logging.INFO)
+
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
+
 # Variable for Storing URL of website
 url = "https://www.x-rates.com/table/?from=INR&amount=1"
 
@@ -191,4 +214,3 @@ if __name__ == "__main__":
     root = Tk()                     # Object instance of Tk() Class
     application = Convert(root)     # Creating the Object of the Classs
     root.mainloop()                 # Running the main loop for the main window
-
