@@ -1,11 +1,43 @@
 import argparse
+import logging
 import numpy as np
 import matplotlib.pyplot as plt
 import soundfile as sf
 import sys
 import os
 
+from pathlib import Path
 from typing import Tuple, Optional, Union
+
+def setup_logging(log_file: str = "audio_trimmer.log") -> logging.Logger:
+    """Configure console and file logging for the application."""
+    logger = logging.getLogger("audio_trimmer")
+    logger.setLevel(logging.DEBUG)
+    logger.handlers.clear()
+    logger.propagate = False
+
+    formatter = logging.Formatter(
+        fmt="%(asctime)s | %(levelname)-8s | %(funcName)s:%(lineno)d | %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(formatter)
+
+    log_path = Path(log_file)
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    file_handler = logging.FileHandler(log_path, mode="a", encoding="utf-8")
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
+    return logger
+
+
+logger = setup_logging()
+
 
 def read_audio_file(file_path: str)-> Tuple[int, np.ndarray]:
     """
