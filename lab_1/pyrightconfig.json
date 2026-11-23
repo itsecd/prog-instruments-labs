@@ -1,0 +1,6 @@
+{
+  "include": ["."],
+  "exclude": ["**/__pycache__", ".venv", "build", "dist"],
+  "typeCheckingMode": "standard",
+  "pythonVersion": "3.9"
+}
