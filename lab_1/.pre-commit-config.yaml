@@ -17,7 +17,7 @@ repos:
 
       - id: pytest
         name: pytest
-        entry: bash -c 'pytest; code=$$?; [ $$code -eq 0 ] || [ $$code -eq 5 ]'
+        entry: python -c "import subprocess, sys; sys.exit(0 if subprocess.call(['pytest']) in (0, 5) else 1)"
         language: system
         types: [python]
         pass_filenames: false
