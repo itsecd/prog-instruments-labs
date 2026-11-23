@@ -1,4 +1,4 @@
-
+import pytest
 from Library_Management_system import Book
 
 
@@ -46,3 +46,30 @@ def test_book_str():
     result = str(book)
 
     assert result == "ID: 4 | Clean Architecture by Robert Martin [Available]"
+
+@pytest.mark.parametrize(
+    "data, expected",
+    [
+        (
+            {"book_id": 10, "title": "Python", "author": "Ann", "is_issued": True},
+            ("10", "Python", "Ann", True)
+        ),
+        (
+            {"book_id": "11", "title": "", "author": None},
+            ("11", "Unknown", "Unknown", False)
+        ),
+        (
+            {},
+            ("", "Unknown", "Unknown", False)
+        )
+    ]
+)   
+def test_book_from_dict_parametrized(data, expected):
+    book = Book.from_dict(data)
+
+    assert (
+        book.book_id,
+        book.title,
+        book.author,
+        book.is_issued
+    ) == expected
