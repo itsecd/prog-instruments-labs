@@ -17,7 +17,7 @@ repos:
 
       - id: pytest
         name: pytest
-        entry: pytest
+        entry: bash -c 'pytest; code=$$?; [ $$code -eq 0 ] || [ $$code -eq 5 ]'
         language: system
         types: [python]
         pass_filenames: false
