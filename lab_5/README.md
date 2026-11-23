@@ -3,11 +3,18 @@
 ## Лабораторная работа №5 «Логирование»
 В рамках данной лабораторной работы требуется продемонстрировать способность к настройке логирования приложения.
 
+## Способ выполнения лабратоной работы
+Лабораторную работу можно выполнить одним из двух способов:
+
+1. В форке данного репозитория.
+2. В собственном публичном GitHub-репозитории.
+
+Подробные правила для обоих способов описаны в [дискуссии](https://github.com/itsecd/prog-instruments-labs/discussions/2).
+
 ## Задание
-1. Создать отдельную ветку в своем [форке](https://docs.github.com/en/get-started/quickstart/fork-a-repo) данного репозитория.
 2. Подобрать код проекта, в котором вы будете настраивать логирование. Он может быть как вашим собственным, так и опесорсным.
 3. Настроить логирование в проекте, опираясь на [лекционный материал](https://github.com/xtrueman/prog_instruments/blob/main/presentations/Logging.pptx).
-4. Открыть [пул-риквест](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) в иcходный репозиторий и ждать ревью.
+4. Открыть [пул-риквест](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) в своем репозитории или в иcходный репозиторий и ждать ревью.
 
 ## Условия сдачи
 * Изначальный код должен либо совсем не иметь логирования, либо иметь его в крайне примитивном виде.
