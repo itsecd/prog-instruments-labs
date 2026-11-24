@@ -1,50 +1,39 @@
 import argparse
-import numpy as num
 
-def writeMatrix (filePath: str, matrix: num.ndarray, size:int) -> None:
-    """
-    write matrix in a file
-    """
-    result = []
-
-    for row in matrix:
-        rowString = map(str, row)
-        result.append(" ".join(rowString))
-    
-    resultMatrix = "\n".join(result)
-
-    with open(filePath, "w", encoding="utf-8") as file:
-        file.write(str(size) + "\n")
-        file.write(resultMatrix)
+import numpy as np
+from numpy.typing import NDArray
 
 
-def matrixGenerate (size: int) -> num.ndarray:
-    """
-    generate matrix
-    """
-    matrix = num.random.randint(-1000, 1000, (size,size))
-    return matrix
+def write_matrix(file_path: str, matrix: NDArray[np.int64], size: int) -> None:
+    result = [" ".join(map(str, row)) for row in matrix]
+
+    with open(file_path, "w", encoding="utf-8") as file:
+        file.write(f"{size}\n")
+        file.write("\n".join(result))
 
 
-def main():
+def generate_matrix(size: int) -> NDArray[np.int64]:
+    return np.random.randint(-1000, 1000, (size, size), dtype=np.int64)
+
+
+def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("-s", '--size', type=int, default=2000, help='size of matrix to generate')
-    parser.add_argument("-m1", '--matrix1-file', type=str, default='matrix1.txt', help='path to matrix1 file')
-    parser.add_argument("-m2", '--matrix2-file', type=str, default='matrix2.txt', help='path to matrix2 file')
+    parser.add_argument("-s", "--size", type=int, default=2000, help="size of matrix to generate")
+    parser.add_argument("-m1", "--matrix1-file", default="matrix1.txt", help="path to matrix1 file")
+    parser.add_argument("-m2", "--matrix2-file", default="matrix2.txt", help="path to matrix2 file")
     args = parser.parse_args()
 
     print(f"[RUN] => The path to file with first matrix is: {args.matrix1_file}")
     print(f"[RUN] => The path to file with second matrix is: {args.matrix2_file}")
 
     try:
-        matrix1 = matrixGenerate(args.size)
-        matrix2 = matrixGenerate(args.size)
+        matrix1 = generate_matrix(args.size)
+        matrix2 = generate_matrix(args.size)
+        write_matrix(args.matrix1_file, matrix1, args.size)
+        write_matrix(args.matrix2_file, matrix2, args.size)
+    except (OSError, ValueError) as error:
+        print(f"[ERROR] => Could not generate or write matrices: {error}")
 
-        writeMatrix(args.matrix1_file, matrix1, args.size)
-        writeMatrix(args.matrix2_file, matrix2, args.size)
 
-    except Exception as e:
-        print(f"[ERROR] => Error ro generate or write into a file matrix: {e}")
-
-if __name__ == "__main__" :
+if __name__ == "__main__":
     main()
