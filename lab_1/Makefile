@@ -1,7 +1,10 @@
-.PHONY: run lint format format-check typecheck fullcheck precommit
+.PHONY: install run lint format format-check typecheck fullcheck precommit
+
+install:
+	pip install -r requirements.txt
 
 run:
-	python3 code.py data.txt
+	python code.py data.txt
 
 lint:
 	ruff check .

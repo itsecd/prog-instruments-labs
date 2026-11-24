@@ -1,107 +1,107 @@
 import argparse
-from datetime import datetime
 import re
+from datetime import datetime
 
 
 def read_file(file_name: str) -> str:
-    """Чтение файла"""
+    """Чтение файла."""
     try:
-        with open(file_name, "r", encoding="utf-8") as file:
-            text_file = file.read()
-            return text_file
-    except FileNotFoundError:
-        raise FileNotFoundError("Файл не найден")
+        with open(file_name, encoding="utf-8") as file:
+            return file.read()
+    except FileNotFoundError as exc:
+        raise FileNotFoundError("Файл не найден") from exc
 
 
 def parsing() -> str:
-    """передача аргументов через командную строку"""
+    """Передача аргументов через командную строку."""
     parser = argparse.ArgumentParser()
     parser.add_argument("file_name", type=str, help="type filename")
     args = parser.parse_args()
-    return args.file_name
+    return str(args.file_name)
 
 
 def is_date_valid(card: str) -> bool:
-    """проверка даты на валидность"""
-    date = re.search(r"(\d{1,2})([-/.])(\d{1,2})\2(\d{4})", card)
-    if not date:
+    """Проверка даты на валидность."""
+    date_match = re.search(r"(\d{1,2})([-/.])(\d{1,2})\2(\d{4})", card)
+    if date_match is None:
         return False
-    day = date.group(1)
-    month = date.group(3)
-    year = date.group(4)
+    day = date_match.group(1)
+    month = date_match.group(3)
+    year = date_match.group(4)
     try:
-        date = datetime.strptime(f"{day}.{month}.{year}", "%d.%m.%Y")
-        if date.year < 1900:
-            return False
-        return True
+        parsed_date = datetime.strptime(f"{day}.{month}.{year}", "%d.%m.%Y")
     except ValueError:
         return False
+    return parsed_date.year >= 1900
 
 
 def get_cards(data: str) -> dict[int, str]:
-    """запись анкет в словарь(для упрощения доступа к отдельным анкетам)"""
-    cards_dict = {}
+    """Запись анкет в словарь."""
+    cards_dict: dict[int, str] = {}
     cards = re.split(r"\d+\)\n", data)
     for i in range(1, len(cards)):
-        is_valid = is_date_valid(cards[i])
-        if is_valid:
+        if is_date_valid(cards[i]):
             cards_dict[i] = cards[i]
     return cards_dict
 
 
-def get_age(cards: dict, index: int) -> datetime:
-    """парсинг и возврат даты в формате datetime"""
-    date = re.search(r"(\d{1,2})([-/.])(\d{1,2})\2(\d{4})", cards[index])
-    day = date.group(1)
-    month = date.group(3)
-    year = date.group(4)
+def get_age(cards: dict[int, str], index: int) -> datetime:
+    """Парсинг и возврат даты в формате datetime."""
+    date_match = re.search(r"(\d{1,2})([-/.])(\d{1,2})\2(\d{4})", cards[index])
+    if date_match is None:
+        raise ValueError(f"Дата не найдена в анкете {index}")
+    day = date_match.group(1)
+    month = date_match.group(3)
+    year = date_match.group(4)
     return datetime.strptime(f"{day}.{month}.{year}", "%d.%m.%Y")
 
 
-def get_oldest_and_youngest(cards: dict) -> tuple[int, str, int, str]:
-    """поиск самого младшего и самого старшего человека, вывод их анкет"""
-    oldest_age = None
-    youngest_age = None
-    oldest_id = None
-    youngest_id = None
-    for i in cards:
+def get_oldest_and_youngest(cards: dict[int, str]) -> tuple[int, int, int, int]:
+    """Поиск самого младшего и самого старшего человека."""
+    if not cards:
+        raise ValueError("Валидные анкеты не найдены")
+
+    iterator = iter(cards)
+    first_id = next(iterator)
+    oldest_id = youngest_id = first_id
+    oldest_age = youngest_age = get_age(cards, first_id)
+
+    for i in iterator:
         age = get_age(cards, i)
-        if i == 1:
-            oldest_age = age
-            youngest_age = age
-            oldest_id = i
-            youngest_id = i
-        if oldest_age > age:
+        if age < oldest_age:
             oldest_age = age
             oldest_id = i
-        if youngest_age < age:
+        if age > youngest_age:
             youngest_age = age
             youngest_id = i
-    oldest = datetime.now().year - oldest_age.year
-    if (datetime.now().month, datetime.now().day) < (oldest_age.month, oldest_age.day):
+
+    now = datetime.now()
+    oldest = now.year - oldest_age.year
+    if (now.month, now.day) < (oldest_age.month, oldest_age.day):
         oldest -= 1
-    youngest = datetime.now().year - youngest_age.year
-    if (datetime.now().month, datetime.now().day) < (
-        youngest_age.month,
-        youngest_age.day,
-    ):
+
+    youngest = now.year - youngest_age.year
+    if (now.month, now.day) < (youngest_age.month, youngest_age.day):
         youngest -= 1
-    
+
     return oldest, oldest_id, youngest, youngest_id
 
 
-def main():
+def main() -> None:
     try:
         file_name = parsing()
         data = read_file(file_name)
         cards = get_cards(data)
         oldest, oldest_id, youngest, youngest_id = get_oldest_and_youngest(cards)
-        print(f"Самый старый человек: \nВозраст: {oldest} \nАнкета: \n{cards[oldest_id]}")
         print(
-            f"Самый молодой человек: \nВозраст: {youngest} \nАнкета: \n{cards[youngest_id]}"
+            f"Самый старый человек: \nВозраст: {oldest} \nАнкета: \n{cards[oldest_id]}"
         )
-    except Exception as ex:
-        print("Ошибка: ", ex)
+        print(
+            f"Самый молодой человек: \nВозраст: {youngest} \n"
+            f"Анкета: \n{cards[youngest_id]}"
+        )
+    except (FileNotFoundError, ValueError, OSError) as ex:
+        print("Ошибка:", ex)
 
 
 if __name__ == "__main__":
