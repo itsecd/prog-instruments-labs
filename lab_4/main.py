@@ -32,19 +32,45 @@ def runs_test(bits):
     den = 2 * math.sqrt(2 * n) * ones_ratio * (1 - ones_ratio)
     return math.erfc(num / den)
 
+def _max_run_in_block(block):
+    curr = max_run = 0
+    for b in block:
+        curr = curr + 1 if b else 0
+        max_run = max(max_run, curr)
+    return max_run
+
+
+def _count_by_category(max_runs):
+    category_counts = [0, 0, 0, 0]
+    for max_run in max_runs:
+        if max_run <= 1:
+            category_counts[0] += 1
+        elif max_run == 2:
+            category_counts[1] += 1
+        elif max_run == 3:
+            category_counts[2] += 1
+        else:
+            category_counts[3] += 1
+    return category_counts
+
+
+def _chi_square_p_value(observed, expected, dof):
+    chi2 = sum((o - e) ** 2 / e for o, e in zip(observed, expected))
+    return gammaincc(dof / 2, chi2 / 2)
+
+
 def longest_run_test(bits):
     n = len(bits)
     if n < MIN_BITS_LONGEST_RUN:
         return 0.0
     num_blocks = n // BLOCK_SIZE
-    category_counts = [0, 0, 0, 0]
-    ...
-    chi2 = sum(
-        (category_counts[i] - num_blocks * EXPECTED_PROBS[i]) ** 2
-        / (num_blocks * EXPECTED_PROBS[i])
-        for i in range(4)
-    )
-    return gammaincc(CHI2_DOF / 2, chi2 / 2)
+    max_runs = [
+        _max_run_in_block(bits[i * BLOCK_SIZE:(i + 1) * BLOCK_SIZE])
+        for i in range(num_blocks)
+    ]
+    observed = _count_by_category(max_runs)
+    expected = [num_blocks * p for p in EXPECTED_PROBS]
+    return _chi_square_p_value(observed, expected, CHI2_DOF)
 
 def main():
     files = [("C++", "generator/C++.txt"), ("Java", "generator/Java.txt"), ("Python", "generator/Python.txt")]
