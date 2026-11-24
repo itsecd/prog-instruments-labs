@@ -1,6 +1,8 @@
 import math
 from scipy.special import gammaincc
 
+logger = logging.getLogger(__name__)
+
 MIN_BITS_LONGEST_RUN = 128
 BLOCK_SIZE = 8
 EXPECTED_PROBS = [0.2148, 0.3672, 0.2305, 0.1875]
@@ -21,9 +23,11 @@ REPORT_PATH = "results.txt"
 def read_sequence(filename):
     try:
         with open(filename, 'r') as f:
-            return [int(c) for c in f.read().strip() if c in '01']
-    except:
+            text = f.read()
+    except OSError as e:
+        logger.warning("Cannot read %s: %s", filename, e)
         return []
+    return [int(c) for c in text if c in '01']
 
 
 def frequency_test(bits):
