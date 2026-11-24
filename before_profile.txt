@@ -1,0 +1,45 @@
+         2443444 function calls (2396620 primitive calls) in 8.050 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       53    2.436    0.046    2.436    0.046 {imread}
+      602    0.655    0.001    0.655    0.001 {built-in method _io.open_code}
+     4748    0.494    0.000    0.494    0.000 {method 'reduce' of 'numpy.ufunc' objects}
+       53    0.250    0.005    0.250    0.005 {split}
+     2835    0.236    0.000    0.237    0.000 {built-in method nt.stat}
+        2    0.217    0.109    0.231    0.116 {method 'show' of 'PySide6.QtWidgets.QWidget' objects}
+      600    0.162    0.000    0.162    0.000 {built-in method marshal.loads}
+       79    0.119    0.002    0.132    0.002 {built-in method _imp.create_dynamic}
+     7555    0.114    0.000    0.214    0.000 inspect.py:876(cleandoc)
+      227    0.094    0.000    0.184    0.001 artist.py:1433(get_aliases)
+     29/5    0.077    0.003    6.608    1.322 backend_agg.py:206(get_text_width_height_descent)
+      602    0.066    0.000    0.066    0.000 {method 'read' of '_io.BufferedReader' objects}
+    79/52    0.056    0.001    0.415    0.008 {built-in method _imp.exec_dynamic}
+        1    0.055    0.055    3.223    3.223 make_data_and_add.py:18(distribution_brightness_columns)
+      600    0.052    0.000    0.216    0.000 <frozen importlib._bootstrap_external>:751(_compile_bytecode)
+     5088    0.051    0.000    0.078    0.000 <frozen importlib._bootstrap_external>:96(_path_join)
+    11577    0.049    0.000    0.164    0.000 enum.py:726(__call__)
+   107477    0.046    0.000    0.058    0.000 {built-in method builtins.getattr}
+172045/172038    0.044    0.000    0.056    0.000 {built-in method builtins.isinstance}
+   133742    0.042    0.000    0.042    0.000 {method 'startswith' of 'str' objects}
+1756/1628    0.040    0.000    0.900    0.001 {built-in method builtins.__build_class__}
+227046/224119    0.039    0.000    0.041    0.000 {built-in method builtins.len}
+    10270    0.036    0.000    0.036    0.000 {method 'search' of 're.Pattern' objects}
+      282    0.036    0.000    0.039    0.000 lines.py:758(draw)
+ 1355/277    0.035    0.000    0.104    0.000 _parser.py:512(_parse)
+     3418    0.034    0.000    0.062    0.000 enum.py:254(__set_name__)
+      204    0.033    0.000    0.033    0.000 {built-in method builtins.compile}
+   180/24    0.031    0.000    0.010    0.000 backend_agg.py:248(_prepare_font)
+        1    0.030    0.030    0.030    0.030 backend_qt.py:92(_create_qApp)
+        2    0.030    0.015    0.030    0.015 {method 'encode' of 'ImagingEncoder' objects}
+      457    0.030    0.000    0.030    0.000 {built-in method builtins.dir}
+      227    0.027    0.000    0.090    0.000 artist.py:1511(get_setters)
+    67045    0.025    0.000    0.025    0.000 {built-in method builtins.min}
+    89213    0.025    0.000    0.025    0.000 {method 'lstrip' of 'str' objects}
+    21348    0.024    0.000    0.024    0.000 {method 'copy' of 'numpy.ndarray' objects}
+     1260    0.024    0.000    0.024    0.000 {method 'sub' of 're.Pattern' objects}
+    78895    0.022    0.000    0.022    0.000 {method 'append' of 'list' objects}
+     4409    0.022    0.000    0.278    0.000 artist.py:1461(get_valid_values)
+     7657    0.021    0.000    0.023    0.000 transforms.py:180(set_children)
+    15042    0.020    0.000    0.027    0.000 transforms.py:1770(__init__)
