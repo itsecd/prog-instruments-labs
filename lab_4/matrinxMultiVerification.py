@@ -1,21 +1,30 @@
+from pathlib import Path
+
 import numpy as np
 from numpy.typing import NDArray
 
-from matrix_io import read_matrix
+if __package__:
+    from .matrix_io import read_matrix
+else:
+    from matrix_io import read_matrix
 
 
 def readMatrixFromFile(filePath: str) -> NDArray[np.generic]:
     return read_matrix(filePath)
 
 
+def verify_product(
+    first_path: str | Path, second_path: str | Path, result_path: str | Path
+) -> bool:
+    first = read_matrix(first_path)
+    second = read_matrix(second_path)
+    expected = read_matrix(result_path)
+    return np.array_equal(np.dot(first, second), expected)
+
+
 def main() -> None:
     try:
-        matrix1 = read_matrix("matrix1.txt")
-        matrix2 = read_matrix("matrix2.txt")
-        matrix_cpp = read_matrix("matrixResult.txt")
-        matrix_python = np.dot(matrix1, matrix2)
-
-        if np.array_equal(matrix_python, matrix_cpp):
+        if verify_product("matrix1.txt", "matrix2.txt", "matrixResult.txt"):
             print("[RUN] => Matrixes are equal")
             return
 
