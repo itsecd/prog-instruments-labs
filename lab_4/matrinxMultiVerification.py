@@ -1,40 +1,28 @@
-import numpy as num
+import numpy as np
+from numpy.typing import NDArray
 
-def readMatrixFromFile (filePath: str) -> num.ndarray:
-    """
-    read matrix
-    """
-    with open(filePath, "r", encoding="utf-8") as file:
-        size = int(file.readline().strip())
-
-        matrix = []
-        for row in range(size):
-            rowSplit = file.readline().split()
-            row = list(map(int, rowSplit))
-            matrix.append(row)
-    
-    matrixNum = num.array(matrix)
-
-    return matrixNum
+from matrix_io import read_matrix
 
 
-def main():
+def readMatrixFromFile(filePath: str) -> NDArray[np.generic]:
+    return read_matrix(filePath)
+
+
+def main() -> None:
     try:
-        matrix1 = readMatrixFromFile("matrix1.txt")
-        matrix2 = readMatrixFromFile("matrix2.txt")
-        matrixCpp = readMatrixFromFile("matrixResult.txt")
+        matrix1 = read_matrix("matrix1.txt")
+        matrix2 = read_matrix("matrix2.txt")
+        matrix_cpp = read_matrix("matrixResult.txt")
+        matrix_python = np.dot(matrix1, matrix2)
 
-        matrixPython = num.dot(matrix1, matrix2)
-
-        if num.array_equal(matrixPython, matrixCpp):
+        if np.array_equal(matrix_python, matrix_cpp):
             print("[RUN] => Matrixes are equal")
             return
 
         print("[RUN] => Matrixes are`t equal")
+    except Exception as error:
+        print(f"[ERROR] => Fail to read matrix: {error}")
 
 
-    except Exception as e:
-        print(f"[ERROR] => Fail to read matrix: {e}")
-
-if __name__ == "__main__" :
+if __name__ == "__main__":
     main()
