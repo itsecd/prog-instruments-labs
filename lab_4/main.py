@@ -1,6 +1,12 @@
 import math
 from scipy.special import gammaincc
 
+MIN_BITS_LONGEST_RUN = 128
+BLOCK_SIZE = 8
+EXPECTED_PROBS = [0.2148, 0.3672, 0.2305, 0.1875]
+CHI2_DOF = 3
+SIGNIFICANCE = 0.01
+
 def read_sequence(filename):
     try:
         with open(filename, 'r') as f:
@@ -15,46 +21,30 @@ def frequency_test(bits):
 
 def runs_test(bits):
     n = len(bits)
-    pi = sum(bits) / n
-    
-    if abs(pi - 0.5) >= 2 / math.sqrt(n):
+    ones_ratio = sum(bits) / n
+    if abs(ones_ratio - 0.5) >= 2 / math.sqrt(n):
         return 0.0
-    
-    v = 0
+    transitions = 0
     for i in range(n - 1):
         if bits[i] != bits[i + 1]:
-            v += 1
-    
-    return math.erfc(abs(v - 2 * n * pi * (1 - pi)) / (2 * math.sqrt(2 * n) * pi * (1 - pi)))
+            transitions += 1
+    num = abs(transitions - 2 * n * ones_ratio * (1 - ones_ratio))
+    den = 2 * math.sqrt(2 * n) * ones_ratio * (1 - ones_ratio)
+    return math.erfc(num / den)
 
 def longest_run_test(bits):
     n = len(bits)
-    if n < 128:
+    if n < MIN_BITS_LONGEST_RUN:
         return 0.0
-    
-    M = 8
-    N = n // M
-    v = [0, 0, 0, 0]
-    pi = [0.2148, 0.3672, 0.2305, 0.1875]
-    
-    for i in range(N):
-        block = bits[i * M:(i + 1) * M]
-        curr = max_run = 0
-        for b in block:
-            curr = curr + 1 if b else 0
-            max_run = max(max_run, curr)
-        
-        if max_run <= 1:
-            v[0] += 1
-        elif max_run == 2:
-            v[1] += 1
-        elif max_run == 3:
-            v[2] += 1
-        else:
-            v[3] += 1
-    
-    chi2 = sum((v[i] - N * pi[i]) ** 2 / (N * pi[i]) for i in range(4))
-    return gammaincc(3/2, chi2 / 2)
+    num_blocks = n // BLOCK_SIZE
+    category_counts = [0, 0, 0, 0]
+    ...
+    chi2 = sum(
+        (category_counts[i] - num_blocks * EXPECTED_PROBS[i]) ** 2
+        / (num_blocks * EXPECTED_PROBS[i])
+        for i in range(4)
+    )
+    return gammaincc(CHI2_DOF / 2, chi2 / 2)
 
 def main():
     files = [("C++", "generator/C++.txt"), ("Java", "generator/Java.txt"), ("Python", "generator/Python.txt")]
