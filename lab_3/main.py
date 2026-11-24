@@ -1,79 +1,58 @@
 import csv
-import json
 import re
-from typing import Dict, List
+from checksum import calculate_checksum, serialize_result
 
-from checksum import calculate_checksum
-
-# --- 10 вменяемых регулярных выражений для каждого столбца ---
-REGEX_RULES: Dict[str, re.Pattern] = {
-    "telephone": re.compile(r"^(\+7|8)[\s\-\(]*\d{3}[\)\s\-]*\d{3}[\s\-]*\d{2}[\s\-]*\d{2}$"),
-    "height": re.compile(r"^\d{1,2}[.,]\d{2}$"),
-    "snils": re.compile(r"^\d{11}$"),
-    "identifier": re.compile(r"^\d{2}[-_/]\d{2}[-_/]\d{2}$"),
-    "occupation": re.compile(r"^[А-Яа-яЁёA-Za-z0-9\s\-\.]+$"),
-    "longitude": re.compile(r"^-?\d{1,3}[.,]\d+$"),
-    "blood_type": re.compile(r"^(A|B|AB|O)[+\-0-9]+$"),
-    "issn": re.compile(r"^\d{4}[\s\-]\d{4}$"),
-    "locale_code": re.compile(r"^[a-z]{2}([-_][a-z]{2})?$"),
-    "date": re.compile(r"^\d{4}[-/\.]\d{1,2}[-/\.]\d{1,2}$|^\d{1,2}[-/\.]\d{1,2}[-/\.]\d{4}$"),
-}
-
-
-def validate_row(row: Dict[str, str]) -> bool:
-    """
-    Проверяет одну строку CSV.
-    Возвращает True, если в строке есть хотя бы одна ошибка.
-    """
-    for col_name, value in row.items():
-        if col_name in REGEX_RULES:
-            if not REGEX_RULES[col_name].match(value):
-                return True  
-    return False
-
-
-def process_csv(file_path: str) -> List[int]:
-    """
-    Читает CSV файл и возвращает список номеров невалидных строк.
-    ВАЖНО: нумерация строк начинается с 0, как указано в checksum.py!
-    """
-    invalid_rows = []
-
-    with open(file_path, mode="r", encoding="utf-8") as f:
-        reader = csv.DictReader(f, delimiter=";")
-        
-       
-        for row_num, row in enumerate(reader, start=0):
-            if validate_row(row):
-                invalid_rows.append(row_num)
-
-    return invalid_rows
-
-
-def main() -> None:
-    csv_file = "data.csv"
-    json_file = "result.json"
-    variant_number = 12  
-
-    print(f"Чтение файла {csv_file}...")
-    invalid_rows = process_csv(csv_file)
-    print(f"Найдено невалидных строк: {len(invalid_rows)}")
-
+def main():
+    variant = 12
     
-    checksum = calculate_checksum(invalid_rows)
-    print(f"Контрольная сумма: {checksum}")
-
-    
-    result_data = {
-        "variant": variant_number,
-        "checksum": "796feaf316ee0948b83ee672808c34e3"
+    # Ваши регулярные выражения
+    regex_patterns = {
+        "telephone": r"^\+7-\(\d{3}\)-\d{3}-\d{2}-\d{2}$",
+        "height": r"^[12]\.\d{2}$",
+        "snils": r"^\d{11}$",
+        "identifier": r"^\d{2}-\d{2}/\d{2}$",
+        "occupation": r"^[A-Za-zА-Яа-яЁё\s\-]+$",
+        "longitude": r"^-?\d+\.\d+$",
+        "blood_type": r"^(A|B|AB|O)[+\-−]$",
+        "issn": r"^\d{4}-\d{4}$",
+        "locale_code": r"^[a-z]{2}(-[a-z]{2})?$",
+        "date": r"^\d{4}-\d{2}-\d{2}$"
     }
 
-    with open(json_file, mode="w", encoding="utf-8") as f:
-        json.dump(result_data, f, indent=4, ensure_ascii=False)
+    invalid_rows = []
 
-    print(f"Результаты записаны в {json_file}")
+    print("Чтение файла data.csv...")
+    
+    
+    with open("data.csv", "r", encoding="utf-8-sig") as file:
+        reader = csv.DictReader(file, delimiter=";")
+        
+        for i, row in enumerate(reader):
+            is_valid = True
+            
+    
+            if None in row or len(row) != len(regex_patterns):
+                invalid_rows.append(i)
+                continue
 
+            for column, pattern in regex_patterns.items():
+                value = row.get(column, "")
+                if not value or not re.match(pattern, value):
+                    is_valid = False
+                    break  
+            
+            if not is_valid:
+                invalid_rows.append(i)
+                
+    print(f"Найдено невалидных строк: {len(invalid_rows)}")
+    
+    # Считаем контрольную сумму
+    checksum = calculate_checksum(invalid_rows)
+    print(f"Контрольная сумма: {checksum}")
+    
+    # Записываем результат
+    serialize_result(variant, checksum)
+    print("Результаты записаны в result.json")
 
 if __name__ == "__main__":
     main()
