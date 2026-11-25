@@ -1,0 +1,22 @@
+Performance comparison for the LR3 sorting project
+
+Workload: 50,000 deterministic random integers (mt19937 seed 42)
+Build: CMake Release, AppleClang 21.0.0.21000401, macOS arm64
+Method: 5 runs per implementation; report median sort-only time. Input copies are made before timing.
+
+Before: Bubble Sort 0.694537 s; 1,249,947,505 comparisons
+After:  std::sort   0.000758292 s
+Speedup: 915.922x
+Correctness: outputs were identical, sorted, and deterministic.
+
+Instruments: Time Profiler recording is included in instruments_profile.trace.
+The trace contains a comparison run and dedicated --before/--after runs. The
+comparison run's heaviest sampled work was run_comparison (3.70 s aggregate).
+Dedicated profiles spent about 3.68 s in the five Bubble Sort repetitions and
+3.36 s in the 5,000 std::sort repetitions. These dedicated profile durations
+use different repetition counts to collect enough samples and are not an
+apples-to-apples speed comparison; use the median benchmark above for that.
+
+The original Bubble, Comb, and Heap implementations remain available for the
+educational comparison. optimized_sort uses std::sort for the same in-place
+vector-sorting contract.
