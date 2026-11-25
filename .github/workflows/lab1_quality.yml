@@ -1,0 +1,23 @@
+name: Lab 1 quality checks
+
+on:
+  pull_request:
+    paths:
+      - 'lab_1/**'
+      - '.github/workflows/lab1_quality.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+          cache: pip
+          cache-dependency-path: lab_1/requirements.txt
+      - run: python -m pip install -r lab_1/requirements.txt
+      - run: make -C lab_1 fullcheck
