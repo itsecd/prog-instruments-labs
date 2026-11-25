@@ -1,0 +1,5 @@
+# Development layer: do not alter user files, emit detailed logs.
+behavior:
+  dry_run: true
+logging:
+  level: DEBUG

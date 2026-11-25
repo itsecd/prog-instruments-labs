@@ -1,0 +1,6 @@
+# Production layer: actually move files, never overwrite on collision.
+behavior:
+  dry_run: false
+  on_conflict: rename
+logging:
+  level: INFO
