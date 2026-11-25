@@ -5,6 +5,8 @@
 #include <random>
 #include <stdexcept>
 
+struct Stats;
+
 // Шаблонный класс узла двусвязного списка
 template <class T>
 struct Node {
@@ -328,34 +330,7 @@ public:
         tail_ = nullptr;
     }
 
-    friend Stats bubble_sort(LinkedList<int>& arr) {
-        Stats s;
-
-        Node<int>* head = arr.head_;
-        if (!head) return s;
-
-        bool swapped;
-        Node<int>* end = nullptr;
-
-        do {
-            swapped = false;
-            Node<int>* cur = head;
-            while (cur->next != end) {
-                s.comparison_count++;
-                if (cur->value > cur->next->value) {
-                    int temp = cur->value;
-                    cur->value = cur->next->value;
-                    cur->next->value = temp;
-                    s.copy_count += 3;
-                    swapped = true;
-                }
-                cur = cur->next;
-            }
-            end = cur;
-        } while (swapped);
-
-        return s;
-    }
+    friend Stats bubble_sort(LinkedList<int>& arr);
 
     template <class U>
     friend std::ostream& operator<<(std::ostream& os, const LinkedList<U>& list);

@@ -10,3 +10,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(${PROJECT_NAME} "main.cpp" "sorts.h" "LinkedList.h")
 
 target_compile_options(${PROJECT_NAME} PRIVATE "-Wall" "-Weffc++" "-Wextra" "-Wpedantic")
+
+add_executable(profile_sorts "profile_sorts.cpp" "sorts.h" "LinkedList.h")
+target_compile_options(profile_sorts PRIVATE "-Wall" "-Weffc++" "-Wextra" "-Wpedantic")

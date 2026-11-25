@@ -1,6 +1,7 @@
 #ifndef SORTS_H
 #define SORTS_H
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include "LinkedList.h"
@@ -29,6 +30,34 @@ struct Stats
         return *this;
     }
 };
+
+// Пузырьковая сортировка для двусвязного списка.
+Stats bubble_sort(LinkedList<int>& arr) {
+    Stats s;
+    Node<int>* head = arr.head_;
+    if (!head) return s;
+
+    bool swapped;
+    Node<int>* end = nullptr;
+    do {
+        swapped = false;
+        Node<int>* cur = head;
+        while (cur->next != end) {
+            ++s.comparison_count;
+            if (cur->value > cur->next->value) {
+                int temp = cur->value;
+                cur->value = cur->next->value;
+                cur->next->value = temp;
+                s.copy_count += 3;
+                swapped = true;
+            }
+            cur = cur->next;
+        }
+        end = cur;
+    } while (swapped);
+
+    return s;
+}
 
 // Перегрузка оператора вывода для структуры Stats
 std::ostream& operator<<(std::ostream& os, Stats s)
@@ -59,6 +88,12 @@ Stats bubble_sort(std::vector<int>& arr) {
         if (!swapped) break;
     }
     return s;
+}
+
+
+// Быстрая сортировка для рабочих массивов стандартной библиотекой C++.
+void optimized_sort(std::vector<int>& arr) {
+    std::sort(arr.begin(), arr.end());
 }
 
 // Сортировка расческой (Comb sort)
