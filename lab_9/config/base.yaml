@@ -1,0 +1,13 @@
+# Base layer: common settings for all environments.
+paths:
+  source: lab_9/demo/inbox
+  destination: lab_9/demo/organized
+behavior:
+  dry_run: true
+  on_conflict: skip
+rules:
+  documents: [".pdf", ".docx", ".txt"]
+  images: [".jpg", ".jpeg", ".png"]
+  code: [".py", ".json", ".csv"]
+logging:
+  level: INFO
