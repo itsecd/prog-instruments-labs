@@ -32,36 +32,22 @@ class TennisGameDefactored1:
             self.player_2.add_point()
     
     def score(self):
-        result = ""
-        temp_score = 0
+        if self.player_1.points == self.player_2.points:
+            equal_points = self.player_1.points
 
-        if (self.player_1.points == self.player_2.points):
-            if self.player_1.points >= POINTS_TO_WIN:
-                result = "Deuce"
-            else:
-                result = GAME_SCORE[self.player_1.points] + "-All"
+            if equal_points >= POINTS_TO_WIN:
+                return "Deuce"
+            return f"{GAME_SCORE[equal_points]}-All"
 
-        elif (self.player_1.points >= POINTS_TO_WIN or self.player_2.points >= POINTS_TO_WIN):
+        if self.player_1.points >= POINTS_TO_WIN or self.player_2.points >= POINTS_TO_WIN:
             points_diff = self.player_1.points - self.player_2.points
-            if (points_diff == 1):
-                result ="Advantage " + self.player_1.name
-            elif (points_diff == -1):
-                result ="Advantage " + self.player_2.name
-            elif (points_diff >= 2):
-                result = "Win for " + self.player_1.name
-            else:
-                result ="Win for " + self.player_2.name
+            leader = self.player_1 if points_diff > 0 else self.player_2
 
-        else:
-            for i in range(1,3):
-                if (i == 1):
-                    temp_score = self.player_1.points
-                else:
-                    result += "-"
-                    temp_score = self.player_2.points
-                result += GAME_SCORE[temp_score]
+            if abs(points_diff) == 1:
+                return f"Advantage {leader.name}"
+            return f"Win for {leader.name}"
 
-        return result
+        return f"{GAME_SCORE[self.player_1.points]}-{GAME_SCORE[self.player_2.points]}"
 
 
 class TennisGameDefactored2:
