@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+GAME_SCORE = {
+    0 : "Love",
+    1 : "Fifteen",
+    2 : "Thirty",
+    3 : "Forty",
+}
+
+POINTS_TO_WIN = 4
+
+
 class Player:
 
     def __init__(self, name):
@@ -26,14 +36,12 @@ class TennisGameDefactored1:
         temp_score = 0
 
         if (self.player_1.points == self.player_2.points):
-            result = {
-                0 : "Love-All",
-                1 : "Fifteen-All",
-                2 : "Thirty-All",
-                3 : "Forty-All",
-            }.get(self.player_1.points, "Deuce")
+            if self.player_1.points >= POINTS_TO_WIN:
+                result = "Deuce"
+            else:
+                result = GAME_SCORE[self.player_1.points] + "-All"
 
-        elif (self.player_1.points >= 4 or self.player_2.points >= 4):
+        elif (self.player_1.points >= POINTS_TO_WIN or self.player_2.points >= POINTS_TO_WIN):
             points_diff = self.player_1.points - self.player_2.points
             if (points_diff == 1):
                 result ="Advantage " + self.player_1.name
@@ -51,12 +59,7 @@ class TennisGameDefactored1:
                 else:
                     result += "-"
                     temp_score = self.player_2.points
-                result += {
-                    0 : "Love",
-                    1 : "Fifteen",
-                    2 : "Thirty",
-                    3 : "Forty",
-                }[temp_score]
+                result += GAME_SCORE[temp_score]
 
         return result
 
