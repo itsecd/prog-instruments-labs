@@ -80,28 +80,26 @@ class TennisGameDefactored2:
         
 
 class TennisGameDefactored3:
-    def __init__(self, player1Name, player2Name):
-        self.p1N = player1Name
-        self.p2N = player2Name
-        self.p1 = 0
-        self.p2 = 0
+    def __init__(self, player_1_name, player_2_name):
+        self.player_1 = player_1_name
+        self.player_2 = player_2_name
         
     def won_point(self, n):
-        if n == self.p1N:
-            self.p1 += 1
+        if n == self.player_1.point:
+            self.player_1.add_point()
         else:
-            self.p2 += 1
+            self.player_2.add_point()
     
     def score(self):
-        if (self.p1 < 4 and self.p2 < 4):
+        if (self.player_1.point < 4 and self.player_2.point < 4):
             p = ["Love", "Fifteen", "Thirty", "Forty"]
-            s = p[self.p1]
-            return s + "-All" if (self.p1 == self.p2) else s + "-" + p[self.p2]
+            s = p[self.player_1.point]
+            return s + "-All" if (self.player_1.point == self.player_2.point) else s + "-" + p[self.player_2.point]
         else:
-            if (self.p1 == self.p2):
+            if (self.player_1.point == self.player_2.point):
                 return "Deuce"
-            s = self.p1N if self.p1 > self.p2 else self.p2N
-            return "Advantage " + s if ((self.p1-self.p2)*(self.p1-self.p2) == 1) else "Win for " + s
+            s = self.player_1.name if self.player_1.point > self.player_2.point else self.player_2.name
+            return "Advantage " + s if ((self.player_1.point - self.player_2.point)*(self.player_1.point - self.player_2.point) == 1) else "Win for " + s
 
 # NOTE: You must change this to point at the one of the three examples that you're working on!
 TennisGame = TennisGameDefactored2
