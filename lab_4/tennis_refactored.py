@@ -15,45 +15,49 @@ class TennisGameDefactored1:
         self.player_1 = Player(player_1_name)
         self.player_2 = Player(player_2_name)
         
-    def won_point(self, playerName):
-        if playerName == self.player_1.name:
+    def won_point(self, player_name):
+        if player_name == self.player_1.name:
             self.player_1.add_point()
         else:
             self.player_2.add_point()
     
     def score(self):
         result = ""
-        tempScore=0
-        if (self.player_1.points==self.player_2.points):
+        temp_score = 0
+
+        if (self.player_1.points == self.player_2.points):
             result = {
                 0 : "Love-All",
                 1 : "Fifteen-All",
                 2 : "Thirty-All",
                 3 : "Forty-All",
             }.get(self.player_1.points, "Deuce")
-        elif (self.player_1.points>=4 or self.player_2.points>=4):
-            minusResult = self.player_1.points-self.player_2.points
-            if (minusResult==1):
+
+        elif (self.player_1.points >= 4 or self.player_2.points >= 4):
+            points_diff = self.player_1.points - self.player_2.points
+            if (points_diff == 1):
                 result ="Advantage " + self.player_1.name
-            elif (minusResult ==-1):
+            elif (points_diff == -1):
                 result ="Advantage " + self.player_2.name
-            elif (minusResult>=2):
+            elif (points_diff >= 2):
                 result = "Win for " + self.player_1.name
             else:
                 result ="Win for " + self.player_2.name
+
         else:
             for i in range(1,3):
-                if (i==1):
-                    tempScore = self.player_1.points
+                if (i == 1):
+                    temp_score = self.player_1.points
                 else:
-                    result+="-"
-                    tempScore = self.player_2.points
+                    result += "-"
+                    temp_score = self.player_2.points
                 result += {
                     0 : "Love",
                     1 : "Fifteen",
                     2 : "Thirty",
                     3 : "Forty",
-                }[tempScore]
+                }[temp_score]
+
         return result
 
 
@@ -156,6 +160,7 @@ class TennisGameDefactored2:
     
     def P2Score(self):
         self.p2points +=1
+        
         
 class TennisGameDefactored3:
     def __init__(self, player1Name, player2Name):
