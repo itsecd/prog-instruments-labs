@@ -81,25 +81,29 @@ class TennisGameDefactored2:
 
 class TennisGameDefactored3:
     def __init__(self, player_1_name, player_2_name):
-        self.player_1 = player_1_name
-        self.player_2 = player_2_name
+        self.player_1 = Player(player_1_name)
+        self.player_2 = Player(player_2_name)
         
-    def won_point(self, n):
-        if n == self.player_1.point:
+    def won_point(self, name):
+        if name == self.player_1.name:
             self.player_1.add_point()
         else:
             self.player_2.add_point()
     
     def score(self):
-        if (self.player_1.point < 4 and self.player_2.point < 4):
-            p = ["Love", "Fifteen", "Thirty", "Forty"]
-            s = p[self.player_1.point]
-            return s + "-All" if (self.player_1.point == self.player_2.point) else s + "-" + p[self.player_2.point]
-        else:
-            if (self.player_1.point == self.player_2.point):
-                return "Deuce"
-            s = self.player_1.name if self.player_1.point > self.player_2.point else self.player_2.name
-            return "Advantage " + s if ((self.player_1.point - self.player_2.point)*(self.player_1.point - self.player_2.point) == 1) else "Win for " + s
+        if self.player_1.points < POINTS_TO_WIN and self.player_2.points < POINTS_TO_WIN:
+            score = GAME_SCORE[self.player_1.points]
+
+            if (self.player_1.points != self.player_2.points):
+                return score + "-" + GAME_SCORE[self.player_2.points]
+            return score + "-All"
+
+        if self.player_1.points == self.player_2.points:
+            return "Deuce"
+
+        leader = self.player_1 if self.player_1.points > self.player_2.points else self.player_2
+        score_diff = self.player_1.points - self.player_2.points
+        return "Advantage " + leader.name if (abs(score_diff) == 1) else "Win for " + leader.name
 
 # NOTE: You must change this to point at the one of the three examples that you're working on!
-TennisGame = TennisGameDefactored2
+TennisGame = TennisGameDefactored3
