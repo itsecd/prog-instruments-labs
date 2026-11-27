@@ -1,0 +1,7 @@
+{
+  "include": ["main.py"],
+  "exclude": [".venv", "tests"],
+  "pythonVersion": "3.11",
+  "typeCheckingMode": "strict",
+  "reportMissingTypeStubs": "none"
+}
