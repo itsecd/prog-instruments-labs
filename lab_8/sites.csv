@@ -1,0 +1,4 @@
+DOMAIN_NAME;tg_username;email
+example.com;@user1;user1@mail.ru
+google.com;@user2;user2@gmail.com
+httpbin.org;@user3;user3@mail.ru
