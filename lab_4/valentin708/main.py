@@ -1,60 +1,59 @@
-#Найдите все женские имена, начинающиеся с буквы А.
-#Выведите их количество на экран и сохраните анкеты в новый файл.
-import re 
+"""Filter questionnaires for women whose names begin with uppercase А."""
+
 import argparse
+import re
 
-def is_name_correct(name: str)->bool:
-    """
-    Имя должно начинаться на заглавную А и состоять только из букв.
-    """
-    return re.fullmatch(r'А[а-яё]*', name) is not None
 
-def is_female(gender: str)->bool:
-    """
-    Пол женский
-    """
-    return re.fullmatch(r'(Ж|ж|Женский|женский)', gender) is not None
+def is_name_correct(name: str) -> bool:
+    """Check that the name starts with А and contains Cyrillic letters."""
+    return re.fullmatch(r"А[а-яё]*", name) is not None
 
-def extract_value(line: str) -> str:
-    """
-    Извлекает значение после ':'.
-    """
-    return line.split(':', 1)[1].strip()
 
-def form_is_correct(form:list[str])->bool:
-    """
-    Проверяет анкету на соответствие условию.
-    """  
-    name=extract_value(form[1])
-    gender=extract_value(form[2])
-    return is_name_correct(name) and is_female(gender)
+def is_female(gender: str) -> bool:
+    """Recognize the female gender values used in the dataset."""
+    return re.fullmatch(r"(Ж|ж|Женский|женский)", gender) is not None
 
-def read_forms(filename:str)->list[list[str]]:
-    """
-    Читает файл и возвращает список анкет по 6 строк, пропуская номера и пустые строки
-    """
-    with open(filename,encoding="utf-8") as f:
-         lines = [line.strip() for line in f if line.strip() and ':' in line]
-    return [lines[i:i+6] for i in range(0, len(lines), 6)]
+
+def parse_fields(form: list[str]) -> dict[str, str]:
+    """Extract questionnaire values by field name, not by line position."""
+    fields: dict[str, str] = {}
+    for line in form:
+        label, separator, value = line.partition(":")
+        if separator:
+            fields[label.strip()] = value.strip()
+    return fields
+
+
+def form_is_correct(form: list[str]) -> bool:
+    """Check whether a questionnaire matches the selection criteria."""
+    fields = parse_fields(form)
+    return is_name_correct(fields.get("Имя", "")) and is_female(fields.get("Пол", ""))
+
+
+def read_forms(filename: str) -> list[list[str]]:
+    """Read questionnaires, which currently contain six field lines each."""
+    with open(filename, encoding="utf-8") as source:
+        lines = [line.strip() for line in source if line.strip() and ":" in line]
+    return [lines[index : index + 6] for index in range(0, len(lines), 6)]
+
 
 def save_forms(forms: list[list[str]], path: str = "filtered_forms.txt") -> None:
-    """
-    Сохраняет анкеты в файл.
-    """
-    with open(path, "w", encoding="utf-8") as f:
-        for a in forms:
-            f.write("\n".join(a) + "\n\n")
+    """Save the selected questionnaires in the original text format."""
+    with open(path, "w", encoding="utf-8") as destination:
+        for form in forms:
+            destination.write("\n".join(form) + "\n\n")
 
-def main():
+
+def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("filename")
     args = parser.parse_args()
 
     forms = read_forms(args.filename)
-    correct = [a for a in forms if form_is_correct(a)]
-
+    correct = [form for form in forms if form_is_correct(form)]
     print(len(correct))
     save_forms(correct)
+
 
 if __name__ == "__main__":
     main()
