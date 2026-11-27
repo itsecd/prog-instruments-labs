@@ -35,22 +35,23 @@ def encrypt(text):
 
 
 def decrypt(encrypted):
-    """Оптимизированное дешифрование: используем list, join и кэшируем len."""
+    """Оптимизированное дешифрование: без срезов строк и с кэшированием len."""
     logger.info("Начало дешифрования...")
     decrypted_parts = []
     i = 0
-    length = len(encrypted)  # Кэшируем длину, чтобы не вызывать len в цикле
+    length = len(encrypted)
     while i < length:
-        if i + 1 < length and encrypted[i:i+2] in REVERSE:
-            decrypted_parts.append(REVERSE[encrypted[i:i+2]])
-            i += 2
-        else:
-            decrypted_parts.append(encrypted[i])
-            i += 1
+        if i + 1 < length:
+            pair = encrypted[i] + encrypted[i+1]  # без среза
+            if pair in REVERSE:
+                decrypted_parts.append(REVERSE[pair])
+                i += 2
+                continue
+        decrypted_parts.append(encrypted[i])
+        i += 1
     decrypted = ''.join(decrypted_parts)
     logger.info(f"Дешифрование завершено. Длина: {len(decrypted)}")
     return decrypted
-
 
 def main():
     logger.info("Запуск программы...")
