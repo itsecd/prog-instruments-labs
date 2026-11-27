@@ -27,11 +27,28 @@ make format-check   # проверка форматирования без из�
 make typecheck      # Pyright: строгая проверка типов
 make test           # интеграционные тесты
 make check          # все проверки
-make install-hooks  # настройка локальных Git hooks
+make precommit      # установка pre-commit и pre-push хуков
 ```
 
-После `make install-hooks` хук `pre-commit` запускает линтер и проверку форматирования,
-а `pre-push` запускает все проверки. Файлы хуков хранятся в `.githooks/`.
+Фреймворк pre-commit использует `.pre-commit-config.yaml` с разделением на стадии:
+
+- `pre-commit` (`git commit`) — Ruff lint и проверка форматирования;
+- `pre-push` (`git push`) — Pyright и pytest.
+
+Хуки проверяют только проект `lab_1/ws-http-server` и запускают команды Makefile.
+Команда `make precommit` устанавливает оба хука в Git-репозиторий; она также
+удаляет прежнюю локальную настройку `core.hooksPath`, если она равна `.githooks`.
+Ветка без данной конфигурации не блокируется установленными хуками.
+
+Для ручной проверки обеих стадий из корня Git-репозитория (с активированной `.venv`):
+
+```bash
+pre-commit run --config lab_1/ws-http-server/.pre-commit-config.yaml --all-files --hook-stage pre-commit
+pre-commit run --config lab_1/ws-http-server/.pre-commit-config.yaml --all-files --hook-stage pre-push
+```
+
+При изменении файлов проекта выполните обычные `git add`, `git commit` и `git push`,
+чтобы увидеть автоматический запуск соответствующих проверок.
 
 Конфигурации Ruff и Pyright находятся соответственно в `pyproject.toml`
 и `pyrightconfig.json`. Выбран режим Pyright `strict`.

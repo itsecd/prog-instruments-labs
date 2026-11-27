@@ -1,0 +1,31 @@
+minimum_pre_commit_version: '4.4.0'
+default_install_hook_types: [pre-commit, pre-push]
+files: ^lab_1/ws-http-server/
+
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-lint
+        name: Ruff lint
+        entry: make -C lab_1/ws-http-server lint
+        language: unsupported
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: ruff-format
+        name: Ruff format check
+        entry: make -C lab_1/ws-http-server format-check
+        language: unsupported
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: pyright
+        name: Pyright type check
+        entry: make -C lab_1/ws-http-server typecheck
+        language: unsupported
+        pass_filenames: false
+        stages: [pre-push]
+      - id: pytest
+        name: Pytest
+        entry: make -C lab_1/ws-http-server test
+        language: unsupported
+        pass_filenames: false
+        stages: [pre-push]

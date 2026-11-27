@@ -1,6 +1,6 @@
-PYTHON ?= python3
+PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 
-.PHONY: install lint format format-check typecheck test check install-hooks run
+.PHONY: install lint format format-check typecheck test check precommit install-hooks run
 
 install:
 	$(PYTHON) -m pip install -r requirements-dev.txt
@@ -22,8 +22,13 @@ test:
 
 check: lint format-check typecheck test
 
-install-hooks:
-	git config core.hooksPath .githooks
+precommit:
+	@if [ "$$(git config --local --get core.hooksPath)" = ".githooks" ]; then git config --local --unset-all core.hooksPath; fi
+	@python_path="$$( $(PYTHON) -c 'import sys; print(sys.executable)' )"; \
+	cd "$$(git rev-parse --show-toplevel)" && \
+	"$$python_path" -m pre_commit install --config lab_1/ws-http-server/.pre-commit-config.yaml --allow-missing-config --overwrite
+
+install-hooks: precommit
 
 run:
 	$(PYTHON) main.py
