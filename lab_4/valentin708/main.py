@@ -2,6 +2,9 @@
 
 import argparse
 import re
+from collections.abc import Iterable
+
+RECORD_HEADER = re.compile(r"\d+\)")
 
 
 def is_name_correct(name: str) -> bool:
@@ -30,11 +33,29 @@ def form_is_correct(form: list[str]) -> bool:
     return is_name_correct(fields.get("Имя", "")) and is_female(fields.get("Пол", ""))
 
 
+def parse_forms(lines: Iterable[str]) -> list[list[str]]:
+    """Group field lines by numbered questionnaire headings."""
+    forms: list[list[str]] = []
+    current: list[str] = []
+
+    for raw_line in lines:
+        line = raw_line.strip()
+        if RECORD_HEADER.fullmatch(line):
+            if current:
+                forms.append(current)
+            current = []
+        elif ":" in line:
+            current.append(line)
+
+    if current:
+        forms.append(current)
+    return forms
+
+
 def read_forms(filename: str) -> list[list[str]]:
-    """Read questionnaires, which currently contain six field lines each."""
+    """Read the source file without mixing file I/O and record parsing."""
     with open(filename, encoding="utf-8") as source:
-        lines = [line.strip() for line in source if line.strip() and ":" in line]
-    return [lines[index : index + 6] for index in range(0, len(lines), 6)]
+        return parse_forms(source)
 
 
 def save_forms(forms: list[list[str]], path: str = "filtered_forms.txt") -> None:
