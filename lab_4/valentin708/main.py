@@ -1,10 +1,11 @@
-"""Filter questionnaires for women whose names begin with uppercase А."""
+"""Select questionnaires for women whose names begin with uppercase А."""
 
 import argparse
 import re
 from collections.abc import Iterable
 
 RECORD_HEADER = re.compile(r"\d+\)")
+OUTPUT_FILE = "filtered_forms.txt"
 
 
 def is_name_correct(name: str) -> bool:
@@ -58,22 +59,33 @@ def read_forms(filename: str) -> list[list[str]]:
         return parse_forms(source)
 
 
-def save_forms(forms: list[list[str]], path: str = "filtered_forms.txt") -> None:
+def select_forms(forms: Iterable[list[str]]) -> list[list[str]]:
+    """Select questionnaires that satisfy the task requirements."""
+    return [form for form in forms if form_is_correct(form)]
+
+
+def save_forms(forms: Iterable[list[str]], path: str = OUTPUT_FILE) -> None:
     """Save the selected questionnaires in the original text format."""
     with open(path, "w", encoding="utf-8") as destination:
         for form in forms:
             destination.write("\n".join(form) + "\n\n")
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("filename")
-    args = parser.parse_args()
+def process_file(source_path: str, output_path: str = OUTPUT_FILE) -> int:
+    """Read, filter and save questionnaires; return the number selected."""
+    selected = select_forms(read_forms(source_path))
+    save_forms(selected, output_path)
+    return len(selected)
 
-    forms = read_forms(args.filename)
-    correct = [form for form in forms if form_is_correct(form)]
-    print(len(correct))
-    save_forms(correct)
+
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("filename", help="Path to the questionnaire text file")
+    parser.add_argument(
+        "-o", "--output", default=OUTPUT_FILE, help="Path for selected questionnaires"
+    )
+    args = parser.parse_args(argv)
+    print(process_file(args.filename, args.output))
 
 
 if __name__ == "__main__":
