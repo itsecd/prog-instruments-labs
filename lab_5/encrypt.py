@@ -6,46 +6,38 @@ from config import SIZE
 
 logger.remove()
 logger.add(sys.stdout, level="INFO", format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}")
+logger.add("polybius.log", level="DEBUG", rotation="1 MB", encoding="utf-8")
 
 
 def read_key_txt(filename):
-    """
-    Читает квадрат Полибия из текстового файла и создает маппинг для JSON.
-    
-    Args:
-        filename (str): Путь к файлу с ключом
-        
-    Returns:
-        tuple: (encrypt_map, alphabet)
-        
-    Raises:
-        FileNotFoundError: Если файл не найден
-    """
+    """Читает квадрат Полибия из текстового файла и создает маппинг для JSON."""
+    logger.debug(f"Попытка чтения ключа из файла: {filename}")
     if not os.path.exists(filename):
+        logger.error(f"Ошибка: файл {filename} не найден!")
         raise FileNotFoundError(f"Ошибка: файл {filename} не найден!")
-    
+        
     with open(filename, 'r', encoding='utf-8') as f:
         lines = f.readlines()
-    
+        
     square = []
     for line in lines[1:]:
         line = line.rstrip('\n')
         if line:
-            chars = line[4:].split('   ')
+            chars = line[4:].split(' ')
             square.append(chars)
-    
+            
     if len(square) != SIZE:
-        print(f"Ошибка: в файле {len(square)} строк, ожидалось {SIZE}")
+        logger.error(f"Ошибка: в файле {len(square)} строк, ожидалось {SIZE}")
         return None, None
-    
+        
     encrypt_map = {}
     alphabet = ""
     
     for i in range(SIZE):
         if len(square[i]) != SIZE:
-            print(f"Ошибка: в строке {i+1} {len(square[i])} элементов, ожидалось {SIZE}")
+            logger.error(f"Ошибка: в строке {i+1} {len(square[i])} элементов, ожидалось {SIZE}")
             return None, None
-        
+            
         for j in range(SIZE):
             char = square[i][j]
             if char != '*':
@@ -55,40 +47,31 @@ def read_key_txt(filename):
                 else:
                     encrypt_map[char] = f"{i+1:01d}{j+1:01d}"
                     alphabet += char
-    
+                    
+    logger.info(f"Ключ успешно загружен! Размер: {len(encrypt_map)} символов.")
     return encrypt_map, alphabet
 
-
 def read_original_text(filename):
-    """
-    Читает исходный текст из файла.
-    
-    Args:
-        filename (str): Путь к файлу с исходным текстом
-        
-    Returns:
-        str: Прочитанный текст в верхнем регистре
-        
-    Raises:
-        FileNotFoundError: Если файл не найден
-    """
+    """Читает исходный текст из файла."""
+    logger.debug(f"Попытка чтения исходного текста из файла: {filename}")
     if not os.path.exists(filename):
+        logger.error(f"Ошибка: файл {filename} не найден!")
         raise FileNotFoundError(f"Ошибка: файл {filename} не найден!")
-    
+        
     with open(filename, 'r', encoding='utf-8') as f:
         text = f.read()
-    
+    logger.info(f"Исходный текст прочитан. Длина: {len(text)} символов.")
     return text.upper()
-
 
 def save_key_json(filename, encrypt_map):
     """Сохраняет маппинг в JSON формате."""
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(encrypt_map, f, ensure_ascii=False, indent=2)
-
+    logger.debug(f"Ключ сохранен в {filename}")
 
 def encrypt_polybius(text, encrypt_map):
     """Шифрует текст, заменяя символы на координаты."""
+    logger.debug("Начало процесса шифрования...")
     encrypted_pairs = []
     unknown_chars = set()
     
@@ -98,17 +81,18 @@ def encrypt_polybius(text, encrypt_map):
         else:
             unknown_chars.add(char)
             encrypted_pairs.append('??')
-    
+            
     if unknown_chars:
-        print(f"Предупреждение: следующие символы не найдены в ключе: {sorted(unknown_chars)}")
-    
-    return ' '.join(encrypted_pairs)
-
+        logger.warning(f"Следующие символы не найдены в ключе: {sorted(unknown_chars)}")
+        
+    encrypted_text = ' '.join(encrypted_pairs)
+    logger.info("Шифрование успешно завершено.")
+    return encrypted_text
 
 def decrypt_polybius(encrypted_text, encrypt_map):
     """Дешифрует текст из координат обратно в буквы."""
+    logger.debug("Начало процесса дешифрования...")
     decrypt_map = {v: k for k, v in encrypt_map.items()}
-    
     pairs = encrypted_text.split(' ')
     decrypted_text = []
     unknown_pairs = set()
@@ -119,78 +103,68 @@ def decrypt_polybius(encrypted_text, encrypt_map):
         else:
             unknown_pairs.add(pair)
             decrypted_text.append('?')
-    
+            
     if unknown_pairs:
-        print(f"Следующие координаты не найдены в ключе: {sorted(unknown_pairs)}")
-    
+        logger.warning(f"Следующие координаты не найдены в ключе: {sorted(unknown_pairs)}")
+        
+    logger.info("Дешифрование успешно завершено.")
     return ''.join(decrypted_text)
-
 
 def save_to_file(filename, content):
     """Сохраняет содержимое в файл."""
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(content)
-
+    logger.info(f"Результат успешно сохранен в файл: {filename}")
 
 def print_key_preview(filename):
     """Выводит содержимое key.txt для наглядности."""
-    print("\nИспользуемый ключ шифрования (key.txt):")
+    logger.debug("Вывод превью ключа в лог")
     with open(filename, 'r', encoding='utf-8') as f:
-        print(f.read())
-
+        logger.info(f"Используемый ключ шифрования (key.txt):\n{f.read()}")
 
 def main():
     """Основная функция программы."""
     try:
-        print("\nЧтение ключа из key.txt.")
+        logger.info("--- Запуск программы шифрования ---")
+        
         encrypt_map, alphabet = read_key_txt('key.txt')
-        
         if encrypt_map is None:
-            print("Ошибка при чтении key.txt. Проверьте формат файла.")
+            logger.critical("Ошибка при чтении key.txt. Проверьте формат файла.")
             sys.exit(1)
-        
-        print(f"Ключ успешно загружен!")
-        print(f"Найдено символов в ключе: {len(encrypt_map)}")
-        print(f"Алфавит из ключа: {alphabet}")
-        
-        print("Создание key.json на основе key.txt.")
+            
+        logger.debug(f"Алфавит из ключа: {alphabet}")
+        logger.info("Создание key.json на основе key.txt.")
         save_key_json('key.json', encrypt_map)
-        
         print_key_preview('key.txt')
         
-        print("\nЧтение исходного текста из original.txt")
         original_text = read_original_text('original.txt')
-        
-        print("Исходный текст (original.txt):")
-        print(original_text)
-        print(f"Длина исходного текста: {len(original_text)} символов\n")
+        logger.debug(f"Исходный текст (original.txt):\n{original_text}")
         
         encrypted_text = encrypt_polybius(original_text, encrypt_map)
-        
         decrypted_text = decrypt_polybius(encrypted_text, encrypt_map)
         
         save_to_file('encrypted.txt', encrypted_text)
         
-        print("Зашифрованный текст (encrypted.txt):")
-        print(encrypted_text)
-        print(f"\nВсего пар координат: {len(encrypted_text.split())}\n")
+        logger.debug(f"Зашифрованный текст (encrypted.txt):\n{encrypted_text}")
+        logger.debug(f"Всего пар координат: {len(encrypted_text.split())}")
         
-        print("Расшифрованный текст (проверка):")
-        print(decrypted_text)
-        print(f"Всего символов: {len(decrypted_text)}\n")
+        logger.debug(f"Расшифрованный текст (проверка):\n{decrypted_text}")
+        logger.debug(f"Всего символов: {len(decrypted_text)}")
         
         if original_text == decrypted_text:
-            print("Шифрование работает корректно.")
+            logger.success("Шифрование работает корректно. Тексты совпадают.")
         else:
-            print("Расшифрованный текст не совпадает с оригиналом.")
+            logger.error("Расшифрованный текст не совпадает с оригиналом!")
             
+        logger.info("--- Программа успешно завершена ---")
+        
     except FileNotFoundError as e:
-        print(f"\nОшибка: {e}")
+        logger.exception("Критическая ошибка при работе с файлами")
         sys.exit(1)
+        
     except Exception as e:
-        print(f"\nНепредвиденная ошибка: {e}")
+        logger.exception("Непредвиденная ошибка в процессе работы")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()
