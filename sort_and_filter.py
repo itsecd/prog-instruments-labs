@@ -14,7 +14,7 @@ def filter(filters: dict, df: pd.DataFrame) -> None:
     """
     Фильтрация колонок
     """
-    logger.info("Column filter")
+    logger.info("Column filter for DataFrame (shape: %s)",df.shape)
     for key, value in filters.items():
         if key == "red_min":
             df = df[df["Red_average"] >= value]
@@ -28,4 +28,4 @@ def filter(filters: dict, df: pd.DataFrame) -> None:
             df = df[df["Green_average"] >= value]
         if key == "green_max":
             df = df[df["Green_average"] <= value]
-    logger.debug(f"Rows count after filtering: {len(df)}")
+    logger.debug("Rows count after filtering: %d", len(df))
