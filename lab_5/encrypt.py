@@ -1,8 +1,11 @@
 import json
 import os
 import sys
-
+from loguru import logger
 from config import SIZE
+
+logger.remove()
+logger.add(sys.stdout, level="INFO", format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}")
 
 
 def read_key_txt(filename):
