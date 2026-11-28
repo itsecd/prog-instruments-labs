@@ -1,0 +1,14 @@
+defaults:
+  - base
+
+network:
+  timeout: 10
+  retries: 2
+
+logging:
+  level: "WARNING"
+  print_debug: false
+
+ui:
+  window:
+    title: "Currency Converter | Foreign Exchange Rates"
