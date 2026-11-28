@@ -1,0 +1,15 @@
+defaults:
+  - base
+
+network:
+  timeout: 30
+  retries: 5
+  url: "https://www.x-rates.com/table/?from=INR&amount=1"
+
+logging:
+  level: "DEBUG"
+  print_debug: true
+
+ui:
+  window:
+    title: "[DEV] Currency Converter | Foreign Exchange Rates"
