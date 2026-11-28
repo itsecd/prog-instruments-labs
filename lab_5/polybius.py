@@ -23,20 +23,20 @@ def setup_logger():
 logger = setup_logger()
 
 def save(filename, content):
-    logger.debug(f"Попытка сохранить данные в файл: {filename}")
+    logger.debug("Попытка сохранить данные в файл: %s", filename)
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(content)
-    logger.info(f"Файл {filename} успешно сохранен. Размер: {len(content)} символов.")
+    logger.info("Файл %s успешно сохранен. Размер: %d символов.", filename, len(content))
 
 def read(filename):
-    logger.debug(f"Попытка прочитать файл: {filename}")
+    logger.debug("Попытка прочитать файл: %s", filename)
     try:
         with open(filename, 'r', encoding='utf-8') as f:
             content = f.read()
-        logger.info(f"Файл {filename} прочитан. Длина текста: {len(content)} символов.")
+        logger.info("Файл %s прочитан. Длина текста: %d символов.", filename, len(content))
         return content
     except FileNotFoundError:
-        logger.error(f"Критическая ошибка: файл {filename} не найден!")
+        logger.error("Критическая ошибка: файл %s не найден!", filename)
         raise
 
 POLYBIUS = {
@@ -57,9 +57,9 @@ def encrypt(text):
         if char in POLYBIUS:
             encrypted += POLYBIUS[char]
         else:
-            logger.warning(f"Символ '{char}' отсутствует в квадрате Полибия. Оставлен без изменений.")
+            logger.warning("Символ '%s' отсутствует в квадрате Полибия. Оставлен без изменений.", char)
             encrypted += char
-    logger.info(f"Шифрование завершено. Результат: {len(encrypted)} символов.")
+    logger.info("Шифрование завершено. Результат: %d символов.", len(encrypted))
     return encrypted
 
 def decrypt(encrypted):
@@ -73,7 +73,7 @@ def decrypt(encrypted):
         else:
             decrypted += encrypted[i]
             i += 1
-    logger.info(f"Дешифрование завершено. Результат: {len(decrypted)} символов.")
+    logger.info("Дешифрование завершено. Результат: %d символов.", len(decrypted))
     return decrypted
 
 if __name__ == "__main__":
