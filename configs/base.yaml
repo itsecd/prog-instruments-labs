@@ -1,0 +1,203 @@
+network:
+  url: "https://www.x-rates.com/table/?from=INR&amount=1"
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36"
+  timeout: 10
+  retries: 3
+
+ui:
+  window:
+    title: "Currency Converter | Foreign Exchange Rates"
+    geometry: "1350x800+0+0"
+    background_color: "#F2C496"
+  
+  title_label:
+    text: "Currency Converter | Foreign Exchange Rates"
+    background_color: "#02A9FC"
+    font: ["arial", 30, "bold"]
+    padding_x: 17
+    padding_y: 4
+    border: 1
+    width: 50
+  
+  colors:
+    scale: "#EA2A97"
+    result_label: "white"
+    canvas: "gray"
+    button_fg: "black"
+  
+  fonts:
+    label: ["arial", 20, "bold"]
+    scale: ["arial", 10, "bold"]
+  
+  frames:
+    title:
+      width: 1350
+      height: 100
+      padding_x: 10
+      padding_y: 10
+      border: 10
+    main:
+      width: 1350
+      height: 700
+      padding_x: 11
+      padding_y: 10
+      border: 10
+    side:
+      width: 100
+      height: 600
+      padding_x: 5
+      padding_y: 1
+      border: 4
+    center:
+      width: 800
+      height: 600
+      padding_x: 0
+      padding_y: 2
+      border: 4
+    top:
+      width: 250
+      height: 300
+      padding_x: 80
+      padding_y: 2
+      border: 4
+    bottom:
+      width: 800
+      height: 300
+      padding_x: 5
+      padding_y: 2
+      border: 4
+    bottom_left:
+      width: 450
+      height: 300
+      padding_x: 0
+      padding_y: 2
+      border: 4
+    bottom_right:
+      width: 350
+      height: 300
+      padding_x: 10
+      padding_y: 2
+      border: 4
+  
+  widgets:
+    date_label:
+      text: "Todays Date"
+      padding_x: 2
+      padding_y: 10
+      border: 2
+      width: 18
+    date_value:
+      padding_x: 2
+      padding_y: 10
+      border: 2
+      width: 12
+      justify: "center"
+    scale:
+      from: 0
+      to: 1000
+      length: 500
+      tick_interval: 50
+    inr_label:
+      text: "INR"
+      padding_x: 2
+      padding_y: 10
+      width: 19
+      border: 2
+    currency_entry:
+      border: 2
+      width: 23
+      justify: "center"
+    combobox:
+      width: 20
+      padding_x: 38
+      padding_y: 10
+    result_label:
+      border: 2
+      width: 20
+      padding_x: 2
+      padding_y: 2
+      relief: "sunken"
+    canvas:
+      width: 600
+      height: 300
+    button:
+      padding_x: 2
+      padding_y: 8
+      border: 2
+      width: 14
+      height: 2
+  
+  chart:
+    figure_size: [5, 3]
+    dpi: 100
+    style: "ggplot"
+    x_label: "INR"
+    y_label: "Converted Value"
+    title: "Currency Conversion"
+
+converter:
+  base_currency: "INR"
+  default_amount: 1
+  date_format: "%d/%m/%y"
+
+currencies:
+  - "Select"
+  - "Argentine Peso"
+  - "Australian Dollar"
+  - "Bahraini Dinar"
+  - "Batwana Pula"
+  - "Brazilian Real"
+  - "British Pound"
+  - "Bruneian Dollar"
+  - "Bulgarian Lev"
+  - "Canadian Dollar"
+  - "Chilean Peso"
+  - "Chinese Yuan Renmimbi"
+  - "Colombian Peso"
+  - "Crotian Kuna"
+  - "Czech Koruna"
+  - "Danish Krone"
+  - "Emirati Dirhan"
+  - "Euro"
+  - "Hong Kong Dollar"
+  - "Hungarian Foint"
+  - "IceLandic Krona"
+  - "Indonesian Rupiah"
+  - "Iranian Rial"
+  - "Israeli Shekel"
+  - "Japanese Yen"
+  - "Kazakhstani Tenge"
+  - "Kuwaiti Dinar"
+  - "Libyan Dinar"
+  - "Malaysian Ringgit"
+  - "Mauritian Rupee"
+  - "Mexican Peso"
+  - "Nepalese Rupee"
+  - "New Zealand Dollar"
+  - "Norwegian Krone"
+  - "Omani Rial"
+  - "Pakistani Rupee"
+  - "Philippine Peso"
+  - "Polish Zloty"
+  - "Qatari Riyal"
+  - "Romanian New Leu"
+  - "Russian Ruble"
+  - "Saudi Arabian Riyal"
+  - "Singapore Dollar"
+  - "South African Rand"
+  - "South Korean Won"
+  - "Sri Lankan Rupee"
+  - "Swedish Krona"
+  - "Swiss Franc"
+  - "Taiwan New Dollar"
+  - "Thai Baht"
+  - "Trinidadian Dollar"
+  - "Turkish Lira"
+  - "US Dollar"
+  - "Venezuelan Bolivar"
+  - ""
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  print_debug: true
