@@ -8,7 +8,7 @@ def sorted_graph(df: pd.DataFrame) -> None:
     """
     Отоображение отсортированного графа
     """
-    logger.info("Display of a sorted graph")
+    logger.info("Display of a sorted graph for DataFrame (shape: %s)",df.shape)
     df_sorted_red = df.sort_values(by="Red_average", ascending=True)
     df_sorted_green = df.sort_values(by="Green_average", ascending=True)
     df_sorted_blue = df.sort_values(by="Blue_average", ascending=True)
@@ -20,6 +20,7 @@ def sorted_graph(df: pd.DataFrame) -> None:
     plt.ylabel("Average brightness")
     plt.title("Sorted data")
     plt.savefig("sorted_data.png")
+    logger.info("Image saved to 'sorted_data.png'")
     plt.show()
 
 
@@ -43,9 +44,8 @@ def make_histogram(df: pd.DataFrame) -> None:
     """
     Функция создания гистограммы
     """
-    logger.info("Histogram creation function")
+    logger.info("Histogram creation function for DataFrame (shape: %s)",df.shape)
     df_1 = df.copy()
-    logger.info("Helper function for creating histogram bins (ranges)")
     df_1["Brightness_range_blue"] = df_1["Blue_average"].apply(get_brightness_range)
     df_1["Brightness_range_green"] = df_1["Green_average"].apply(get_brightness_range)
     df_1["Brightness_range_red"] = df_1["Red_average"].apply(get_brightness_range)
@@ -69,4 +69,5 @@ def make_histogram(df: pd.DataFrame) -> None:
     plt.ylabel("Quantity of files")
     plt.title("Distribution")
     plt.savefig("histogram.png")
+    logger.info("Histogram saved to 'histogram.png'")
     plt.show()
