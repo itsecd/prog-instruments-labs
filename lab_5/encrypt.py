@@ -23,7 +23,8 @@ def read_key_txt(filename):
     for line in lines[1:]:
         line = line.rstrip('\n')
         if line:
-            chars = line[4:].split(' ')
+            chars = line[4:].split() 
+            logger.debug(f"Чтение строки ключа: '{line}' -> Элементы: {chars}")
             square.append(chars)
             
     if len(square) != SIZE:
