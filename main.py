@@ -24,7 +24,7 @@ def main() -> None:
     try:
         data_file_name = parsing()
         if not os.path.exists(data_file_name):
-            logger.warning("File data is incorrect")
+            logger.warning("Input data file not found: '%s'", data_file_name)
             return
         df = make_data_and_add.create_DataFrame(data_file_name)
         make_data_and_add.distribution_brightness_columns(df)
@@ -36,7 +36,6 @@ def main() -> None:
         logger.info("Data saved to dataframe.csv. Execution finished.")
     except Exception as exp:
         logger.exception("Critical error occurred during script execution")
-        print(exp)
 
 
 if __name__ == "__main__":
